@@ -54,8 +54,18 @@ export default function RegisterScreen() {
   }
 
   const handleGoogleSignUp = async () => {
-    const { error } = await authService.signInWithGoogle()
-    if (error) setErrorMessage(error.message)
+    setIsLoading(true)
+    setErrorMessage('')
+    const { user, error } = await authService.signInWithGoogle()
+    setIsLoading(false)
+    if (error) {
+      setErrorMessage(error.message || 'Google sign-up failed.')
+      return
+    }
+    if (user) {
+      setUser(user)
+      navigate('/home')
+    }
   }
 
   return (
