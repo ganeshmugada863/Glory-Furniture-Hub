@@ -4,7 +4,7 @@ import { useAppStore } from '../store/useAppStore'
 import { authService } from '../services/authService'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
-import { ArrowRight, User, Mail, Lock, Phone } from 'lucide-react'
+import { ArrowLeft, ArrowRight, User, Mail, Lock, Phone } from 'lucide-react'
 
 export default function RegisterScreen() {
   const navigate = useNavigate()
@@ -74,6 +74,17 @@ export default function RegisterScreen() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-lg mx-auto bg-white p-6 sm:p-9 rounded-3xl border border-walnut-200 shadow-warm-lg relative z-10">
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/home'))}
+          className="absolute top-4 sm:top-6 left-4 sm:left-6 p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center"
+          title="Go back"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
+        </button>
+
         <div className="text-center mb-6">
           <div 
             onClick={() => navigate('/home')}

@@ -1,63 +1,66 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { ArrowLeft, Heart, Search, ShoppingBag, User } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 
-export default function Header({ title, showBack = false }) {
+export default function Header({ title, showBack }) {
   const navigate = useNavigate()
-    const { wishlist, userBookings, openNavDrawer } = useAppStore()
-    const [searchQuery, setSearchQuery] = useState('')
+  const location = useLocation()
+  const { wishlist, userBookings, openNavDrawer } = useAppStore()
+  const [searchQuery, setSearchQuery] = useState('')
 
-    const cartCount = userBookings.length > 0 ? userBookings.length : 3
+  const isHomePage = location.pathname === '/home' || location.pathname === '/'
+  // Show back button on EVERY page EXCEPT the homepage!
+  const shouldShowBack = !isHomePage
 
-    const handleSearch = (e) => {
-      e.preventDefault()
-      if (searchQuery.trim()) {
-        navigate(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`)
-      }
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/home')
     }
+  }
 
-    return (
-      <header className="sticky top-0 z-50 bg-white text-gray-900 border-b border-gray-100 shadow-2xs w-full font-sans">
-        <div className="w-full px-4 sm:px-6 lg:px-10">
-          <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
-            
-            {/* 1. BRAND LOGO (Left) */}
-            <div className="flex items-center gap-3">
-              {showBack && (
-                <button
-                  onClick={() => navigate(-1)}
-                  className="p-1.5 rounded-full hover:bg-gray-100 text-gray-700 md:hidden"
-                  aria-label="Go back"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-              )}
+  const cartCount = userBookings.length > 0 ? userBookings.length : 3
 
-              <div 
-                onClick={() => navigate('/home')}
-                className="flex items-center gap-2.5 cursor-pointer select-none group"
-              >
-                {/* Vertical Wood Slats Icon */}
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 shadow-2xs border border-gray-200/80 group-hover:opacity-95 transition-opacity">
-                  <img 
-                    src="/images/logo_wood.jpg" 
-                    alt="Glory Furniture" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      navigate(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
 
-                {/* Logo Typography */}
-                <div className="flex flex-col">
-                  <span className="font-sans font-black text-lg sm:text-xl text-gray-950 tracking-wider leading-none">
-                    GLORY
-                  </span>
-                  <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-gray-500 uppercase mt-0.5 leading-tight">
-                    FURNITURE HUB
-                  </span>
-                </div>
+  return (
+    <header className="sticky top-0 z-50 bg-white text-gray-900 border-b border-gray-100 shadow-2xs w-full font-sans">
+      <div className="w-full px-4 sm:px-6 lg:px-10">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+          
+          {/* 1. BRAND LOGO (Left) */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div 
+              onClick={() => navigate('/home')}
+              className="flex items-center gap-2.5 cursor-pointer select-none group"
+            >
+              {/* Vertical Wood Slats Icon */}
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 shadow-2xs border border-gray-200/80 group-hover:opacity-95 transition-opacity">
+                <img 
+                  src="/images/logo_wood.jpg" 
+                  alt="Glory Furniture" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Logo Typography */}
+              <div className="flex flex-col">
+                <span className="font-sans font-black text-lg sm:text-xl text-gray-950 tracking-wider leading-none">
+                  GLORY
+                </span>
+                <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-gray-500 uppercase mt-0.5 leading-tight">
+                  FURNITURE HUB
+                </span>
               </div>
             </div>
+          </div>
 
             {/* 2. CENTER - EMPTY (Per user request) */}
             <div className="flex-1" />
@@ -150,6 +153,28 @@ export default function Header({ title, showBack = false }) {
         </div>
 
       </div>
+
+      {/* 2. DEDICATED ROW BELOW THE NAVBAR: Back Button (Shown on every page except homepage) */}
+      {shouldShowBack && (
+        <div className="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2 sm:py-2.5 flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full hover:bg-gray-200/80 text-gray-800 hover:text-gray-950 transition-colors active-tap group text-xs sm:text-sm font-semibold"
+              aria-label="Go back to previous page"
+              title="Go back"
+            >
+              <ArrowLeft className="w-5 h-5 stroke-[2.2] group-hover:-translate-x-0.5 transition-transform" />
+              <span>Back</span>
+            </button>
+            {title && (
+              <span className="text-xs sm:text-sm font-bold text-gray-700 border-l border-gray-300 pl-3">
+                {title}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   )
 }

@@ -13,7 +13,7 @@ import {
   TrendingUp, RefreshCw, MessageSquare, AlertCircle, Shield, Search,
   Eye, CheckCircle2, Clock, Sparkles, User, Mail, ShieldCheck, Edit3,
   Activity, FileText, Award, Lock, Receipt, Printer, Download, CreditCard,
-  Share2, ExternalLink
+  Share2, ExternalLink, ArrowLeft
 } from 'lucide-react'
 
 const PRODUCT_TYPES = [
@@ -534,8 +534,17 @@ export default function AdminDashboardScreen() {
 
         </div>
 
-        {/* ADMIN TAB NAVIGATION BAR */}
+        {/* ADMIN TAB NAVIGATION BAR (Below the Navbar) */}
         <div className="w-full px-4 sm:px-8 bg-walnut-800 border-t border-walnut-700/80 flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <button
+            onClick={() => navigate('/home')}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap active-tap cursor-pointer text-gold-400 hover:text-white hover:bg-walnut-700 border border-gold-500/30"
+            title="Return to Store Homepage"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 stroke-[2.2]" />
+            <span>Store Home</span>
+          </button>
+
           <button
             onClick={() => handleTabChange('products')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap active-tap cursor-pointer ${
