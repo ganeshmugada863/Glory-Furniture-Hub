@@ -5,7 +5,7 @@ import Footer from '../components/common/Footer'
 import ProductCard from '../components/common/ProductCard'
 import { useAppStore } from '../store/useAppStore'
 import { dataService } from '../services/dataService'
-import { ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
@@ -255,22 +255,6 @@ export default function HomeScreen() {
               </div>
 
             </div>
-
-            {/* Previous / Next Arrow Controls */}
-            <button
-              onClick={prevSlide}
-              aria-label="Previous slide"
-              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/35 hover:bg-black/65 text-white backdrop-blur-sm flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 cursor-pointer active-tap border border-white/20 shadow-lg"
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
-            </button>
-            <button
-              onClick={nextSlide}
-              aria-label="Next slide"
-              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/35 hover:bg-black/65 text-white backdrop-blur-sm flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 cursor-pointer active-tap border border-white/20 shadow-lg"
-            >
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
-            </button>
 
             {/* Carousel Interactive Pagination Dots (Bottom Center matching reference) */}
             <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
