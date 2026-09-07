@@ -120,6 +120,35 @@ export const useAppStore = create((set, get) => ({
   openAIChat: (context = null) => set({ isAIChatOpen: true, aiChatContext: context }),
   closeAIChat: () => set({ isAIChatOpen: false, aiChatContext: null }),
 
+  // Slide-over Navigation Sidebar Drawer State (Profile / Favourite / Cart)
+  isNavDrawerOpen: false,
+  navDrawerTab: 'profile',
+  navDrawerHistory: [],
+  openNavDrawer: (tab = 'profile') => set((state) => {
+    const history = state.isNavDrawerOpen && state.navDrawerTab !== tab 
+      ? [...state.navDrawerHistory, state.navDrawerTab] 
+      : (state.isNavDrawerOpen ? state.navDrawerHistory : [])
+    return { isNavDrawerOpen: true, navDrawerTab: tab, navDrawerHistory: history }
+  }),
+  switchNavDrawerTab: (newTab) => set((state) => {
+    if (state.navDrawerTab === newTab) return state
+    return {
+      navDrawerTab: newTab,
+      navDrawerHistory: [...state.navDrawerHistory, state.navDrawerTab]
+    }
+  }),
+  goBackNavDrawer: () => set((state) => {
+    if (state.navDrawerHistory.length > 0) {
+      const prevTab = state.navDrawerHistory[state.navDrawerHistory.length - 1]
+      return {
+        navDrawerTab: prevTab,
+        navDrawerHistory: state.navDrawerHistory.slice(0, -1)
+      }
+    }
+    return { isNavDrawerOpen: false, navDrawerHistory: [] }
+  }),
+  closeNavDrawer: () => set({ isNavDrawerOpen: false, navDrawerHistory: [] }),
+
   // Saved Delivery Addresses (Flipkart style storage)
   savedAddresses: getStoredAddresses(),
   addSavedAddress: (newAddr) => set((state) => {

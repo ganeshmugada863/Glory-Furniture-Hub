@@ -4,6 +4,7 @@ import BottomNav from '../common/BottomNav'
 import GloryAIFab from '../ai/GloryAIFab'
 import GloryAIChatSheet from '../ai/GloryAIChatSheet'
 import PwaInstallPrompt from '../common/PwaInstallPrompt'
+import NavSidebarDrawer from '../common/NavSidebarDrawer'
 
 export default function AppLayout({ children }) {
   const location = useLocation()
@@ -26,6 +27,7 @@ export default function AppLayout({ children }) {
       <PwaInstallPrompt />
       <GloryAIFab />
       <GloryAIChatSheet />
+      <NavSidebarDrawer />
       <BottomNav />
     </div>
   )
