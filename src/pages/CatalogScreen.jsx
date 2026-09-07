@@ -7,7 +7,7 @@ import Button from '../components/common/Button'
 import { ProductGridSkeleton } from '../components/common/Skeleton'
 import { useAppStore } from '../store/useAppStore'
 import { dataService } from '../services/dataService'
-import { Filter, ArrowUpDown, X, Check, Search, SlidersHorizontal, Sparkles } from 'lucide-react'
+import { Filter, ArrowUpDown, X, Check, Search, SlidersHorizontal, Sparkles, ChevronDown } from 'lucide-react'
 
 export default function CatalogScreen() {
   const navigate = useNavigate()
@@ -121,125 +121,41 @@ export default function CatalogScreen() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-walnut-900 pb-20 md:pb-12 w-full font-sans">
-      <Header title="Furniture Catalog" showBack={false} />
-
-      <div className="w-full px-3 sm:px-6 lg:px-10">
-        
-        {/* COMPACT TOP CONTROLS & CATEGORY PILLS BAR (Replaces Bulky Sidebar) */}
-        <div className="py-2.5 bg-white border border-walnut-200/70 sticky top-14 sm:top-16 z-20 shadow-2xs rounded-2xl px-3 sm:px-4 my-3">
-          
-          {/* Row 1: Search, Filter Modal Trigger, & Sort */}
-          <div className="flex items-center justify-between gap-2.5">
-            <div className="relative flex-1 max-w-sm sm:max-w-md">
-              <Search className="w-3.5 h-3.5 text-softgray absolute left-3 top-2.5" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search pieces, wood species..."
-                className="w-full text-xs bg-cream-50 border border-walnut-200/80 rounded-full pl-8 pr-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-walnut-500 text-walnut-900"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-2 text-softgray hover:text-walnut-900"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
-              {/* Filter Button (Opens popup modal on both Desktop & Mobile) */}
-              <button
-                onClick={() => setIsFilterModalOpen(true)}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 sm:px-3 py-1.5 rounded-full border transition-all active-tap ${
-                  hasExtraFilters
-                    ? 'bg-walnut-900 text-gold-400 border-walnut-900 shadow-2xs'
-                    : 'bg-cream-50 hover:bg-cream-100 text-walnut-800 border-walnut-200'
-                }`}
+      <Header 
+        title="Furniture Catalog" 
+        rightAction={
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-600 hidden sm:inline">Category:</span>
+            <div className="relative">
+              <select
+                value={selectedCategory}
+                onChange={(e) => handleCategorySelect(e.target.value)}
+                className="appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-900 text-xs sm:text-sm font-semibold rounded-full pl-3.5 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-gray-950 shadow-2xs cursor-pointer"
               >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Filters</span>
-                {hasExtraFilters && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-gold-400"></span>
-                )}
-              </button>
-
-              {/* Sort Dropdown */}
-              <div className="flex items-center gap-1 text-xs text-softgray bg-cream-50 border border-walnut-200 rounded-full px-2.5 py-1">
-                <ArrowUpDown className="w-3 h-3 text-gold-600" />
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-transparent font-semibold text-walnut-900 focus:outline-none cursor-pointer text-xs"
-                >
-                  <option value="popular">Popular</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Top Rated</option>
-                </select>
-              </div>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>
+                    {cat === 'All' ? 'All Categories' : cat}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
+        } 
+      />
 
-          {/* Row 2: Horizontal Category Pills Bar (8 Categories + All) */}
-          <div className="mt-2.5 pt-2 border-t border-walnut-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-            {categories.map(cat => {
-              const isSelected = selectedCategory === cat
-              return (
-                <button
-                  key={cat}
-                  onClick={() => handleCategorySelect(cat)}
-                  className={`px-3 py-1 rounded-full text-[11px] sm:text-xs whitespace-nowrap transition-all font-medium active-tap flex items-center gap-1 ${
-                    isSelected
-                      ? 'bg-walnut-900 text-gold-400 font-bold shadow-xs'
-                      : 'bg-cream-50 hover:bg-cream-100 text-walnut-800 border border-walnut-200/60'
-                  }`}
-                >
-                  {isSelected && <Sparkles className="w-2.5 h-2.5 text-gold-400" />}
-                  <span>{cat}</span>
-                </button>
-              )
-            })}
-          </div>
-
-        </div>
-
-        {/* Active Filters Summary Chips */}
-        {(hasExtraFilters || searchQuery || selectedCategory !== 'All') && (
-          <div className="mb-3 flex items-center gap-1.5 flex-wrap text-xs">
-            <span className="text-[11px] text-softgray font-medium">Filtering by:</span>
-            
-            {selectedCategory !== 'All' && (
-              <span className="inline-flex items-center gap-1 text-[11px] bg-walnut-900 text-gold-400 px-2.5 py-0.5 rounded-full font-medium">
-                {selectedCategory}
-                <X className="w-3 h-3 cursor-pointer hover:text-white" onClick={() => handleCategorySelect('All')} />
-              </span>
-            )}
-
-            {selectedStyle !== 'All' && (
-              <span className="inline-flex items-center gap-1 text-[11px] bg-walnut-800 text-cream-100 px-2.5 py-0.5 rounded-full font-medium">
-                Style: {selectedStyle}
-                <X className="w-3 h-3 cursor-pointer hover:text-white" onClick={() => setSelectedStyle('All')} />
-              </span>
-            )}
-
-            {maxPrice < 250000 && (
-              <span className="inline-flex items-center gap-1 text-[11px] bg-walnut-800 text-cream-100 px-2.5 py-0.5 rounded-full font-medium">
-                Under ₹{maxPrice.toLocaleString('en-IN')}
-                <X className="w-3 h-3 cursor-pointer hover:text-white" onClick={() => setMaxPrice(250000)} />
-              </span>
-            )}
-
+      <div className="w-full px-4 sm:px-6 lg:px-10 pt-4">
+        {/* Active Filters Summary (Shown only when category is filtered) */}
+        {selectedCategory !== 'All' && (
+          <div className="mb-4 flex items-center gap-2 text-xs">
+            <span className="text-gray-500 font-medium">Filtering by:</span>
+            <span className="inline-flex items-center gap-1.5 bg-gray-950 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-2xs">
+              <span>{selectedCategory}</span>
+              <X className="w-3.5 h-3.5 cursor-pointer hover:text-red-400 transition-colors" onClick={() => handleCategorySelect('All')} />
+            </span>
             <button
-              onClick={() => {
-                handleCategorySelect('All')
-                setSelectedStyle('All')
-                setMaxPrice(250000)
-                setSearchQuery('')
-              }}
-              className="text-[11px] text-softgray hover:text-dustyrose underline ml-1"
+              onClick={() => handleCategorySelect('All')}
+              className="text-xs text-gray-500 hover:text-gray-900 underline ml-1 cursor-pointer"
             >
               Reset
             </button>

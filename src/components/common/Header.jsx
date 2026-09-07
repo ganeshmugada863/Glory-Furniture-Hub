@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { ArrowLeft, Heart, Search, ShoppingBag, User } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 
-export default function Header({ title, showBack }) {
+export default function Header({ title, showBack, rightAction }) {
   const navigate = useNavigate()
   const location = useLocation()
   const { wishlist, userBookings, openNavDrawer } = useAppStore()
@@ -160,19 +160,23 @@ export default function Header({ title, showBack }) {
           <div className="flex items-center gap-3">
             <button
               onClick={handleBack}
-              className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full hover:bg-gray-200/80 text-gray-800 hover:text-gray-950 transition-colors active-tap group text-xs sm:text-sm font-semibold"
+              className="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0"
               aria-label="Go back to previous page"
               title="Go back"
             >
-              <ArrowLeft className="w-5 h-5 stroke-[2.2] group-hover:-translate-x-0.5 transition-transform" />
-              <span>Back</span>
+              <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
             </button>
             {title && (
-              <span className="text-xs sm:text-sm font-bold text-gray-700 border-l border-gray-300 pl-3">
+              <span className="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
                 {title}
               </span>
             )}
           </div>
+          {rightAction && (
+            <div className="flex items-center gap-2">
+              {rightAction}
+            </div>
+          )}
         </div>
       )}
     </header>
