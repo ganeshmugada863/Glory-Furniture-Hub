@@ -111,7 +111,7 @@ export default function NavSidebarDrawer(props = {}) {
 
       {/* 2. Slide-over Right Drawer Container */}
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
-        <aside className="w-screen max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col justify-between h-full border-l border-gray-100 transform transition-transform ease-in-out duration-300">
+        <aside className="w-screen max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col justify-between h-full border-l border-gray-100 transform transition-transform ease-in-out duration-300 overflow-hidden">
           
           {/* ======================================================== */}
           {/* HEADER: Back Button | 3 Tab Icons | Close Button */}
@@ -200,7 +200,7 @@ export default function NavSidebarDrawer(props = {}) {
           {/* ======================================================== */}
           {/* BODY CONTENT: DYNAMIC ACCORDING TO ACTIVE TAB */}
           {/* ======================================================== */}
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-4">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-3.5 sm:px-6 py-4 space-y-4">
             
             {/* ------------------------------------------------------ */}
             {/* TAB 1: PROFILE TAB */}
@@ -396,41 +396,70 @@ export default function NavSidebarDrawer(props = {}) {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {savedItems.map((item) => (
                       <div
                         key={item.id}
-                        className="bg-white p-3 rounded-2xl border border-gray-100 shadow-2xs hover:shadow-sm transition-all flex items-center gap-3"
+                        className="bg-white p-2.5 sm:p-3 rounded-2xl border border-gray-200/80 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 w-full min-w-0"
                       >
-                        <img
-                          src={item.images?.[0] || '/images/hero_epoxy_teak.jpg'}
-                          alt={item.name}
+                        {/* Fixed Dimension Thumbnail (Never Blows Out) */}
+                        <div
                           onClick={() => { onClose(); navigate(`/product/${item.id}`) }}
-                          className="w-18 h-18 rounded-xl object-cover bg-gray-50 cursor-pointer flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                            {item.category || 'Teak Wood'}
-                          </span>
-                          <h4
-                            onClick={() => { onClose(); navigate(`/product/${item.id}`) }}
-                            className="font-bold text-xs text-gray-950 truncate cursor-pointer hover:text-amber-700 transition-colors"
-                          >
-                            {item.name}
-                          </h4>
-                          <p className="text-[11px] font-bold text-gray-950 mt-1">
-                            ₹{Number(item.price || 0).toLocaleString('en-IN')}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
+                          className="w-20 h-20 sm:w-22 sm:h-22 rounded-xl overflow-hidden bg-gray-50 border border-gray-200/70 shrink-0 cursor-pointer relative group"
+                        >
+                          <img
+                            src={item.images?.[0] || '/images/hero_epoxy_teak.jpg'}
+                            alt={item.name}
+                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                          />
+                        </div>
+
+                        {/* Item Main Details (Concise, Less Text) */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                          <div>
+                            {/* Category & Price */}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md uppercase tracking-wider truncate">
+                                {item.category || 'Teak Wood'}
+                              </span>
+                              <span className="text-xs sm:text-sm font-extrabold text-gray-950 shrink-0">
+                                ₹{Number(item.price || 0).toLocaleString('en-IN')}
+                              </span>
+                            </div>
+
+                            {/* Product Name */}
+                            <h4
+                              onClick={() => { onClose(); navigate(`/product/${item.id}`) }}
+                              className="font-bold text-xs sm:text-[13px] text-gray-900 truncate mt-1 hover:text-amber-800 transition-colors cursor-pointer"
+                              title={item.name}
+                            >
+                              {item.name}
+                            </h4>
+
+                            {/* Essential Main Specs (Short) */}
+                            <div className="flex items-center gap-1.5 mt-1 text-[11px] text-gray-500 truncate">
+                              <span className="truncate">{item.material || 'Solid Teak Wood'}</span>
+                              {item.dimensions && (
+                                <>
+                                  <span className="text-gray-300">•</span>
+                                  <span className="truncate">{item.dimensions.split('(')[0].trim()}</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-gray-100">
                             <button
                               onClick={() => { onClose(); navigate(`/booking?productId=${item.id}`) }}
-                              className="px-3 py-1 rounded-full bg-gray-950 hover:bg-gray-800 text-white text-[11px] font-semibold transition-colors"
+                              className="px-3.5 py-1 rounded-full bg-gray-950 hover:bg-gray-800 text-white text-[11px] font-bold transition-all shadow-2xs active-tap"
                             >
                               Book Now
                             </button>
                             <button
                               onClick={() => toggleWishlist(item)}
-                              className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                              className="p-1 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                               title="Remove from saved"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -439,6 +468,17 @@ export default function NavSidebarDrawer(props = {}) {
                         </div>
                       </div>
                     ))}
+
+                    {/* Wishlist Total Summary */}
+                    <div className="mt-3 p-3 bg-gray-50 rounded-2xl border border-gray-200/70 flex items-center justify-between">
+                      <div>
+                        <span className="text-xs font-bold text-gray-800 block">Saved Items Value</span>
+                        <span className="text-[10px] text-gray-500 font-medium">{savedItems.length} {savedItems.length === 1 ? 'piece' : 'pieces'} saved</span>
+                      </div>
+                      <span className="text-sm sm:text-base font-extrabold text-gray-950">
+                        ₹{savedItems.reduce((sum, item) => sum + Number(item.price || 0), 0).toLocaleString('en-IN')}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -483,47 +523,88 @@ export default function NavSidebarDrawer(props = {}) {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {userBookings.map((booking) => (
                       <div
                         key={booking.id}
-                        onClick={() => { onClose(); navigate(`/bookings/${booking.id}`) }}
-                        className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-2xs hover:shadow-sm cursor-pointer transition-all flex items-start gap-3"
+                        className="bg-white p-2.5 sm:p-3 rounded-2xl border border-gray-200/80 shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 w-full min-w-0"
                       >
-                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
+                        {/* Fixed Dimension Thumbnail (Never Blows Out) */}
+                        <div
+                          onClick={() => { onClose(); navigate(`/bookings/${booking.id}`) }}
+                          className="w-20 h-20 sm:w-22 sm:h-22 rounded-xl overflow-hidden bg-gray-50 border border-gray-200/70 shrink-0 cursor-pointer relative group"
+                        >
                           <img
                             src={booking.productImage || '/images/hero_epoxy_teak.jpg'}
                             alt={booking.productName}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
                           />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                              #{booking.id}
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-900">
-                              {booking.status || 'Confirmed'}
-                            </span>
+
+                        {/* Item Main Details (Concise, Less Text) */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                          <div>
+                            {/* Order Ref & Status */}
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                                #{booking.id}
+                              </span>
+                              <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold ${
+                                booking.status === 'Delivered'
+                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                  : booking.status === 'In Production'
+                                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                  : 'bg-blue-50 text-blue-700 border border-blue-200'
+                              }`}>
+                                {booking.status || 'Confirmed'}
+                              </span>
+                            </div>
+
+                            {/* Product Name */}
+                            <h4
+                              onClick={() => { onClose(); navigate(`/bookings/${booking.id}`) }}
+                              className="font-bold text-xs sm:text-[13px] text-gray-900 truncate mt-1 hover:text-amber-800 transition-colors cursor-pointer"
+                              title={booking.productName}
+                            >
+                              {booking.productName}
+                            </h4>
+
+                            {/* Essential Main Specs (Short) */}
+                            <div className="flex items-center gap-1.5 mt-1 text-[11px] text-gray-500 truncate">
+                              <span>{booking.wood || 'Burma Teak'}</span>
+                              <span className="text-gray-300">•</span>
+                              <span>Qty: {booking.quantity || 1}</span>
+                            </div>
                           </div>
-                          <h4 className="font-bold text-xs text-gray-950 truncate mt-0.5">
-                            {booking.productName}
-                          </h4>
-                          <p className="text-[11px] text-gray-500 mt-0.5">
-                            Qty: {booking.quantity || 1} • {booking.wood || 'Burma Teak'}
-                          </p>
-                          <div className="flex items-center justify-between mt-2 pt-1 border-t border-gray-50">
-                            <span className="font-bold text-xs text-gray-950">
+
+                          {/* Price & Action */}
+                          <div className="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-gray-100">
+                            <span className="text-xs sm:text-sm font-extrabold text-gray-950">
                               ₹{Number((booking.price || 0) * (booking.quantity || 1)).toLocaleString('en-IN')}
                             </span>
-                            <span className="text-[10px] font-semibold text-amber-700 hover:text-amber-800 flex items-center gap-0.5">
+                            <button
+                              onClick={() => { onClose(); navigate(`/bookings/${booking.id}`) }}
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:text-amber-800 transition-colors"
+                            >
                               <span>Track Order</span>
-                              <ChevronRight className="w-3 h-3" />
-                            </span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
                       </div>
                     ))}
+
+                    {/* Cart Total Summary Card */}
+                    <div className="mt-3 p-3 bg-gray-50 rounded-2xl border border-gray-200/70 flex items-center justify-between">
+                      <div>
+                        <span className="text-xs font-bold text-gray-800 block">Total Cart Value</span>
+                        <span className="text-[10px] text-gray-500 font-medium">{userBookings.length} {userBookings.length === 1 ? 'item' : 'items'} in studio cart</span>
+                      </div>
+                      <span className="text-sm sm:text-base font-extrabold text-gray-950">
+                        ₹{userBookings.reduce((sum, b) => sum + (Number(b.price || 0) * (Number(b.quantity) || 1)), 0).toLocaleString('en-IN')}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
