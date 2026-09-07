@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/common/Header'
 import Footer from '../components/common/Footer'
 import ProductCard from '../components/common/ProductCard'
 import { useAppStore } from '../store/useAppStore'
 import { dataService } from '../services/dataService'
-import { ArrowRight, ChevronRight } from 'lucide-react'
+import { ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
@@ -89,6 +89,103 @@ export default function HomeScreen() {
     return true
   })
 
+  // 4 Animated Hero Carousel Slides
+  const heroSlides = [
+    {
+      id: 1,
+      image: '/images/hero_epoxy_teak.jpg',
+      headline: (
+        <>
+          Elevate Your Home with<br />
+          Glory's Artisanal Teak<br />
+          Furniture.
+        </>
+      ),
+      description: 'Discover timeless pieces crafted with natural teak wood and vibrant epoxy resin.',
+      ctaText: 'Explore Collection',
+      ctaLink: '/catalog'
+    },
+    {
+      id: 2,
+      image: '/images/card_sofa.jpg',
+      headline: (
+        <>
+          Handcrafted Luxury<br />
+          Solid Teak Wood<br />
+          Sofa Sets.
+        </>
+      ),
+      description: 'Pure Grade-A teak framing with premium high-density linen velvet cushions.',
+      ctaText: 'View Sofa Sets',
+      ctaLink: '/catalog?category=Sofa%20Set'
+    },
+    {
+      id: 3,
+      image: '/images/card_bed.jpg',
+      headline: (
+        <>
+          Royal Teak Wood<br />
+          Cots & Beds Built<br />
+          For Generations.
+        </>
+      ),
+      description: 'Masterfully carved posture-slat cots and canopy beds for royal comfort.',
+      ctaText: 'Explore Beds',
+      ctaLink: '/catalog?category=Cot%20%2F%20Wooden%20Bed'
+    },
+    {
+      id: 4,
+      image: '/images/card_dining.jpg',
+      headline: (
+        <>
+          Artisanal 6-Seater<br />
+          Teak Dining Tables &<br />
+          Crafted Chairs.
+        </>
+      ),
+      description: 'Traditional mortise-and-tenon craftsmanship with water-resistant natural finish.',
+      ctaText: 'View Dining Sets',
+      ctaLink: '/catalog?category=Dining%20Table'
+    }
+  ]
+
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const touchStartX = useRef(null)
+
+  // Auto-play animation timer (advances every 4.5 seconds)
+  useEffect(() => {
+    if (isPaused) return
+    const interval = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % heroSlides.length)
+    }, 4500)
+    return () => clearInterval(interval)
+  }, [isPaused, heroSlides.length])
+
+  const nextSlide = () => {
+    setCurrentSlide(prev => (prev + 1) % heroSlides.length)
+  }
+
+  const prevSlide = () => {
+    setCurrentSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length)
+  }
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return
+    const touchEndX = e.changedTouches[0].clientX
+    const diff = touchStartX.current - touchEndX
+    if (diff > 50) {
+      nextSlide()
+    } else if (diff < -50) {
+      prevSlide()
+    }
+    touchStartX.current = null
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-gray-900 w-full font-sans antialiased selection:bg-gray-900 selection:text-white flex flex-col justify-between">
       <div>
@@ -97,51 +194,101 @@ export default function HomeScreen() {
         <div className="w-full px-3 sm:px-6 lg:px-10 space-y-6 sm:space-y-8 pt-4 sm:pt-6">
           
           {/* ========================================================= */}
-          {/* 1. HERO SECTION (Exact Replica of Reference UI) */}
+          {/* 1. HERO CAROUSEL SECTION (Animated Slides & Interactive Controls) */}
           {/* ========================================================= */}
-          <section className="relative rounded-2xl sm:rounded-3xl lg:rounded-[28px] overflow-hidden shadow-xs border border-gray-100 w-full aspect-[16/11] sm:aspect-[16/8] lg:aspect-[2.35/1] min-h-[440px] sm:min-h-[480px] lg:min-h-[520px] flex items-center">
+          <section 
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="relative rounded-2xl sm:rounded-3xl lg:rounded-[28px] overflow-hidden shadow-xs border border-gray-100 w-full aspect-[16/11] sm:aspect-[16/8] lg:aspect-[2.35/1] min-h-[440px] sm:min-h-[480px] lg:min-h-[520px] flex items-center group select-none"
+          >
             
-            {/* Background High-Definition Image */}
-            <img
-              src="/images/hero_epoxy_teak.jpg"
-              alt="Glory Artisanal Teak Furniture"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
+            {/* Background High-Definition Animated Slides */}
+            {heroSlides.map((slide, idx) => {
+              const isActive = currentSlide === idx
+              return (
+                <div
+                  key={slide.id}
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                    isActive ? 'opacity-100 z-1 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
+                  }`}
+                >
+                  <img
+                    src={slide.image}
+                    alt="Glory Artisanal Teak Furniture"
+                    className={`w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out ${
+                      isActive ? 'scale-105' : 'scale-100'
+                    }`}
+                  />
+                  {/* Left Dark Vignette Overlay for Crisp Typography Contrast */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent pointer-events-none" />
+                </div>
+              )
+            })}
 
-            {/* Left Dark Vignette Overlay for Crisp Typography Contrast */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent pointer-events-none" />
-
-            {/* Left Text Content Box */}
+            {/* Left Text Content Box with Smooth Fade Transitions */}
             <div className="relative z-10 p-6 sm:p-10 md:p-12 lg:p-16 max-w-2xl space-y-3 sm:space-y-4 text-white">
               
-              <h1 className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl lg:text-[50px] leading-[1.12] tracking-tight drop-shadow-md">
-                Elevate Your Home with<br />
-                Glory's Artisanal Teak<br />
-                Furniture.
+              <h1 
+                key={`headline-${currentSlide}`}
+                className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl lg:text-[50px] leading-[1.12] tracking-tight drop-shadow-md animate-fade-in"
+              >
+                {heroSlides[currentSlide].headline}
               </h1>
 
-              <p className="text-xs sm:text-sm md:text-base text-gray-200/95 leading-relaxed max-w-md drop-shadow-xs font-normal">
-                Discover timeless pieces crafted with natural teak wood and vibrant epoxy resin.
+              <p 
+                key={`desc-${currentSlide}`}
+                className="text-xs sm:text-sm md:text-base text-gray-200/95 leading-relaxed max-w-md drop-shadow-xs font-normal animate-fade-in"
+              >
+                {heroSlides[currentSlide].description}
               </p>
 
               <div className="pt-2 sm:pt-3">
                 <button
-                  onClick={() => navigate('/catalog')}
-                  className="inline-flex items-center gap-2.5 px-6 sm:px-7 py-3 rounded-full bg-[#0F1E36] hover:bg-[#1A2E50] text-white text-xs sm:text-sm font-medium shadow-xl transition-all duration-300 active-tap"
+                  onClick={() => navigate(heroSlides[currentSlide].ctaLink)}
+                  className="inline-flex items-center gap-2.5 px-6 sm:px-7 py-3 rounded-full bg-[#0F1E36] hover:bg-[#1A2E50] text-white text-xs sm:text-sm font-medium shadow-xl transition-all duration-300 active-tap cursor-pointer hover:shadow-2xl"
                 >
-                  <span>Explore Collection</span>
+                  <span>{heroSlides[currentSlide].ctaText}</span>
                   <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
 
             </div>
 
-            {/* Carousel Pagination Dots (Bottom Center matching reference) */}
-            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
-              <div className="w-6 sm:w-7 h-1.5 rounded-full bg-white shadow-xs transition-all" />
-              <div className="w-1.5 h-1.5 rounded-full bg-white/60 backdrop-blur-xs" />
-              <div className="w-1.5 h-1.5 rounded-full bg-white/60 backdrop-blur-xs" />
-              <div className="w-1.5 h-1.5 rounded-full bg-white/60 backdrop-blur-xs" />
+            {/* Previous / Next Arrow Controls */}
+            <button
+              onClick={prevSlide}
+              aria-label="Previous slide"
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/35 hover:bg-black/65 text-white backdrop-blur-sm flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 cursor-pointer active-tap border border-white/20 shadow-lg"
+            >
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            </button>
+            <button
+              onClick={nextSlide}
+              aria-label="Next slide"
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/35 hover:bg-black/65 text-white backdrop-blur-sm flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 cursor-pointer active-tap border border-white/20 shadow-lg"
+            >
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            </button>
+
+            {/* Carousel Interactive Pagination Dots (Bottom Center matching reference) */}
+            <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+              {heroSlides.map((_, idx) => {
+                const isActive = currentSlide === idx
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    aria-label={`Go to slide ${idx + 1}`}
+                    className={`transition-all duration-500 cursor-pointer ${
+                      isActive
+                        ? 'w-7 sm:w-8 h-1.5 sm:h-2 rounded-full bg-white shadow-md'
+                        : 'w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white/50 hover:bg-white/90'
+                    }`}
+                  />
+                )
+              })}
             </div>
 
           </section>
