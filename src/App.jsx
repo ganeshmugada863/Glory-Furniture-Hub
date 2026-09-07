@@ -42,13 +42,14 @@ export default function App() {
     <Router>
       <AppLayout>
         <Routes>
-          <Route path="/" element={<SplashScreen />} />
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/home" element={<HomeScreen />} />
+          <Route path="/splash" element={<SplashScreen />} />
           <Route path="/onboarding" element={<OnboardingScreen />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
 
-          <Route path="/home" element={<HomeScreen />} />
           <Route path="/catalog" element={<CatalogScreen />} />
           <Route path="/product/:id" element={<ProductDetailScreen />} />
           <Route path="/search" element={<SearchScreen />} />
