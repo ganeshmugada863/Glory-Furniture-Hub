@@ -5,7 +5,7 @@ import Footer from '../components/common/Footer'
 import ProductCard from '../components/common/ProductCard'
 import { useAppStore } from '../store/useAppStore'
 import { dataService } from '../services/dataService'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ChevronRight } from 'lucide-react'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
