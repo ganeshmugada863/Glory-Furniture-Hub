@@ -1,25 +1,16 @@
 import React, { useState } from 'react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { ArrowLeft, Heart, Search, ShoppingBag, User, Menu, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Heart, Search, ShoppingBag, User } from 'lucide-react'
 import { useAppStore } from '../../store/useAppStore'
 
 export default function Header({ title, showBack = false }) {
   const navigate = useNavigate()
-  const location = useLocation()
   const { wishlist, userBookings } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const cartCount = userBookings.length > 0 ? userBookings.length : 3
 
-  const navLinks = [
-    { name: 'New Arrivals', path: '/catalog?filter=newArrival' },
-    { name: 'Living Room', path: '/catalog?category=Sofa%20Set' },
-    { name: 'Dining Room', path: '/catalog?category=Dining%20Table' },
-    { name: 'Bedroom', path: '/catalog?category=Cot%20%2F%20Wooden%20Bed' },
-    { name: 'About Us', path: '/custom-request' },
-    { name: 'Contact', path: '/contact' },
-  ]
+
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -70,25 +61,8 @@ export default function Header({ title, showBack = false }) {
             </div>
           </div>
 
-          {/* 2. NAVIGATION LINKS (Center - Desktop) */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-            {navLinks.map((link) => {
-              const isActive = location.pathname + location.search === link.path
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`text-xs xl:text-[13px] font-medium transition-colors whitespace-nowrap ${
-                    isActive
-                      ? 'text-gray-950 font-bold border-b-2 border-gray-950 pb-0.5'
-                      : 'text-gray-700 hover:text-gray-950'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              )
-            })}
-          </nav>
+          {/* 2. CENTER - EMPTY (Per user request) */}
+          <div className="flex-1" />
 
           {/* 3. RIGHT UTILITIES (Search Bar & Profile/Wishlist/Cart Icons) */}
           <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
@@ -148,15 +122,6 @@ export default function Header({ title, showBack = false }) {
                 {cartCount}
               </span>
             </button>
-
-            {/* Mobile Menu Toggle Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 text-gray-700 hover:text-gray-950 lg:hidden"
-              aria-label="Toggle Menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
 
         </div>
@@ -182,22 +147,6 @@ export default function Header({ title, showBack = false }) {
             </button>
           </form>
         </div>
-
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-100 py-3 space-y-1 bg-white animate-fadeIn">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-xs font-semibold text-gray-800 hover:bg-gray-50 transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-        )}
 
       </div>
     </header>
