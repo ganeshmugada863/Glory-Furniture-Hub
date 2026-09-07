@@ -156,8 +156,8 @@ export default function Header({ title, showBack, rightAction }) {
 
       {/* 2. DEDICATED ROW BELOW THE NAVBAR: Back Button (Shown on every page except homepage) */}
       {shouldShowBack && (
-        <div className="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2 sm:py-2.5 flex items-center justify-between shadow-2xs">
-          <div className="flex items-center gap-3">
+        <div className="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2 sm:py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={handleBack}
               className="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0"
@@ -173,7 +173,7 @@ export default function Header({ title, showBack, rightAction }) {
             )}
           </div>
           {rightAction && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               {rightAction}
             </div>
           )}
