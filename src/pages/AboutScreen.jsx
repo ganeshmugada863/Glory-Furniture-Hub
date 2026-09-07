@@ -15,12 +15,12 @@ export default function AboutScreen() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-walnut-900/80 to-transparent flex items-end p-4">
-            <span className="text-white font-serif font-bold text-lg">Three Generations of Master Woodworking</span>
+            <span className="text-white font-sans font-bold text-lg">Three Generations of Master Woodworking</span>
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-3xl border border-walnut-100 shadow-card space-y-3">
-          <h3 className="font-serif font-bold text-lg text-walnut-800">Our Craftsmanship Philosophy</h3>
+          <h3 className="font-sans font-bold text-lg text-walnut-800">Our Craftsmanship Philosophy</h3>
           <p className="text-xs text-softgray leading-relaxed">
             Founded as a family workshop, <strong>Glory Furniture Hub</strong> blends traditional hand-carving techniques with modern ergonomic design. We sustainably harvest native hardwoods—Walnut, Teak, Mahogany, and Oak—hand-finishing each piece with non-toxic organic oils.
           </p>
@@ -29,12 +29,12 @@ export default function AboutScreen() {
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white p-4 rounded-2xl border border-walnut-100 text-center">
             <ShieldCheck className="w-6 h-6 text-gold-600 mx-auto mb-1" />
-            <h4 className="font-serif font-bold text-xs text-walnut-800">100% Solid Wood</h4>
+            <h4 className="font-sans font-bold text-xs text-walnut-800">100% Solid Wood</h4>
             <p className="text-[10px] text-softgray">Zero particle board</p>
           </div>
           <div className="bg-white p-4 rounded-2xl border border-walnut-100 text-center">
             <Award className="w-6 h-6 text-gold-600 mx-auto mb-1" />
-            <h4 className="font-serif font-bold text-xs text-walnut-800">Master Joinery</h4>
+            <h4 className="font-sans font-bold text-xs text-walnut-800">Master Joinery</h4>
             <p className="text-[10px] text-softgray">Mortise & Tenon</p>
           </div>
         </div>

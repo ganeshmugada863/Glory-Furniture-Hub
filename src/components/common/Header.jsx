@@ -51,7 +51,7 @@ export default function Header({ title, showBack = false }) {
 
               {/* Logo Typography */}
               <div className="flex flex-col">
-                <span className="font-serif font-black text-lg sm:text-xl text-gray-950 tracking-wider leading-none">
+                <span className="font-sans font-black text-lg sm:text-xl text-gray-950 tracking-wider leading-none">
                   GLORY
                 </span>
                 <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-gray-500 uppercase mt-0.5 leading-tight">

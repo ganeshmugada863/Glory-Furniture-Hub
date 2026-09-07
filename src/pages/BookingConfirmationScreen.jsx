@@ -31,7 +31,7 @@ export default function BookingConfirmationScreen() {
         Order & Reservation Confirmed!
       </span>
 
-      <h2 className="font-serif font-bold text-2xl sm:text-3xl text-walnut-900 tracking-wide mb-2">
+      <h2 className="font-sans font-bold text-2xl sm:text-3xl text-walnut-900 tracking-wide mb-2">
         Thank You for Your Order
       </h2>
 
@@ -70,7 +70,7 @@ export default function BookingConfirmationScreen() {
               />
             )}
             <div className="flex-1 min-w-0 text-xs space-y-0.5">
-              <strong className="font-serif font-bold text-sm text-walnut-900 block truncate">
+              <strong className="font-sans font-bold text-sm text-walnut-900 block truncate">
                 {booking.productName}
               </strong>
               <div className="text-softgray text-[11px]">
@@ -78,7 +78,7 @@ export default function BookingConfirmationScreen() {
                 {booking.woodType || 'Solid Burma Teak Wood'}
               </div>
               <div className="text-[11px] font-bold text-walnut-900 pt-0.5">
-                Qty: {booking.quantity} • Total: <span className="text-gold-700 font-serif">₹{Number(booking.price * booking.quantity).toLocaleString('en-IN')}</span>
+                Qty: {booking.quantity} • Total: <span className="text-gold-700 font-sans">₹{Number(booking.price * booking.quantity).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>

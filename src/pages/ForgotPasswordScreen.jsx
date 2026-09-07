@@ -23,7 +23,7 @@ export default function ForgotPasswordScreen() {
       <div className="bg-white p-6 rounded-3xl border border-walnut-100 shadow-card">
         {!sent ? (
           <>
-            <h2 className="font-serif font-bold text-xl text-walnut-800 mb-1">Reset Your Password</h2>
+            <h2 className="font-sans font-bold text-xl text-walnut-800 mb-1">Reset Your Password</h2>
             <p className="text-xs text-softgray mb-4">Enter your registered email and we will send you a password reset link.</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,7 +50,7 @@ export default function ForgotPasswordScreen() {
         ) : (
           <div className="text-center py-4">
             <CheckCircle2 className="w-12 h-12 text-mutedgreen mx-auto mb-2" />
-            <h3 className="font-serif font-bold text-base text-walnut-800">Reset Email Sent!</h3>
+            <h3 className="font-sans font-bold text-base text-walnut-800">Reset Email Sent!</h3>
             <p className="text-xs text-softgray my-2">Please check your inbox for instructions to set a new password.</p>
             <Button
               variant="primary"

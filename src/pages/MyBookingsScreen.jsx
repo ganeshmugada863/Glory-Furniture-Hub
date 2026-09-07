@@ -67,7 +67,7 @@ export default function MyBookingsScreen() {
                 <div className="flex items-center gap-3">
                   <img src={b.image} alt={b.productName} className="w-16 h-16 rounded-xl object-cover bg-cream-200" />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-serif font-bold text-xs text-walnut-900 truncate">{b.productName}</h4>
+                    <h4 className="font-sans font-bold text-xs text-walnut-900 truncate">{b.productName}</h4>
                     <p className="text-[11px] text-softgray">Est. Delivery: {b.deliveryDate}</p>
                     <span className="font-sans font-bold text-xs text-gold-600 block mt-1">₹{Number(b.price || 0).toLocaleString('en-IN')}</span>
                   </div>
@@ -79,7 +79,7 @@ export default function MyBookingsScreen() {
         ) : (
           <div className="py-16 text-center">
             <Package className="w-12 h-12 text-softgray mx-auto mb-2" />
-            <h4 className="font-serif font-bold text-sm text-walnut-800">No bookings in this category</h4>
+            <h4 className="font-sans font-bold text-sm text-walnut-800">No bookings in this category</h4>
             <p className="text-xs text-softgray mt-1">Book ready-made furniture or check your custom request quotes.</p>
           </div>
         )}

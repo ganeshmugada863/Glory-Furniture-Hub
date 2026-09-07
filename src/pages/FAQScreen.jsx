@@ -36,7 +36,7 @@ export default function FAQScreen() {
           <div key={idx} className="bg-white rounded-2xl border border-walnut-100 shadow-card overflow-hidden">
             <button
               onClick={() => setOpenIdx(openIdx === idx ? -1 : idx)}
-              className="w-full p-4 flex items-center justify-between text-left font-serif font-bold text-xs text-walnut-900"
+              className="w-full p-4 flex items-center justify-between text-left font-sans font-bold text-xs text-walnut-900"
             >
               <span>{faq.q}</span>
               <ChevronDown className={`w-4 h-4 text-gold-600 transition-transform ${openIdx === idx ? 'rotate-180' : ''}`} />

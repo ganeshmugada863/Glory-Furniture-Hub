@@ -34,7 +34,7 @@ export default function Modal({
         {/* Modal Header */}
         {title && (
           <div className="px-5 py-4 border-b border-cream-200 flex items-center justify-between bg-cream-100/60">
-            <h3 className="font-serif font-bold text-base text-walnut-800 tracking-wide">{title}</h3>
+            <h3 className="font-sans font-bold text-base text-walnut-800 tracking-wide">{title}</h3>
             <button
               onClick={onClose}
               className="p-1.5 text-softgray hover:text-walnut-800 rounded-full hover:bg-cream-200 active-tap"

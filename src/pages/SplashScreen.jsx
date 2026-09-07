@@ -33,11 +33,11 @@ export default function SplashScreen() {
       <div className="absolute w-72 h-72 rounded-full border border-gold-500/20" />
 
       {/* Brand Badge */}
-      <div className="w-24 h-24 rounded-3xl bg-walnut-500 flex items-center justify-center text-gold-500 font-serif font-bold text-4xl shadow-warm-lg mb-6 ring-4 ring-gold-500/20 animate-bounce">
+      <div className="w-24 h-24 rounded-3xl bg-walnut-500 flex items-center justify-center text-gold-500 font-sans font-bold text-4xl shadow-warm-lg mb-6 ring-4 ring-gold-500/20 animate-bounce">
         G
       </div>
 
-      <h1 className="font-serif font-bold text-3xl text-walnut-800 tracking-wide mb-2">
+      <h1 className="font-sans font-bold text-3xl text-walnut-800 tracking-wide mb-2">
         Glory Furniture Hub
       </h1>
       <p className="text-xs text-gold-600 font-medium tracking-widest uppercase mb-8">

@@ -10,7 +10,7 @@ export default function ContactScreen() {
 
       <div className="px-5 py-4 space-y-4 max-w-md mx-auto">
         <div className="bg-white p-5 rounded-3xl border border-walnut-100 shadow-card space-y-3">
-          <h3 className="font-serif font-bold text-base text-walnut-800">Glory Furniture Workshop</h3>
+          <h3 className="font-sans font-bold text-base text-walnut-800">Glory Furniture Workshop</h3>
           
           <div className="flex items-center gap-3 text-xs text-softgray">
             <Phone className="w-4 h-4 text-gold-600" />

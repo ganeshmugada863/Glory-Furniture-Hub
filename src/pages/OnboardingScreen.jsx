@@ -79,11 +79,11 @@ export default function OnboardingScreen() {
             onClick={() => finishOnboarding('/home')}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-xl bg-walnut-900 text-gold-400 flex items-center justify-center font-serif font-bold text-xl shadow-md border border-gold-500/30 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-walnut-900 text-gold-400 flex items-center justify-center font-sans font-bold text-xl shadow-md border border-gold-500/30 group-hover:scale-105 transition-transform">
               G
             </div>
             <div>
-              <span className="font-serif font-bold text-lg sm:text-xl text-walnut-900 tracking-wide block leading-tight">
+              <span className="font-sans font-bold text-lg sm:text-xl text-walnut-900 tracking-wide block leading-tight">
                 Glory Furniture Hub
               </span>
               <span className="text-[10px] sm:text-[11px] font-medium tracking-widest text-gold-700 uppercase block">
@@ -145,7 +145,7 @@ export default function OnboardingScreen() {
 
             {/* Main Headline */}
             <div className="space-y-3">
-              <h1 className="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl text-walnut-900 leading-[1.16] tracking-tight">
+              <h1 className="font-sans font-bold text-3xl sm:text-4xl lg:text-5xl text-walnut-900 leading-[1.16] tracking-tight">
                 {active.title}
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-walnut-700/90 leading-relaxed max-w-xl">
@@ -159,7 +159,7 @@ export default function OnboardingScreen() {
                 <span className="text-[10px] sm:text-xs font-medium text-softgray block mb-1">
                   {active.stat1.label}
                 </span>
-                <span className="font-serif font-bold text-xs sm:text-sm md:text-base text-walnut-900 block truncate">
+                <span className="font-sans font-bold text-xs sm:text-sm md:text-base text-walnut-900 block truncate">
                   {active.stat1.value}
                 </span>
               </div>
@@ -168,7 +168,7 @@ export default function OnboardingScreen() {
                 <span className="text-[10px] sm:text-xs font-medium text-softgray block mb-1">
                   {active.stat2.label}
                 </span>
-                <span className="font-serif font-bold text-xs sm:text-sm md:text-base text-walnut-900 block truncate">
+                <span className="font-sans font-bold text-xs sm:text-sm md:text-base text-walnut-900 block truncate">
                   {active.stat2.value}
                 </span>
               </div>
@@ -177,7 +177,7 @@ export default function OnboardingScreen() {
                 <span className="text-[10px] sm:text-xs font-medium text-softgray block mb-1">
                   {active.stat3.label}
                 </span>
-                <span className="font-serif font-bold text-xs sm:text-sm md:text-base text-walnut-900 block truncate">
+                <span className="font-sans font-bold text-xs sm:text-sm md:text-base text-walnut-900 block truncate">
                   {active.stat3.value}
                 </span>
               </div>
@@ -290,7 +290,7 @@ export default function OnboardingScreen() {
                       <Compass className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs sm:text-sm font-bold text-walnut-900 font-serif">
+                      <div className="text-xs sm:text-sm font-bold text-walnut-900 font-sans">
                         {active.pill}
                       </div>
                       <div className="text-[11px] text-softgray">

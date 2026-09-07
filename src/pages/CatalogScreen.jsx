@@ -276,7 +276,7 @@ export default function CatalogScreen() {
               <div className="w-12 h-12 rounded-full bg-cream-100 flex items-center justify-center mx-auto mb-2 text-walnut-600">
                 <Filter className="w-5 h-5" />
               </div>
-              <h4 className="font-serif font-bold text-sm text-walnut-900 mb-1">No pieces found</h4>
+              <h4 className="font-sans font-bold text-sm text-walnut-900 mb-1">No pieces found</h4>
               <p className="text-xs text-softgray mb-4">No items currently match this category or price range.</p>
               <Button
                 variant="primary"

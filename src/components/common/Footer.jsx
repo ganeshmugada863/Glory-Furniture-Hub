@@ -71,7 +71,7 @@ export default function Footer() {
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif font-black text-xl text-gray-950 tracking-wider leading-none">
+                <span className="font-sans font-black text-xl text-gray-950 tracking-wider leading-none">
                   GLORY
                 </span>
                 <span className="text-[9px] font-bold tracking-[0.2em] text-gray-500 uppercase mt-0.5 leading-tight">

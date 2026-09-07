@@ -39,7 +39,7 @@ export default function AdminCustomRequestsScreen() {
             </div>
 
             <div>
-              <h4 className="font-serif font-bold text-sm text-walnut-900">{r.furnitureType} ({r.wood})</h4>
+              <h4 className="font-sans font-bold text-sm text-walnut-900">{r.furnitureType} ({r.wood})</h4>
               <p className="text-xs text-softgray mt-0.5">{r.description}</p>
               <span className="text-xs font-bold text-gold-600 block mt-1">Dimensions: {r.dimensions}</span>
             </div>

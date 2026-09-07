@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children, requiredRole = 'admin' }) {
         <div className="w-16 h-16 rounded-3xl bg-walnut-100 text-walnut-800 flex items-center justify-center mx-auto mb-4 shadow-sm">
           <KeyRound className="w-8 h-8" />
         </div>
-        <h2 className="font-serif font-bold text-2xl text-walnut-900 mb-2">Sign In Required</h2>
+        <h2 className="font-sans font-bold text-2xl text-walnut-900 mb-2">Sign In Required</h2>
         <p className="text-xs text-softgray max-w-sm mb-6">
           Please sign in to your account to view this page.
         </p>
@@ -43,7 +43,7 @@ export default function ProtectedRoute({ children, requiredRole = 'admin' }) {
           Restricted Portal
         </span>
 
-        <h2 className="font-serif font-bold text-2xl sm:text-3xl text-walnut-900 mb-2">
+        <h2 className="font-sans font-bold text-2xl sm:text-3xl text-walnut-900 mb-2">
           Administrator Access Only
         </h2>
 

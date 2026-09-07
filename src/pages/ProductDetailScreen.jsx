@@ -198,7 +198,7 @@ export default function ProductDetailScreen() {
               </div>
 
               <div>
-                <h1 className="font-serif font-bold text-2xl sm:text-3xl lg:text-4xl text-walnut-900 leading-tight mb-2">
+                <h1 className="font-sans font-bold text-2xl sm:text-3xl lg:text-4xl text-walnut-900 leading-tight mb-2">
                   {product.name}
                 </h1>
 
@@ -376,7 +376,7 @@ export default function ProductDetailScreen() {
           <div className="bg-[#F7F2EB] p-5 rounded-2xl border border-walnut-200/50 flex items-start gap-3.5">
             <Award className="w-6 h-6 text-gold-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-serif font-bold text-sm text-walnut-900 mb-0.5">High Quality Materials</h4>
+              <h4 className="font-sans font-bold text-sm text-walnut-900 mb-0.5">High Quality Materials</h4>
               <p className="text-xs text-softgray leading-snug">Built to last with kiln-dried solid teak & walnut wood.</p>
             </div>
           </div>
@@ -384,7 +384,7 @@ export default function ProductDetailScreen() {
           <div className="bg-[#F7F2EB] p-5 rounded-2xl border border-walnut-200/50 flex items-start gap-3.5">
             <Sparkles className="w-6 h-6 text-gold-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-serif font-bold text-sm text-walnut-900 mb-0.5">Modern & Timeless Design</h4>
+              <h4 className="font-sans font-bold text-sm text-walnut-900 mb-0.5">Modern & Timeless Design</h4>
               <p className="text-xs text-softgray leading-snug">Handcrafted furniture that fits every space and aesthetic.</p>
             </div>
           </div>
@@ -392,7 +392,7 @@ export default function ProductDetailScreen() {
           <div className="bg-[#F7F2EB] p-5 rounded-2xl border border-walnut-200/50 flex items-start gap-3.5">
             <Leaf className="w-6 h-6 text-gold-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-serif font-bold text-sm text-walnut-900 mb-0.5">Sustainable Sourcing</h4>
+              <h4 className="font-sans font-bold text-sm text-walnut-900 mb-0.5">Sustainable Sourcing</h4>
               <p className="text-xs text-softgray leading-snug">Eco-friendly responsibly harvested natural timber.</p>
             </div>
           </div>
@@ -400,7 +400,7 @@ export default function ProductDetailScreen() {
           <div className="bg-[#F7F2EB] p-5 rounded-2xl border border-walnut-200/50 flex items-start gap-3.5">
             <HeartHandshake className="w-6 h-6 text-gold-600 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-serif font-bold text-sm text-walnut-900 mb-0.5">Customer Satisfaction</h4>
+              <h4 className="font-sans font-bold text-sm text-walnut-900 mb-0.5">Customer Satisfaction</h4>
               <p className="text-xs text-softgray leading-snug">Trusted by thousands of happy home owners.</p>
             </div>
           </div>
@@ -411,7 +411,7 @@ export default function ProductDetailScreen() {
           <div className="pt-8 border-t border-walnut-200/60 space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-serif font-bold text-xl md:text-2xl text-walnut-900">Similar & Matching Pieces</h3>
+                <h3 className="font-sans font-bold text-xl md:text-2xl text-walnut-900">Similar & Matching Pieces</h3>
                 <p className="text-xs text-softgray">Complements your {product.category.toLowerCase()} design</p>
               </div>
               <button onClick={() => navigate('/catalog')} className="text-xs font-semibold text-walnut-800 hover:text-gold-600 flex items-center gap-1">

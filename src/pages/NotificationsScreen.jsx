@@ -44,7 +44,7 @@ export default function NotificationsScreen() {
                   ) : (
                     <Hammer className="w-4 h-4 text-gold-600" />
                   )}
-                  <h4 className="font-serif font-bold text-xs text-walnut-900">{n.title}</h4>
+                  <h4 className="font-sans font-bold text-xs text-walnut-900">{n.title}</h4>
                 </div>
                 <div className="flex items-center gap-1.5">
                   {!n.read && <Badge variant="warning">New</Badge>}
@@ -57,7 +57,7 @@ export default function NotificationsScreen() {
         ) : (
           <div className="py-16 text-center">
             <Bell className="w-12 h-12 text-softgray mx-auto mb-2" />
-            <h4 className="font-serif font-bold text-sm text-walnut-800">No notifications yet</h4>
+            <h4 className="font-sans font-bold text-sm text-walnut-800">No notifications yet</h4>
           </div>
         )}
       </div>

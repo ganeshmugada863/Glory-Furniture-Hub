@@ -434,7 +434,7 @@ export default function BookingScreen() {
               
               <div className="flex items-center justify-between border-b border-cream-200 pb-4">
                 <div>
-                  <h2 className="font-serif font-bold text-xl text-walnut-900">
+                  <h2 className="font-sans font-bold text-xl text-walnut-900">
                     Order Summary & Specifications
                   </h2>
                   <p className="text-xs text-softgray mt-0.5">
@@ -453,7 +453,7 @@ export default function BookingScreen() {
                 />
 
                 <div className="flex-1 min-w-0 space-y-1.5">
-                  <h3 className="font-serif font-bold text-lg text-walnut-900 leading-snug">
+                  <h3 className="font-sans font-bold text-lg text-walnut-900 leading-snug">
                     {product.name}
                   </h3>
 
@@ -476,7 +476,7 @@ export default function BookingScreen() {
                   </div>
 
                   <div className="flex items-baseline gap-2 pt-1">
-                    <span className="font-serif font-bold text-xl text-walnut-900">
+                    <span className="font-sans font-bold text-xl text-walnut-900">
                       ₹{unitPrice.toLocaleString('en-IN')}
                     </span>
                     <span className="text-xs text-softgray">per piece (18% GST included)</span>
@@ -494,7 +494,7 @@ export default function BookingScreen() {
                     >
                       −
                     </button>
-                    <span className="font-serif font-bold text-base text-walnut-900 w-4 text-center">
+                    <span className="font-sans font-bold text-base text-walnut-900 w-4 text-center">
                       {quantity}
                     </span>
                     <button
@@ -590,7 +590,7 @@ export default function BookingScreen() {
 
             {/* Flipkart-Style Price Details Card */}
             <div className="bg-white p-6 rounded-3xl border border-walnut-200/70 shadow-sm space-y-4">
-              <h4 className="font-serif font-bold text-sm text-walnut-900 uppercase tracking-wider border-b border-cream-200 pb-2">
+              <h4 className="font-sans font-bold text-sm text-walnut-900 uppercase tracking-wider border-b border-cream-200 pb-2">
                 Price Details ({quantity} {quantity === 1 ? 'Item' : 'Items'})
               </h4>
 
@@ -615,7 +615,7 @@ export default function BookingScreen() {
 
                 <div className="border-t border-walnut-200/80 pt-3 flex justify-between items-baseline font-bold text-base text-walnut-900">
                   <span>Total Amount Payable:</span>
-                  <span className="font-serif text-2xl text-gold-700 font-bold">
+                  <span className="font-sans text-2xl text-gold-700 font-bold">
                     ₹{totalAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -654,7 +654,7 @@ export default function BookingScreen() {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
-                    <h2 className="font-serif font-bold text-lg text-walnut-900">
+                    <h2 className="font-sans font-bold text-lg text-walnut-900">
                       Step 2: Delivery Address & Contact Details
                     </h2>
                     <p className="text-xs text-softgray">
@@ -971,7 +971,7 @@ export default function BookingScreen() {
               
               <div className="flex items-center justify-between border-b border-cream-200 pb-3">
                 <div>
-                  <h2 className="font-serif font-bold text-lg text-walnut-900">
+                  <h2 className="font-sans font-bold text-lg text-walnut-900">
                     Step 3: Select Payment Method
                   </h2>
                   <p className="text-xs text-softgray">
@@ -1234,7 +1234,7 @@ export default function BookingScreen() {
               <div className="pt-4 border-t border-cream-200 space-y-3">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-softgray">Total Payable (All Inclusive):</span>
-                  <span className="font-serif font-bold text-xl text-walnut-900">
+                  <span className="font-sans font-bold text-xl text-walnut-900">
                     ₹{totalAmount.toLocaleString('en-IN')}
                   </span>
                 </div>

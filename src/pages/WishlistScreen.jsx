@@ -50,7 +50,7 @@ export default function WishlistScreen() {
                     </span>
                     <h4
                       onClick={() => navigate(`/product/${product.id}`)}
-                      className="font-serif font-bold text-xs text-walnut-800 truncate cursor-pointer hover:text-gold-600"
+                      className="font-sans font-bold text-xs text-walnut-800 truncate cursor-pointer hover:text-gold-600"
                     >
                       {product.name}
                     </h4>
@@ -87,7 +87,7 @@ export default function WishlistScreen() {
             <div className="w-16 h-16 rounded-full bg-cream-200 flex items-center justify-center mx-auto mb-3 text-softgray">
               <Heart className="w-8 h-8" />
             </div>
-            <h3 className="font-serif font-bold text-lg text-walnut-800 mb-1">Your wishlist is empty</h3>
+            <h3 className="font-sans font-bold text-lg text-walnut-800 mb-1">Your wishlist is empty</h3>
             <p className="text-xs text-softgray mb-6">Explore our handcrafted catalog and tap the heart icon to save favorite pieces.</p>
             <Button
               variant="primary"

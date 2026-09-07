@@ -33,7 +33,7 @@ export default function EditProfileScreen() {
       <form onSubmit={handleSave} className="px-5 py-4 space-y-4 max-w-md mx-auto">
         <div className="flex justify-center my-4">
           <div className="relative">
-            <div className="w-24 h-24 rounded-3xl bg-walnut-500 text-gold-400 font-serif font-bold text-3xl flex items-center justify-center shadow-lg ring-4 ring-gold-500/20">
+            <div className="w-24 h-24 rounded-3xl bg-walnut-500 text-gold-400 font-sans font-bold text-3xl flex items-center justify-center shadow-lg ring-4 ring-gold-500/20">
               {name ? name.charAt(0) : 'G'}
             </div>
             <button

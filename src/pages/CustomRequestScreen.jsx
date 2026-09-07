@@ -119,7 +119,7 @@ export default function CustomRequestScreen() {
         {/* Step 1: Furniture & Dimensions */}
         {step === 1 && (
           <div className="bg-white p-4 rounded-2xl border border-walnut-100 shadow-card space-y-3 animate-fade-in">
-            <h3 className="font-serif font-bold text-xs text-walnut-800 uppercase tracking-wider flex items-center gap-1.5">
+            <h3 className="font-sans font-bold text-xs text-walnut-800 uppercase tracking-wider flex items-center gap-1.5">
               <Ruler className="w-3.5 h-3.5 text-gold-600" /> Furniture Type & Room
             </h3>
 
@@ -222,7 +222,7 @@ export default function CustomRequestScreen() {
         {/* Step 2: Wood & Finish */}
         {step === 2 && (
           <div className="bg-white p-4 rounded-2xl border border-walnut-100 shadow-card space-y-3 animate-fade-in">
-            <h3 className="font-serif font-bold text-xs text-walnut-800 uppercase tracking-wider flex items-center gap-1.5">
+            <h3 className="font-sans font-bold text-xs text-walnut-800 uppercase tracking-wider flex items-center gap-1.5">
               <Palette className="w-3.5 h-3.5 text-gold-600" /> Wood Species & Styling
             </h3>
 
@@ -303,7 +303,7 @@ export default function CustomRequestScreen() {
         {/* Step 3: Budget & Contact */}
         {step === 3 && (
           <div className="bg-white p-4 rounded-2xl border border-walnut-100 shadow-card space-y-3 animate-fade-in">
-            <h3 className="font-serif font-bold text-xs text-walnut-800 uppercase tracking-wider flex items-center gap-1.5">
+            <h3 className="font-sans font-bold text-xs text-walnut-800 uppercase tracking-wider flex items-center gap-1.5">
               <DollarSign className="w-3.5 h-3.5 text-gold-600" /> Estimated Budget & Deadline
             </h3>
 

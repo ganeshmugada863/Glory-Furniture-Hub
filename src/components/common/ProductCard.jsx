@@ -44,7 +44,7 @@ export default function ProductCard({ product, layout = 'grid' }) {
             </button>
           </div>
 
-          <h4 className="font-serif font-bold text-sm text-walnut-900 line-clamp-1 group-hover:text-gold-600 transition-colors">
+          <h4 className="font-sans font-bold text-sm text-walnut-900 line-clamp-1 group-hover:text-gold-600 transition-colors">
             {product.name}
           </h4>
           <p className="text-xs text-softgray line-clamp-1 mt-0.5">{product.material}</p>
@@ -92,7 +92,7 @@ export default function ProductCard({ product, layout = 'grid' }) {
           </button>
         </div>
 
-        <h4 className="font-serif font-bold text-xs sm:text-sm text-walnut-900 line-clamp-1 group-hover:text-gold-600 transition-colors">
+        <h4 className="font-sans font-bold text-xs sm:text-sm text-walnut-900 line-clamp-1 group-hover:text-gold-600 transition-colors">
           {product.name}
         </h4>
         <p className="text-[10px] sm:text-xs text-softgray line-clamp-1 mt-0.5">{product.material}</p>

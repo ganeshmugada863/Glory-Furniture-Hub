@@ -67,7 +67,7 @@ export default function AdminBookingsScreen() {
             <div className="flex items-center gap-3">
               <img src={b.image} alt="" className="w-16 h-16 rounded-xl object-cover bg-cream-200 border border-walnut-100" />
               <div className="flex-1 min-w-0">
-                <h5 className="font-serif font-bold text-xs text-walnut-900 truncate">{b.productName}</h5>
+                <h5 className="font-sans font-bold text-xs text-walnut-900 truncate">{b.productName}</h5>
                 {b.bedSize && (
                   <span className="text-[11px] font-semibold text-walnut-800 bg-cream-100 px-2 py-0.5 rounded inline-block mt-0.5">
                     Size: {b.bedSize}

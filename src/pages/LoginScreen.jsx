@@ -88,11 +88,11 @@ export default function LoginScreen() {
         <div className="text-center mb-6">
           <div 
             onClick={() => navigate('/home')}
-            className="w-16 h-16 rounded-2xl bg-walnut-900 text-gold-400 font-serif font-bold text-2xl flex items-center justify-center mx-auto mb-3 shadow-warm ring-4 ring-gold-500/20 cursor-pointer hover:scale-105 transition-transform"
+            className="w-16 h-16 rounded-2xl bg-walnut-900 text-gold-400 font-sans font-bold text-2xl flex items-center justify-center mx-auto mb-3 shadow-warm ring-4 ring-gold-500/20 cursor-pointer hover:scale-105 transition-transform"
           >
             G
           </div>
-          <h1 className="font-serif font-bold text-2xl text-walnut-800 tracking-wide">Glory Furniture Hub</h1>
+          <h1 className="font-sans font-bold text-2xl text-walnut-800 tracking-wide">Glory Furniture Hub</h1>
           <p className="text-xs text-softgray mt-1">Select your login role to continue</p>
         </div>
 
@@ -116,7 +116,7 @@ export default function LoginScreen() {
                 </span>
               </div>
               <div>
-                <h4 className="font-serif font-bold text-xs text-walnut-900 group-hover:text-gold-600 transition-colors">
+                <h4 className="font-sans font-bold text-xs text-walnut-900 group-hover:text-gold-600 transition-colors">
                   Login as User
                 </h4>
                 <p className="text-[10px] text-softgray mt-0.5 leading-tight">
@@ -138,7 +138,7 @@ export default function LoginScreen() {
                 </span>
               </div>
               <div>
-                <h4 className="font-serif font-bold text-xs text-white group-hover:text-gold-400 transition-colors">
+                <h4 className="font-sans font-bold text-xs text-white group-hover:text-gold-400 transition-colors">
                   Login as Admin
                 </h4>
                 <p className="text-[10px] text-cream-200/70 mt-0.5 leading-tight">

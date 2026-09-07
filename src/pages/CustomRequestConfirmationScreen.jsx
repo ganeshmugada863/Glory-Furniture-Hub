@@ -16,7 +16,7 @@ export default function CustomRequestConfirmationScreen() {
         Bespoke Specification Submitted
       </span>
 
-      <h2 className="font-serif font-bold text-2xl text-walnut-800 tracking-wide mb-2">
+      <h2 className="font-sans font-bold text-2xl text-walnut-800 tracking-wide mb-2">
         Custom Request Received!
       </h2>
 

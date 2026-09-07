@@ -139,7 +139,7 @@ export default function GloryAIChatSheet() {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-serif font-bold text-base text-white tracking-wide">GloryAI Assistant</h3>
+              <h3 className="font-sans font-bold text-base text-white tracking-wide">GloryAI Assistant</h3>
               <p className="text-[11px] text-cream-200 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-mutedgreen animate-pulse" /> Personal Furniture Advisor
               </p>
@@ -204,7 +204,7 @@ export default function GloryAIChatSheet() {
                       className="w-12 h-12 rounded-lg object-cover"
                     />
                     <div className="flex-1 min-w-0">
-                      <h5 className="font-serif font-bold text-xs text-walnut-800 truncate">{msg.product.name}</h5>
+                      <h5 className="font-sans font-bold text-xs text-walnut-800 truncate">{msg.product.name}</h5>
                       <p className="text-[11px] font-semibold text-gold-600">${msg.product.price}</p>
                     </div>
                     <button

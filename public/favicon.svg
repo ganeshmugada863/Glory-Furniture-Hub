@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <rect width="512" height="512" rx="128" fill="#5C3D2E"/>
   <path d="M160 140 H352 C370 140 384 154 384 172 V240 H128 V172 C128 154 142 140 160 140 Z" fill="#C9963F"/>
-  <text x="256" y="320" font-family="'Playfair Display', serif" font-weight="bold" font-size="210" fill="#FAF7F4" text-anchor="middle">G</text>
+  <text x="256" y="320" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="210" fill="#FAF7F4" text-anchor="middle">G</text>
   <circle cx="256" cy="410" r="16" fill="#C9963F"/>
 </svg>

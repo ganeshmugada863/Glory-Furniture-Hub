@@ -27,7 +27,7 @@ export default function MyRequestsScreen() {
                   <Badge variant="warning">{req.status}</Badge>
                 </div>
 
-                <h4 className="font-serif font-bold text-sm text-walnut-900 mb-1">{req.furnitureType}</h4>
+                <h4 className="font-sans font-bold text-sm text-walnut-900 mb-1">{req.furnitureType}</h4>
                 <p className="text-xs text-softgray mb-2">{req.description}</p>
 
                 <div className="flex items-center justify-between text-[11px] pt-2 border-t border-cream-200 text-softgray">
@@ -40,7 +40,7 @@ export default function MyRequestsScreen() {
         ) : (
           <div className="py-16 text-center">
             <Hammer className="w-12 h-12 text-softgray mx-auto mb-2" />
-            <h4 className="font-serif font-bold text-sm text-walnut-800">No custom furniture requests yet</h4>
+            <h4 className="font-sans font-bold text-sm text-walnut-800">No custom furniture requests yet</h4>
             <p className="text-xs text-softgray mt-1 mb-4">Request a custom dining table, bed, or wardrobe handcrafted to your dimensions.</p>
             <Button
               variant="primary"

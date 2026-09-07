@@ -475,12 +475,12 @@ export default function AdminDashboardScreen() {
           
           {/* Admin Identity */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gold-500 text-walnut-900 font-serif font-bold text-lg flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-xl bg-gold-500 text-walnut-900 font-sans font-bold text-lg flex items-center justify-center shadow-sm">
               👑
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-serif font-bold text-base sm:text-lg text-cream-100 tracking-wide">
+                <h1 className="font-sans font-bold text-base sm:text-lg text-cream-100 tracking-wide">
                   Glory Furniture Hub
                 </h1>
                 <span className="bg-gold-500/20 text-gold-400 border border-gold-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
@@ -679,7 +679,7 @@ export default function AdminDashboardScreen() {
                       </span>
                     </div>
 
-                    <h3 className="font-serif font-bold text-xs sm:text-sm text-walnut-900 line-clamp-1">
+                    <h3 className="font-sans font-bold text-xs sm:text-sm text-walnut-900 line-clamp-1">
                       {p.name}
                     </h3>
                     <p className="text-[11px] text-softgray line-clamp-1 mt-0.5">{p.material}</p>
@@ -778,7 +778,7 @@ export default function AdminDashboardScreen() {
                     </div>
 
                     <div>
-                      <h4 className="font-serif font-bold text-sm text-walnut-900">{order.productName}</h4>
+                      <h4 className="font-sans font-bold text-sm text-walnut-900">{order.productName}</h4>
                       <div className="flex items-center gap-2 mt-1 text-xs text-softgray">
                         <span>Price: <strong className="text-walnut-900 font-bold">₹{Number(order.price || 0).toLocaleString('en-IN')}</strong></span>
                         {order.bedSize && (
@@ -846,7 +846,7 @@ export default function AdminDashboardScreen() {
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-2xl border border-walnut-200/70 shadow-sm flex items-center justify-between">
               <div>
-                <h3 className="font-serif font-bold text-sm text-walnut-900">Custom Furniture Inquiries</h3>
+                <h3 className="font-sans font-bold text-sm text-walnut-900">Custom Furniture Inquiries</h3>
                 <p className="text-xs text-softgray">Review customer dimensions, wood species, and send quotes</p>
               </div>
               <span className="text-xs font-bold text-walnut-900 bg-cream-100 px-3 py-1 rounded-full border border-walnut-200">
@@ -872,7 +872,7 @@ export default function AdminDashboardScreen() {
                   </div>
 
                   <div>
-                    <h4 className="font-serif font-bold text-sm text-walnut-900">{req.furnitureType} ({req.wood})</h4>
+                    <h4 className="font-sans font-bold text-sm text-walnut-900">{req.furnitureType} ({req.wood})</h4>
                     <p className="text-xs text-softgray mt-1 leading-snug">{req.description}</p>
                     <span className="text-xs font-bold text-gold-700 block mt-1.5">Dimensions: {req.dimensions}</span>
                   </div>
@@ -903,7 +903,7 @@ export default function AdminDashboardScreen() {
             <div className="bg-white p-5 rounded-2xl border border-walnut-200/70 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-serif font-bold text-walnut-900">Studio Billing & Tax Invoices</h2>
+                  <h2 className="text-xl font-sans font-bold text-walnut-900">Studio Billing & Tax Invoices</h2>
                   <span className="bg-gold-100 text-gold-800 text-[11px] font-bold px-2 py-0.5 rounded-full border border-gold-300">
                     GST Compliant
                   </span>
@@ -955,7 +955,7 @@ export default function AdminDashboardScreen() {
                   </div>
                 </div>
                 <div className="mt-3">
-                  <h3 className="text-2xl font-serif font-bold text-walnut-900">
+                  <h3 className="text-2xl font-sans font-bold text-walnut-900">
                     ₹{totalInvoiced.toLocaleString('en-IN')}
                   </h3>
                   <p className="text-[11px] text-softgray mt-1">
@@ -972,7 +972,7 @@ export default function AdminDashboardScreen() {
                   </div>
                 </div>
                 <div className="mt-3">
-                  <h3 className="text-2xl font-serif font-bold text-emerald-700">
+                  <h3 className="text-2xl font-sans font-bold text-emerald-700">
                     ₹{totalCollected.toLocaleString('en-IN')}
                   </h3>
                   <p className="text-[11px] text-softgray mt-1">
@@ -989,7 +989,7 @@ export default function AdminDashboardScreen() {
                   </div>
                 </div>
                 <div className="mt-3">
-                  <h3 className="text-2xl font-serif font-bold text-amber-700">
+                  <h3 className="text-2xl font-sans font-bold text-amber-700">
                     ₹{totalDue.toLocaleString('en-IN')}
                   </h3>
                   <p className="text-[11px] text-softgray mt-1">
@@ -1006,7 +1006,7 @@ export default function AdminDashboardScreen() {
                   </div>
                 </div>
                 <div className="mt-3">
-                  <h3 className="text-2xl font-serif font-bold text-blue-700">
+                  <h3 className="text-2xl font-sans font-bold text-blue-700">
                     ₹{totalGstCollected.toLocaleString('en-IN')}
                   </h3>
                   <p className="text-[11px] text-softgray mt-1">
@@ -1046,7 +1046,7 @@ export default function AdminDashboardScreen() {
                   <div className="w-14 h-14 mx-auto rounded-2xl bg-cream-200 flex items-center justify-center text-softgray mb-3">
                     <Receipt className="w-7 h-7" />
                   </div>
-                  <h4 className="font-serif font-bold text-walnut-900 text-base">No Invoices Found</h4>
+                  <h4 className="font-sans font-bold text-walnut-900 text-base">No Invoices Found</h4>
                   <p className="text-xs text-softgray mt-1 max-w-sm mx-auto">
                     No billing records matched your filter or search query. Click below to generate an invoice.
                   </p>
@@ -1101,7 +1101,7 @@ export default function AdminDashboardScreen() {
                             </span>
                           </td>
 
-                          <td className="py-3.5 px-4 font-serif font-bold text-walnut-900">
+                          <td className="py-3.5 px-4 font-sans font-bold text-walnut-900">
                             <div>₹{inv.totalAmount.toLocaleString('en-IN')}</div>
                             <span className="text-[10px] font-sans font-normal text-softgray block">
                               Base ₹{inv.baseAmount.toLocaleString('en-IN')} + 18% GST
@@ -1221,7 +1221,7 @@ export default function AdminDashboardScreen() {
                 </div>
                 <div>
                   <span className="text-xs text-softgray block">Total Products</span>
-                  <strong className="text-xl font-serif text-walnut-900">{products.length} Items</strong>
+                  <strong className="text-xl font-sans text-walnut-900">{products.length} Items</strong>
                 </div>
               </div>
 
@@ -1231,7 +1231,7 @@ export default function AdminDashboardScreen() {
                 </div>
                 <div>
                   <span className="text-xs text-softgray block">Active Bookings</span>
-                  <strong className="text-xl font-serif text-walnut-900">{orders.length} Orders</strong>
+                  <strong className="text-xl font-sans text-walnut-900">{orders.length} Orders</strong>
                 </div>
               </div>
 
@@ -1241,7 +1241,7 @@ export default function AdminDashboardScreen() {
                 </div>
                 <div>
                   <span className="text-xs text-softgray block">Custom Specs</span>
-                  <strong className="text-xl font-serif text-walnut-900">{requests.length} Inquiries</strong>
+                  <strong className="text-xl font-sans text-walnut-900">{requests.length} Inquiries</strong>
                 </div>
               </div>
 
@@ -1251,21 +1251,21 @@ export default function AdminDashboardScreen() {
                 </div>
                 <div>
                   <span className="text-xs text-softgray block">Estimated Volume</span>
-                  <strong className="text-xl font-serif text-walnut-900">₹{totalEstimatedRevenue.toLocaleString('en-IN')}</strong>
+                  <strong className="text-xl font-sans text-walnut-900">₹{totalEstimatedRevenue.toLocaleString('en-IN')}</strong>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions Panel */}
             <div className="bg-white p-6 rounded-2xl border border-walnut-200/70 shadow-sm space-y-4">
-              <h3 className="font-serif font-bold text-base text-walnut-900">Studio Management Shortcuts</h3>
+              <h3 className="font-sans font-bold text-base text-walnut-900">Studio Management Shortcuts</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   onClick={() => { setActiveTab('products'); setIsAddModalOpen(true); }}
                   className="p-4 rounded-xl bg-cream-50 hover:bg-cream-100 border border-walnut-200 text-left transition-all active-tap"
                 >
                   <Plus className="w-5 h-5 text-gold-600 mb-1" />
-                  <h4 className="font-serif font-bold text-xs text-walnut-900">Add New Furniture</h4>
+                  <h4 className="font-sans font-bold text-xs text-walnut-900">Add New Furniture</h4>
                   <p className="text-[11px] text-softgray mt-0.5">Upload photos & set bed sizes/prices</p>
                 </button>
 
@@ -1274,7 +1274,7 @@ export default function AdminDashboardScreen() {
                   className="p-4 rounded-xl bg-cream-50 hover:bg-cream-100 border border-walnut-200 text-left transition-all active-tap"
                 >
                   <Package className="w-5 h-5 text-blue-600 mb-1" />
-                  <h4 className="font-serif font-bold text-xs text-walnut-900">Manage Customer Orders</h4>
+                  <h4 className="font-sans font-bold text-xs text-walnut-900">Manage Customer Orders</h4>
                   <p className="text-[11px] text-softgray mt-0.5">Update fulfillment and delivery status</p>
                 </button>
 
@@ -1283,7 +1283,7 @@ export default function AdminDashboardScreen() {
                   className="p-4 rounded-xl bg-cream-50 hover:bg-cream-100 border border-walnut-200 text-left transition-all active-tap"
                 >
                   <Hammer className="w-5 h-5 text-amber-600 mb-1" />
-                  <h4 className="font-serif font-bold text-xs text-walnut-900">Review Custom Specs</h4>
+                  <h4 className="font-sans font-bold text-xs text-walnut-900">Review Custom Specs</h4>
                   <p className="text-[11px] text-softgray mt-0.5">Send custom WhatsApp quotes</p>
                 </button>
               </div>
@@ -1312,7 +1312,7 @@ export default function AdminDashboardScreen() {
                 {/* Avatar & Title */}
                 <div className="flex items-center gap-4 sm:gap-6">
                   <div className="relative">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#FFE494] via-[#D4AF37] to-[#8C5E1E] text-walnut-950 flex items-center justify-center font-serif font-black text-3xl sm:text-4xl shadow-xl border-2 border-[#FFF0B3] shrink-0 transform hover:scale-105 transition-transform">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#FFE494] via-[#D4AF37] to-[#8C5E1E] text-walnut-950 flex items-center justify-center font-sans font-black text-3xl sm:text-4xl shadow-xl border-2 border-[#FFF0B3] shrink-0 transform hover:scale-105 transition-transform">
                       👑
                     </div>
                     <span className="absolute -bottom-1 -right-1 bg-emerald-500 text-white p-1 rounded-full border-2 border-[#180F0A] shadow-md" title="Active Master Session">
@@ -1322,7 +1322,7 @@ export default function AdminDashboardScreen() {
 
                   <div>
                     <div className="flex items-center gap-3 flex-wrap">
-                      <h2 className="font-serif font-bold text-2xl sm:text-3xl text-white tracking-wide drop-shadow-sm">
+                      <h2 className="font-sans font-bold text-2xl sm:text-3xl text-white tracking-wide drop-shadow-sm">
                         {adminName}
                       </h2>
                       <span className="bg-gradient-to-r from-gold-400 via-gold-500 to-amber-600 text-walnut-950 text-[11px] sm:text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-md border border-gold-300/80">
@@ -1435,7 +1435,7 @@ export default function AdminDashboardScreen() {
                         <User className="w-4 h-4" />
                       </div>
                       <div>
-                        <h3 className="font-serif font-bold text-base text-walnut-900">
+                        <h3 className="font-sans font-bold text-base text-walnut-900">
                           Admin Credentials & Studio Identity
                         </h3>
                         <p className="text-xs text-softgray">
@@ -1668,7 +1668,7 @@ export default function AdminDashboardScreen() {
                 <div className="bg-white rounded-3xl p-6 border border-walnut-200/80 shadow-sm space-y-4">
                   <div className="flex items-center gap-2 text-walnut-900">
                     <Award className="w-5 h-5 text-gold-600" />
-                    <h3 className="font-serif font-bold text-sm">Studio Quality & Sourcing Standards</h3>
+                    <h3 className="font-sans font-bold text-sm">Studio Quality & Sourcing Standards</h3>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -1713,7 +1713,7 @@ export default function AdminDashboardScreen() {
                 <div className="bg-white rounded-3xl p-6 border border-walnut-200/80 shadow-sm space-y-4">
                   <div className="flex items-center gap-2 text-walnut-900">
                     <ShieldCheck className="w-5 h-5 text-gold-600" />
-                    <h3 className="font-serif font-bold text-sm">System Authority & Privileges</h3>
+                    <h3 className="font-sans font-bold text-sm">System Authority & Privileges</h3>
                   </div>
 
                   <div className="space-y-2.5 text-xs text-walnut-800">
@@ -1755,7 +1755,7 @@ export default function AdminDashboardScreen() {
                 <div className="bg-white rounded-3xl p-6 border border-walnut-200/80 shadow-sm space-y-3">
                   <div className="flex items-center gap-2 text-walnut-900">
                     <Lock className="w-4 h-4 text-gold-600" />
-                    <h3 className="font-serif font-bold text-xs uppercase tracking-wider text-walnut-800">Security Clearance</h3>
+                    <h3 className="font-sans font-bold text-xs uppercase tracking-wider text-walnut-800">Security Clearance</h3>
                   </div>
 
                   <div className="space-y-2 text-[11px] text-walnut-700 bg-cream-50/70 p-3 rounded-xl border border-walnut-100">
@@ -1776,7 +1776,7 @@ export default function AdminDashboardScreen() {
 
                 {/* Quick Navigation Panel */}
                 <div className="bg-walnut-900 text-cream-100 rounded-3xl p-6 border border-walnut-800 shadow-sm space-y-3">
-                  <h4 className="font-serif font-bold text-xs text-gold-400 uppercase tracking-wider">
+                  <h4 className="font-sans font-bold text-xs text-gold-400 uppercase tracking-wider">
                     Quick Studio Navigation
                   </h4>
                   <div className="grid grid-cols-2 gap-2 text-xs">
@@ -2325,11 +2325,11 @@ export default function AdminDashboardScreen() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">👑</span>
-                    <h2 className="font-serif font-bold text-2xl tracking-wider text-walnut-900 uppercase">
+                    <h2 className="font-sans font-bold text-2xl tracking-wider text-walnut-900 uppercase">
                       Glory Furniture Hub
                     </h2>
                   </div>
-                  <p className="text-xs font-serif text-gold-700 tracking-wider mt-0.5">
+                  <p className="text-xs font-sans text-gold-700 tracking-wider mt-0.5">
                     Master Craftsmen • Handcrafted Pure Burma Teak Wood Furniture
                   </p>
                   <p className="text-[11px] text-softgray mt-1 leading-snug">
@@ -2449,7 +2449,7 @@ export default function AdminDashboardScreen() {
                   </div>
                   <div className="flex justify-between font-bold text-walnut-900 pt-2 border-t border-walnut-200 text-sm">
                     <span>Gross Invoice Total:</span>
-                    <span className="font-serif text-walnut-900">₹{selectedInvoiceForView.totalAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-sans text-walnut-900">₹{selectedInvoiceForView.totalAmount.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-emerald-700 font-semibold">
                     <span>Advance Received ({selectedInvoiceForView.paymentMethod}):</span>
@@ -2457,7 +2457,7 @@ export default function AdminDashboardScreen() {
                   </div>
                   <div className="flex justify-between font-bold text-rose-600 pt-1 border-t border-dashed border-walnut-200 text-sm">
                     <span>Net Balance Payable:</span>
-                    <span className="font-serif">₹{selectedInvoiceForView.balanceDue.toLocaleString('en-IN')}</span>
+                    <span className="font-sans">₹{selectedInvoiceForView.balanceDue.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>

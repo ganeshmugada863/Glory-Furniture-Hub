@@ -214,7 +214,7 @@ export default function AdminProductsScreen() {
                 className="w-14 h-14 object-cover rounded-xl bg-cream-200" 
               />
               <div className="flex-1 min-w-0">
-                <h4 className="font-serif font-bold text-xs text-walnut-900 truncate">{p.name}</h4>
+                <h4 className="font-sans font-bold text-xs text-walnut-900 truncate">{p.name}</h4>
                 <span className="text-[10px] text-softgray block truncate">
                   {p.category} • {p.material}
                   {hasVariants ? ` • ${p.sizeVariants.length} Sizes` : ''}

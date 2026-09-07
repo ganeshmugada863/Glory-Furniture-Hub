@@ -83,7 +83,7 @@ export default function ProfileScreen() {
             <div className="flex items-center gap-4 sm:gap-6">
               {/* Grand Monogram Avatar */}
               <div className="relative">
-                <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl bg-[#17120E] text-gold-400 font-serif font-bold text-2xl sm:text-3xl flex items-center justify-center shadow-lg border-2 border-gold-500/50">
+                <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl bg-[#17120E] text-gold-400 font-sans font-bold text-2xl sm:text-3xl flex items-center justify-center shadow-lg border-2 border-gold-500/50">
                   {user?.name ? user.name.charAt(0).toUpperCase() : 'G'}
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gold-500 text-walnut-900 rounded-full flex items-center justify-center shadow-md">
@@ -93,7 +93,7 @@ export default function ProfileScreen() {
 
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="font-serif font-bold text-xl sm:text-2xl lg:text-3xl text-cream-100 leading-tight">
+                  <h1 className="font-sans font-bold text-xl sm:text-2xl lg:text-3xl text-cream-100 leading-tight">
                     {user?.name || 'Valued Patron'}
                   </h1>
                   <span className="bg-gold-500/20 text-gold-400 border border-gold-500/40 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
@@ -206,7 +206,7 @@ export default function ProfileScreen() {
                 <div className="w-8 h-8 rounded-xl bg-cream-100 text-walnut-900 flex items-center justify-center mx-auto mb-1.5 group-hover:bg-walnut-900 group-hover:text-gold-400 transition-colors">
                   <Package className="w-4 h-4" />
                 </div>
-                <span className="font-serif font-bold text-lg text-walnut-900 block leading-none">
+                <span className="font-sans font-bold text-lg text-walnut-900 block leading-none">
                   {userBookings.length}
                 </span>
                 <span className="text-[10px] text-softgray font-medium mt-1 block">My Orders</span>
@@ -219,7 +219,7 @@ export default function ProfileScreen() {
                 <div className="w-8 h-8 rounded-xl bg-cream-100 text-walnut-900 flex items-center justify-center mx-auto mb-1.5 group-hover:bg-walnut-900 group-hover:text-gold-400 transition-colors">
                   <Heart className="w-4 h-4" />
                 </div>
-                <span className="font-serif font-bold text-lg text-walnut-900 block leading-none">
+                <span className="font-sans font-bold text-lg text-walnut-900 block leading-none">
                   {wishlist.length}
                 </span>
                 <span className="text-[10px] text-softgray font-medium mt-1 block">Saved Pieces</span>
@@ -232,7 +232,7 @@ export default function ProfileScreen() {
                 <div className="w-8 h-8 rounded-xl bg-cream-100 text-walnut-900 flex items-center justify-center mx-auto mb-1.5 group-hover:bg-walnut-900 group-hover:text-gold-400 transition-colors">
                   <Hammer className="w-4 h-4" />
                 </div>
-                <span className="font-serif font-bold text-lg text-walnut-900 block leading-none">
+                <span className="font-sans font-bold text-lg text-walnut-900 block leading-none">
                   {customRequests.length}
                 </span>
                 <span className="text-[10px] text-softgray font-medium mt-1 block">Custom Specs</span>
@@ -244,7 +244,7 @@ export default function ProfileScreen() {
               <div className="flex items-center justify-between border-b border-cream-200 pb-2.5">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-gold-600" />
-                  <h3 className="font-serif font-bold text-xs sm:text-sm text-walnut-900">Delivery Residence</h3>
+                  <h3 className="font-sans font-bold text-xs sm:text-sm text-walnut-900">Delivery Residence</h3>
                 </div>
                 <button
                   onClick={() => setIsAddressModalOpen(true)}
@@ -274,7 +274,7 @@ export default function ProfileScreen() {
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-serif font-bold text-xs sm:text-sm text-walnut-900">Solid Teak Care Guide</h3>
+                  <h3 className="font-sans font-bold text-xs sm:text-sm text-walnut-900">Solid Teak Care Guide</h3>
                   <span className="text-[10px] text-softgray block">Lifetime heirloom preservation</span>
                 </div>
               </div>
@@ -299,7 +299,7 @@ export default function ProfileScreen() {
                   <MessageSquare className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-serif font-bold text-xs sm:text-sm text-walnut-900">Artisan Concierge</h3>
+                  <h3 className="font-sans font-bold text-xs sm:text-sm text-walnut-900">Artisan Concierge</h3>
                   <span className="text-[10px] text-softgray block">Direct phone & WhatsApp assistance</span>
                 </div>
               </div>
@@ -387,7 +387,7 @@ export default function ProfileScreen() {
                         {latestBooking.status || 'In Production'}
                       </span>
                     </div>
-                    <h3 className="font-serif font-bold text-base sm:text-lg text-walnut-900 mt-0.5">
+                    <h3 className="font-sans font-bold text-base sm:text-lg text-walnut-900 mt-0.5">
                       {latestBooking.productName}
                     </h3>
                   </div>
@@ -474,7 +474,7 @@ export default function ProfileScreen() {
                     <ShoppingBag className="w-6 h-6 text-gold-600" />
                   </div>
                   <div>
-                    <h3 className="font-serif font-bold text-sm sm:text-base text-walnut-900">Explore Handcrafted Pieces</h3>
+                    <h3 className="font-sans font-bold text-sm sm:text-base text-walnut-900">Explore Handcrafted Pieces</h3>
                     <p className="text-xs text-softgray">Solid teak wooden beds, dining tables, sofa sets crafted for lifetime beauty.</p>
                   </div>
                 </div>
@@ -495,7 +495,7 @@ export default function ProfileScreen() {
               <div className="flex items-center justify-between border-b border-cream-200 pb-3">
                 <div className="flex items-center gap-2">
                   <Hammer className="w-4 h-4 text-gold-600" />
-                  <h3 className="font-serif font-bold text-sm sm:text-base text-walnut-900">
+                  <h3 className="font-sans font-bold text-sm sm:text-base text-walnut-900">
                     Bespoke Custom Furniture Requests
                   </h3>
                 </div>
@@ -520,7 +520,7 @@ export default function ProfileScreen() {
                       </div>
 
                       <div>
-                        <h4 className="font-serif font-bold text-xs sm:text-sm text-walnut-900">
+                        <h4 className="font-sans font-bold text-xs sm:text-sm text-walnut-900">
                           {req.furnitureType} ({req.wood})
                         </h4>
                         <p className="text-[11px] text-softgray line-clamp-2 mt-0.5">{req.description}</p>
@@ -558,7 +558,7 @@ export default function ProfileScreen() {
               <div className="flex items-center justify-between border-b border-cream-200 pb-3">
                 <div className="flex items-center gap-2">
                   <Heart className="w-4 h-4 text-dustyrose" />
-                  <h3 className="font-serif font-bold text-sm sm:text-base text-walnut-900">
+                  <h3 className="font-sans font-bold text-sm sm:text-base text-walnut-900">
                     {wishlist.length > 0 ? 'My Saved Wishlist Pieces' : 'Curated Studio Masterpieces'}
                   </h3>
                 </div>
@@ -592,7 +592,7 @@ export default function ProfileScreen() {
                         </span>
                       </div>
 
-                      <h4 className="font-serif font-bold text-xs text-walnut-900 line-clamp-1 group-hover:text-gold-700 transition-colors">
+                      <h4 className="font-sans font-bold text-xs text-walnut-900 line-clamp-1 group-hover:text-gold-700 transition-colors">
                         {p.name}
                       </h4>
                       <p className="text-[10px] text-softgray line-clamp-1 mt-0.5">{p.material}</p>
