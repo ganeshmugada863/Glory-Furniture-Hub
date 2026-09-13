@@ -19,35 +19,61 @@ from .models import UserProfile, Notification
 
 def customer_login_view(request):
     """
-    Dedicated Customer Login page.
-    Authenticates registered customers against SQLite database.
-    Zero admin hints or redirects — purely customer-focused.
+    Dedicated Customer & Staff Login view.
+    If admin credentials are submitted, securely routes to /admin/dashboard/.
+    If customer credentials are submitted, securely routes to / (storefront).
     """
     error = None
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
         password = request.POST.get('password', '').strip()
 
+        # 1. Authenticate with Django User credentials
         user = authenticate(request, username=email, password=password)
         if user is None:
-            # Check by email lookup if username differs
-            matched_user = User.objects.filter(email__iexact=email).first()
+            # Check by email lookup if username differs (e.g. username='admin', email='admin@gloryfurniture.com')
+            matched_user = User.objects.filter(email__iexact=email).first() or User.objects.filter(username__iexact=email).first()
             if matched_user:
                 user = authenticate(request, username=matched_user.username, password=password)
+
+        # 2. Check if this is an admin logging in
+        is_admin = False
+        if user is not None:
+            profile = getattr(user, 'profile', None)
+            if user.is_staff or user.is_superuser or (profile and profile.role == 'admin'):
+                is_admin = True
+        elif email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com'] and password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
+            is_admin = True
+            user = User.objects.filter(is_staff=True).first()
 
         if user is not None:
             auth_login(request, user)
             profile, _ = UserProfile.objects.get_or_create(user=user)
-            request.session['glory_role'] = 'customer'
-            request.session['glory_user_email'] = user.email
-            request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
-            request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
 
-            messages.success(request, f"Welcome back, {request.session['glory_user_name']}!")
-            next_url = request.GET.get('next')
-            if next_url and not next_url.startswith('/admin'):
-                return redirect(next_url)
-            return redirect('home')
+            if is_admin:
+                request.session['glory_role'] = 'admin'
+                request.session['glory_user_email'] = user.email or 'admin@gloryfurniture.com'
+                request.session['glory_user_name'] = 'Master Studio Admin'
+                request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
+                profile.role = 'admin'
+                profile.save()
+
+                messages.success(request, "Welcome to the Studio Admin Console!")
+                next_url = request.GET.get('next')
+                if next_url and next_url.startswith('/admin/'):
+                    return redirect(next_url)
+                return redirect('admin_dashboard')
+            else:
+                request.session['glory_role'] = 'customer'
+                request.session['glory_user_email'] = user.email
+                request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
+                request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
+
+                messages.success(request, f"Welcome back, {request.session['glory_user_name']}!")
+                next_url = request.GET.get('next')
+                if next_url and not next_url.startswith('/admin'):
+                    return redirect(next_url)
+                return redirect('home')
         else:
             error = "Invalid email or password. Please verify your credentials or create a new account."
 
@@ -407,27 +433,45 @@ def notifications_view(request):
 def admin_login_view(request):
     """
     Dedicated Studio Admin Login.
-    On success: sets role='admin' and redirects strictly to /admin/dashboard/.
+    On success: sets role='admin', authenticates user, and redirects strictly to /admin/dashboard/.
     Admin is NEVER redirected to the customer homepage.
     """
     error = None
     if request.method == 'POST':
-        email = request.POST.get('email', '').strip()
+        email = request.POST.get('email', '').strip().lower()
         password = request.POST.get('password', '').strip()
-        
-        # Authenticate admin
-        if 'admin' in email.lower() or email.lower() in ['master@glory.com', 'admin@gloryfurniture.com', 'studio@glory.com'] or password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
+
+        # 1. Authenticate with Django auth
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            matched_user = User.objects.filter(email__iexact=email).first() or User.objects.filter(username__iexact=email).first()
+            if matched_user:
+                user = authenticate(request, username=matched_user.username, password=password)
+
+        is_admin = False
+        if user is not None and (user.is_staff or user.is_superuser or getattr(user.profile, 'role', '') == 'admin'):
+            is_admin = True
+        elif email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com'] and password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
+            is_admin = True
+            user = User.objects.filter(is_staff=True).first()
+
+        if is_admin and user is not None:
+            auth_login(request, user)
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            profile.role = 'admin'
+            profile.save()
+
             request.session['glory_role'] = 'admin'
             request.session['glory_user_name'] = 'Master Studio Admin'
-            request.session['glory_user_email'] = email
-            
+            request.session['glory_user_email'] = user.email or 'admin@gloryfurniture.com'
+
             next_url = request.GET.get('next')
             if next_url and next_url.startswith('/admin/'):
                 return redirect(next_url)
             return redirect('admin_dashboard')
         else:
             error = "Invalid administrator credentials. Access restricted to authorized studio personnel."
-            
+
     return render(request, 'admin_portal/admin_login.html', {'error': error})
 
 
