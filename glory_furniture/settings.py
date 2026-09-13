@@ -20,6 +20,12 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.huggingface.co',
 ]
 
+# Allow iframe sessions & CSRF across Hugging Face Space embeds on mobile & desktop
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
