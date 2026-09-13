@@ -542,7 +542,7 @@
             <li><a href="{% url 'catalog' %}" class="hover:text-gray-950 transition-colors">Full Catalog</a></li>
             <li><a href="{% url 'custom_request' %}" class="hover:text-gray-950 transition-colors">Bespoke Carpentry</a></li>
             <li><a href="{% url 'contact' %}" class="hover:text-gray-950 transition-colors">Contact Workshop</a></li>
-            <li><a href="{% url 'switch_role_api' %}" class="text-[#5C3D2E] font-bold hover:underline">Switch Role</a></li>
+            <li><a href="{% url 'about' %}" class="hover:text-gray-950 transition-colors">About Glory</a></li>
           </ul>
         </div>
 
@@ -718,7 +718,7 @@
         </a>
       </div>
 
-      <!-- TAB 3: PROFILE & ROLE SWITCHER -->
+      <!-- TAB 3: CUSTOMER PROFILE & ACCOUNT -->
       <div id="drawer-tab-content-profile" class="hidden space-y-5">
         <div class="flex items-center gap-3 p-3 bg-amber-50/60 rounded-xl border border-amber-200/60">
           <div class="w-11 h-11 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center font-bold text-base flex-shrink-0">
@@ -727,23 +727,10 @@
           <div class="flex-1 min-w-0">
             <h4 class="font-bold text-sm text-gray-950 truncate">{{ USER_NAME }}</h4>
             <p class="text-xs text-gray-500 truncate">{{ USER_EMAIL }}</p>
-            <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {% if CURRENT_ROLE == 'admin' %}bg-purple-100 text-purple-800{% else %}bg-green-100 text-green-800{% endif %}">
-              {{ CURRENT_ROLE }}
+            <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900">
+              Verified Patron
             </span>
           </div>
-        </div>
-
-        <!-- Role Switcher -->
-        <div class="p-3.5 bg-gray-100 rounded-xl space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-gray-800">Switch Application Role</span>
-            <a href="{% url 'switch_role_api' %}" class="px-2.5 py-1 rounded bg-gray-900 hover:bg-black text-white text-[11px] font-semibold transition-colors">
-              Toggle to {% if CURRENT_ROLE == 'admin' %}Customer{% else %}Admin{% endif %}
-            </a>
-          </div>
-          <p class="text-[11px] text-gray-500 leading-tight">
-            Switch between the storefront customer view and the Master Studio Admin portal.
-          </p>
         </div>
 
         <!-- Navigation items -->

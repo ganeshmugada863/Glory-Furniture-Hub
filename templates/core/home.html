@@ -216,6 +216,26 @@
           <span>Book Now</span>
         </button>
       </div>
+      {% empty %}
+      <div class="col-span-full py-16 px-4 text-center space-y-4 bg-[#FAF6F0] rounded-[32px] border border-[#E2D2C0]">
+        <div class="w-16 h-16 rounded-full bg-amber-100/80 text-[#5C3D2E] flex items-center justify-center mx-auto text-3xl shadow-2xs">
+          🪵
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-sans font-black text-base sm:text-lg text-[#1E140F]">New Artisanal Collections Coming Soon</h3>
+          <p class="text-xs text-gray-500 max-w-md mx-auto">
+            Our master craftsmen in Hyderabad are handcrafting new solid Burma teak collections. Check back shortly or request a custom bespoke piece.
+          </p>
+        </div>
+        <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+          <a href="{% url 'custom_request' %}" class="px-6 py-2.5 rounded-full bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold transition-all shadow-xs" style="background-color: #5C3D2E !important;">
+            Request Custom Furniture Quote →
+          </a>
+          <a href="{% url 'contact' %}" class="px-5 py-2.5 rounded-full bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 transition-all">
+            Contact Workshop
+          </a>
+        </div>
+      </div>
       {% endfor %}
     </div>
 

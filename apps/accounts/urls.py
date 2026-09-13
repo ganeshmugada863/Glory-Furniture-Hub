@@ -5,6 +5,7 @@ urlpatterns = [
     # Customer Authentication
     path('login/', views.customer_login_view, name='login'),
     path('register/', views.customer_register_view, name='register'),
+    path('accounts/google-auth/', views.google_auth_view, name='google_auth'),
     path('logout/', views.customer_logout_view, name='logout'),
     path('forgot-password/', views.forgot_password_view, name='forgot_password'),
     

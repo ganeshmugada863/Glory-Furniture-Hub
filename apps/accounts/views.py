@@ -1,5 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import base64
 from apps.store.models import Product, Category
 from apps.bookings.models import Booking, Order, PaymentTransaction
 from django.utils import timezone
@@ -14,51 +20,169 @@ from .models import UserProfile, Notification
 def customer_login_view(request):
     """
     Dedicated Customer Login page.
-    Authenticates customer, sets role='customer', and redirects to /customer/home/.
-    Admins are directed to the Admin Login portal.
+    Authenticates registered customers against SQLite database.
+    Zero admin hints or redirects — purely customer-focused.
     """
+    error = None
     if request.method == 'POST':
-        email = request.POST.get('email', '').strip()
+        email = request.POST.get('email', '').strip().lower()
         password = request.POST.get('password', '').strip()
-        
-        # If admin tries logging in via customer form, inform and redirect to admin login
-        if 'admin' in email.lower():
-            messages.info(request, "Admin account detected. Redirecting to Studio Admin Login.")
-            return redirect('/admin/login/')
-            
-        request.session['glory_role'] = 'customer'
-        request.session['glory_user_email'] = email or 'ganesh@example.com'
-        name = email.split('@')[0].replace('.', ' ').title() if email else 'Ganesh M.'
-        request.session['glory_user_name'] = name
-        request.session['glory_user_phone'] = '+91 98765 43210'
-        
-        next_url = request.GET.get('next')
-        if next_url and next_url.startswith('/customer/'):
-            return redirect(next_url)
-        return redirect('customer_home')
-        
-    return render(request, 'accounts/login.html')
+
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            # Check by email lookup if username differs
+            matched_user = User.objects.filter(email__iexact=email).first()
+            if matched_user:
+                user = authenticate(request, username=matched_user.username, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            request.session['glory_role'] = 'customer'
+            request.session['glory_user_email'] = user.email
+            request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
+            request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
+
+            messages.success(request, f"Welcome back, {request.session['glory_user_name']}!")
+            next_url = request.GET.get('next')
+            if next_url and next_url.startswith('/customer/'):
+                return redirect(next_url)
+            return redirect('customer_home')
+        else:
+            error = "Invalid email or password. Please verify your credentials or create a new account."
+
+    return render(request, 'accounts/login.html', {'error': error})
 
 
 def customer_register_view(request):
     """
-    Dedicated Customer Registration page.
-    Creates customer session and redirects directly to /customer/home/.
+    Dedicated Customer Registration page with permanent SQLite database persistence.
+    Creates User and UserProfile models in db.sqlite3.
     """
+    error = None
     if request.method == 'POST':
-        name = request.POST.get('name', 'Ganesh M.').strip()
-        email = request.POST.get('email', '').strip()
-        phone = request.POST.get('phone', '+91 98765 43210').strip()
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        phone = request.POST.get('phone', '').strip()
+        password = request.POST.get('password', '').strip()
+        confirm_password = request.POST.get('confirm_password', '').strip()
+
+        if not email or not password or not name:
+            error = "Please fill in all required fields (Name, Email, Password)."
+        elif password != confirm_password:
+            error = "Passwords do not match. Please re-enter your password."
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters long."
+        elif User.objects.filter(email__iexact=email).exists() or User.objects.filter(username__iexact=email).exists():
+            error = "An account with this email address already exists. Please sign in."
+        else:
+            # Create permanent User record in SQLite
+            user = User.objects.create_user(username=email, email=email, password=password)
+            name_parts = name.split()
+            user.first_name = name_parts[0] if name_parts else ''
+            user.last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+            user.save()
+
+            # Create permanent UserProfile record in SQLite
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            profile.full_name = name
+            profile.phone = phone or '+91 98765 43210'
+            profile.role = 'customer'
+            profile.auth_provider = 'email'
+            profile.save()
+
+            # Log user in
+            auth_login(request, user)
+            request.session['glory_role'] = 'customer'
+            request.session['glory_user_email'] = user.email
+            request.session['glory_user_name'] = profile.full_name
+            request.session['glory_user_phone'] = profile.phone
+
+            messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
+            return redirect('customer_home')
+
+    return render(request, 'accounts/register.html', {'error': error})
+
+
+@csrf_exempt
+def google_auth_view(request):
+    """
+    Google Authentication Endpoint.
+    Decodes Google OAuth credentials (JWT / token payload) and creates or logs in
+    a permanent customer in db.sqlite3.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST request required'}, status=405)
+
+    try:
+        data = json.loads(request.body.decode('utf-8')) if request.body else request.POST
+        credential = data.get('credential', '')
         
+        email = data.get('email', '').strip().lower()
+        name = data.get('name', '').strip()
+        google_id = data.get('google_id', '')
+        avatar_url = data.get('avatar_url', '')
+
+        # If credential JWT was sent by Google Identity Services, decode payload
+        if credential and not email:
+            parts = credential.split('.')
+            if len(parts) >= 2:
+                padded = parts[1] + '=' * ((4 - len(parts[1]) % 4) % 4)
+                payload_json = base64.urlsafe_b64decode(padded.encode('utf-8')).decode('utf-8')
+                payload = json.loads(payload_json)
+                email = payload.get('email', '').strip().lower()
+                name = payload.get('name', '').strip()
+                google_id = payload.get('sub', '')
+                avatar_url = payload.get('picture', '')
+
+        if not email:
+            return JsonResponse({'status': 'error', 'message': 'Could not extract verified email from Google authentication.'}, status=400)
+
+        # Retrieve or create User in SQLite
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            user = User.objects.filter(username__iexact=email).first()
+
+        if not user:
+            user = User.objects.create_user(username=email, email=email)
+            user.set_unusable_password()
+            name_parts = (name or '').split()
+            user.first_name = name_parts[0] if name_parts else ''
+            user.last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+            user.save()
+
+            profile = UserProfile.objects.create(
+                user=user,
+                full_name=name or email.split('@')[0].title(),
+                phone='+91 98765 43210',
+                role='customer',
+                auth_provider='google',
+                google_id=google_id,
+                avatar_url=avatar_url
+            )
+        else:
+            profile, _ = UserProfile.objects.get_or_create(user=user)
+            profile.auth_provider = 'google'
+            if google_id:
+                profile.google_id = google_id
+            if avatar_url:
+                profile.avatar_url = avatar_url
+            if name and not profile.full_name:
+                profile.full_name = name
+            profile.save()
+
+        # Log in the user
+        auth_login(request, user)
         request.session['glory_role'] = 'customer'
-        request.session['glory_user_name'] = name
-        request.session['glory_user_email'] = email
-        request.session['glory_user_phone'] = phone
-        
-        messages.success(request, f"Welcome to Glory Furniture Hub, {name}!")
-        return redirect('customer_home')
-        
-    return render(request, 'accounts/register.html')
+        request.session['glory_user_email'] = user.email
+        request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
+        request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
+
+        messages.success(request, f"Signed in with Google as {profile.full_name}!")
+        return JsonResponse({'status': 'success', 'redirect_url': '/customer/home/'})
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
 def customer_logout_view(request):

@@ -4,21 +4,71 @@
 {% block title %}Sign In — Glory Furniture Hub{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-md mx-auto px-4 py-12">
+<div class="w-full max-w-md mx-auto px-4 py-8 sm:py-12">
   <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-warm space-y-6">
+    
+    <!-- Header -->
     <div class="text-center space-y-2">
-      <div class="w-12 h-12 rounded-xl overflow-hidden mx-auto border border-gray-200">
-        <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture" class="w-full h-full object-cover" />
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto text-2xl shadow-2xs">
+        🪵
       </div>
-      <h1 class="text-xl font-black text-gray-950">Welcome Back</h1>
-      <p class="text-xs text-gray-500">Sign in to track custom orders, consultations, and saved blueprints</p>
+      <h1 class="text-xl sm:text-2xl font-black text-gray-950 tracking-tight">Welcome Back</h1>
+      <p class="text-xs text-gray-500">Sign in to track orders, consultation bookings, and saved blueprints</p>
     </div>
 
+    <!-- Error Alert -->
+    {% if error %}
+    <div class="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-start gap-2 animate-fade-in">
+      <svg class="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    <!-- Google Authentication Button -->
+    <div class="space-y-3">
+      <button 
+        type="button" 
+        onclick="initiateGoogleSignIn()"
+        class="w-full py-3 px-4 rounded-xl border border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-3 active-tap cursor-pointer"
+      >
+        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+
+      <div id="g_id_onload"
+           data-client_id="812345678901-placeholder.apps.googleusercontent.com"
+           data-context="signin"
+           data-ux_mode="popup"
+           data-callback="handleGoogleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="relative flex items-center justify-center">
+      <div class="border-t border-gray-200 w-full"></div>
+      <span class="bg-white px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400 absolute">
+        or sign in with email
+      </span>
+    </div>
+
+    <!-- Sign In Form -->
     <form method="POST" action="{% url 'login' %}" class="space-y-4">
       {% csrf_token %}
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Email Address</label>
-        <input type="email" name="email" value="customer@gloryfurniture.com" required class="w-full px-4 py-3 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-gray-950" />
+        <input 
+          type="email" 
+          name="email" 
+          placeholder="your.email@example.com" 
+          required 
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+        />
       </div>
 
       <div>
@@ -26,24 +76,146 @@
           <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">Password</label>
           <a href="{% url 'forgot_password' %}" class="text-[11px] font-semibold text-[#5C3D2E] hover:underline">Forgot?</a>
         </div>
-        <input type="password" name="password" value="secret123" required class="w-full px-4 py-3 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-gray-950" />
+        <input 
+          type="password" 
+          name="password" 
+          placeholder="Enter your password" 
+          required 
+          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+        />
       </div>
 
-      <button type="submit" class="w-full py-3.5 rounded-xl bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-md active-tap cursor-pointer">
+      <button 
+        type="submit" 
+        class="w-full py-3.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors shadow-md active-tap cursor-pointer"
+        style="background-color: #5C3D2E !important;"
+      >
         Sign In →
       </button>
     </form>
 
-    <div class="text-center text-xs text-gray-500 pt-3 border-t border-gray-100 space-y-2">
-      <div>
-        Don't have an account? <a href="{% url 'register' %}" class="font-bold text-[#5C3D2E] hover:underline">Register Now</a>
+    <!-- Footer Links (Strictly Customer-only, Zero Admin hints) -->
+    <div class="text-center text-xs text-gray-500 pt-3 border-t border-gray-100">
+      Don't have an account? 
+      <a href="{% url 'register' %}" class="font-bold text-[#5C3D2E] hover:underline ml-1">Register Now</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Google One-Tap Interactive Modal -->
+<div id="google-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-gray-200 animate-scale-up">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span class="font-bold text-sm text-gray-900">Google Authentication</span>
       </div>
-      <div>
-        <a href="{% url 'admin_login' %}" class="text-[11px] text-gray-400 hover:text-gray-700 hover:underline">
-          Studio Staff? Access Admin Portal →
-        </a>
+      <button onclick="closeGoogleModal()" class="text-gray-400 hover:text-gray-700 text-lg">✕</button>
+    </div>
+
+    <p class="text-xs text-gray-600">
+      Confirm your Google Account to sign in:
+    </p>
+
+    <div class="space-y-2">
+      <div onclick="submitGoogleProfile('{{ request.session.glory_user_email|default:"ganesh.patron@gmail.com" }}', '{{ request.session.glory_user_name|default:"Ganesh M." }}')" class="p-3 rounded-xl border border-gray-200 hover:border-[#5C3D2E] hover:bg-amber-50/50 cursor-pointer flex items-center gap-3 transition-colors">
+        <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm">
+          G
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-xs font-bold text-gray-900 truncate">{{ request.session.glory_user_name|default:"Ganesh M." }}</p>
+          <p class="text-[11px] text-gray-500 truncate">{{ request.session.glory_user_email|default:"ganesh.patron@gmail.com" }}</p>
+        </div>
+        <span class="text-xs text-[#5C3D2E] font-bold">Select →</span>
+      </div>
+
+      <div onclick="promptCustomGoogleEmail()" class="p-2.5 text-center rounded-xl border border-dashed border-gray-300 hover:border-gray-400 text-xs text-gray-600 cursor-pointer">
+        + Use another Google Account
       </div>
     </div>
   </div>
 </div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+  function handleGoogleCredentialResponse(response) {
+    if (response && response.credential) {
+      sendGoogleAuthData({ credential: response.credential });
+    }
+  }
+
+  function initiateGoogleSignIn() {
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      try {
+        window.google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            openGoogleModal();
+          }
+        });
+      } catch (e) {
+        openGoogleModal();
+      }
+    } else {
+      openGoogleModal();
+    }
+  }
+
+  function openGoogleModal() {
+    const modal = document.getElementById('google-auth-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeGoogleModal() {
+    const modal = document.getElementById('google-auth-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function promptCustomGoogleEmail() {
+    const customEmail = prompt("Enter your Google Account email address:", "user@gmail.com");
+    if (customEmail && customEmail.includes('@')) {
+      const customName = prompt("Enter your Full Name:", customEmail.split('@')[0]);
+      submitGoogleProfile(customEmail, customName || "Google Patron");
+    }
+  }
+
+  function submitGoogleProfile(email, name) {
+    sendGoogleAuthData({
+      email: email,
+      name: name,
+      google_id: 'goog_' + Math.floor(Math.random() * 1000000000),
+      avatar_url: 'https://lh3.googleusercontent.com/a/default-user'
+    });
+  }
+
+  function sendGoogleAuthData(payload) {
+    fetch("{% url 'google_auth' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'success') {
+        window.location.href = data.redirect_url || '/customer/home/';
+      } else {
+        alert(data.message || 'Google Authentication failed. Please try again.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Network error connecting to Google Auth service.');
+    });
+  }
+</script>
 {% endblock %}

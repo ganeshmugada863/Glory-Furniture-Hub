@@ -12,6 +12,9 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=25, default='+91 98765 43210')
     address = models.TextField(default='Plot 42, Road No. 10, Jubilee Hills, Hyderabad, Telangana 500033')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
+    auth_provider = models.CharField(max_length=50, default='email')  # 'email', 'google'
+    google_id = models.CharField(max_length=150, blank=True, null=True)
+    avatar_url = models.URLField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
