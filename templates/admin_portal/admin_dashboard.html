@@ -1,0 +1,267 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Executive Dashboard — Glory Furniture Hub Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <!-- Executive Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <h1 class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">Executive Studio Dashboard</h1>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+          ● Live Active
+        </span>
+      </div>
+      <p class="text-xs sm:text-sm text-gray-500">Real-time control over revenue, patron orders, handcrafted stock &amp; UPI settlements.</p>
+    </div>
+    
+    <div class="flex items-center gap-2.5 flex-wrap">
+      <a href="{% url 'admin_orders' %}" class="px-4 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider shadow-xs hover:shadow-md transition-all active-tap inline-flex items-center gap-1.5" style="background-color: #5C3D2E !important; color: #ffffff !important;">
+        <span>📦 View All Orders</span>
+        <span>&rarr;</span>
+      </a>
+      <a href="{% url 'admin_payments' %}" class="px-4 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 shadow-2xs transition-colors inline-flex items-center gap-1.5">
+        <span>💳 UPI Ledger</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 4 METRIC CARDS (Clean Proportion, Never Stretched) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+    
+    <!-- 1. Total Revenue -->
+    <div class="p-5 bg-white rounded-3xl border border-[#EADBCE] shadow-sm hover:shadow-md transition-all space-y-3" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest">Total Revenue</span>
+        <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-base border border-emerald-200">💰</span>
+      </div>
+      <div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-700 tracking-tight leading-none">{{ total_revenue }}</div>
+        <div class="flex items-center gap-1.5 mt-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="text-xs text-emerald-900 font-bold">{{ fully_paid_count }} Fully Paid Orders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Total Customers -->
+    <div class="p-5 bg-white rounded-3xl border border-[#EADBCE] shadow-sm hover:shadow-md transition-all space-y-3" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest">Patron Directory</span>
+        <span class="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-base border border-blue-200">👥</span>
+      </div>
+      <div>
+        <div class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight leading-none">{{ total_customers }}</div>
+        <div class="mt-2">
+          <a href="{% url 'admin_customers' %}" class="text-xs text-blue-700 hover:text-blue-900 hover:underline font-bold inline-flex items-center gap-1">
+            <span>Manage Customers</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Orders Count -->
+    <div class="p-5 bg-white rounded-3xl border border-[#EADBCE] shadow-sm hover:shadow-md transition-all space-y-3" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest">Total Orders</span>
+        <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center text-base border border-amber-200">📦</span>
+      </div>
+      <div>
+        <div class="text-2xl sm:text-3xl font-black text-[#5C3D2E] tracking-tight leading-none">{{ total_orders }}</div>
+        <div class="flex items-center gap-1.5 mt-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          <span class="text-xs text-amber-900 font-bold">{{ pending_count }} Awaiting Dispatch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Consultations -->
+    <div class="p-5 bg-white rounded-3xl border border-[#EADBCE] shadow-sm hover:shadow-md transition-all space-y-3" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest">Studio Bookings</span>
+        <span class="w-9 h-9 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-base border border-purple-200">📅</span>
+      </div>
+      <div>
+        <div class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight leading-none">{{ total_bookings }}</div>
+        <div class="mt-2">
+          <a href="{% url 'admin_bookings' %}" class="text-xs text-purple-700 hover:text-purple-900 hover:underline font-bold inline-flex items-center gap-1">
+            <span>Consultation Schedule</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QUICK MANAGEMENT TILES -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+    <a href="{% url 'admin_orders' %}" class="p-3.5 bg-white rounded-2xl border border-gray-200/80 hover:border-[#5C3D2E] shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 group" style="border-radius: 18px !important;">
+      <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-105 transition-transform">📦</span>
+      <div class="min-w-0">
+        <span class="text-xs font-black text-gray-950 block truncate group-hover:text-[#5C3D2E]">Orders</span>
+        <span class="text-[10px] text-gray-400 block truncate">Route &amp; Tracking</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_products' %}" class="p-3.5 bg-white rounded-2xl border border-gray-200/80 hover:border-[#5C3D2E] shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 group" style="border-radius: 18px !important;">
+      <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-105 transition-transform">🪵</span>
+      <div class="min-w-0">
+        <span class="text-xs font-black text-gray-950 block truncate group-hover:text-[#5C3D2E]">Inventory</span>
+        <span class="text-[10px] text-gray-400 block truncate">{{ total_products }} Masterpieces</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_payments' %}" class="p-3.5 bg-white rounded-2xl border border-gray-200/80 hover:border-[#5C3D2E] shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 group" style="border-radius: 18px !important;">
+      <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-105 transition-transform">💳</span>
+      <div class="min-w-0">
+        <span class="text-xs font-black text-gray-950 block truncate group-hover:text-[#5C3D2E]">Payments</span>
+        <span class="text-[10px] text-gray-400 block truncate">UTR &amp; Receipts</span>
+      </div>
+    </a>
+
+    <a href="{% url 'admin_reports' %}" class="p-3.5 bg-white rounded-2xl border border-gray-200/80 hover:border-[#5C3D2E] shadow-2xs hover:shadow-xs transition-all flex items-center gap-3 group" style="border-radius: 18px !important;">
+      <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center text-sm font-bold flex-shrink-0 group-hover:scale-105 transition-transform">📈</span>
+      <div class="min-w-0">
+        <span class="text-xs font-black text-gray-950 block truncate group-hover:text-[#5C3D2E]">Analytics</span>
+        <span class="text-[10px] text-gray-400 block truncate">Sales &amp; Growth</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- TABLE 1: RECENT CUSTOMER ORDERS -->
+  <div class="bg-white rounded-3xl border border-[#EADBCE] shadow-sm overflow-hidden" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+    <div class="p-5 sm:p-6 pb-4 flex items-center justify-between border-b border-gray-100 flex-wrap gap-2">
+      <div>
+        <h2 class="text-sm sm:text-base font-black text-gray-950 uppercase tracking-wider">Recent Customer Orders</h2>
+        <p class="text-xs text-gray-500">Showing latest handcrafted furniture bookings</p>
+      </div>
+      <a href="{% url 'admin_orders' %}" class="px-3.5 py-1.5 rounded-xl bg-gray-100 hover:bg-[#5C3D2E] hover:text-white text-xs font-bold text-gray-800 transition-colors">
+        View All Orders &rarr;
+      </a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[780px] text-left text-xs">
+        <thead class="bg-[#FAF7F4] text-gray-500 uppercase text-[10px] font-black border-b border-gray-200">
+          <tr>
+            <th class="py-3.5 px-5">Order #</th>
+            <th class="py-3.5 px-5">Patron Customer</th>
+            <th class="py-3.5 px-5">Handcrafted Item</th>
+            <th class="py-3.5 px-5">Total Rate</th>
+            <th class="py-3.5 px-5">Payment &amp; Ref</th>
+            <th class="py-3.5 px-5">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 font-medium">
+          {% for o in recent_orders %}
+          <tr class="hover:bg-[#FDFBF9] transition-colors">
+            <td class="py-4 px-5 font-mono font-bold text-[#5C3D2E] whitespace-nowrap">
+              #{{ o.order_number }}
+              <span class="block text-[10px] text-gray-400 font-normal">{{ o.created_at|date:"M d, Y" }}</span>
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              <div class="font-bold text-gray-950">{{ o.customer_name }}</div>
+              <div class="text-[11px] text-gray-500">{{ o.email }}</div>
+            </td>
+            <td class="py-4 px-5">
+              <div class="font-bold text-gray-950 truncate max-w-xs">{{ o.product_name }}</div>
+              <div class="text-[11px] text-gray-500">{{ o.selected_wood|default:"Grade-A Burma Teak" }} &bull; Qty: {{ o.quantity }}</div>
+            </td>
+            <td class="py-4 px-5 font-black text-gray-950 text-sm whitespace-nowrap">
+              {{ o.formatted_total }}
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              {% if o.transactions.first %}
+              <span class="font-mono text-[10px] font-bold bg-purple-50 text-purple-900 px-2.5 py-1 rounded-lg border border-purple-200 inline-block">
+                UTR: {{ o.transactions.first.gateway_payment_id }}
+              </span>
+              {% else %}
+              <span class="text-[11px] font-semibold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg">
+                100% Full Payment
+              </span>
+              {% endif %}
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {% if o.order_status == 'FULLY_PAID' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% else %}bg-amber-100 text-amber-900 border border-amber-300{% endif %}">
+                {{ o.order_status }}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="py-8 text-center text-gray-400">No orders placed yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TABLE 2: RECENT VERIFIED UPI TRANSACTIONS -->
+  <div class="bg-white rounded-3xl border border-[#EADBCE] shadow-sm overflow-hidden" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+    <div class="p-5 sm:p-6 pb-4 flex items-center justify-between border-b border-gray-100 flex-wrap gap-2">
+      <div>
+        <h2 class="text-sm sm:text-base font-black text-gray-950 uppercase tracking-wider">Recent Verified UPI Transactions</h2>
+        <p class="text-xs text-gray-500">Live UTR reconciliation with instant status verification</p>
+      </div>
+      <a href="{% url 'admin_payments' %}" class="px-3.5 py-1.5 rounded-xl bg-gray-100 hover:bg-[#5C3D2E] hover:text-white text-xs font-bold text-gray-800 transition-colors">
+        Full UPI Ledger &rarr;
+      </a>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[780px] text-left text-xs">
+        <thead class="bg-[#FAF7F4] text-gray-500 uppercase text-[10px] font-black border-b border-gray-200">
+          <tr>
+            <th class="py-3.5 px-5">UTR Reference</th>
+            <th class="py-3.5 px-5">Order #</th>
+            <th class="py-3.5 px-5">Customer Patron</th>
+            <th class="py-3.5 px-5">Settled Amount</th>
+            <th class="py-3.5 px-5">Timestamp</th>
+            <th class="py-3.5 px-5">Reconciliation</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 font-medium">
+          {% for t in recent_transactions %}
+          <tr class="hover:bg-[#FDFBF9] transition-colors">
+            <td class="py-4 px-5 font-mono font-bold text-gray-950 whitespace-nowrap">
+              <span class="bg-purple-50 text-purple-900 px-2.5 py-1 rounded-lg border border-purple-200">
+                {{ t.gateway_payment_id }}
+              </span>
+            </td>
+            <td class="py-4 px-5 font-mono text-[#5C3D2E] font-bold whitespace-nowrap">
+              #{{ t.order.order_number }}
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              <div class="font-bold text-gray-900">{{ t.order.customer_name }}</div>
+              <div class="text-[10px] text-gray-500">{{ t.order.phone }}</div>
+            </td>
+            <td class="py-4 px-5 font-black text-emerald-700 text-sm whitespace-nowrap">
+              ₹{{ t.amount|floatformat:0 }}
+            </td>
+            <td class="py-4 px-5 text-gray-500 whitespace-nowrap">
+              {{ t.paid_at|date:"M d, Y • H:i" }}
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 inline-flex items-center gap-1">
+                <span>✓</span>
+                <span>VERIFIED</span>
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="py-8 text-center text-gray-400">No transactions recorded yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

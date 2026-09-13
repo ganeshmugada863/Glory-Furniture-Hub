@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Studio Notifications — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'profile' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Studio Notifications
+    </span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-2xl mx-auto px-4 py-8 space-y-4">
+  {% for n in notifications %}
+  <div class="p-4 bg-white rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+    <div class="flex items-center justify-between">
+      <h3 class="font-bold text-xs sm:text-sm text-gray-950">{{ n.title }}</h3>
+      <span class="text-[10px] text-gray-400">{{ n.created_at }}</span>
+    </div>
+    <p class="text-xs text-gray-600 leading-relaxed">{{ n.description }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

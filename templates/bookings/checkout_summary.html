@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order & Booking Summary — {{ product.name }} | Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-[#E2D8CC] px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='/product/{{ product.id }}/';" 
+            class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" 
+            aria-label="Back to piece">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <div class="border-l border-gray-300 pl-3">
+      <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] block leading-none">Checkout Stage</span>
+      <span class="text-xs sm:text-sm font-extrabold text-gray-950 leading-none">Order & Booking Summary</span>
+    </div>
+  </div>
+
+  <div class="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+    <span>100% Solid Burma Teak Guarantee</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#FAF7F4] text-[#111827] py-6 sm:py-10 selection:bg-[#5C3D2E] selection:text-white">
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+    
+    <!-- Header Title & Stepper -->
+    <div class="mb-8 space-y-2">
+      <div class="flex items-center gap-2 text-xs font-bold text-gray-500">
+        <a href="/product/{{ product.id }}/" class="hover:text-gray-950 transition-colors">Product Detail</a>
+        <span>›</span>
+        <span class="text-[#5C3D2E] font-extrabold">1. Order Summary</span>
+        <span>›</span>
+        <span class="text-gray-400">2. Payment</span>
+        <span>›</span>
+        <span class="text-gray-400">3. Confirmation</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-950 tracking-tight">
+        Order &amp; Booking Summary
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-600 max-w-2xl">
+        Review your delivery address and item details before confirming your handcrafted solid wood order.
+      </p>
+    </div>
+
+    <!-- Main 2-Column Split: Left Saved Address, Right Calculation & Book Now -->
+    <form method="POST" id="checkout-booking-form" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {% csrf_token %}
+      
+      <!-- Hidden inputs for product & pricing -->
+      <input type="hidden" name="product_id" value="{{ product.id }}" />
+      <input type="hidden" name="selected_size" id="form-selected-size" value="{{ selected_size }}" />
+      <input type="hidden" name="selected_wood" id="form-selected-wood" value="{{ selected_wood }}" />
+      <input type="hidden" name="unit_price" id="form-unit-price" value="{{ unit_price }}" />
+      <input type="hidden" name="quantity" id="form-quantity" value="{{ quantity }}" />
+      <input type="hidden" name="payment_plan" value="FULL_PAYMENT" />
+
+      <!-- Hidden address inputs from saved address in Settings -->
+      <input type="hidden" name="customer_name" value="{{ saved_address.name|default:user_name }}" />
+      <input type="hidden" name="phone" value="{{ saved_address.phone|default:user_phone }}" />
+      <input type="hidden" name="email" value="{{ saved_address.email|default:user_email }}" />
+      <input type="hidden" name="flat" value="{{ saved_address.flat }}" />
+      <input type="hidden" name="street" value="{{ saved_address.street }}" />
+      <input type="hidden" name="landmark" value="{{ saved_address.landmark }}" />
+      <input type="hidden" name="city" value="{{ saved_address.city|default:'Hyderabad' }}" />
+      <input type="hidden" name="state" value="{{ saved_address.state|default:'Telangana' }}" />
+      <input type="hidden" name="pincode" value="{{ saved_address.pincode|default:'500034' }}" />
+
+      <!-- ========================================================= -->
+      <!-- LEFT COLUMN: SAVED DELIVERY ADDRESS CARD (7 Cols)         -->
+      <!-- ========================================================= -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Delivery Address Card -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2D8CC] shadow-xs space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-full bg-amber-100 text-[#5C3D2E] flex items-center justify-center font-black text-sm">
+                📍
+              </span>
+              <div>
+                <h2 class="font-black text-base text-gray-950">Delivery Address</h2>
+                <p class="text-[11px] text-gray-500">Saved address from your settings</p>
+              </div>
+            </div>
+            <a href="{% url 'address' %}" 
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:text-black hover:border-black transition-all">
+              <svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              <span>Change in Settings</span>
+            </a>
+          </div>
+
+          <!-- Recipient & Address Details -->
+          <div class="p-5 rounded-2xl bg-amber-50/40 border border-amber-200/60 space-y-3">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-black text-sm sm:text-base text-gray-950">{{ saved_address.name|default:user_name }}</span>
+                <span class="text-gray-300">•</span>
+                <span class="text-xs font-bold text-[#5C3D2E]">{{ saved_address.phone|default:user_phone }}</span>
+                {% if saved_address.email or user_email %}
+                <span class="text-gray-300">•</span>
+                <span class="text-xs text-gray-500">{{ saved_address.email|default:user_email }}</span>
+                {% endif %}
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 border border-green-200">
+                {{ saved_address.tag|default:"Default Delivery" }}
+              </span>
+            </div>
+
+            <p class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
+              {{ saved_address.flat }}{% if saved_address.street %}, {{ saved_address.street }}{% endif %}
+              {% if saved_address.landmark %}, Landmark: {{ saved_address.landmark }}{% endif %}, 
+              {{ saved_address.city|default:"Hyderabad" }}, {{ saved_address.state|default:"Telangana" }} - {{ saved_address.pincode|default:"500034" }}
+            </p>
+          </div>
+
+          <!-- Delivery Note -->
+          <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 border border-gray-200/80 text-xs text-gray-600">
+            <span class="text-base">🚚</span>
+            <div>
+              <span class="font-bold text-gray-900 block">White-Glove Doorstep Delivery</span>
+              <span class="text-[11px] text-gray-500">Scheduled within 5-7 business days with in-home assembly.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- RIGHT COLUMN: CALCULATION OF ITEM & BOOK NOW (5 Cols)     -->
+      <!-- ========================================================= -->
+      <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+        
+        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-xs space-y-6">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <h2 class="font-black text-base text-gray-950">Calculation of Item</h2>
+            <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+              In Stock
+            </span>
+          </div>
+
+          <!-- Product Item Card Overview -->
+          <div class="p-4 rounded-2xl bg-[#F8F5F0] border border-[#E8DFD5] flex gap-4 items-center">
+            <img src="{{ product.primary_image }}" 
+                 alt="{{ product.name }}" 
+                 class="w-20 h-20 sm:w-22 sm:h-22 rounded-xl object-cover border border-white shadow-xs flex-shrink-0" />
+            
+            <div class="min-w-0 flex-1 space-y-1">
+              <span class="text-[10px] font-black uppercase tracking-widest text-[#5C3D2E] block">
+                {{ product.category.name|default:"Solid Burma Teak" }}
+              </span>
+              <h3 class="font-bold text-xs sm:text-sm text-gray-950 line-clamp-1 leading-tight">
+                {{ product.name }}
+              </h3>
+              <div class="text-[11px] text-gray-600 space-y-0.5">
+                <p><strong class="text-gray-900">Finish:</strong> <span id="summary-wood-display">{{ selected_wood }}</span></p>
+                <p><strong class="text-gray-900">Size:</strong> <span id="summary-size-display">{{ selected_size }}</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Quantity Stepper -->
+          <div class="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-200/80">
+            <div>
+              <span class="text-xs font-bold text-gray-900 block">Quantity</span>
+              <span class="text-[10px] text-gray-500">Number of pieces</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button type="button" 
+                      onclick="changeQty(-1)"
+                      class="w-8 h-8 rounded-full bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 font-bold flex items-center justify-center active-tap cursor-pointer shadow-2xs">
+                -
+              </button>
+              <span id="qty-display" class="font-black text-sm text-gray-950 w-6 text-center">
+                {{ quantity }}
+              </span>
+              <button type="button" 
+                      onclick="changeQty(1)"
+                      class="w-8 h-8 rounded-full bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 font-bold flex items-center justify-center active-tap cursor-pointer shadow-2xs">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Clean Item Price Calculation Breakdown (No Extra Words/Discounts) -->
+          <div class="space-y-3 text-xs border-t border-b border-gray-100 py-4">
+            <div class="flex justify-between items-center text-gray-600">
+              <span>Item Subtotal (<span id="qty-label">{{ quantity }}</span> piece<span id="qty-plural"></span>)</span>
+              <span id="subtotal-display" class="font-bold text-gray-950">{{ formatted_subtotal }}</span>
+            </div>
+
+            <!-- Grand Total Calculation -->
+            <div class="flex justify-between items-baseline pt-3 border-t border-gray-200">
+              <div>
+                <span class="text-sm font-black text-gray-950 block">Grand Total</span>
+                <span class="text-[10px] text-gray-400">All taxes &amp; delivery included</span>
+              </div>
+              <span id="grand-total-display" class="text-2xl sm:text-3xl font-black text-[#5C3D2E] tracking-tight">
+                {{ formatted_grand_total }}
+              </span>
+            </div>
+          </div>
+
+          <!-- 100% Full Payment Badge -->
+          <div class="pt-2">
+            <div class="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50/60 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black">
+                  ✓
+                </span>
+                <span class="text-xs font-black text-emerald-950 uppercase tracking-wider">100% Full Payment</span>
+              </div>
+              <span class="text-xs font-black text-emerald-950" id="summary-badge-amount">{{ formatted_grand_total }}</span>
+            </div>
+          </div>
+
+          <!-- BOOK NOW Primary CTA Button -->
+          <div class="pt-2">
+            <button type="submit" 
+                    id="confirm-booking-btn"
+                    class="w-full py-4 px-6 rounded-2xl text-sm font-black tracking-wider uppercase text-center transition-all shadow-md hover:shadow-lg active-tap flex items-center justify-center gap-2 cursor-pointer text-white"
+                    style="background: #5C3D2E;">
+              <span id="btn-text">Book Now</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- Dynamic Price Script -->
+<script>
+  let unitPrice = {{ unit_price }};
+  let quantity = {{ quantity }};
+
+  function formatRupee(amount) {
+    return '₹' + Math.round(amount).toLocaleString('en-IN');
+  }
+
+  function changeQty(delta) {
+    const newQty = quantity + delta;
+    if (newQty < 1 || newQty > 10) return;
+    quantity = newQty;
+
+    document.getElementById('form-quantity').value = quantity;
+    document.getElementById('qty-display').innerText = quantity;
+    document.getElementById('qty-label').innerText = quantity;
+    document.getElementById('qty-plural').innerText = quantity > 1 ? 's' : '';
+
+    const grandTotal = unitPrice * quantity;
+
+    document.getElementById('subtotal-display').innerText = formatRupee(grandTotal);
+    document.getElementById('grand-total-display').innerText = formatRupee(grandTotal);
+
+    const badgeAmt = document.getElementById('summary-badge-amount');
+    if (badgeAmt) badgeAmt.innerText = formatRupee(grandTotal);
+  }
+</script>
+{% endblock %}

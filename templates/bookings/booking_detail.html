@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Receipt & Order Details — {{ booking.booking_id }} | Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'my_bookings' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-extrabold text-gray-950 border-l border-gray-300 pl-3 leading-none">
+      Order &amp; Booking Receipt #{{ booking.booking_id }}
+    </span>
+  </div>
+  <button onclick="window.print()" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1 cursor-pointer">
+    <span>🖨️ Print Receipt</span>
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-3xl mx-auto px-4 py-8 space-y-6 selection:bg-[#5C3D2E] selection:text-white">
+  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/90 shadow-warm text-left space-y-6 font-sans">
+    
+    <!-- Receipt Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-base font-black text-[#5C3D2E]">Glory Furniture Hub</span>
+          <span class="text-xs text-gray-400">| Hyderabad Workshop</span>
+        </div>
+        <p class="text-xs text-gray-500 mt-0.5">Master Teak Craftsmanship &bull; 10-Year Warranty</p>
+      </div>
+
+      <div class="sm:text-right">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Booking Reference</span>
+        <span class="text-base font-black text-gray-950">{{ booking.booking_id }}</span>
+        <div class="mt-1">
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+            {{ booking.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {% if order %}
+    <!-- Order Financial Details -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-black text-gray-950 uppercase tracking-wider">
+          Order Summary: #{{ order.order_number }}
+        </h3>
+        <span class="text-xs font-bold px-2.5 py-1 rounded-full {% if order.payment_plan == 'THREE_INSTALLMENTS' %}bg-purple-100 text-purple-900 border border-purple-200{% else %}bg-emerald-100 text-emerald-900 border border-emerald-200{% endif %}">
+          {{ order.get_payment_plan_display }}
+        </span>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h4 class="text-sm font-extrabold text-gray-950">{{ order.product_name }}</h4>
+          <p class="text-xs text-gray-600 mt-0.5">
+            Size: <strong class="text-gray-900">{{ order.selected_size }}</strong> &bull; Finish: <strong class="text-gray-900">{{ order.selected_wood }}</strong> &bull; Qty: <strong class="text-gray-900">{{ order.quantity }}</strong>
+          </p>
+        </div>
+        <div class="sm:text-right">
+          <span class="text-xs text-gray-500 block">Total Order Amount</span>
+          <span class="text-lg font-black text-gray-950">{{ order.formatted_total }}</span>
+        </div>
+      </div>
+
+      <!-- Financial Status Breakdown -->
+      <div class="grid grid-cols-3 gap-3 text-center">
+        <div class="p-3 rounded-xl bg-gray-50 border border-gray-200">
+          <span class="text-[10px] uppercase font-bold text-gray-500 block">Total Order</span>
+          <span class="text-sm font-black text-gray-950">{{ order.formatted_total }}</span>
+        </div>
+        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+          <span class="text-[10px] uppercase font-bold text-emerald-700 block">Amount Paid</span>
+          <span class="text-sm font-black text-emerald-900">{{ order.formatted_paid }}</span>
+        </div>
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+          <span class="text-[10px] uppercase font-bold text-amber-800 block">Remaining</span>
+          <span class="text-sm font-black text-[#5C3D2E]">{{ order.formatted_remaining }}</span>
+        </div>
+      </div>
+
+      {% if order.payment_plan == 'THREE_INSTALLMENTS' %}
+      <!-- 3-Installments Milestone Schedule -->
+      <div class="space-y-2 pt-2">
+        <h4 class="text-xs font-black uppercase tracking-wider text-gray-700">Three-Installment Milestones:</h4>
+        <div class="space-y-2">
+          {% for inst in order.installments.all %}
+          <div class="p-3.5 rounded-xl border flex items-center justify-between {% if inst.status == 'PAID' %}bg-emerald-50/40 border-emerald-200{% elif inst.is_eligible_for_payment %}bg-amber-50/50 border-[#5C3D2E]{% else %}bg-gray-50 border-gray-200{% endif %}">
+            <div class="flex items-center gap-3">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black {% if inst.status == 'PAID' %}bg-emerald-600 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+                {{ inst.installment_number }}
+              </span>
+              <div>
+                <span class="text-xs font-extrabold text-gray-950 block">
+                  Installment #{{ inst.installment_number }} &bull; {{ inst.formatted_amount }}
+                </span>
+                <span class="text-[11px] text-gray-500">
+                  Due: <strong>{{ inst.due_date|date:"F d, Y" }}</strong>
+                  {% if inst.paid_at %} &bull; <span class="text-emerald-700 font-semibold">Paid on {{ inst.paid_at|date:"M d, Y" }}</span>{% endif %}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              {% if inst.status == 'PAID' %}
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                ✓ Paid
+              </span>
+              {% elif inst.is_eligible_for_payment %}
+              <a href="{% url 'pay_installment_direct' inst.id %}" class="px-3 py-1.5 rounded-lg bg-[#5C3D2E] text-white text-xs font-bold hover:bg-[#422819]">
+                Pay Now →
+              </a>
+              {% else %}
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-gray-200 text-gray-700">
+                Upcoming
+              </span>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+    {% endif %}
+
+    <!-- Customer & Delivery Information -->
+    <div class="pt-4 border-t border-gray-200">
+      <h3 class="text-xs font-black text-gray-950 uppercase tracking-wider mb-3">Customer &amp; Dispatch Information</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div>
+          <span class="text-gray-400 block">Customer Name:</span>
+          <span class="font-bold text-gray-900">{{ booking.customer_name }}</span>
+        </div>
+        <div>
+          <span class="text-gray-400 block">Phone:</span>
+          <span class="font-bold text-gray-900">{{ booking.phone }}</span>
+        </div>
+        <div>
+          <span class="text-gray-400 block">Email:</span>
+          <span class="font-bold text-gray-900">{{ booking.email|default:"Registered Customer" }}</span>
+        </div>
+        <div>
+          <span class="text-gray-400 block">Scheduled Date / Slot:</span>
+          <span class="font-bold text-gray-900">{{ booking.preferred_date|date:"F d, Y" }} ({{ booking.time_slot }})</span>
+        </div>
+        <div class="sm:col-span-2">
+          <span class="text-gray-400 block">Delivery Address:</span>
+          <span class="font-medium text-gray-900">{{ booking.address|default:"Hyderabad, Telangana" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Guarantee Footer -->
+    <div class="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-500 gap-2">
+      <span>Glory Furniture Hub Central Workshop &bull; GST Registered &bull; 100% Solid Burma Teak</span>
+      <span class="text-emerald-700 font-bold">✓ Official Certified Order Receipt</span>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

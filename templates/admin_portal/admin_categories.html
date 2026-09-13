@@ -1,0 +1,21 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Categories — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-black text-gray-950 tracking-tight">Product Categories</h1>
+    <p class="text-xs text-gray-500">Organize timber furniture groupings.</p>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for c in categories %}
+    <div class="p-5 bg-white rounded-2xl border border-gray-200 space-y-2">
+      <h3 class="font-black text-sm text-gray-950">{{ c.name }}</h3>
+      <p class="text-xs text-gray-500">{{ c.description|default:"Solid teak artisan category" }}</p>
+      <span class="text-[10px] font-bold text-[#5C3D2E] block">{{ c.products.count }} Products</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

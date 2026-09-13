@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Customer Dashboard — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3">
+    <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">Customer Portal</span>
+    <span class="text-gray-300">•</span>
+    <span class="text-xs font-bold text-gray-700">Welcome, {{ customer_name }}</span>
+  </div>
+  <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1">
+    <span>+ Browse Teak Catalog</span>
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 selection:bg-[#5C3D2E] selection:text-white font-sans">
+
+  <!-- LUXURY PATRON WELCOME HERO -->
+  <div class="bg-gradient-to-br from-[#2D231B] via-[#3B2C21] to-[#1E140F] rounded-3xl p-6 sm:p-8 lg:p-10 text-white shadow-xl relative overflow-hidden border border-[#5C3D2E]/40">
+    <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      
+      <div class="flex items-center gap-4 sm:gap-6">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#140D09] text-amber-400 font-black text-2xl sm:text-3xl flex items-center justify-center border-2 border-amber-500/40 shadow-lg">
+          {{ customer_name|slice:":1"|upper }}
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-white">
+              Welcome back, {{ customer_name }}
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-400/20 text-amber-300 border border-amber-400/30">
+              Patron Account
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-300">
+            {{ customer_email }} &bull; {{ customer_phone }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <a href="{% url 'customer_orders' %}" class="px-4 py-2.5 rounded-xl bg-white text-gray-950 text-xs font-black hover:bg-gray-100 transition-all shadow-xs">
+          My Orders ({{ total_orders }}) →
+        </a>
+        <a href="{% url 'customer_bookings' %}" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all border border-white/20">
+          My Bookings ({{ total_bookings }})
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACTIVE ORDER STATUS BANNER -->
+  {% if latest_order %}
+  <div class="bg-white rounded-3xl p-6 border border-[#E2D8CC] shadow-xs space-y-4">
+    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <h2 class="text-xs font-black uppercase tracking-wider text-gray-950">Active Order Status</h2>
+      </div>
+      <span class="font-mono text-xs font-bold text-[#5C3D2E]">#{{ latest_order.order_number }}</span>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        {% if latest_order.product.primary_image %}
+        <img src="{{ latest_order.product.primary_image }}" alt="" class="w-14 h-14 rounded-xl object-cover border border-gray-200" />
+        {% else %}
+        <div class="w-14 h-14 rounded-xl bg-amber-100 text-2xl flex items-center justify-center">🪵</div>
+        {% endif %}
+        <div>
+          <h3 class="font-black text-sm text-gray-950">{{ latest_order.product_name }}</h3>
+          <p class="text-xs text-gray-500">{{ latest_order.selected_wood }} &bull; {{ latest_order.selected_size }}</p>
+        </div>
+      </div>
+
+      <div class="sm:text-right">
+        <div class="text-sm font-black text-gray-950">{{ latest_order.formatted_total }}</div>
+        <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-black {% if latest_order.order_status == 'FULLY_PAID' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-900{% endif %}">
+          {% if latest_order.order_status == 'FULLY_PAID' %}✓ Paid in Full{% else %}Payment Pending{% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- QUICK NAVIGATION TILES -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    
+    <a href="{% url 'customer_orders' %}" class="p-5 bg-white rounded-2xl border border-gray-200 hover:border-[#5C3D2E] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-900 flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+        📦
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950">My Future Orders</h3>
+        <p class="text-xs text-gray-500">Track handcrafted orders &amp; guides</p>
+      </div>
+    </a>
+
+    <a href="{% url 'custom_request' %}" class="p-5 bg-white rounded-2xl border border-gray-200 hover:border-[#5C3D2E] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-900 flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+        📐
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950">Custom Requests</h3>
+        <p class="text-xs text-gray-500">Bespoke furniture designs &amp; quotes</p>
+      </div>
+    </a>
+
+    <a href="{% url 'customer_payments' %}" class="p-5 bg-white rounded-2xl border border-gray-200 hover:border-[#5C3D2E] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+        💳
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950">Payment Receipts</h3>
+        <p class="text-xs text-gray-500">Verified UTR transaction history</p>
+      </div>
+    </a>
+
+    <a href="{% url 'customer_profile' %}" class="p-5 bg-white rounded-2xl border border-gray-200 hover:border-[#5C3D2E] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+        👤
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950">Profile &amp; Addresses</h3>
+        <p class="text-xs text-gray-500">Delivery address &amp; phone</p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FEATURED TEAK PIECES RECOMMENDATIONS -->
+  <div class="space-y-4 pt-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-black text-gray-950 uppercase tracking-wider">Recommended Handcrafted Pieces</h2>
+      <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">Browse All Catalog →</a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {% for p in featured_products %}
+      <a href="/product/{{ p.id }}/" class="bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-2xs hover:shadow-warm transition-all block group">
+        <div class="aspect-square overflow-hidden bg-gray-50">
+          <img src="{{ p.primary_image }}" alt="{{ p.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        </div>
+        <div class="p-3.5 space-y-1">
+          <span class="text-[10px] text-gray-400 font-bold uppercase">{{ p.category.name }}</span>
+          <h3 class="font-bold text-xs text-gray-950 truncate">{{ p.name }}</h3>
+          <div class="font-black text-xs text-[#5C3D2E]">₹{{ p.price|floatformat:0 }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

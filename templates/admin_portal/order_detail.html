@@ -1,0 +1,514 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Order #{{ order.order_number }} — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#1E140F] text-white px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-md relative z-20">
+  <div class="flex items-center gap-3">
+    <a href="/admin-portal/?tab=installments" class="p-1.5 -ml-1 rounded-full hover:bg-white/20 text-white transition-colors flex items-center justify-center cursor-pointer" aria-label="Back to Admin Portal">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </a>
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-black uppercase tracking-wider text-[#C9963F]">Admin Order Management</span>
+        <span class="text-white/40">/</span>
+        <span class="text-xs font-bold text-white">#{{ order.order_number }}</span>
+      </div>
+      <h1 class="text-sm sm:text-base font-black text-white leading-tight">Installment Schedule &amp; Customer Milestone Control</h1>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <a href="/admin-portal/?tab=installments" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors border border-white/20">
+      ← Back to Orders Table
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 selection:bg-[#5C3D2E] selection:text-white">
+
+  <!-- Success & Error Alerts -->
+  {% if success == 'rescheduled' %}
+  <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 flex items-center gap-3 shadow-xs">
+    <span class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">✓</span>
+    <div class="text-xs">
+      <strong class="font-black text-emerald-950 block text-sm">Installment Successfully Rescheduled!</strong>
+      Due date has been revised, sequence integrity verified, customer notification dispatched, and permanent entry committed to the immutable audit trail.
+    </div>
+  </div>
+  {% endif %}
+
+  {% if error_message %}
+  <div class="p-4 rounded-2xl bg-red-50 border border-red-300 text-red-900 flex items-center gap-3 shadow-xs">
+    <span class="w-7 h-7 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">✕</span>
+    <div class="text-xs">
+      <strong class="font-black text-red-950 block text-sm">Rescheduling Rejected:</strong>
+      {{ error_message }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Order Header & Financials -->
+  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-sm space-y-6">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-100">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-base sm:text-lg font-black text-gray-950">
+            Order #{{ order.order_number }}
+          </span>
+          {% if order.payment_plan == 'THREE_INSTALLMENTS' %}
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-purple-100 text-purple-900 border border-purple-200">
+            3-Installment Plan
+          </span>
+          {% else %}
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
+            Full Payment Plan
+          </span>
+          {% endif %}
+
+          {% if order.payment_status == 'FULLY_PAID' %}
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+            ✓ Fully Paid
+          </span>
+          {% elif order.payment_status == 'PARTIALLY_PAID' %}
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 text-amber-900 border border-amber-300">
+            ⏳ Partially Paid
+          </span>
+          {% else %}
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-red-100 text-red-900 border border-red-300">
+            Payment Pending
+          </span>
+          {% endif %}
+        </div>
+        <p class="text-xs text-gray-500">
+          Created on {{ order.created_at|date:"F d, Y \t h:i A" }} &bull; Booking Ref: <strong class="text-gray-800">{{ order.booking.booking_id|default:"Direct Checkout" }}</strong>
+        </p>
+      </div>
+
+      <!-- Financial Balance Stat Badges -->
+      <div class="grid grid-cols-3 gap-3 text-center sm:text-right">
+        <div class="p-3 rounded-2xl bg-gray-50 border border-gray-200">
+          <span class="text-[10px] font-bold text-gray-500 uppercase block">Total Value</span>
+          <span class="text-base font-black text-gray-950">{{ order.formatted_total }}</span>
+        </div>
+        <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <span class="text-[10px] font-bold text-emerald-700 uppercase block">Collected</span>
+          <span class="text-base font-black text-emerald-900">{{ order.formatted_paid }}</span>
+        </div>
+        <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200">
+          <span class="text-[10px] font-bold text-amber-800 uppercase block">Receivable</span>
+          <span class="text-base font-black text-[#5C3D2E]">{{ order.formatted_remaining }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer & Product Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+      
+      <!-- Customer Information -->
+      <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider text-gray-500 block">Customer Information</span>
+        <div class="space-y-1">
+          <div class="text-sm font-black text-gray-950">{{ order.customer_name }}</div>
+          <div class="text-gray-700">📞 {{ order.phone }}</div>
+          <div class="text-gray-700">✉️ {{ order.email }}</div>
+          <div class="text-gray-700 pt-1 border-t border-gray-200/60 mt-1">
+            <strong>Shipping Address:</strong><br/>
+            {{ order.shipping_address }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Furniture Piece Details -->
+      <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider text-gray-500 block">Furniture Piece Specification</span>
+        <div class="space-y-1">
+          <div class="text-sm font-black text-gray-950">{{ order.product_name }}</div>
+          <div class="text-gray-700">Finish: <strong class="text-gray-900">{{ order.selected_wood }}</strong></div>
+          <div class="text-gray-700">Size / Dimension: <strong class="text-gray-900">{{ order.selected_size }}</strong></div>
+          <div class="text-gray-700">Quantity: <strong class="text-gray-900">{{ order.quantity }} Unit(s)</strong> &bull; Unit: ₹{{ order.unit_price|floatformat:0 }}</div>
+          <div class="text-gray-700 pt-1 border-t border-gray-200/60 mt-1">
+            <strong>Current Workshop Status:</strong> <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900">{{ order.get_order_status_display }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- INSTALLMENT SCHEDULE & ADMIN RESCHEDULING SECTION         -->
+  <!-- ========================================================= -->
+  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-sm space-y-5">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div>
+        <h2 class="text-base font-black text-gray-950 flex items-center gap-2">
+          <span>Three-Installment Milestone Schedule</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#5C3D2E] text-white">
+            Admin Controlled
+          </span>
+        </h2>
+        <p class="text-xs text-gray-500 mt-0.5">
+          Admin authority allows rescheduling upcoming or overdue due dates. Amounts are mathematically locked and cannot be altered.
+        </p>
+      </div>
+
+      {% if order.next_due_date %}
+      <div class="text-xs text-right">
+        <span class="text-gray-500 block">Next Milestone Due</span>
+        <span class="font-black text-purple-900 text-sm">{{ order.next_due_date|date:"d M Y" }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Installments Table -->
+    <div class="border border-gray-200 rounded-2xl overflow-hidden">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 border-b border-gray-200 text-gray-600 font-bold uppercase tracking-wider text-[10px]">
+          <tr>
+            <th class="py-3.5 px-4">Milestone</th>
+            <th class="py-3.5 px-4">Locked Amount</th>
+            <th class="py-3.5 px-4">Due Date</th>
+            <th class="py-3.5 px-4">Status</th>
+            <th class="py-3.5 px-4">Payment Record</th>
+            <th class="py-3.5 px-4 text-right">Admin Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for inst in installments %}
+          <tr class="hover:bg-amber-50/30 transition-colors">
+            
+            <!-- Milestone -->
+            <td class="py-3.5 px-4">
+              <div class="font-black text-gray-950">Installment #{{ inst.installment_number }}</div>
+              <div class="text-[10px] text-gray-500">
+                {% if inst.installment_number == 1 %}Reservation &amp; Timber Procure
+                {% elif inst.installment_number == 2 %}Artisan Rough-Cut &amp; Carving
+                {% else %}Final Polish &amp; Doorstep Delivery{% endif %}
+              </div>
+            </td>
+
+            <!-- Amount -->
+            <td class="py-3.5 px-4 font-black text-gray-950 text-sm">
+              {{ inst.formatted_amount }}
+            </td>
+
+            <!-- Due Date -->
+            <td class="py-3.5 px-4">
+              <span class="font-bold text-gray-900 text-sm block">
+                {{ inst.due_date|date:"F d, Y" }}
+              </span>
+              {% if inst.is_overdue %}
+              <span class="text-[10px] font-black text-red-600 flex items-center gap-1 mt-0.5">
+                ⚠️ Overdue by calendar date
+              </span>
+              {% endif %}
+            </td>
+
+            <!-- Status -->
+            <td class="py-3.5 px-4">
+              {% if inst.status == 'PAID' %}
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 w-max">
+                ✓ Paid
+              </span>
+              {% elif inst.status == 'OVERDUE' %}
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-red-100 text-red-800 border border-red-300 flex items-center gap-1 w-max">
+                ⚠️ Overdue
+              </span>
+              {% else %}
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1 w-max">
+                Pending
+              </span>
+              {% endif %}
+            </td>
+
+            <!-- Payment Record -->
+            <td class="py-3.5 px-4 text-gray-600">
+              {% if inst.status == 'PAID' %}
+              <div class="font-semibold text-emerald-800">Paid on {{ inst.paid_at|date:"d M Y, h:i A" }}</div>
+              <div class="text-[10px] text-gray-500 font-mono">Ref: {{ inst.gateway_payment_id|default:inst.transaction_reference|default:"PAY-ONLINE" }}</div>
+              {% else %}
+              <span class="text-gray-400 italic text-[11px]">Awaiting settlement</span>
+              {% endif %}
+            </td>
+
+            <!-- Admin Action -->
+            <td class="py-3.5 px-4 text-right">
+              {% if inst.status != 'PAID' %}
+              <button type="button" 
+                      onclick="openRescheduleModal('{{ inst.id }}', '{{ inst.installment_number }}', '{{ inst.formatted_amount }}', '{{ inst.due_date|date:'Y-m-d' }}')" 
+                      class="px-3 py-1.5 rounded-xl bg-[#5C3D2E] text-white text-[11px] font-black uppercase tracking-wider hover:bg-[#422819] shadow-xs transition-all cursor-pointer">
+                📅 Reschedule Date
+              </button>
+              {% else %}
+              <span class="px-2 py-1 rounded text-[10px] font-bold text-gray-400 bg-gray-100">
+                🔒 Paid (Locked)
+              </span>
+              {% endif %}
+            </td>
+
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="py-6 text-center text-gray-500">
+              No installment schedule attached. This is a single Full Payment order.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- IMMUTABLE RESCHEDULE AUDIT TRAIL                          -->
+  <!-- ========================================================= -->
+  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-sm space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-sm sm:text-base font-black text-gray-950 uppercase tracking-wider flex items-center gap-2">
+          <span>📜</span>
+          <span>Immutable Reschedule Audit Trail ({{ audits|length }})</span>
+        </h3>
+        <p class="text-xs text-gray-500 mt-0.5">
+          Cryptographically persistent audit log of every installment due date adjustment, admin actor, timestamp, and mandatory justification.
+        </p>
+      </div>
+      <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-gray-100 text-gray-700 border border-gray-300">
+        Non-Tamperable Log
+      </span>
+    </div>
+
+    <div class="border border-gray-200 rounded-2xl overflow-hidden">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 border-b border-gray-200 text-gray-600 font-bold uppercase tracking-wider text-[10px]">
+          <tr>
+            <th class="py-3 px-4">Audit ID</th>
+            <th class="py-3 px-4">Installment</th>
+            <th class="py-3 px-4">Previous Due Date</th>
+            <th class="py-3 px-4">Revised Due Date</th>
+            <th class="py-3 px-4">Admin Actor</th>
+            <th class="py-3 px-4">Mandatory Justification / Reason</th>
+            <th class="py-3 px-4">Notified</th>
+            <th class="py-3 px-4">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for a in audits %}
+          <tr class="hover:bg-gray-50/50">
+            <td class="py-3 px-4 font-mono text-gray-500">#AUD-{{ a.id }}</td>
+            <td class="py-3 px-4 font-bold text-gray-900">Installment #{{ a.installment.installment_number }}</td>
+            <td class="py-3 px-4 text-red-600 line-through">{{ a.old_due_date|date:"d M Y" }}</td>
+            <td class="py-3 px-4 font-black text-emerald-700">{{ a.new_due_date|date:"d M Y" }}</td>
+            <td class="py-3 px-4 font-semibold text-gray-800">{{ a.changed_by }}</td>
+            <td class="py-3 px-4 text-gray-700 italic max-w-xs">"{{ a.reason }}"</td>
+            <td class="py-3 px-4">
+              {% if a.customer_notified %}
+              <span class="text-emerald-700 font-bold">✓ Yes</span>
+              {% else %}
+              <span class="text-gray-400">No</span>
+              {% endif %}
+            </td>
+            <td class="py-3 px-4 text-gray-500 font-mono text-[11px]">{{ a.created_at|date:"d M Y, h:i A" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="py-6 text-center text-gray-500 font-semibold">
+              No reschedule actions have been performed on this order. Original milestone schedule remains active.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- PAYMENT TRANSACTIONS LOG                                  -->
+  <!-- ========================================================= -->
+  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-sm space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="text-sm sm:text-base font-black text-gray-950 uppercase tracking-wider flex items-center gap-2">
+        <span>💳</span>
+        <span>Payment Transactions Log ({{ transactions|length }})</span>
+      </h3>
+      <span class="text-xs text-gray-500">Gateway settlements</span>
+    </div>
+
+    <div class="border border-gray-200 rounded-2xl overflow-hidden">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 border-b border-gray-200 text-gray-600 font-bold uppercase tracking-wider text-[10px]">
+          <tr>
+            <th class="py-3 px-4">Transaction ID</th>
+            <th class="py-3 px-4">Milestone</th>
+            <th class="py-3 px-4">Gateway</th>
+            <th class="py-3 px-4">Amount</th>
+            <th class="py-3 px-4">Status</th>
+            <th class="py-3 px-4">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for t in transactions %}
+          <tr class="hover:bg-gray-50/50">
+            <td class="py-3 px-4 font-mono font-bold text-gray-900">{{ t.transaction_id }}</td>
+            <td class="py-3 px-4">
+              {% if t.installment %}
+              Installment #{{ t.installment.installment_number }}
+              {% else %}
+              Full Payment
+              {% endif %}
+            </td>
+            <td class="py-3 px-4 text-gray-700">{{ t.gateway }}</td>
+            <td class="py-3 px-4 font-black text-gray-950">₹{{ t.amount|floatformat:0 }}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
+                {{ t.status }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-gray-500 font-mono text-[11px]">{{ t.created_at|date:"d M Y, h:i A" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="py-6 text-center text-gray-500">
+              No transactions recorded yet for this order.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- RESCHEDULE DUE DATE MODAL (HTML5 CALENDAR & REASON)       -->
+<!-- ========================================================= -->
+<div id="reschedule-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 border border-[#E2D8CC] shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+    
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+      <div>
+        <span class="text-[10px] font-black uppercase tracking-wider text-[#5C3D2E] block">Admin Authority</span>
+        <h3 class="text-base font-black text-gray-950" id="modal-title">
+          Reschedule Installment Due Date
+        </h3>
+      </div>
+      <button type="button" onclick="closeRescheduleModal()" class="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 text-lg leading-none cursor-pointer">
+        ✕
+      </button>
+    </div>
+
+    <form method="POST" id="reschedule-form" class="space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="reschedule_installment" />
+      <input type="hidden" name="installment_id" id="modal-inst-id" value="" />
+
+      <!-- Milestone Summary Banner -->
+      <div class="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 text-xs text-amber-950 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] uppercase font-bold text-amber-800 block">Selected Target</span>
+          <span class="font-black text-sm text-gray-950" id="modal-inst-badge">Installment #2</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] uppercase font-bold text-amber-800 block">Locked Amount</span>
+          <span class="font-black text-sm text-[#5C3D2E]" id="modal-inst-amount">₹33,333</span>
+        </div>
+      </div>
+
+      <!-- Current vs New Due Date Picker -->
+      <div class="space-y-3">
+        <div class="text-xs text-gray-600">
+          Current Due Date: <strong class="text-gray-900" id="modal-current-date-text">2026-10-15</strong>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+            Select Revised Due Date (Calendar Date Picker) <span class="text-red-500">*</span>
+          </label>
+          <input type="date" 
+                 name="new_due_date" 
+                 id="modal-new-due-date" 
+                 required 
+                 class="w-full px-4 py-3 rounded-xl border border-gray-300 text-xs font-bold text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E] bg-white cursor-pointer" />
+          <p class="text-[10px] text-gray-500 mt-1">
+            Note: Sequential validation enforced. Must maintain chronological order with other installments.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mandatory Justification Reason Field -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+          Mandatory Reason / Justification <span class="text-red-500">*</span>
+        </label>
+        <textarea name="reason" 
+                  id="modal-reason-input" 
+                  rows="3" 
+                  required 
+                  placeholder="Provide explicit operational justification (e.g. Customer requested 10-day extension due to out-of-town travel; Wood seasoning delay; Approved by manager)..."
+                  class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-medium text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]"></textarea>
+        <p class="text-[10px] text-gray-500 mt-0.5">This reason will be irreversibly preserved in the audit log.</p>
+      </div>
+
+      <!-- Customer Notification Checkbox -->
+      <label class="flex items-start gap-2.5 p-3 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer">
+        <input type="checkbox" name="notify_customer" checked class="mt-0.5 text-[#5C3D2E] focus:ring-[#5C3D2E] rounded cursor-pointer" />
+        <div class="text-xs">
+          <strong class="text-gray-900 font-bold block">Notify Customer</strong>
+          <span class="text-gray-500 text-[11px]">Send immediate in-app and email alert informing customer of the revised due date.</span>
+        </div>
+      </label>
+
+      <!-- Modal Action Buttons -->
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button type="button" 
+                onclick="closeRescheduleModal()" 
+                class="px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
+          Cancel
+        </button>
+        <button type="submit" 
+                class="px-5 py-2.5 rounded-xl bg-[#5C3D2E] text-white text-xs font-black uppercase tracking-wider hover:bg-[#422819] shadow-md transition-all cursor-pointer">
+          Confirm &amp; Commit Reschedule →
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+  function openRescheduleModal(instId, instNum, instAmount, currentDate) {
+    document.getElementById('modal-inst-id').value = instId;
+    document.getElementById('modal-title').innerText = 'Reschedule Installment #' + instNum + ' Due Date';
+    document.getElementById('modal-inst-badge').innerText = 'Installment #' + instNum;
+    document.getElementById('modal-inst-amount').innerText = instAmount;
+    document.getElementById('modal-current-date-text').innerText = currentDate;
+    document.getElementById('modal-new-due-date').value = currentDate;
+    document.getElementById('modal-reason-input').value = '';
+
+    const modal = document.getElementById('reschedule-modal');
+    modal.classList.remove('hidden');
+  }
+
+  function closeRescheduleModal() {
+    const modal = document.getElementById('reschedule-modal');
+    modal.classList.add('hidden');
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeRescheduleModal();
+    }
+  });
+</script>
+{% endblock %}

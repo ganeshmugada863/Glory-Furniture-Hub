@@ -1,0 +1,11 @@
+.git
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+staticfiles
+cloudflared.exe
+node_modules
+.vercel
+dist

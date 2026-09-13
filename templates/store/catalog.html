@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if selected_category and selected_category != 'All' %}{{ selected_category }} — Handcrafted Solid Teak Furniture{% else %}Furniture Catalog — Handcrafted Solid Teak Pieces{% endif %} | Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2 sm:py-2.5 flex items-center justify-between shadow-2xs relative z-20 font-sans">
+  <!-- Left: Back Button and Title -->
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" aria-label="Go back" title="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Furniture Catalog
+    </span>
+  </div>
+
+  <!-- Right: Category Dropdown, Filter Button & Popover, Sort Dropdown -->
+  <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+    
+    <!-- 1. Category Dropdown -->
+    <div class="relative">
+      <select
+        id="catalog-category-select"
+        onchange="applyFilter('category', this.value)"
+        class="appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-900 text-xs sm:text-sm font-semibold rounded-full pl-3 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-gray-950 shadow-2xs cursor-pointer max-w-[125px] sm:max-w-[165px] truncate"
+        aria-label="Filter by Category"
+      >
+        <option value="All" {% if selected_category == 'All' %}selected{% endif %}>All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.name }}" {% if selected_category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+      <svg class="w-3.5 h-3.5 text-gray-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </div>
+
+    <!-- 2. Filter Dropdown Button & Popover -->
+    <div class="relative" id="filter-popover-container">
+      <button
+        type="button"
+        onclick="toggleFilterPopover()"
+        id="filter-popover-btn"
+        class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full border text-xs sm:text-sm font-semibold transition-all cursor-pointer active-tap {% if selected_style != 'All' or max_price < 250000 or in_stock_only %}bg-gray-950 text-white border-gray-950 shadow-xs{% else %}bg-white hover:bg-gray-50 text-gray-800 border-gray-300 shadow-2xs{% endif %}"
+        aria-label="Filter products"
+      >
+        <svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        <span>Filters</span>
+        {% if selected_style != 'All' or max_price < 250000 or in_stock_only %}
+          <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center -mr-0.5">!</span>
+        {% endif %}
+      </button>
+
+      <!-- Floating Filter Dropdown Popover -->
+      <div id="filter-dropdown-popover" class="hidden fixed inset-x-4 top-28 sm:absolute sm:right-0 sm:top-full sm:mt-2 sm:inset-x-auto sm:w-80 bg-white rounded-2xl shadow-xl border border-gray-200/90 p-4 z-50 text-gray-900 animate-fade-in font-sans">
+        <!-- Popover Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            <span class="font-bold text-sm text-gray-900">Filter Pieces</span>
+          </div>
+          <button type="button" onclick="toggleFilterPopover(false)" class="p-1 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Budget / Price Range Slider -->
+        <div class="py-3 border-b border-gray-100">
+          <div class="flex items-center justify-between text-xs font-semibold text-gray-800 mb-2">
+            <span>Max Budget:</span>
+            <span id="budget-display-val" class="font-bold text-gray-950 text-sm">₹{{ max_price }}</span>
+          </div>
+          <input
+            type="range"
+            id="filter-price-range"
+            min="10000"
+            max="250000"
+            step="5000"
+            value="{{ max_price }}"
+            oninput="document.getElementById('budget-display-val').innerText = '₹' + Number(this.value).toLocaleString('en-IN')"
+            class="w-full accent-gray-950 cursor-pointer"
+          />
+          <div class="flex items-center justify-between text-[10px] text-gray-400 mt-1">
+            <span>₹10,000</span>
+            <span>₹2,50,000+</span>
+          </div>
+          <!-- Quick Budget Chips -->
+          <div class="flex flex-wrap gap-1 mt-2.5">
+            <button type="button" onclick="setQuickBudget(250000)" class="text-[11px] px-2 py-0.5 rounded-full border cursor-pointer transition-colors {% if max_price == 250000 %}bg-gray-950 text-white border-gray-950 font-semibold{% else %}bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100{% endif %}">Any</button>
+            <button type="button" onclick="setQuickBudget(50000)" class="text-[11px] px-2 py-0.5 rounded-full border cursor-pointer transition-colors {% if max_price == 50000 %}bg-gray-950 text-white border-gray-950 font-semibold{% else %}bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100{% endif %}">< ₹50k</button>
+            <button type="button" onclick="setQuickBudget(100000)" class="text-[11px] px-2 py-0.5 rounded-full border cursor-pointer transition-colors {% if max_price == 100000 %}bg-gray-950 text-white border-gray-950 font-semibold{% else %}bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100{% endif %}">< ₹1L</button>
+            <button type="button" onclick="setQuickBudget(150000)" class="text-[11px] px-2 py-0.5 rounded-full border cursor-pointer transition-colors {% if max_price == 150000 %}bg-gray-950 text-white border-gray-950 font-semibold{% else %}bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100{% endif %}">< ₹1.5L</button>
+          </div>
+        </div>
+
+        <!-- Woodworking Style -->
+        <div class="py-3 border-b border-gray-100">
+          <label class="block text-xs font-bold text-gray-800 mb-2">Woodworking Style</label>
+          <div class="flex flex-wrap gap-1.5" id="style-chips-container">
+            {% for st in styles %}
+            <button
+              type="button"
+              onclick="selectStyleChip('{{ st }}')"
+              data-style="{{ st }}"
+              class="style-chip px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer transition-all {% if selected_style == st %}bg-gray-950 text-white font-bold shadow-2xs{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}"
+            >
+              {{ st }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- In-Stock Only -->
+        <div class="py-3 border-b border-gray-100 flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-800">In-Stock Only</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              id="filter-instock-input"
+              {% if in_stock_only %}checked{% endif %}
+              class="sr-only peer"
+            />
+            <div class="w-8 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-gray-950"></div>
+          </label>
+        </div>
+
+        <!-- Dropdown Footer Actions -->
+        <div class="pt-3 flex items-center gap-2">
+          <a
+            href="{% url 'catalog' %}"
+            class="flex-1 text-center py-1.5 text-xs font-semibold text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+          >
+            Reset All
+          </a>
+          <button
+            type="button"
+            onclick="applyAllFilters()"
+            class="flex-1 py-1.5 text-xs font-semibold bg-gray-950 text-white rounded-lg hover:bg-black cursor-pointer transition-colors flex items-center justify-center gap-1 shadow-2xs"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>Apply</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Popular / Sort Dropdown -->
+    <div class="relative">
+      <select
+        id="catalog-sort-select"
+        onchange="applyFilter('sort', this.value)"
+        class="appearance-none bg-white border border-gray-300 hover:border-gray-400 text-gray-900 text-xs sm:text-sm font-semibold rounded-full pl-3 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-gray-950 shadow-2xs cursor-pointer max-w-[105px] sm:max-w-[140px]"
+        aria-label="Sort products"
+      >
+        <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>Popular</option>
+        <option value="price-low" {% if sort_by == 'price-low' or sort_by == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+        <option value="price-high" {% if sort_by == 'price-high' or sort_by == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+        <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Top Rated</option>
+      </select>
+      <svg class="w-3.5 h-3.5 text-gray-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full px-4 sm:px-6 lg:px-10 pt-4 pb-16 font-sans">
+  
+  <!-- Active Filters Summary (Shown when any filter is active) -->
+  {% if selected_category != 'All' or selected_style != 'All' or max_price < 250000 or in_stock_only %}
+  <div class="mb-4 flex items-center gap-2 flex-wrap text-xs">
+    <span class="text-gray-500 font-medium">Active filters:</span>
+
+    {% if selected_category and selected_category != 'All' %}
+    <span class="inline-flex items-center gap-1.5 bg-gray-950 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-2xs">
+      <span>Category: {{ selected_category }}</span>
+      <a href="{% url 'catalog' %}?category=All&style={{ selected_style }}&max_price={{ max_price }}&sort={{ sort_by }}" class="cursor-pointer hover:text-red-300 transition-colors" title="Remove category filter">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </a>
+    </span>
+    {% endif %}
+
+    {% if selected_style and selected_style != 'All' %}
+    <span class="inline-flex items-center gap-1.5 bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-2xs">
+      <span>Style: {{ selected_style }}</span>
+      <a href="{% url 'catalog' %}?category={{ selected_category|urlencode }}&style=All&max_price={{ max_price }}&sort={{ sort_by }}" class="cursor-pointer hover:text-red-300 transition-colors" title="Remove style filter">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </a>
+    </span>
+    {% endif %}
+
+    {% if max_price and max_price < 250000 %}
+    <span class="inline-flex items-center gap-1.5 bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-2xs">
+      <span>Budget: ≤ ₹{{ max_price }}</span>
+      <a href="{% url 'catalog' %}?category={{ selected_category|urlencode }}&style={{ selected_style }}&max_price=250000&sort={{ sort_by }}" class="cursor-pointer hover:text-red-300 transition-colors" title="Reset budget">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </a>
+    </span>
+    {% endif %}
+
+    {% if in_stock_only %}
+    <span class="inline-flex items-center gap-1.5 bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-2xs">
+      <span>In-Stock Only</span>
+      <a href="{% url 'catalog' %}?category={{ selected_category|urlencode }}&style={{ selected_style }}&max_price={{ max_price }}&sort={{ sort_by }}&in_stock=false" class="cursor-pointer hover:text-red-300 transition-colors" title="Show all stock">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </a>
+    </span>
+    {% endif %}
+
+    <a href="{% url 'catalog' %}" class="text-xs text-gray-500 hover:text-gray-950 underline ml-1 cursor-pointer font-medium">
+      Clear All
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- Catalog Header Info -->
+  <div class="mb-3 flex items-center justify-between text-xs text-gray-500">
+    <div>
+      Showing <strong class="text-gray-950 font-bold">{{ total_count }}</strong> handcrafted pieces {% if selected_category and selected_category != 'All' %}in {{ selected_category }}{% endif %}
+    </div>
+    {% if selected_category and selected_category != 'All' %}
+    <a href="{% url 'catalog' %}" class="text-xs font-semibold text-[#5C3D2E] hover:text-[#8B5A2B] transition-colors cursor-pointer">
+      ← Show All Categories
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- 100% Full-Width Compact Product Grid matching React -->
+  {% if products %}
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+    {% for product in products %}
+    <div
+      onclick="window.location.href='{% url 'product_detail' pk=product.pk %}';"
+      class="bg-transparent cursor-pointer group flex flex-col justify-between"
+    >
+      <div>
+        <!-- Compact Card Image Container -->
+        <div class="relative aspect-[4/3] rounded-xl overflow-hidden bg-[#F2ECE4] mb-2 shadow-2xs">
+          <img
+            src="{{ product.primary_image }}"
+            alt="{{ product.name }}"
+            loading="lazy"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <!-- Wishlist Heart Button -->
+          <button
+            data-wishlist-id="{{ product.id }}"
+            onclick="event.stopPropagation(); toggleWishlist({{ product.id }});"
+            class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-800 shadow-sm active-tap hover:bg-white transition-all cursor-pointer"
+            title="Save to Wishlist"
+          >
+            <svg class="w-3.5 h-3.5 {% if product.id in WISHLIST_IDS %}fill-red-600 text-red-600{% else %}text-gray-700 fill-none{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </button>
+        </div>
+
+        <h4 class="font-sans font-bold text-xs sm:text-sm text-gray-950 line-clamp-1 group-hover:text-[#5C3D2E] transition-colors">
+          {{ product.name }}
+        </h4>
+        <p class="text-[10px] sm:text-xs text-gray-500 line-clamp-1 mt-0.5">{{ product.material }}</p>
+
+        <div class="flex items-center justify-between mt-1 mb-2">
+          <span class="font-sans font-bold text-xs sm:text-sm text-gray-950">{{ product.formatted_price }}</span>
+          <div class="flex items-center gap-1 text-[11px] text-amber-700 font-semibold">
+            <svg class="w-3 h-3 fill-amber-400 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <span>{{ product.rating }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button: Book Now -->
+      <button
+        onclick="event.stopPropagation(); window.location.href='{% url 'booking_summary' %}?product={{ product.id }}';"
+        class="w-full py-1.5 sm:py-2 bg-[#1E140F] hover:bg-black text-white text-[11px] sm:text-xs font-semibold rounded-lg active-tap flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+      >
+        <svg class="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span>Book Now</span>
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="py-12 text-center px-4 bg-white rounded-2xl border border-gray-200 shadow-2xs my-4 max-w-lg mx-auto font-sans">
+    <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-2 text-[#5C3D2E]">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+    </div>
+    <h4 class="font-sans font-bold text-sm text-gray-950 mb-1">No pieces found</h4>
+    <p class="text-xs text-gray-500 mb-4">No items currently match this category or price range.</p>
+    <a
+      href="{% url 'catalog' %}"
+      class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-gray-950 hover:bg-black text-white text-xs font-semibold transition-colors"
+    >
+      View Full Collection
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let activeSelectedStyle = "{{ selected_style|default:'All' }}";
+
+  function toggleFilterPopover(forceState) {
+    const popover = document.getElementById('filter-dropdown-popover');
+    if (!popover) return;
+    if (typeof forceState === 'boolean') {
+      if (forceState) popover.classList.remove('hidden');
+      else popover.classList.add('hidden');
+    } else {
+      popover.classList.toggle('hidden');
+    }
+  }
+
+  function setQuickBudget(val) {
+    const range = document.getElementById('filter-price-range');
+    const disp = document.getElementById('budget-display-val');
+    if (range) range.value = val;
+    if (disp) disp.innerText = '₹' + Number(val).toLocaleString('en-IN');
+  }
+
+  function selectStyleChip(styleName) {
+    activeSelectedStyle = styleName;
+    const chips = document.querySelectorAll('.style-chip');
+    chips.forEach(c => {
+      if (c.getAttribute('data-style') === styleName) {
+        c.className = 'style-chip px-2.5 py-1 rounded-full text-xs font-bold bg-gray-950 text-white shadow-2xs cursor-pointer transition-all';
+      } else {
+        c.className = 'style-chip px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 cursor-pointer transition-all';
+      }
+    });
+  }
+
+  function applyFilter(key, value) {
+    const url = new URL(window.location.href);
+    if (value === 'All' && key === 'category') {
+      url.searchParams.delete('category');
+    } else {
+      url.searchParams.set(key, value);
+    }
+    window.location.href = url.toString();
+  }
+
+  function applyAllFilters() {
+    const url = new URL(window.location.href);
+    const priceVal = document.getElementById('filter-price-range')?.value;
+    const inStock = document.getElementById('filter-instock-input')?.checked;
+
+    if (priceVal && Number(priceVal) < 250000) {
+      url.searchParams.set('max_price', priceVal);
+    } else {
+      url.searchParams.delete('max_price');
+    }
+
+    if (activeSelectedStyle && activeSelectedStyle !== 'All') {
+      url.searchParams.set('style', activeSelectedStyle);
+    } else {
+      url.searchParams.delete('style');
+    }
+
+    if (inStock) {
+      url.searchParams.set('in_stock', 'true');
+    } else {
+      url.searchParams.delete('in_stock');
+    }
+
+    window.location.href = url.toString();
+  }
+
+  // Click outside to close filter popover
+  document.addEventListener('click', (e) => {
+    const container = document.getElementById('filter-popover-container');
+    const popover = document.getElementById('filter-dropdown-popover');
+    if (container && popover && !popover.classList.contains('hidden')) {
+      if (!container.contains(e.target)) {
+        popover.classList.add('hidden');
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Customer Directory — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Customer Directory</h1>
+      <p class="text-xs text-gray-500">Comprehensive view of customer spend, orders, and contact details.</p>
+    </div>
+
+    <!-- Search input -->
+    <form method="GET" class="flex items-center gap-2">
+      <input type="text" name="q" value="{{ search_q }}" placeholder="Search by name, email, phone..." class="px-3.5 py-2 rounded-xl border border-gray-300 text-xs w-64 focus:outline-none focus:border-[#5C3D2E]" />
+      <button type="submit" class="px-3.5 py-2 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold cursor-pointer">Search</button>
+      {% if search_q %}<a href="{% url 'admin_customers' %}" class="text-xs text-red-600 hover:underline">Clear</a>{% endif %}
+    </form>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black border-b border-gray-200">
+          <tr>
+            <th class="py-3.5 px-4">Customer</th>
+            <th class="py-3.5 px-4">Contact</th>
+            <th class="py-3.5 px-4">Delivery Location</th>
+            <th class="py-3.5 px-4 text-center">Orders</th>
+            <th class="py-3.5 px-4">Total Spent</th>
+            <th class="py-3.5 px-4">Account Status</th>
+            <th class="py-3.5 px-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 font-medium">
+          {% for c in customers %}
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="py-3.5 px-4 font-bold text-gray-900">
+              <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-amber-100 text-[#5C3D2E] flex items-center justify-center font-bold text-xs">
+                  {{ c.name|slice:":1"|upper }}
+                </div>
+                <span>{{ c.name }}</span>
+              </div>
+            </td>
+            <td class="py-3.5 px-4">
+              <div class="text-gray-900">{{ c.email }}</div>
+              <div class="text-[11px] text-gray-500">{{ c.phone }}</div>
+            </td>
+            <td class="py-3.5 px-4 text-gray-600 truncate max-w-xs">{{ c.address|default:"Hyderabad, Telangana" }}</td>
+            <td class="py-3.5 px-4 text-center font-bold text-gray-900">{{ c.orders_count }}</td>
+            <td class="py-3.5 px-4 font-black text-emerald-700">₹{{ c.paid_amount|floatformat:0 }}</td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                {{ c.status }}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <a href="{% url 'admin_customer_detail' 0 %}?email={{ c.email }}" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-bold transition-colors">
+                View History →
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="py-8 text-center text-gray-400">No customers found matching search.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

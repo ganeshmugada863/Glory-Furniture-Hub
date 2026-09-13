@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Account & Studio Preferences
+    </span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
+  
+  <!-- Elevated Luxury Patron Profile Card -->
+  <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#24140E] via-[#362015] to-[#1E110A] text-white shadow-xl border border-[#4A3224] relative overflow-hidden">
+    <!-- Subtle Background Pattern / Glow -->
+    <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-[#C9963F]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div class="flex items-center gap-4 sm:gap-5">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#C9963F] to-[#8C5E28] text-gray-950 flex items-center justify-center text-2xl sm:text-3xl font-black shadow-lg ring-4 ring-white/10 shrink-0">
+          {{ USER_NAME|slice:":1"|default:"G" }}
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">{{ USER_NAME|default:"Ganesh M." }}</h1>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#C9963F] text-gray-950 shadow-xs">
+              👑 Master Patron
+            </span>
+          </div>
+          <p class="text-xs text-gray-300 flex items-center gap-2 flex-wrap">
+            <span>{{ USER_EMAIL|default:"ganesh@gloryfurniture.com" }}</span>
+            <span class="text-gray-500">•</span>
+            <span>{{ USER_PHONE|default:"+91 98765 43210" }}</span>
+          </p>
+          <p class="text-[11px] text-[#E0B058] font-medium pt-0.5">
+            Verified Solid Burma Teak Patron Account
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 shrink-0">
+        <a href="{% url 'customer_edit_profile' %}" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-colors shadow-xs">
+          Edit Profile
+        </a>
+        <a href="{% url 'logout' %}" class="px-4 py-2 rounded-xl bg-[#C9963F] hover:bg-[#D4A556] text-gray-950 text-xs font-black transition-colors shadow-xs">
+          Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Stats Bar -->
+    <div class="mt-6 pt-5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Orders</span>
+        <span class="text-base sm:text-lg font-black text-white">Active Route</span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Wishlist</span>
+        <span class="text-base sm:text-lg font-black text-white">{{ WISHLIST_COUNT|default:0 }} Saved</span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Delivery</span>
+        <span class="text-base sm:text-lg font-black text-white">White-Glove</span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Warranty</span>
+        <span class="text-base sm:text-lg font-black text-[#C9963F]">10-Yr Teak</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Activity Links Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    
+    <!-- 1. Orders -->
+    <a href="{% url 'orders' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
+        📦
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">My Future Orders</h3>
+        <p class="text-xs text-gray-500 mt-0.5">Track handcrafted solid teak orders and artisan care guides</p>
+      </div>
+    </a>
+
+    <!-- 2. Address -->
+    <a href="{% url 'address' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
+        📍
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">Delivery Addresses</h3>
+        <p class="text-xs text-gray-500 mt-0.5">Manage white-glove doorstep delivery locations</p>
+      </div>
+    </a>
+
+    <!-- 3. Wishlist -->
+    <a href="{% url 'wishlist' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
+        ❤️
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">Saved Wishlist</h3>
+        <p class="text-xs text-gray-500 mt-0.5">View curated handcrafted teak pieces ready to order</p>
+      </div>
+    </a>
+
+    <!-- 4. Custom Requests -->
+    <a href="{% url 'custom_request' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
+      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
+        📐
+      </div>
+      <div>
+        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">Custom Requests</h3>
+        <p class="text-xs text-gray-500 mt-0.5">View bespoke 3D blueprints and master artisan quotes</p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Studio Concierge & White-Glove Guarantee Banner -->
+  <div class="p-6 rounded-3xl bg-[#1E140F] text-white border border-[#3D2517] flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="space-y-1 text-center sm:text-left">
+      <h4 class="font-black text-sm text-[#C9963F] uppercase tracking-wider">🪵 Master Studio Concierge</h4>
+      <p class="text-xs text-gray-300">Direct assistance for custom dimensions, wood polish swatches &amp; route logistics.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="tel:+919440123456" class="px-5 py-2.5 rounded-xl bg-[#C9963F] hover:bg-[#D4A556] text-gray-950 text-xs font-black uppercase tracking-wider transition-colors shadow-xs">
+        📞 +91 94401 23456
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

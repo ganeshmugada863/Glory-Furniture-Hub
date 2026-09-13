@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Studio & Workshop — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Contact Hyderabad Studios
+    </span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+  <div class="text-center space-y-2">
+    <h1 class="text-2xl sm:text-3xl font-black text-gray-950">We Are Ready to Craft For You</h1>
+    <p class="text-xs text-gray-500">Reach out directly to our master studio team or visit in person</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="p-6 bg-white rounded-3xl border border-gray-200/80 shadow-2xs space-y-4">
+      <h2 class="font-bold text-base text-gray-950">🏛️ Banjara Hills Flagship Experience Center</h2>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Road No. 12, Opposite Audi Showroom, Banjara Hills, Hyderabad, Telangana 500034
+      </p>
+      <div class="space-y-1 text-xs text-gray-500 pt-2 border-t border-gray-100">
+        <p><strong>Direct Line:</strong> +91 98765 43210</p>
+        <p><strong>Timings:</strong> 10:00 AM – 8:30 PM (Open 7 Days)</p>
+      </div>
+    </div>
+
+    <div class="p-6 bg-white rounded-3xl border border-gray-200/80 shadow-2xs space-y-4">
+      <h2 class="font-bold text-base text-gray-950">🪚 Kukatpally Workshop & Seasoning Yard</h2>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Plot 15, Woodcraft Industrial Estate, Kukatpally, Hyderabad, Telangana 500072
+      </p>
+      <div class="space-y-1 text-xs text-gray-500 pt-2 border-t border-gray-100">
+        <p><strong>Technical Enquiries:</strong> +91 94401 23456</p>
+        <p><strong>Timings:</strong> 9:00 AM – 6:30 PM (Mon – Sat)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center pt-4">
+    <a href="{% url 'catalog' %}" class="inline-block px-8 py-3.5 rounded-full bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-md">
+      Explore Complete Furniture Catalog →
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Customer Details — {{ customer_name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div>
+    <a href="{% url 'admin_customers' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">← Back to Customer Directory</a>
+    <h1 class="text-2xl font-black text-gray-950 mt-1">{{ customer_name }}</h1>
+    <p class="text-xs text-gray-500">{{ customer_email }} &bull; {{ customer_phone }} &bull; {{ customer_address }}</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="p-4 rounded-xl bg-white border border-gray-200">
+      <span class="text-[10px] text-gray-400 font-bold uppercase block">Total Orders</span>
+      <span class="text-xl font-black text-gray-950">{{ orders.count }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white border border-gray-200">
+      <span class="text-[10px] text-gray-400 font-bold uppercase block">Total Paid Revenue</span>
+      <span class="text-xl font-black text-emerald-700">{{ total_spent }}</span>
+    </div>
+    <div class="p-4 rounded-xl bg-white border border-gray-200">
+      <span class="text-[10px] text-gray-400 font-bold uppercase block">Consultations Booked</span>
+      <span class="text-xl font-black text-purple-700">{{ bookings.count }}</span>
+    </div>
+  </div>
+
+  <!-- Orders History -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+    <h2 class="text-sm font-black text-gray-950 uppercase tracking-wider">Order History</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 text-gray-400 text-[10px] font-black uppercase">
+          <tr><th class="py-2.5 px-3">Order #</th><th class="py-2.5 px-3">Item</th><th class="py-2.5 px-3">Total</th><th class="py-2.5 px-3">Status</th></tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for o in orders %}
+          <tr>
+            <td class="py-2.5 px-3 font-mono font-bold text-[#5C3D2E]">#{{ o.order_number }}</td>
+            <td class="py-2.5 px-3">{{ o.product_name }}</td>
+            <td class="py-2.5 px-3 font-bold">{{ o.formatted_total }}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">{{ o.order_status }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="py-4 text-center text-gray-400">No orders placed.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

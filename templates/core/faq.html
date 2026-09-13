@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQs & Warranty — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Frequently Asked Questions & Care
+    </span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6">
+  <div class="text-center space-y-2">
+    <h1 class="text-2xl sm:text-3xl font-black text-gray-950">Wood Care & Purchasing FAQs</h1>
+    <p class="text-xs text-gray-500">Everything you need to know about our solid teak wood quality and warranties</p>
+  </div>
+
+  <div class="space-y-4">
+    <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-2">
+      <h3 class="font-bold text-sm text-gray-950">Q: What type of wood is used in Glory Furniture pieces?</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        We exclusively craft from Grade-A Burma Teak and seasoned CP (Central Province) Teak Wood. Teak is naturally rich in natural oils, making it waterproof, decay-resistant, and immune to warping or splitting.
+      </p>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-2">
+      <h3 class="font-bold text-sm text-gray-950">Q: Do you offer a warranty on the wood?</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Yes! All our solid teak cots, dining tables, sofa frames, and mandirs come with a written 10-Year Anti-Termite and Structural Integrity Warranty Certificate upon delivery.
+      </p>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-2">
+      <h3 class="font-bold text-sm text-gray-950">Q: Can you customize the cot or table dimensions for my room?</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Absolutely. Every product in our catalog can be customized down to the centimeter. You can also submit an entirely bespoke architectural drawing via our <a href="{% url 'custom_request' %}" class="text-[#5C3D2E] font-bold underline">Custom Request Form</a>.
+      </p>
+    </div>
+
+    <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs space-y-2">
+      <h3 class="font-bold text-sm text-gray-950">Q: How does delivery and assembly work?</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Our specialized white-glove logistics team safely transports each handcrafted piece in multi-layer padded blankets. Our master carpenters assemble, align, and test everything right in your room at no extra charge within Hyderabad.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

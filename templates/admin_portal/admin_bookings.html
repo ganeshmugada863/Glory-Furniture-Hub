@@ -1,0 +1,63 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Consultations & Measurements — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div>
+    <h1 class="text-2xl font-black text-gray-950 tracking-tight">Studio &amp; In-Home Consultations</h1>
+    <p class="text-xs text-gray-500">Track showroom appointments and master carpenter measurement visits.</p>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black border-b border-gray-200">
+          <tr>
+            <th class="py-3.5 px-4">Booking ID</th>
+            <th class="py-3.5 px-4">Customer</th>
+            <th class="py-3.5 px-4">Consultation Mode</th>
+            <th class="py-3.5 px-4">Schedule</th>
+            <th class="py-3.5 px-4">Wood Preference</th>
+            <th class="py-3.5 px-4">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 font-medium">
+          {% for b in bookings %}
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="py-3.5 px-4 font-mono font-bold text-[#5C3D2E]">{{ b.booking_id }}</td>
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-gray-900">{{ b.customer_name }}</div>
+              <div class="text-[10px] text-gray-500">{{ b.phone }}</div>
+            </td>
+            <td class="py-3.5 px-4 font-bold text-gray-800">{{ b.consultation_type }}</td>
+            <td class="py-3.5 px-4">
+              <div>{{ b.preferred_date|date:"D, M d, Y" }}</div>
+              <div class="text-[10px] text-gray-500">{{ b.time_slot }}</div>
+            </td>
+            <td class="py-3.5 px-4">{{ b.wood_preference }}</td>
+            <td class="py-3.5 px-4">
+              <form method="POST" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_booking_status" />
+                <input type="hidden" name="booking_id" value="{{ b.booking_id }}" />
+                <select name="status" onchange="this.form.submit()" class="px-2.5 py-1 rounded text-xs font-semibold border border-gray-300 bg-white cursor-pointer">
+                  <option value="Confirmed" {% if b.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                  <option value="Scheduled" {% if b.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+                  <option value="Completed" {% if b.status == 'Completed' %}selected{% endif %}>Completed</option>
+                  <option value="Cancelled" {% if b.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="py-8 text-center text-gray-400">No consultation bookings yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Saved Wishlist — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'catalog' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Saved Wishlist ({{ products|length }})
+    </span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="glory-container-96 py-6 sm:py-10 space-y-6 font-sans">
+  <div class="border-b border-gray-200 pb-3">
+    <h1 class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">Your Saved Artisan Creations</h1>
+    <p class="text-xs sm:text-sm text-gray-500 mt-1">Review your favorite handcrafted solid teak pieces and easily move them to your cart.</p>
+  </div>
+
+  {% if products %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+    {% for product in products %}
+    <div class="glory-curved-card bg-white p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 group" style="border-radius: 28px !important; border: 1.8px solid #E2D2C0 !important;">
+      <div>
+        <!-- Curved Image Container -->
+        <div class="glory-curved-image relative aspect-[4/3] bg-gray-100 mb-3.5 shadow-2xs">
+          <a href="{% url 'product_detail' pk=product.pk %}">
+            <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-[22px]" />
+          </a>
+        </div>
+        
+        <div class="space-y-1 px-1">
+          <a href="{% url 'product_detail' pk=product.pk %}" class="block font-bold text-sm sm:text-base text-gray-950 hover:text-[#5C3D2E] transition-colors truncate">
+            {{ product.name }}
+          </a>
+          <p class="text-xs text-gray-500 truncate">{{ product.material|default:"Grade-A Burma Teak" }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 mt-3 border-t border-gray-100 px-1">
+        <div>
+          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Price</span>
+          <span class="text-base sm:text-lg font-black text-gray-950">{{ product.formatted_price }}</span>
+        </div>
+        
+        <!-- Move to Cart Button -->
+        <button 
+          onclick="moveToCart({{ product.id }})" 
+          class="px-4 py-2.5 rounded-full bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs hover:shadow-md active-tap cursor-pointer"
+          title="Move to Cart"
+        >
+          <svg class="w-3.5 h-3.5 text-[#E0B058]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span>Move to Cart</span>
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-16 bg-white rounded-3xl border border-gray-200/80 p-8 space-y-4" style="border-radius: 28px !important;">
+    <div class="w-16 h-16 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-2xl mx-auto">
+      ❤️
+    </div>
+    <h3 class="text-base font-bold text-gray-900">No saved pieces in wishlist yet</h3>
+    <p class="text-xs text-gray-500 max-w-md mx-auto">Click the heart icon on any product in our catalog to save it to your curated wishlist.</p>
+    <a href="{% url 'catalog' %}" class="inline-block px-6 py-2.5 rounded-full bg-[#5C3D2E] text-white text-xs font-bold shadow-xs hover:bg-black transition-colors">
+      Browse Catalog
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+async function moveToCart(productId) {
+  const btn = event?.currentTarget;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span class="animate-spin mr-1">⏳</span> Moving...`;
+  }
+  try {
+    const res = await fetch('/api/cart/add/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ product_id: productId, quantity: 1, size: 'Standard' })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      // Remove from wishlist
+      await fetch('/api/wishlist/toggle/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId })
+      });
+      // Redirect to Cart page
+      window.location.href = '{% url "cart" %}';
+    } else {
+      alert(data.message || 'Could not move item to cart.');
+      if (btn) { btn.disabled = false; btn.innerText = 'Move to Cart'; }
+    }
+  } catch (err) {
+    console.error(err);
+    window.location.href = '{% url "cart" %}';
+  }
+}
+</script>
+{% endblock %}

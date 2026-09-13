@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Custom Request Received — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-2xl mx-auto px-4 py-12 text-center space-y-6">
+  <div class="w-20 h-20 rounded-full bg-amber-100 text-[#5C3D2E] flex items-center justify-center text-3xl mx-auto shadow-xs">
+    📐
+  </div>
+
+  <div class="space-y-2">
+    <span class="text-xs font-bold uppercase tracking-widest text-[#C9963F]">Blueprint Submitted</span>
+    <h1 class="text-2xl sm:text-3xl font-black text-gray-950">Custom Furniture Request Logged</h1>
+    <p class="text-xs text-gray-600 max-w-md mx-auto">
+      Thank you, <strong>{{ custom_req.customer_name|default:"Valued Customer" }}</strong>! Our head carpentry supervisor is evaluating timber seasoning volume and joinery complexity.
+    </p>
+  </div>
+
+  {% if custom_req %}
+  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/90 shadow-warm text-left space-y-3 text-xs">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+      <div>
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Request Reference ID</span>
+        <span class="text-sm font-black text-[#5C3D2E]">{{ custom_req.request_id }}</span>
+      </div>
+      <span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 font-bold text-[11px]">
+        {{ custom_req.status }}
+      </span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <span class="text-gray-400 block">Category:</span>
+        <span class="font-bold text-gray-900">{{ custom_req.category }}</span>
+      </div>
+      <div>
+        <span class="text-gray-400 block">Wood Specification:</span>
+        <span class="font-bold text-gray-900">{{ custom_req.wood_type }}</span>
+      </div>
+      <div>
+        <span class="text-gray-400 block">Target Budget:</span>
+        <span class="font-bold text-gray-900">{{ custom_req.budget_range }}</span>
+      </div>
+      <div>
+        <span class="text-gray-400 block">Dimensions:</span>
+        <span class="font-bold text-gray-900">{{ custom_req.dimensions|default:"Custom" }}</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+    <a href="{% url 'my_requests' %}" class="w-full sm:w-auto px-6 py-3 rounded-full bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-bold tracking-wider uppercase transition-colors">
+      View My Custom Requests
+    </a>
+    <a href="{% url 'catalog' %}" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 text-gray-800 hover:bg-gray-50 text-xs font-semibold transition-colors">
+      Browse In-Stock Catalog
+    </a>
+  </div>
+</div>
+{% endblock %}

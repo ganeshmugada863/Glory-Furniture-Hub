@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Custom Furniture Requests — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      My Custom Furniture Requests ({{ requests|length }})
+    </span>
+  </div>
+  <a href="{% url 'custom_request' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">
+    + New Custom Request
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-4">
+  {% for r in requests %}
+  <div class="bg-white rounded-2xl p-5 border border-gray-200/80 shadow-2xs hover:shadow-warm transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <span class="font-black text-xs text-[#5C3D2E]">{{ r.request_id }}</span>
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-100 text-blue-800">
+          {{ r.status }}
+        </span>
+      </div>
+      <h3 class="font-bold text-sm text-gray-950">{{ r.category }}</h3>
+      <p class="text-xs text-gray-500">
+        🪵 {{ r.wood_type }} • 💰 {{ r.budget_range }} • 📐 {{ r.dimensions|default:"Custom" }}
+      </p>
+    </div>
+
+    <div class="text-xs text-gray-400">
+      {{ r.created_at|date:"M d, Y" }}
+    </div>
+  </div>
+  {% empty %}
+  <div class="text-center py-16 bg-white rounded-3xl border border-gray-200/80 p-8 space-y-4">
+    <p class="text-sm font-semibold text-gray-500">You have not submitted any custom furniture blueprints yet.</p>
+    <a href="{% url 'custom_request' %}" class="inline-block px-6 py-2.5 rounded-full bg-[#5C3D2E] text-white text-xs font-bold">
+      Submit Your First Custom Design
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

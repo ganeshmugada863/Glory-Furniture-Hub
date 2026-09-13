@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-xl mx-auto px-4 py-16 text-center space-y-7 selection:bg-[#5C3D2E] selection:text-white">
+  
+  <!-- Success Icon -->
+  <div class="w-20 h-20 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto shadow-xs">
+    ✓
+  </div>
+
+  <!-- Minimal Header -->
+  <div class="space-y-2">
+    <span class="text-xs font-black uppercase tracking-widest text-[#5C3D2E]">Payment received and order confirmed</span>
+    <h1 class="text-2xl sm:text-3xl font-black text-gray-950">
+      Your furniture order is confirmed.
+    </h1>
+    <p class="text-sm text-gray-600">
+      Thank you, <strong class="text-gray-950">{{ booking.customer_name }}</strong>.
+    </p>
+  </div>
+
+  <!-- Compact Order Summary Box -->
+  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-xs text-left space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+      <div>
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Order Reference</span>
+        <span class="text-sm font-black text-gray-950">#{{ order.order_number|default:booking.booking_id }}</span>
+      </div>
+      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black">
+        Confirmed
+      </span>
+    </div>
+
+    <div class="space-y-2 text-xs">
+      <div class="flex justify-between items-center text-gray-700">
+        <span class="font-medium text-gray-500">Product:</span>
+        <span class="font-bold text-gray-950 text-right">{{ order.product_name|default:"Handcrafted Teak Furniture" }}</span>
+      </div>
+
+      <div class="flex justify-between items-center text-gray-700">
+        <span class="font-medium text-gray-500">Amount:</span>
+        <span class="font-bold text-[#5C3D2E]">{{ order.formatted_total|default:"100% Paid" }}</span>
+      </div>
+
+      {% if utr_number %}
+      <div class="flex justify-between items-center text-gray-700">
+        <span class="font-medium text-gray-500">UTR / Ref:</span>
+        <span class="font-mono font-bold text-gray-900">{{ utr_number }}</span>
+      </div>
+      {% endif %}
+
+      {% if booking.address %}
+      <div class="pt-2 border-t border-gray-100 text-gray-700">
+        <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
+        <p class="font-medium text-gray-900">{{ booking.address }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Primary Action: Check Orders Button -->
+  <div class="pt-2 space-y-3">
+    <a href="{% url 'orders' %}" 
+       class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-2xl text-sm font-black tracking-wider uppercase text-white shadow-md hover:shadow-lg active-tap transition-all"
+       style="background: #5C3D2E;">
+      Check Orders
+    </a>
+
+    <div>
+      <a href="{% url 'catalog' %}" class="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors">
+        Continue Shopping →
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,408 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Master Studio Admin Console — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#1E140F] text-white px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-md relative z-20">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg bg-[#C9963F] text-gray-950 flex items-center justify-center font-black text-sm">
+      👑
+    </div>
+    <div>
+      <h1 class="text-sm sm:text-base font-black tracking-wide text-white leading-tight">Master Studio Admin Console</h1>
+      <p class="text-[10px] text-[#C9963F]">Hyderabad Central Workshop &bull; Customer Orders &amp; WordPress UPI Gateway &bull; Production Tracking</p>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="{% url 'switch_role_api' %}" class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors border border-white/20">
+      ← Exit to Customer Storefront
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 selection:bg-[#5C3D2E] selection:text-white">
+  
+  <!-- Navigation Tabs -->
+  <div class="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto no-scrollbar">
+    <a href="?tab=overview" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if active_tab == 'overview' %}bg-gray-950 text-white shadow-xs{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+      📊 Overview &amp; Metrics
+    </a>
+    <a href="?tab=orders" class="px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 {% if active_tab == 'orders' %}bg-[#5C3D2E] text-white shadow-xs{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+      <span>📦</span>
+      <span>Customer Orders ({{ total_orders }})</span>
+    </a>
+    <a href="?tab=products" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if active_tab == 'products' %}bg-gray-950 text-white shadow-xs{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+      🪵 Catalog ({{ total_products }})
+    </a>
+    <a href="?tab=bookings" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if active_tab == 'bookings' %}bg-gray-950 text-white shadow-xs{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+      📅 Consultations ({{ total_bookings }})
+    </a>
+    <a href="?tab=custom-requests" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {% if active_tab == 'custom-requests' %}bg-gray-950 text-white shadow-xs{% else %}bg-white text-gray-700 hover:bg-gray-100{% endif %}">
+      📐 Custom Blueprints ({{ total_requests }})
+    </a>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- TAB 1: OVERVIEW METRICS                                   -->
+  <!-- ========================================================= -->
+  {% if active_tab == 'overview' %}
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Revenue</span>
+        <div class="text-2xl font-black text-emerald-700">{{ total_revenue }}</div>
+        <span class="text-[11px] text-emerald-800 font-semibold">100% Full Payment settled</span>
+      </div>
+
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Customer Orders</span>
+        <div class="text-2xl font-black text-gray-950">{{ total_orders }} Orders</div>
+        <span class="text-[11px] text-purple-800 font-semibold">WordPress UPI &amp; Cards</span>
+      </div>
+
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Catalog Pieces</span>
+        <div class="text-2xl font-black text-[#5C3D2E]">{{ total_products }} Items</div>
+        <span class="text-[11px] text-gray-500">100% Solid Burma Teak</span>
+      </div>
+
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Active Consultations</span>
+        <div class="text-2xl font-black text-gray-950">{{ total_bookings }} Booked</div>
+        <span class="text-[11px] text-amber-700 font-semibold">Showroom &amp; Site Visits</span>
+      </div>
+
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs space-y-1">
+        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Bespoke Requests</span>
+        <div class="text-2xl font-black text-gray-950">{{ total_requests }} Requests</div>
+        <span class="text-[11px] text-blue-700 font-semibold">Estimation in progress</span>
+      </div>
+
+    </div>
+
+    <!-- Gateway Notice Banner -->
+    <div class="bg-[#5C3D2E] text-white rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-white/20 text-white">Payment Gateway</span>
+          <span class="text-xs font-bold text-amber-200">WordPress Direct UPI Gateway</span>
+        </div>
+        <h3 class="text-lg font-black">Direct UPI Payments &bull; UTR Verification &bull; 100% Full Payment</h3>
+        <p class="text-xs text-amber-100/90 max-w-2xl leading-relaxed">
+          Customer payments are processed directly via QR Code and UPI App intents with 12-digit UTR verification. View and manage all orders under the Customer Orders tab.
+        </p>
+      </div>
+      <a href="?tab=orders" class="px-5 py-2.5 rounded-xl bg-white text-[#5C3D2E] text-xs font-black uppercase tracking-wider shadow hover:bg-gray-100 flex-shrink-0 transition-all">
+        View Orders →
+      </a>
+    </div>
+
+    <!-- Workshop Operations Summary -->
+    <div class="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-2xs space-y-3">
+      <h3 class="font-bold text-sm text-gray-950">Workshop Operations Protocol</h3>
+      <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/60 text-xs text-amber-900 leading-relaxed">
+        <strong>Burma Teak Stock Notice:</strong> 450 cu. ft. of kiln-dried Grade-A teak logs arrived at Kukatpally Seasoning Yard. All confirmed full-payment orders are scheduled for sawmill cutting and white-glove delivery across Hyderabad.
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ========================================================= -->
+  <!-- TAB 2: CUSTOMER ORDERS (WORDPRESS UPI & FULL PAYMENT)     -->
+  <!-- ========================================================= -->
+  {% if active_tab == 'orders' %}
+  <div class="space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-base font-black text-gray-950 flex items-center gap-2">
+          <span>All Customer Furniture Orders</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+            Full Payment &amp; UPI
+          </span>
+        </h2>
+        <p class="text-xs text-gray-500 mt-0.5">
+          Review customer orders, verify submitted 12-digit UPI UTR reference numbers, and update workshop progress.
+        </p>
+      </div>
+
+      <a href="?tab=orders" class="px-3.5 py-1.5 rounded-xl bg-gray-950 text-white text-xs font-bold hover:bg-gray-800 transition-colors self-start sm:self-auto">
+        ↻ Refresh Orders
+      </a>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="bg-white rounded-3xl border border-gray-200 shadow-2xs overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-50/80 border-b border-gray-200 text-gray-600 font-bold uppercase tracking-wider text-[10px]">
+            <tr>
+              <th class="py-3 px-4">Order #</th>
+              <th class="py-3 px-4">Customer</th>
+              <th class="py-3 px-4">Furniture Piece</th>
+              <th class="py-3 px-4">Amount</th>
+              <th class="py-3 px-4">Payment Channel / UTR</th>
+              <th class="py-3 px-4">Payment Status</th>
+              <th class="py-3 px-4">Production Status</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            {% for o in orders %}
+            <tr class="hover:bg-amber-50/30 transition-colors">
+              
+              <!-- Order # -->
+              <td class="py-3.5 px-4 font-black text-[#5C3D2E]">
+                #{{ o.order_number }}
+                <span class="block text-[10px] text-gray-400 font-normal">
+                  {{ o.created_at|date:"d M Y" }}
+                </span>
+              </td>
+
+              <!-- Customer -->
+              <td class="py-3.5 px-4 font-bold text-gray-900">
+                <div>{{ o.customer_name }}</div>
+                <div class="text-[10px] text-gray-500 font-normal">{{ o.phone }}</div>
+                <div class="text-[10px] text-gray-400 font-normal truncate max-w-xs">{{ o.shipping_address }}</div>
+              </td>
+
+              <!-- Furniture Item -->
+              <td class="py-3.5 px-4 text-gray-800">
+                <div class="font-bold truncate max-w-[180px]">{{ o.product_name }}</div>
+                <div class="text-[10px] text-gray-500">{{ o.selected_wood }} &bull; Qty: {{ o.quantity }}</div>
+              </td>
+
+              <!-- Financials -->
+              <td class="py-3.5 px-4 font-black text-gray-950 text-sm">
+                {{ o.formatted_total }}
+              </td>
+
+              <!-- Payment Channel & UTR Reference -->
+              <td class="py-3.5 px-4">
+                {% if o.transactions.first %}
+                  <div class="font-bold text-gray-900 flex items-center gap-1">
+                    <span>⚡</span>
+                    <span>{{ o.transactions.first.gateway }}</span>
+                  </div>
+                  <div class="text-[11px] font-mono text-purple-900 font-bold bg-purple-50 px-2 py-0.5 rounded border border-purple-200 mt-1 inline-block">
+                    {{ o.transactions.first.gateway_payment_id }}
+                  </div>
+                {% elif 'UTR' in o.booking.notes %}
+                  <div class="font-bold text-emerald-800">WordPress UPI Gateway</div>
+                  <span class="text-[10px] font-mono text-gray-600 block">{{ o.booking.notes|truncatechars:35 }}</span>
+                {% else %}
+                  <span class="text-xs text-gray-700 font-semibold">Direct Full Payment</span>
+                {% endif %}
+              </td>
+
+              <!-- Payment Status -->
+              <td class="py-3.5 px-4">
+                {% if o.order_status == 'FULLY_PAID' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  ✓ Paid Full
+                </span>
+                {% elif o.order_status == 'CONFIRMED' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 border border-blue-300">
+                  Confirmed (COD)
+                </span>
+                {% else %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                  Pending
+                </span>
+                {% endif %}
+              </td>
+
+              <!-- Workshop Production Status -->
+              <td class="py-3.5 px-4">
+                <form method="POST" action="{% url 'admin_portal' %}" class="inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="update_order_status" />
+                  <input type="hidden" name="order_id" value="{{ o.id }}" />
+                  <select name="order_status" onchange="this.form.submit()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-gray-300 bg-white shadow-2xs cursor-pointer">
+                    <option value="PROCESSING" {% if o.order_status == 'PROCESSING' %}selected{% endif %}>Processing</option>
+                    <option value="CONFIRMED" {% if o.order_status == 'CONFIRMED' %}selected{% endif %}>Confirmed</option>
+                    <option value="IN_PRODUCTION" {% if o.order_status == 'IN_PRODUCTION' %}selected{% endif %}>In Production</option>
+                    <option value="READY_FOR_DELIVERY" {% if o.order_status == 'READY_FOR_DELIVERY' %}selected{% endif %}>Ready for Delivery</option>
+                    <option value="DELIVERED" {% if o.order_status == 'DELIVERED' %}selected{% endif %}>Delivered</option>
+                  </select>
+                </form>
+              </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="py-8 text-center text-gray-500 font-semibold">
+                No orders recorded yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
+  <!-- ========================================================= -->
+  <!-- TAB 3: PRODUCTS CATALOG MANAGEMENT                        -->
+  <!-- ========================================================= -->
+  {% if active_tab == 'products' %}
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-base font-bold text-gray-950">All Master Catalog Pieces</h2>
+      <a href="{% url 'admin_portal' %}?tab=products" class="px-4 py-2 rounded-xl bg-gray-950 text-white text-xs font-bold">
+        Refresh Catalog
+      </a>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-gray-200/80 shadow-2xs overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-gray-50 border-b border-gray-200 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">
+            <tr>
+              <th class="py-3 px-4">Item</th>
+              <th class="py-3 px-4">Category</th>
+              <th class="py-3 px-4">Price</th>
+              <th class="py-3 px-4">Stock</th>
+              <th class="py-3 px-4">Timber Spec</th>
+              <th class="py-3 px-4 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            {% for p in products %}
+            <tr class="hover:bg-gray-50/50">
+              <td class="py-3 px-4 font-bold text-gray-900 flex items-center gap-2">
+                <span class="w-6 h-6 rounded bg-amber-100 flex items-center justify-center text-xs">🪵</span>
+                <span>{{ p.name }}</span>
+              </td>
+              <td class="py-3 px-4 text-gray-600">{{ p.category.name|default:"Furniture" }}</td>
+              <td class="py-3 px-4 font-bold text-gray-900">₹{{ p.price|floatformat:0 }}</td>
+              <td class="py-3 px-4">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">
+                  {{ p.stock }} in stock
+                </span>
+              </td>
+              <td class="py-3 px-4 text-gray-500">{{ p.material|default:"100% Burma Teak" }}</td>
+              <td class="py-3 px-4 text-right">
+                <form method="POST" action="{% url 'admin_portal' %}" class="inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete_product" />
+                  <input type="hidden" name="product_id" value="{{ p.id }}" />
+                  <button type="submit" onclick="return confirm('Remove product from catalog?')" class="text-red-600 hover:text-red-800 font-semibold">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ========================================================= -->
+  <!-- TAB 4: BOOKINGS & CONSULTATIONS                           -->
+  <!-- ========================================================= -->
+  {% if active_tab == 'bookings' %}
+  <div class="space-y-4">
+    <h2 class="text-base font-bold text-gray-950">Customer Design Appointments</h2>
+
+    <div class="space-y-3">
+      {% for b in bookings %}
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="font-black text-xs text-[#5C3D2E]">{{ b.booking_id }}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-green-100 text-green-800">
+              {{ b.status }}
+            </span>
+          </div>
+          <h3 class="font-bold text-sm text-gray-950">{{ b.customer_name }} — {{ b.consultation_type }}</h3>
+          <p class="text-xs text-gray-500">
+            📅 {{ b.preferred_date|date:"F d, Y" }} at {{ b.time_slot }} &bull; 📞 {{ b.phone }} &bull; 🪵 {{ b.wood_preference }}
+          </p>
+          {% if b.address %}
+          <p class="text-xs text-gray-700 italic">Site: {{ b.address }}</p>
+          {% endif %}
+        </div>
+
+        <form method="POST" action="{% url 'admin_portal' %}" class="flex items-center gap-2">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_booking_status" />
+          <input type="hidden" name="booking_id" value="{{ b.booking_id }}" />
+          <select name="status" class="px-3 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold text-gray-900">
+            <option value="Confirmed" {% if b.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+            <option value="Scheduled" {% if b.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+            <option value="Completed" {% if b.status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if b.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+          </select>
+          <button type="submit" class="px-3 py-1.5 rounded-lg bg-gray-950 text-white text-xs font-bold">
+            Update
+          </button>
+        </form>
+      </div>
+      {% empty %}
+      <p class="text-xs text-gray-500 italic">No design appointments yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ========================================================= -->
+  <!-- TAB 5: CUSTOM FURNITURE REQUESTS                          -->
+  <!-- ========================================================= -->
+  {% if active_tab == 'custom-requests' %}
+  <div class="space-y-4">
+    <h2 class="text-base font-bold text-gray-950">Architectural Custom Orders</h2>
+
+    <div class="space-y-3">
+      {% for r in custom_requests %}
+      <div class="p-5 bg-white rounded-2xl border border-gray-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="font-black text-xs text-[#5C3D2E]">{{ r.request_id }}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-100 text-blue-800">
+              {{ r.status }}
+            </span>
+          </div>
+          <h3 class="font-bold text-sm text-gray-950">{{ r.customer_name }} — {{ r.category }}</h3>
+          <p class="text-xs text-gray-500">
+            🪵 {{ r.wood_type }} &bull; 💰 {{ r.budget_range }} &bull; 📞 {{ r.phone }}
+          </p>
+          {% if r.description %}
+          <p class="text-xs text-gray-700 italic">"{{ r.description }}"</p>
+          {% endif %}
+        </div>
+
+        <form method="POST" action="{% url 'admin_portal' %}" class="flex items-center gap-2">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_request_status" />
+          <input type="hidden" name="request_id" value="{{ r.request_id }}" />
+          <select name="status" class="px-3 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold text-gray-900">
+            <option value="Submitted" {% if r.status == 'Submitted' %}selected{% endif %}>Submitted</option>
+            <option value="Estimation In Progress" {% if r.status == 'Estimation In Progress' %}selected{% endif %}>Estimation In Progress</option>
+            <option value="Quote Sent" {% if r.status == 'Quote Sent' %}selected{% endif %}>Quote Sent</option>
+            <option value="Approved" {% if r.status == 'Approved' %}selected{% endif %}>Approved</option>
+            <option value="Crafting Started" {% if r.status == 'Crafting Started' %}selected{% endif %}>Crafting Started</option>
+            <option value="Delivered" {% if r.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+          </select>
+          <button type="submit" class="px-3 py-1.5 rounded-lg bg-gray-950 text-white text-xs font-bold">
+            Update
+          </button>
+        </form>
+      </div>
+      {% empty %}
+      <p class="text-xs text-gray-500 italic">No custom blueprints submitted yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

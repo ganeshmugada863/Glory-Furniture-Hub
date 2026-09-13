@@ -1,0 +1,88 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Orders Management — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Orders Management</h1>
+      <p class="text-xs text-gray-500">Monitor customer orders, verify UPI UTR numbers, and manage production stages.</p>
+    </div>
+
+    <!-- Filter & Search -->
+    <form method="GET" class="flex items-center gap-2">
+      <input type="text" name="q" value="{{ search_q }}" placeholder="Order #, Customer, Phone..." class="px-3.5 py-2 rounded-xl border border-gray-300 text-xs w-60 focus:outline-none focus:border-[#5C3D2E]" />
+      <button type="submit" class="px-3.5 py-2 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold cursor-pointer">Filter</button>
+    </form>
+  </div>
+
+  <div class="bg-white rounded-3xl border border-[#EADBCE] shadow-sm overflow-hidden" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[850px] text-left text-xs">
+        <thead class="bg-[#FAF7F4] text-gray-500 uppercase text-[10px] font-black border-b border-gray-200">
+          <tr>
+            <th class="py-3.5 px-5">Order #</th>
+            <th class="py-3.5 px-5">Customer</th>
+            <th class="py-3.5 px-5">Item Specs</th>
+            <th class="py-3.5 px-5">Amount</th>
+            <th class="py-3.5 px-5">Payment &amp; UTR</th>
+            <th class="py-3.5 px-5">Payment Status</th>
+            <th class="py-3.5 px-5">Workshop Progress</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 font-medium">
+          {% for o in orders %}
+          <tr class="hover:bg-[#FDFBF9] transition-colors">
+            <td class="py-4 px-5 font-mono font-black text-[#5C3D2E] whitespace-nowrap">
+              #{{ o.order_number }}
+              <span class="block text-[10px] text-gray-400 font-normal">{{ o.created_at|date:"M d, Y" }}</span>
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              <div class="font-bold text-gray-950">{{ o.customer_name }}</div>
+              <div class="text-[10px] text-gray-500">{{ o.phone }}</div>
+            </td>
+            <td class="py-4 px-5">
+              <div class="font-bold text-gray-900 truncate max-w-xs">{{ o.product_name }}</div>
+              <div class="text-[10px] text-gray-500">{{ o.selected_wood }} &bull; Qty: {{ o.quantity }}</div>
+            </td>
+            <td class="py-4 px-5 font-black text-gray-950 whitespace-nowrap text-sm">{{ o.formatted_total }}</td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              {% if o.transactions.first %}
+              <div class="font-mono text-[11px] font-bold text-purple-900 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 inline-block">
+                {{ o.transactions.first.gateway_payment_id }}
+              </div>
+              {% else %}
+              <span class="text-[11px] text-gray-500 font-semibold">Direct Full Payment</span>
+              {% endif %}
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black {% if o.order_status == 'FULLY_PAID' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% else %}bg-amber-100 text-amber-900 border border-amber-300{% endif %}">
+                {{ o.order_status }}
+              </span>
+            </td>
+            <td class="py-3.5 px-4">
+              <form method="POST" class="inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_order_status" />
+                <input type="hidden" name="order_id" value="{{ o.id }}" />
+                <select name="order_status" onchange="this.form.submit()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-gray-300 bg-white shadow-2xs cursor-pointer">
+                  <option value="FULLY_PAID" {% if o.order_status == 'FULLY_PAID' %}selected{% endif %}>Paid (Full)</option>
+                  <option value="IN_PRODUCTION" {% if o.order_status == 'IN_PRODUCTION' %}selected{% endif %}>In Production</option>
+                  <option value="READY_FOR_DELIVERY" {% if o.order_status == 'READY_FOR_DELIVERY' %}selected{% endif %}>Ready for Delivery</option>
+                  <option value="DELIVERED" {% if o.order_status == 'DELIVERED' %}selected{% endif %}>Delivered</option>
+                </select>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="py-8 text-center text-gray-400">No orders found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

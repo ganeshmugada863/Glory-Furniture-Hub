@@ -1,0 +1,56 @@
+{% extends 'admin_portal/admin_base.html' %}
+
+{% block title %}Payment Ledger — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Payment Ledger &amp; UPI Verification</h1>
+      <p class="text-xs text-gray-500">Verified bank and gateway transactions with customer 12-digit UTR references.</p>
+    </div>
+    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-xs font-black">
+      Total Collected: {{ total_collected }}
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black border-b border-gray-200">
+          <tr>
+            <th class="py-3.5 px-4">Gateway Reference / UTR</th>
+            <th class="py-3.5 px-4">Order #</th>
+            <th class="py-3.5 px-4">Customer</th>
+            <th class="py-3.5 px-4">Amount Paid</th>
+            <th class="py-3.5 px-4">Channel</th>
+            <th class="py-3.5 px-4">Timestamp</th>
+            <th class="py-3.5 px-4">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 font-medium">
+          {% for t in transactions %}
+          <tr class="hover:bg-gray-50/50 transition-colors">
+            <td class="py-3.5 px-4 font-mono font-bold text-gray-900">{{ t.gateway_payment_id }}</td>
+            <td class="py-3.5 px-4 font-mono text-[#5C3D2E]">#{{ t.order.order_number }}</td>
+            <td class="py-3.5 px-4 font-bold text-gray-900">{{ t.order.customer_name }}</td>
+            <td class="py-3.5 px-4 font-black text-emerald-700">₹{{ t.amount|floatformat:0 }}</td>
+            <td class="py-3.5 px-4">{{ t.gateway }}</td>
+            <td class="py-3.5 px-4 text-gray-500">{{ t.paid_at|date:"M d, Y H:i" }}</td>
+            <td class="py-3.5 px-4">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
+                {{ t.status }}
+              </span>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="py-8 text-center text-gray-400">No payment transactions recorded yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

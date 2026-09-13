@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Future Orders & Consultations — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-2.5 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" aria-label="Go back">
+      <svg class="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-extrabold text-gray-950 border-l border-gray-300 pl-2.5 leading-none">
+      My Future Orders &amp; Consultations ({{ orders|length }})
+    </span>
+  </div>
+  <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1">
+    <span>+ Browse Teak Catalog</span>
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="glory-container-96 py-6 sm:py-10 space-y-6 font-sans">
+
+  <!-- Header Banner -->
+  <div class="border-b border-gray-200 pb-3 text-left">
+    <h1 class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
+      My Future Orders
+    </h1>
+    <p class="text-xs sm:text-sm text-gray-500 mt-1">
+      Track your handcrafted teak orders, view dimensions, and access artisan owner guides.
+    </p>
+  </div>
+
+  <!-- SECTION 1: FURNITURE ORDERS -->
+  <div class="space-y-4">
+    {% for o in orders %}
+    <!-- Ultra-Clean Curved Order Card -->
+    <div class="glory-curved-card bg-white p-4 sm:p-5 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4" style="border-radius: 28px !important; border: 1.8px solid #E2D2C0 !important; background-color: #ffffff;">
+      
+      <!-- Left: Thumbnail + Name + Attributes in One Single Line Underneath -->
+      <div class="flex items-center gap-4 sm:gap-5 min-w-0">
+        {% if o.product and o.product.primary_image %}
+        <img src="{{ o.product.primary_image }}" alt="{{ o.product_name }}" class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image object-cover border border-[#E5D9CC] flex-shrink-0 shadow-2xs" style="border-radius: 20px !important;" />
+        {% else %}
+        <div class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl flex-shrink-0" style="border-radius: 20px !important;">
+          🪵
+        </div>
+        {% endif %}
+
+        <div class="min-w-0 space-y-1 text-left">
+          <h3 class="text-sm sm:text-base md:text-lg font-black text-gray-950 truncate tracking-tight leading-snug">
+            {{ o.product_name }}
+          </h3>
+          <div class="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-900 border border-amber-300">
+              Pending
+            </span>
+            <span class="text-gray-400">&bull;</span>
+            <span>Size: <strong class="text-gray-900 font-semibold">{{ o.selected_size|default:"Standard" }}</strong></span>
+            <span class="text-gray-400">&bull;</span>
+            <span>Quality: <strong class="text-gray-900 font-semibold">{{ o.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
+            {% if o.quantity > 1 %}
+            <span class="text-gray-400">&bull;</span>
+            <span class="font-bold text-gray-700">Qty: {{ o.quantity }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Total Rate & Compact Guide Button -->
+      <div class="flex items-center justify-between md:justify-end gap-5 flex-shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100">
+        <div class="text-left md:text-right">
+          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block leading-none">Total Rate</span>
+          <span class="text-base sm:text-xl font-black text-[#5C3D2E] leading-tight block mt-1">{{ o.formatted_total }}</span>
+        </div>
+
+        <a
+          href="{% url 'guide' %}?product={{ o.product_name|urlencode }}&order={{ o.booking_id|default:o.id|urlencode }}"
+          class="px-5 py-2.5 rounded-2xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-xs hover:shadow-md active-tap cursor-pointer inline-flex items-center gap-1.5"
+          style="background-color: #5C3D2E !important; color: #ffffff !important; border-radius: 16px !important;"
+        >
+          <span>Guide</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+
+    </div>
+    {% empty %}
+    <div class="text-center py-12 bg-white rounded-3xl border border-gray-200 p-8 space-y-4" style="border-radius: 28px !important;">
+      <div class="w-14 h-14 rounded-full bg-amber-100 text-amber-900 mx-auto flex items-center justify-center text-2xl">
+        🛋️
+      </div>
+      <p class="text-sm font-black text-gray-950">No Future Orders Placed Yet</p>
+      <a href="{% url 'catalog' %}" class="inline-block px-6 py-2.5 rounded-full bg-[#5C3D2E] text-white text-xs font-bold shadow-xs hover:bg-black" style="background-color: #5C3D2E !important; color: #ffffff !important;">
+        Browse Masterpieces
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- SECTION 2: CONSULTATION APPOINTMENTS -->
+  <div class="space-y-4 pt-6 border-t border-gray-200">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-black uppercase tracking-widest text-gray-700 flex items-center gap-2">
+        <span>📅</span>
+        <span>Studio &amp; In-Home Consultations ({{ bookings|length }})</span>
+      </h2>
+      <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">
+        Explore Catalog &rarr;
+      </a>
+    </div>
+
+    {% for b in bookings %}
+    <div class="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3" style="border-radius: 20px !important;">
+      <div class="space-y-1 text-left">
+        <div class="flex items-center gap-2">
+          <span class="font-black text-xs text-[#5C3D2E]">{{ b.booking_id }}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {% if b.status == 'Confirmed' %}bg-green-100 text-green-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+            {{ b.status }}
+          </span>
+        </div>
+        <h3 class="font-bold text-xs sm:text-sm text-gray-950">{{ b.consultation_type }}</h3>
+        <p class="text-[11px] text-gray-500">
+          📅 {{ b.preferred_date|date:"F d, Y" }} &bull; ⏰ {{ b.time_slot }} &bull; 🪵 {{ b.wood_preference }}
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <a href="{% url 'booking_detail' booking_id=b.booking_id %}" class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 text-xs font-semibold text-gray-800 transition-colors">
+          View Receipt
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-xs text-gray-500 italic text-left">No consultations scheduled.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

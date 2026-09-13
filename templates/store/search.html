@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Results — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'catalog' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </button>
+    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
+      Search {% if query %}for "{{ query }}"{% endif %}
+    </span>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6">
+  
+  <!-- Search Input Bar -->
+  <form action="{% url 'search' %}" method="GET" class="flex items-center gap-2 max-w-2xl mx-auto">
+    <input
+      type="text"
+      name="q"
+      value="{{ query }}"
+      placeholder="Search for Cots, Teak Dining Tables, Sofa Sets, Pooja Mandirs..."
+      class="flex-1 px-5 py-3.5 rounded-full bg-white border border-gray-300 text-xs sm:text-sm text-gray-900 focus:outline-none focus:border-gray-950 shadow-2xs"
+    />
+    <button type="submit" class="px-6 py-3.5 rounded-full bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs sm:text-sm font-bold transition-colors">
+      Search
+    </button>
+  </form>
+
+  <!-- Popular Suggestions -->
+  <div class="flex flex-wrap items-center justify-center gap-2 text-xs text-gray-500">
+    <span class="font-bold text-gray-700">Popular Searches:</span>
+    {% for term in popular_searches %}
+    <a href="{% url 'search' %}?q={{ term|urlencode }}" class="px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 hover:border-gray-400">
+      {{ term }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Results -->
+  {% if products %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-4">
+    {% for product in products %}
+    <div class="group bg-white rounded-2xl border border-gray-200/80 hover:border-gray-300 shadow-2xs transition-all flex flex-col justify-between overflow-hidden">
+      <div class="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+        <a href="{% url 'product_detail' pk=product.pk %}">
+          <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        </a>
+      </div>
+      <div class="p-4 space-y-2">
+        <span class="text-[10px] text-gray-400 uppercase font-bold">{{ product.category.name }}</span>
+        <a href="{% url 'product_detail' pk=product.pk %}" class="block font-bold text-sm text-gray-950 hover:text-[#5C3D2E] truncate">
+          {{ product.name }}
+        </a>
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-sm font-black text-gray-950">{{ product.formatted_price }}</span>
+          <button onclick="addToCart({{ product.id }})" class="px-3 py-1.5 rounded-full bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-bold transition-colors">
+            Add to Bag
+          </button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% elif query %}
+  <div class="text-center py-16 bg-white rounded-3xl border border-gray-200/80 p-8 space-y-4">
+    <p class="text-sm font-bold text-gray-900">No products matched "{{ query }}"</p>
+    <a href="{% url 'catalog' %}" class="inline-block px-6 py-2.5 rounded-full bg-[#5C3D2E] text-white text-xs font-bold">
+      Explore All Catalog Pieces
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Bookings — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-3">
+    <a href="{% url 'customer_home' %}" class="p-1 rounded-full hover:bg-gray-200 text-gray-800">
+      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    </a>
+    <span class="text-xs sm:text-sm font-extrabold text-gray-950">My Consultations ({{ total_bookings }})</span>
+  </div>
+  <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">Browse Catalog →</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
+  <div>
+    <h1 class="text-2xl font-black text-gray-950 tracking-tight">Studio &amp; In-Home Consultations</h1>
+    <p class="text-xs text-gray-500">Track showroom visits and complimentary master artisan site measurements.</p>
+  </div>
+
+  <div class="space-y-4">
+    {% for b in bookings %}
+    <div class="bg-white rounded-2xl p-5 border border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="font-mono text-xs font-bold text-[#5C3D2E]">{{ b.booking_id }}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">{{ b.status }}</span>
+        </div>
+        <h2 class="font-bold text-sm text-gray-950">{{ b.consultation_type }}</h2>
+        <p class="text-xs text-gray-500">📅 {{ b.preferred_date|date:"F d, Y" }} &bull; ⏰ {{ b.time_slot }} &bull; 🪵 {{ b.wood_preference }}</p>
+      </div>
+    </div>
+    {% empty %}
+    <div class="p-8 text-center bg-white rounded-2xl border border-gray-200">
+      <p class="text-xs text-gray-500">No appointments scheduled.</p>
+      <a href="{% url 'catalog' %}" class="inline-block mt-2 text-xs font-bold text-[#5C3D2E] hover:underline">Browse Catalog →</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
