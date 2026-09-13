@@ -24,9 +24,9 @@ COPY . /app/
 RUN python manage.py collectstatic --noinput
 
 # Set permissions for Hugging Face non-root user (UID 1000)
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app && chmod -R 775 /app
 USER appuser
 
 EXPOSE 7860
 
-CMD ["gunicorn", "glory_furniture.wsgi:application", "--bind", "0.0.0.0:7860", "--workers", "3", "--timeout", "120"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn glory_furniture.wsgi:application --bind 0.0.0.0:7860 --workers 3 --timeout 120"]
