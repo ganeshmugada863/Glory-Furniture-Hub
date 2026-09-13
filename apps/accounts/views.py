@@ -681,15 +681,29 @@ def admin_bookings_view(request):
     return render(request, 'admin_portal/admin_bookings.html', context)
 
 
+def _save_product_image_file(upload_file):
+    """Safely saves an uploaded image file and returns its web-accessible media URL."""
+    import os, uuid
+    from django.core.files.storage import default_storage
+    from django.conf import settings
+    raw_ext = os.path.splitext(upload_file.name)[1].lower()
+    ext = raw_ext if raw_ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'] else '.jpg'
+    filename = f"products/{uuid.uuid4().hex[:10]}{ext}"
+    saved_path = default_storage.save(filename, upload_file)
+    media_url = getattr(settings, 'MEDIA_URL', '/media/')
+    return f"{media_url}{saved_path}"
+
+
 def admin_products_view(request):
     """
     Dedicated Product Catalog Inventory Management:
     Allows studio administrators to:
-    1. Add new products with image, specifications, categories, and prices.
-    2. Edit existing products with live form prefilling.
+    1. Add new products with up to 4 images (Primary Cover + 3 Detail/Angle views).
+    2. Edit existing products with 4 image previews and individual replacement.
     3. Delete products permanently.
     All changes write directly to SQLite database (db.sqlite3) and persist permanently.
     """
+    import re
     categories = Category.objects.all().order_by('order', 'name')
     
     if request.method == 'POST':
@@ -697,31 +711,56 @@ def admin_products_view(request):
         
         if action == 'add_product':
             try:
-                name = request.POST.get('name', '').strip()
+                name = request.POST.get('name', '').strip() or 'Handcrafted Royal Burma Teak Piece'
+                
+                # Resilient Category lookup
                 category_id = request.POST.get('category_id')
-                price_str = request.POST.get('price', '0').replace('₹', '').replace(',', '').strip()
-                price = Decimal(price_str or '0')
-                primary_image = request.POST.get('primary_image', '').strip()
+                category = Category.objects.filter(id=category_id).first()
+                if not category:
+                    category = Category.objects.first()
                 
-                # Handle file upload if provided
-                if 'image_file' in request.FILES and request.FILES['image_file']:
-                    upload = request.FILES['image_file']
-                    from django.core.files.storage import default_storage
-                    import os, uuid
-                    ext = os.path.splitext(upload.name)[1]
-                    filename = f"products/{uuid.uuid4().hex[:8]}{ext}"
-                    saved_path = default_storage.save(filename, upload)
-                    from django.conf import settings
-                    primary_image = f"{settings.MEDIA_URL}{saved_path}"
+                # Resilient Price parsing (handles ₹, commas, spaces)
+                raw_price = request.POST.get('price', '0')
+                cleaned_price = re.sub(r'[^\d.]', '', str(raw_price))
+                try:
+                    price = Decimal(cleaned_price) if cleaned_price else Decimal('0')
+                except Exception:
+                    price = Decimal('0')
+
+                # Process 4 Image Slots
+                images_list = ['', '', '', '']
+
+                # Multi-file upload batch support
+                multi_files = request.FILES.getlist('product_images')
+                for idx, mfile in enumerate(multi_files[:4]):
+                    if mfile:
+                        images_list[idx] = _save_product_image_file(mfile)
+
+                # Check slot-specific file uploads and URLs
+                for slot in range(1, 5):
+                    idx = slot - 1
+                    file_key = f'image_file_{slot}'
+                    url_key = f'image_url_{slot}'
+
+                    # Slot 1 fallback checks for backward compatibility
+                    if slot == 1:
+                        if file_key not in request.FILES and 'image_file' in request.FILES:
+                            file_key = 'image_file'
+                        if not request.POST.get(url_key) and request.POST.get('primary_image'):
+                            url_key = 'primary_image'
+
+                    if file_key in request.FILES and request.FILES[file_key]:
+                        images_list[idx] = _save_product_image_file(request.FILES[file_key])
+                    elif request.POST.get(url_key, '').strip():
+                        images_list[idx] = request.POST.get(url_key, '').strip()
+
+                primary_image = images_list[0] or '/static/images/card_bed.jpg'
+                secondary_images = [img for img in images_list[1:] if img]
                 
-                if not primary_image:
-                    primary_image = '/static/images/card_bed.jpg'
-                    
-                category = get_object_or_404(Category, id=category_id)
-                material = request.POST.get('material', 'Pure Grade-A Burma Teak').strip()
-                style = request.POST.get('style', 'Classic').strip()
-                dimensions = request.POST.get('dimensions', 'Standard').strip()
-                lead_time = request.POST.get('lead_time', '5 - 7 Days Delivery').strip()
+                material = request.POST.get('material', 'Pure Grade-A Burma Teak').strip() or 'Pure Grade-A Burma Teak'
+                style = request.POST.get('style', 'Classic').strip() or 'Classic'
+                dimensions = request.POST.get('dimensions', 'Standard').strip() or 'Standard'
+                lead_time = request.POST.get('lead_time', '5 - 7 Days Delivery').strip() or '5 - 7 Days Delivery'
                 description = request.POST.get('description', '').strip()
                 in_stock = request.POST.get('in_stock') in ['1', 'on', 'true', True]
                 featured = request.POST.get('featured') in ['1', 'on', 'true', True]
@@ -732,6 +771,7 @@ def admin_products_view(request):
                     category=category,
                     price=price,
                     primary_image=primary_image,
+                    secondary_images=secondary_images,
                     material=material,
                     style=style,
                     dimensions=dimensions,
@@ -741,7 +781,8 @@ def admin_products_view(request):
                     featured=featured,
                     new_arrival=new_arrival,
                 )
-                messages.success(request, f"Product '{product.name}' added to database successfully!")
+                img_count = 1 + len(secondary_images)
+                messages.success(request, f"Product '{product.name}' with {img_count} photo(s) saved to database successfully!")
             except Exception as e:
                 messages.error(request, f"Error adding product: {str(e)}")
             return redirect('admin_products')
@@ -757,25 +798,47 @@ def admin_products_view(request):
                     
                 category_id = request.POST.get('category_id')
                 if category_id:
-                    product.category = get_object_or_404(Category, id=category_id)
+                    cat = Category.objects.filter(id=category_id).first()
+                    if cat:
+                        product.category = cat
                     
-                price_str = request.POST.get('price', '').replace('₹', '').replace(',', '').strip()
-                if price_str:
-                    product.price = Decimal(price_str)
+                raw_price = request.POST.get('price', '')
+                if raw_price:
+                    cleaned_price = re.sub(r'[^\d.]', '', str(raw_price))
+                    try:
+                        product.price = Decimal(cleaned_price) if cleaned_price else product.price
+                    except Exception:
+                        pass
                     
-                # Check for image file upload
-                if 'image_file' in request.FILES and request.FILES['image_file']:
-                    upload = request.FILES['image_file']
-                    from django.core.files.storage import default_storage
-                    import os, uuid
-                    ext = os.path.splitext(upload.name)[1]
-                    filename = f"products/{uuid.uuid4().hex[:8]}{ext}"
-                    saved_path = default_storage.save(filename, upload)
-                    from django.conf import settings
-                    product.primary_image = f"{settings.MEDIA_URL}{saved_path}"
+                # Update 4 image slots for existing product
+                current_secondary = list(product.secondary_images or [])
+                # Ensure current_secondary has 3 slots
+                while len(current_secondary) < 3:
+                    current_secondary.append('')
+
+                # Slot 1 (Primary)
+                if 'image_file_1' in request.FILES and request.FILES['image_file_1']:
+                    product.primary_image = _save_product_image_file(request.FILES['image_file_1'])
+                elif 'image_file' in request.FILES and request.FILES['image_file']:
+                    product.primary_image = _save_product_image_file(request.FILES['image_file'])
+                elif request.POST.get('image_url_1', '').strip():
+                    product.primary_image = request.POST.get('image_url_1').strip()
                 elif request.POST.get('primary_image', '').strip():
                     product.primary_image = request.POST.get('primary_image').strip()
-                    
+
+                # Slots 2, 3, 4 (Secondary Images)
+                for slot in [2, 3, 4]:
+                    s_idx = slot - 2  # 0, 1, 2 index in secondary
+                    file_key = f'image_file_{slot}'
+                    url_key = f'image_url_{slot}'
+
+                    if file_key in request.FILES and request.FILES[file_key]:
+                        current_secondary[s_idx] = _save_product_image_file(request.FILES[file_key])
+                    elif request.POST.get(url_key, '').strip():
+                        current_secondary[s_idx] = request.POST.get(url_key).strip()
+
+                product.secondary_images = [img for img in current_secondary if img]
+
                 product.material = request.POST.get('material', product.material).strip()
                 product.style = request.POST.get('style', product.style).strip()
                 product.dimensions = request.POST.get('dimensions', product.dimensions).strip()

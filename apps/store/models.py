@@ -58,7 +58,10 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(self.name)
+            import uuid
+            base_slug = slugify(self.name, allow_unicode=True)
+            if not base_slug or not base_slug.strip():
+                base_slug = f"product-{uuid.uuid4().hex[:6]}"
             slug = base_slug
             counter = 1
             while Product.objects.filter(slug=slug).exclude(pk=self.pk).exists():
@@ -73,11 +76,13 @@ class Product(models.Model):
     @property
     def all_images(self):
         images = []
-        if self.primary_image:
-            images.append(self.primary_image)
+        if self.primary_image and self.primary_image.strip():
+            images.append(self.primary_image.strip())
         if self.secondary_images and isinstance(self.secondary_images, list):
-            images.extend(self.secondary_images)
-        return images or ['/static/images/hero_epoxy_teak.jpg']
+            for img in self.secondary_images:
+                if img and isinstance(img, str) and img.strip() and img.strip() not in images:
+                    images.append(img.strip())
+        return images or ['/static/images/card_bed.jpg']
 
     @property
     def formatted_price(self):

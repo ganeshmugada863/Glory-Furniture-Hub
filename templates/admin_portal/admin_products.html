@@ -14,7 +14,7 @@
           {{ total_products }} Items
         </span>
       </div>
-      <p class="text-xs sm:text-sm text-gray-500">Add, edit, or remove solid teak masterpieces. All updates persist permanently in database.</p>
+      <p class="text-xs sm:text-sm text-gray-500">Add, edit, or remove solid teak masterpieces. Upload up to 4 high-definition photos per product.</p>
     </div>
 
     <!-- Top Action: + Add Product Button -->
@@ -34,10 +34,10 @@
   <!-- Product Inventory Table Card -->
   <div class="bg-white rounded-3xl border border-[#EADBCE] shadow-sm overflow-hidden" style="border-radius: 24px !important; border: 1.5px solid #EADBCE !important; background-color: #ffffff;">
     <div class="overflow-x-auto">
-      <table class="w-full min-w-[900px] text-left text-xs">
+      <table class="w-full min-w-[950px] text-left text-xs">
         <thead class="bg-[#FAF7F4] text-gray-500 uppercase text-[10px] font-black border-b border-gray-200">
           <tr>
-            <th class="py-3.5 px-5">Product Details</th>
+            <th class="py-3.5 px-5">Product Details &amp; Photos</th>
             <th class="py-3.5 px-5">Category</th>
             <th class="py-3.5 px-5">Price</th>
             <th class="py-3.5 px-5">Dimensions &amp; Wood</th>
@@ -49,19 +49,38 @@
           {% for p in products %}
           <tr class="hover:bg-[#FDFBF9] transition-colors">
             
-            <!-- 1. Product Image & Name -->
+            <!-- 1. Product Image & Gallery Thumbnails -->
             <td class="py-3.5 px-5">
               <div class="flex items-center gap-3.5">
-                {% if p.primary_image %}
-                <img src="{{ p.primary_image }}" alt="{{ p.name }}" class="w-12 h-12 rounded-xl object-cover border border-[#E5D9CC] flex-shrink-0 shadow-2xs" />
-                {% else %}
-                <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-lg flex-shrink-0">
-                  🪵
+                <!-- Main Thumbnail with Count Badge -->
+                <div class="relative flex-shrink-0">
+                  {% if p.primary_image %}
+                  <img src="{{ p.primary_image }}" alt="{{ p.name }}" class="w-14 h-14 rounded-2xl object-cover border border-[#E5D9CC] shadow-2xs" />
+                  {% else %}
+                  <div class="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-lg">
+                    🪵
+                  </div>
+                  {% endif %}
+                  <span class="absolute -bottom-1.5 -right-1.5 px-1.5 py-0.2 rounded-md bg-[#2C1B10] text-[#EADBCE] text-[9px] font-black shadow-xs" title="Total photos">
+                    📸 {{ p.all_images|length }}
+                  </span>
                 </div>
-                {% endif %}
-                <div class="min-w-0">
+
+                <div class="min-w-0 space-y-1">
                   <div class="font-bold text-gray-950 truncate max-w-xs text-sm leading-snug">{{ p.name }}</div>
                   <div class="text-[10px] text-gray-500 truncate max-w-xs">{{ p.material|default:"Solid Teak Wood" }}</div>
+                  
+                  <!-- Mini Gallery Strip for additional images -->
+                  {% if p.secondary_images %}
+                  <div class="flex items-center gap-1 pt-0.5">
+                    {% for simg in p.secondary_images|slice:":3" %}
+                    <img src="{{ simg }}" alt="Angle" class="w-5 h-5 rounded-md object-cover border border-gray-200 shadow-2xs" />
+                    {% endfor %}
+                    {% if p.secondary_images|length > 3 %}
+                    <span class="text-[9px] text-gray-400 font-bold">+{{ p.secondary_images|length|add:"-3" }}</span>
+                    {% endif %}
+                  </div>
+                  {% endif %}
                 </div>
               </div>
             </td>
@@ -105,18 +124,19 @@
               </div>
             </td>
 
-            <!-- 6. Actions: Replaced View Storefront with EDIT & DELETE -->
+            <!-- 6. Actions -->
             <td class="py-3.5 px-5 text-right whitespace-nowrap">
               <div class="inline-flex items-center gap-2">
-                <!-- EDIT BUTTON -->
+                <!-- EDIT BUTTON (Passes all 4 images) -->
                 <button
                   type="button"
                   onclick="openEditModal(this)"
                   data-id="{{ p.id }}"
                   data-name="{{ p.name }}"
                   data-category="{{ p.category_id }}"
-                  data-price="{{ p.price }}"
+                  data-price="{{ p.price|floatformat:0 }}"
                   data-image="{{ p.primary_image }}"
+                  data-images="{{ p.all_images|join:'|||' }}"
                   data-material="{{ p.material }}"
                   data-style="{{ p.style }}"
                   data-dimensions="{{ p.dimensions }}"
@@ -142,7 +162,7 @@
                   🗑️
                 </button>
 
-                <!-- VIEW STOREFRONT SMALL LINK -->
+                <!-- PREVIEW LINK -->
                 <a href="/product/{{ p.id }}/" target="_blank" class="p-1 text-gray-400 hover:text-[#5C3D2E] transition-colors" title="Preview on Website">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
@@ -167,38 +187,39 @@
 </div>
 
 <!-- =============================================================== -->
-<!-- 1. ADD PRODUCT MODAL -->
+<!-- 1. ADD PRODUCT MODAL (Supports Up to 4 Images)                  -->
 <!-- =============================================================== -->
-<div id="add-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+<div id="add-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
   <div class="fixed inset-0 bg-black/60 backdrop-blur-xs" onclick="closeAddModal()"></div>
   
-  <div class="relative bg-white rounded-3xl shadow-2xl border border-[#EADBCE] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 z-10" style="border-radius: 28px !important;">
+  <div class="relative bg-white rounded-3xl shadow-2xl border border-[#EADBCE] w-full max-w-3xl max-h-[92vh] overflow-y-auto p-5 sm:p-7 space-y-5 z-10" style="border-radius: 28px !important;">
     
-    <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
       <div>
         <h2 class="text-lg sm:text-xl font-black text-gray-950">+ Add New Furniture Product</h2>
-        <p class="text-xs text-gray-500">Enter specifications. Will be saved directly into the database.</p>
+        <p class="text-xs text-gray-500">Fill details and upload up to 4 high-definition photos. Saves permanently into SQLite database.</p>
       </div>
-      <button onclick="closeAddModal()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-black cursor-pointer">
+      <button type="button" onclick="closeAddModal()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-black cursor-pointer">
         ✕
       </button>
     </div>
 
-    <form method="POST" action="{% url 'admin_products' %}" enctype="multipart/form-data" class="space-y-4">
+    <form id="add-product-form" method="POST" action="{% url 'admin_products' %}" enctype="multipart/form-data" class="space-y-5" onsubmit="return handleAddProductSubmit(event)">
       {% csrf_token %}
       <input type="hidden" name="action" value="add_product" />
 
       <!-- Product Name -->
       <div>
         <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Product Title *</label>
-        <input type="text" name="name" placeholder="e.g. Royal Carved Burma Teak Dining Table" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+        <input type="text" id="add_name" name="name" placeholder="e.g. Royal Carved Burma Teak Bed with Posture Slats" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+        <div id="add_name_error" class="text-xs text-red-600 hidden font-bold mt-1">Please enter a product title.</div>
       </div>
 
       <!-- Category & Price -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Category *</label>
-          <select name="category_id" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white focus:outline-none focus:border-[#5C3D2E]">
+          <select name="category_id" id="add_category" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white focus:outline-none focus:border-[#5C3D2E]">
             {% for c in categories %}
             <option value="{{ c.id }}">{{ c.name }}</option>
             {% endfor %}
@@ -207,16 +228,133 @@
 
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Price (₹ INR) *</label>
-          <input type="number" name="price" placeholder="85000" min="0" step="1" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+          <input type="text" inputmode="numeric" id="add_price" name="price" placeholder="e.g. 25000 or 85,000" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+          <div id="add_price_error" class="text-xs text-red-600 hidden font-bold mt-1">Please enter a valid price in rupees.</div>
         </div>
       </div>
 
-      <!-- Image URL & File Upload -->
-      <div class="space-y-2">
-        <label class="block text-xs font-black uppercase tracking-wider text-gray-700">Product Image *</label>
-        <input type="text" name="primary_image" placeholder="Image URL (e.g. https://... or /static/images/...)" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
-        <div class="text-[11px] text-gray-500">Or upload an image file:</div>
-        <input type="file" name="image_file" accept="image/*" class="text-xs text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+      <!-- =============================================================== -->
+      <!-- 4 IMAGES UPLOAD SECTION (Cover + 3 Detail/Angle Views)           -->
+      <!-- =============================================================== -->
+      <div class="space-y-3 p-4 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE]">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
+              <span>🖼️ Product Gallery Photos</span>
+              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Up to 4 Images</span>
+            </h3>
+            <p class="text-[11px] text-gray-500">Upload 4 distinct photos (Main Cover, Side Angle, Wood Carving Detail, Room Layout).</p>
+          </div>
+
+          <!-- Quick Multi-file Batch Selector -->
+          <div>
+            <input type="file" id="add_batch_input" multiple accept="image/*" class="hidden" onchange="handleBatchFileSelect(this, 'add')" />
+            <button type="button" onclick="document.getElementById('add_batch_input').click()" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-[#5C3D2E] border border-amber-300 text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <span>📁 Select up to 4 Photos at once</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Image Slots Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+
+          <!-- SLOT 1: Primary Cover Image -->
+          <div class="p-3 rounded-xl bg-white border-2 border-amber-400/80 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-800 text-white">
+                Photo 1: Cover / Primary *
+              </span>
+              <button type="button" onclick="clearImageSlot('add', 1)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="add_preview_1" src="" alt="Preview 1" class="w-full h-full object-cover hidden" />
+              <div id="add_placeholder_1" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">📸</span>
+                <span class="text-[10px] font-bold text-gray-600">Main Cover Photo</span>
+                <span class="text-[9px] text-gray-400">Click upload or enter URL</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_1" id="add_file_1" accept="image/*" onchange="previewFileSlot(this, 'add', 1)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+              <input type="text" name="image_url_1" id="add_url_1" placeholder="Or enter Image URL..." oninput="previewUrlSlot(this, 'add', 1)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- SLOT 2: Angle 2 / Side View -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 2: Side / Angle
+              </span>
+              <button type="button" onclick="clearImageSlot('add', 2)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="add_preview_2" src="" alt="Preview 2" class="w-full h-full object-cover hidden" />
+              <div id="add_placeholder_2" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">📐</span>
+                <span class="text-[10px] font-bold text-gray-600">Side View Angle</span>
+                <span class="text-[9px] text-gray-400">Optional photo</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_2" id="add_file_2" accept="image/*" onchange="previewFileSlot(this, 'add', 2)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_2" id="add_url_2" placeholder="Or enter Image URL..." oninput="previewUrlSlot(this, 'add', 2)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- SLOT 3: Carving / Wood Detail -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 3: Carving / Grain
+              </span>
+              <button type="button" onclick="clearImageSlot('add', 3)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="add_preview_3" src="" alt="Preview 3" class="w-full h-full object-cover hidden" />
+              <div id="add_placeholder_3" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">🪵</span>
+                <span class="text-[10px] font-bold text-gray-600">Carving / Wood Texture</span>
+                <span class="text-[9px] text-gray-400">Optional photo</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_3" id="add_file_3" accept="image/*" onchange="previewFileSlot(this, 'add', 3)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_3" id="add_url_3" placeholder="Or enter Image URL..." oninput="previewUrlSlot(this, 'add', 3)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- SLOT 4: Room Setup / Lifestyle -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 4: Room Setup
+              </span>
+              <button type="button" onclick="clearImageSlot('add', 4)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="add_preview_4" src="" alt="Preview 4" class="w-full h-full object-cover hidden" />
+              <div id="add_placeholder_4" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">🛋️</span>
+                <span class="text-[10px] font-bold text-gray-600">Room Layout / Dimensions</span>
+                <span class="text-[9px] text-gray-400">Optional photo</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_4" id="add_file_4" accept="image/*" onchange="previewFileSlot(this, 'add', 4)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_4" id="add_url_4" placeholder="Or enter Image URL..." oninput="previewUrlSlot(this, 'add', 4)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- Material & Style -->
@@ -241,7 +379,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Dimensions</label>
-          <input type="text" name="dimensions" placeholder="e.g. 8ft x 4ft or King 78x72" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+          <input type="text" name="dimensions" placeholder="e.g. King 78x72 in or 8ft x 4ft" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
         </div>
 
         <div>
@@ -253,7 +391,7 @@
       <!-- Description -->
       <div>
         <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Artisan Description</label>
-        <textarea name="description" rows="3" placeholder="Handcrafted with seasoned teak wood, featuring royal floral motifs..." class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]"></textarea>
+        <textarea name="description" rows="3" placeholder="Handcrafted with seasoned Burma teak wood, intricate chiseled floral carvings, and natural honey gloss lacquer..." class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]"></textarea>
       </div>
 
       <!-- Flags: In Stock, Featured, New Arrival -->
@@ -274,11 +412,17 @@
 
       <!-- Submit & Cancel -->
       <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-        <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors">
+        <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
           Cancel
         </button>
-        <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors shadow-sm" style="background-color: #5C3D2E !important; color: #ffffff !important;">
-          + Save to Database
+        <button 
+          id="add-submit-btn" 
+          type="submit" 
+          class="px-6 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer flex items-center gap-2"
+          style="background-color: #5C3D2E !important; color: #ffffff !important;"
+        >
+          <span id="add-btn-icon">+</span>
+          <span id="add-btn-text">Save to Database</span>
         </button>
       </div>
 
@@ -288,24 +432,24 @@
 </div>
 
 <!-- =============================================================== -->
-<!-- 2. EDIT PRODUCT MODAL (Pre-populated) -->
+<!-- 2. EDIT PRODUCT MODAL (Supports All 4 Images)                   -->
 <!-- =============================================================== -->
-<div id="edit-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+<div id="edit-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
   <div class="fixed inset-0 bg-black/60 backdrop-blur-xs" onclick="closeEditModal()"></div>
   
-  <div class="relative bg-white rounded-3xl shadow-2xl border border-[#EADBCE] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-5 z-10" style="border-radius: 28px !important;">
+  <div class="relative bg-white rounded-3xl shadow-2xl border border-[#EADBCE] w-full max-w-3xl max-h-[92vh] overflow-y-auto p-5 sm:p-7 space-y-5 z-10" style="border-radius: 28px !important;">
     
-    <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
       <div>
         <h2 class="text-lg sm:text-xl font-black text-gray-950">✏️ Edit Product Details</h2>
-        <p class="text-xs text-gray-500">Updates will be committed directly to SQLite database.</p>
+        <p class="text-xs text-gray-500">Update specifications and replace any of the 4 photos. Commits directly to database.</p>
       </div>
-      <button onclick="closeEditModal()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-black cursor-pointer">
+      <button type="button" onclick="closeEditModal()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-black cursor-pointer">
         ✕
       </button>
     </div>
 
-    <form method="POST" action="{% url 'admin_products' %}" enctype="multipart/form-data" class="space-y-4">
+    <form id="edit-product-form" method="POST" action="{% url 'admin_products' %}" enctype="multipart/form-data" class="space-y-5" onsubmit="return handleEditProductSubmit(event)">
       {% csrf_token %}
       <input type="hidden" name="action" value="edit_product" />
       <input type="hidden" name="product_id" id="edit_product_id" />
@@ -329,19 +473,118 @@
 
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Price (₹ INR) *</label>
-          <input type="number" name="price" id="edit_price" min="0" step="1" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+          <input type="text" inputmode="numeric" name="price" id="edit_price" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
         </div>
       </div>
 
-      <!-- Image URL & Preview -->
-      <div class="space-y-2">
-        <label class="block text-xs font-black uppercase tracking-wider text-gray-700">Product Image</label>
-        <div class="flex items-center gap-3">
-          <img id="edit_image_preview" src="" alt="" class="w-14 h-14 rounded-xl object-cover border border-[#E5D9CC] hidden flex-shrink-0" />
-          <input type="text" name="primary_image" id="edit_image" placeholder="Image URL (https://...)" class="w-full px-4 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+      <!-- =============================================================== -->
+      <!-- 4 IMAGES UPLOAD SECTION (EDIT MODAL)                            -->
+      <!-- =============================================================== -->
+      <div class="space-y-3 p-4 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE]">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
+            <span>🖼️ Product Gallery Photos</span>
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">4 Photo Slots</span>
+          </h3>
+          <span class="text-[11px] text-gray-500">Upload new files to replace existing images</span>
         </div>
-        <div class="text-[11px] text-gray-500">Or upload replacement image file:</div>
-        <input type="file" name="image_file" accept="image/*" class="text-xs text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+
+        <!-- 4 Image Slots Grid for Edit -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+
+          <!-- EDIT SLOT 1: Primary Cover -->
+          <div class="p-3 rounded-xl bg-white border-2 border-amber-400/80 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-800 text-white">
+                Photo 1: Cover / Primary
+              </span>
+              <button type="button" onclick="clearImageSlot('edit', 1)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="edit_preview_1" src="" alt="Preview 1" class="w-full h-full object-cover hidden" />
+              <div id="edit_placeholder_1" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">📸</span>
+                <span class="text-[10px] font-bold text-gray-600">Cover Photo</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_1" id="edit_file_1" accept="image/*" onchange="previewFileSlot(this, 'edit', 1)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+              <input type="text" name="image_url_1" id="edit_url_1" placeholder="Replace Image URL..." oninput="previewUrlSlot(this, 'edit', 1)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- EDIT SLOT 2: Side View -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 2: Side / Angle
+              </span>
+              <button type="button" onclick="clearImageSlot('edit', 2)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="edit_preview_2" src="" alt="Preview 2" class="w-full h-full object-cover hidden" />
+              <div id="edit_placeholder_2" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">📐</span>
+                <span class="text-[10px] font-bold text-gray-600">Side View Angle</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_2" id="edit_file_2" accept="image/*" onchange="previewFileSlot(this, 'edit', 2)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_2" id="edit_url_2" placeholder="Replace Image URL..." oninput="previewUrlSlot(this, 'edit', 2)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- EDIT SLOT 3: Carving Detail -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 3: Carving / Grain
+              </span>
+              <button type="button" onclick="clearImageSlot('edit', 3)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="edit_preview_3" src="" alt="Preview 3" class="w-full h-full object-cover hidden" />
+              <div id="edit_placeholder_3" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">🪵</span>
+                <span class="text-[10px] font-bold text-gray-600">Carving / Wood Detail</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_3" id="edit_file_3" accept="image/*" onchange="previewFileSlot(this, 'edit', 3)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_3" id="edit_url_3" placeholder="Replace Image URL..." oninput="previewUrlSlot(this, 'edit', 3)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- EDIT SLOT 4: Room Setup -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 4: Room Setup
+              </span>
+              <button type="button" onclick="clearImageSlot('edit', 4)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="edit_preview_4" src="" alt="Preview 4" class="w-full h-full object-cover hidden" />
+              <div id="edit_placeholder_4" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">🛋️</span>
+                <span class="text-[10px] font-bold text-gray-600">Room Layout / Dimensions</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_4" id="edit_file_4" accept="image/*" onchange="previewFileSlot(this, 'edit', 4)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_4" id="edit_url_4" placeholder="Replace Image URL..." oninput="previewUrlSlot(this, 'edit', 4)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- Material & Style -->
@@ -399,11 +642,17 @@
 
       <!-- Buttons -->
       <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-        <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors">
+        <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
           Cancel
         </button>
-        <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors shadow-sm" style="background-color: #5C3D2E !important; color: #ffffff !important;">
-          💾 Save Changes
+        <button 
+          id="edit-submit-btn" 
+          type="submit" 
+          class="px-6 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors shadow-sm flex items-center gap-2 cursor-pointer" 
+          style="background-color: #5C3D2E !important; color: #ffffff !important;"
+        >
+          <span id="edit-btn-icon">💾</span>
+          <span id="edit-btn-text">Save Changes</span>
         </button>
       </div>
 
@@ -413,7 +662,7 @@
 </div>
 
 <!-- =============================================================== -->
-<!-- 3. DELETE CONFIRMATION MODAL -->
+<!-- 3. DELETE CONFIRMATION MODAL                                    -->
 <!-- =============================================================== -->
 <div id="delete-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
   <div class="fixed inset-0 bg-black/60 backdrop-blur-xs" onclick="closeDeleteModal()"></div>
@@ -429,17 +678,21 @@
       {% csrf_token %}
       <input type="hidden" name="action" value="delete_product" />
       <input type="hidden" name="product_id" id="delete_product_id" />
-      <button type="button" onclick="closeDeleteModal()" class="px-5 py-2 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100">
+      <button type="button" onclick="closeDeleteModal()" class="px-5 py-2 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 cursor-pointer">
         Cancel
       </button>
-      <button type="submit" class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs">
+      <button type="submit" class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs cursor-pointer">
         Yes, Delete
       </button>
     </form>
   </div>
 </div>
 
+<!-- =============================================================== -->
+<!-- JAVASCRIPT LOGIC (Interactive 4-Image Previews & Form Handlers) -->
+<!-- =============================================================== -->
 <script>
+// --- Modal Open/Close Controls ---
 function openAddModal() {
   document.getElementById('add-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
@@ -454,8 +707,7 @@ function openEditModal(btn) {
   document.getElementById('edit_product_id').value = btn.dataset.id;
   document.getElementById('edit_name').value = btn.dataset.name || '';
   document.getElementById('edit_category').value = btn.dataset.category || '';
-  document.getElementById('edit_price').value = parseInt(btn.dataset.price) || '';
-  document.getElementById('edit_image').value = btn.dataset.image || '';
+  document.getElementById('edit_price').value = btn.dataset.price || '';
   document.getElementById('edit_material').value = btn.dataset.material || '';
   document.getElementById('edit_style').value = btn.dataset.style || 'Classic';
   document.getElementById('edit_dimensions').value = btn.dataset.dimensions || '';
@@ -465,12 +717,13 @@ function openEditModal(btn) {
   document.getElementById('edit_featured').checked = btn.dataset.featured === '1';
   document.getElementById('edit_new_arrival').checked = btn.dataset.newArrival === '1';
 
-  const imgPreview = document.getElementById('edit_image_preview');
-  if (btn.dataset.image) {
-    imgPreview.src = btn.dataset.image;
-    imgPreview.classList.remove('hidden');
-  } else {
-    imgPreview.classList.add('hidden');
+  // Populate up to 4 images from dataset
+  const imagesStr = btn.dataset.images || btn.dataset.image || '';
+  const imgList = imagesStr ? imagesStr.split('|||') : [];
+
+  for (let slot = 1; slot <= 4; slot++) {
+    const imgUrl = imgList[slot - 1] || '';
+    setSlotImage('edit', slot, imgUrl);
   }
 
   document.getElementById('edit-modal').classList.remove('hidden');
@@ -492,6 +745,166 @@ function openDeleteModal(id, name) {
 function closeDeleteModal() {
   document.getElementById('delete-modal').classList.add('hidden');
   document.body.style.overflow = '';
+}
+
+// --- 4 Image Slots Preview & Management ---
+function setSlotImage(prefix, slot, url) {
+  const preview = document.getElementById(`${prefix}_preview_${slot}`);
+  const placeholder = document.getElementById(`${prefix}_placeholder_${slot}`);
+  const urlInput = document.getElementById(`${prefix}_url_${slot}`);
+
+  if (url && url.trim()) {
+    preview.src = url.trim();
+    preview.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+    if (urlInput) urlInput.value = url.trim();
+  } else {
+    preview.src = '';
+    preview.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+    if (urlInput) urlInput.value = '';
+  }
+}
+
+function previewFileSlot(input, prefix, slot) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const preview = document.getElementById(`${prefix}_preview_${slot}`);
+    const placeholder = document.getElementById(`${prefix}_placeholder_${slot}`);
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function previewUrlSlot(input, prefix, slot) {
+  const val = input.value.trim();
+  const preview = document.getElementById(`${prefix}_preview_${slot}`);
+  const placeholder = document.getElementById(`${prefix}_placeholder_${slot}`);
+
+  if (val) {
+    preview.src = val;
+    preview.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+  } else {
+    preview.src = '';
+    preview.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+  }
+}
+
+function clearImageSlot(prefix, slot) {
+  const fileInput = document.getElementById(`${prefix}_file_${slot}`);
+  const urlInput = document.getElementById(`${prefix}_url_${slot}`);
+  const preview = document.getElementById(`${prefix}_preview_${slot}`);
+  const placeholder = document.getElementById(`${prefix}_placeholder_${slot}`);
+
+  if (fileInput) fileInput.value = '';
+  if (urlInput) urlInput.value = '';
+  if (preview) {
+    preview.src = '';
+    preview.classList.add('hidden');
+  }
+  if (placeholder) placeholder.classList.remove('hidden');
+}
+
+// Batch upload up to 4 images
+function handleBatchFileSelect(input, prefix) {
+  if (!input.files || input.files.length === 0) return;
+  const files = Array.from(input.files).slice(0, 4);
+
+  files.forEach((file, index) => {
+    const slot = index + 1;
+    const slotFileInput = document.getElementById(`${prefix}_file_${slot}`);
+    
+    // Assign file using DataTransfer
+    try {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      slotFileInput.files = dt.files;
+    } catch(e) {
+      console.warn("DataTransfer not supported:", e);
+    }
+
+    // Show preview
+    const preview = document.getElementById(`${prefix}_preview_${slot}`);
+    const placeholder = document.getElementById(`${prefix}_placeholder_${slot}`);
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// --- Submit Validation & Loading Spinner ---
+function handleAddProductSubmit(e) {
+  const nameInput = document.getElementById('add_name');
+  const priceInput = document.getElementById('add_price');
+  const nameError = document.getElementById('add_name_error');
+  const priceError = document.getElementById('add_price_error');
+  const btn = document.getElementById('add-submit-btn');
+  const btnIcon = document.getElementById('add-btn-icon');
+  const btnText = document.getElementById('add-btn-text');
+
+  let valid = true;
+
+  if (!nameInput.value.trim()) {
+    nameError.classList.remove('hidden');
+    nameInput.focus();
+    valid = false;
+  } else {
+    nameError.classList.add('hidden');
+  }
+
+  // Clean and validate price (allow 25,000 or ₹25,000)
+  const rawPrice = priceInput.value.replace(/[^\d.]/g, '');
+  if (!rawPrice || isNaN(parseFloat(rawPrice)) || parseFloat(rawPrice) < 0) {
+    priceError.classList.remove('hidden');
+    if (valid) priceInput.focus();
+    valid = false;
+  } else {
+    priceError.classList.add('hidden');
+    priceInput.value = rawPrice; // Put sanitized value in field
+  }
+
+  if (!valid) {
+    e.preventDefault();
+    return false;
+  }
+
+  // Show Active Loading State
+  btn.disabled = true;
+  btn.classList.add('opacity-80', 'cursor-not-allowed');
+  btnIcon.innerHTML = `<svg class="animate-spin h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+  btnText.innerText = 'Saving to Database...';
+
+  return true;
+}
+
+function handleEditProductSubmit(e) {
+  const priceInput = document.getElementById('edit_price');
+  const btn = document.getElementById('edit-submit-btn');
+  const btnIcon = document.getElementById('edit-btn-icon');
+  const btnText = document.getElementById('edit-btn-text');
+
+  if (priceInput.value) {
+    priceInput.value = priceInput.value.replace(/[^\d.]/g, '');
+  }
+
+  btn.disabled = true;
+  btn.classList.add('opacity-80', 'cursor-not-allowed');
+  btnIcon.innerHTML = `<svg class="animate-spin h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+  btnText.innerText = 'Saving Changes...';
+
+  return true;
 }
 
 // Close modals on Escape key
