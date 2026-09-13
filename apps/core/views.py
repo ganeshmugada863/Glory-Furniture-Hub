@@ -5,9 +5,15 @@ import json
 from apps.store.models import Product, Category
 
 def home_view(request):
-    # If session role is admin and they navigate to home, redirect to admin portal
+    # If session role is admin and they navigate to home, redirect to admin dashboard
     if request.session.get('glory_role') == 'admin':
-        return redirect('admin_portal')
+        return redirect('admin_dashboard')
+
+    # The website must start with register page for unauthenticated visitors
+    role = request.session.get('glory_role')
+    user_email = request.session.get('glory_user_email')
+    if not (request.user.is_authenticated or user_email or role == 'customer'):
+        return redirect('register')
 
     categories = Category.objects.all().order_by('order', 'name')
     featured_products = Product.objects.filter(featured=True)[:8]

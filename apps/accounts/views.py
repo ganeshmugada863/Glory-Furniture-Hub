@@ -45,9 +45,9 @@ def customer_login_view(request):
 
             messages.success(request, f"Welcome back, {request.session['glory_user_name']}!")
             next_url = request.GET.get('next')
-            if next_url and next_url.startswith('/customer/'):
+            if next_url and not next_url.startswith('/admin'):
                 return redirect(next_url)
-            return redirect('customer_home')
+            return redirect('home')
         else:
             error = "Invalid email or password. Please verify your credentials or create a new account."
 
@@ -99,7 +99,7 @@ def customer_register_view(request):
             request.session['glory_user_phone'] = profile.phone
 
             messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
-            return redirect('customer_home')
+            return redirect('home')
 
     return render(request, 'accounts/register.html', {'error': error})
 
@@ -179,7 +179,7 @@ def google_auth_view(request):
         request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
 
         messages.success(request, f"Signed in with Google as {profile.full_name}!")
-        return JsonResponse({'status': 'success', 'redirect_url': '/customer/home/'})
+        return JsonResponse({'status': 'success', 'redirect_url': '/'})
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
@@ -187,10 +187,11 @@ def google_auth_view(request):
 
 def customer_logout_view(request):
     """
-    Customer Logout: Clears customer session and redirects to public customer homepage.
+    Customer Logout: Clears customer session and redirects to Register page.
     """
+    auth_logout(request)
     request.session.flush()
-    return redirect('home')
+    return redirect('register')
 
 
 def customer_home_view(request):

@@ -4,13 +4,13 @@ from django.urls import reverse
 
 class RoleBasedAccessMiddleware:
     """
-    Middleware that strictly enforces separation between Customer and Admin portals.
-    1. Protects /admin/* routes: Only users with role 'admin' can access them.
-       - Unauthorized customers are redirected to /customer/home/.
-       - Unauthenticated users are redirected to /admin/login/.
-    2. Protects /customer/* routes: Only users with role 'customer' can access them.
-       - Admin users attempting to access customer pages are redirected to /admin/dashboard/.
-       - Unauthenticated users are redirected to /login/.
+    Middleware that enforces:
+    1. The website MUST START with the Register page (/register/) for unauthenticated visitors.
+    2. After registration or login:
+       - Customers enter the main storefront pages (/ or /customer/home/).
+       - Admins enter the Studio Admin dashboard (/admin/dashboard/).
+    3. Protects /admin/* routes: Only users with role 'admin' can access them.
+    4. Authenticated users visiting /login/ or /register/ are redirected to their main pages.
     """
     def __init__(self, get_response):
         self.get_response = get_response
@@ -20,42 +20,68 @@ class RoleBasedAccessMiddleware:
 
         # Determine user role from session and auth user
         role = request.session.get('glory_role')
-        if not role:
-            if request.user.is_authenticated:
-                if request.user.is_staff or request.user.is_superuser:
-                    role = 'admin'
-                else:
-                    role = 'customer'
-                request.session['glory_role'] = role
+        user_email = request.session.get('glory_user_email')
 
+        if not role and request.user.is_authenticated:
+            if request.user.is_staff or request.user.is_superuser:
+                role = 'admin'
+            else:
+                role = 'customer'
+            request.session['glory_role'] = role
+
+        is_authenticated_user = bool(request.user.is_authenticated or user_email or role)
         request.user_role = role
         request.is_admin_user = (role == 'admin')
         request.is_customer_user = (role == 'customer')
 
+        # Public auth endpoints that unauthenticated users can access
+        is_auth_path = path in [
+            '/register/',
+            '/login/',
+            '/accounts/google-auth/',
+            '/forgot-password/',
+            '/admin/login/',
+            '/admin/logout/',
+        ]
+        is_static_or_api = (
+            path.startswith('/static/') or
+            path.startswith('/media/') or
+            path.startswith('/api/') or
+            path == '/favicon.ico' or
+            path == '/favicon.svg'
+        )
+
         # 1. ADMIN ROUTE GUARD
-        # Protect all /admin/* routes except /admin/login/ and /admin/logout/ and /django-admin/
         is_admin_path = (path.startswith('/admin/') and not path.startswith('/django-admin/')) or path.startswith('/admin-portal')
         is_admin_auth_path = path in ['/admin/login/', '/admin/logout/', '/admin-portal/login/']
 
         if is_admin_path and not is_admin_auth_path:
             if role != 'admin':
                 if role == 'customer':
-                    # Customer attempting to access admin route -> Deny and redirect to customer home
                     messages.error(request, 'Access Denied: Admin privileges required.')
-                    return redirect('customer_home')
+                    return redirect('home')
                 else:
-                    # Unauthenticated -> redirect to dedicated admin login
                     return redirect(f'/admin/login/?next={path}')
 
         # If admin visits /admin/login/ while already logged in, redirect to admin dashboard
         if path == '/admin/login/' and role == 'admin':
             return redirect('admin_dashboard')
 
-        # 2. CUSTOMER PORTAL ROUTES
-        # Customer portal routes and orders are open to all customers and patrons.
-        # NEVER redirect customer orders to admin dashboard!
-        if path in ['/login/', '/register/'] and role == 'customer':
-            return redirect('customer_home')
+        # 2. THE WEBSITE MUST START WITH REGISTER PAGE FOR ALL UNAUTHENTICATED VISITORS
+        if not is_authenticated_user and not is_auth_path and not is_static_or_api:
+            return redirect('register')
+
+        # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO MAIN PAGES
+        if path in ['/login/', '/register/']:
+            if role == 'admin':
+                return redirect('admin_dashboard')
+            elif is_authenticated_user:
+                return redirect('home')
+
+        # 4. IF ADMIN VISITS MAIN STOREFRONT ROOT, REDIRECT TO ADMIN CONSOLE
+        if path == '/' and role == 'admin':
+            return redirect('admin_dashboard')
 
         response = self.get_response(request)
         return response
+
