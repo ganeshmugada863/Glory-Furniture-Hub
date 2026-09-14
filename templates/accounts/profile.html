@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Profile — Glory Furniture Hub{% endblock %}
+{% block title %}My Profile &mdash; Glory Furniture Hub{% endblock %}
 
 {% block back_bar %}
 <div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
   <div class="flex items-center gap-3 flex-shrink-0">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
+    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" aria-label="Go back">
       <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
     </button>
     <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
-      Account & Studio Preferences
+      Patron Profile &amp; Preferences
+    </span>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+      &bull; Active Member
     </span>
   </div>
 </div>
@@ -18,126 +23,314 @@
 
 {% block content %}
 <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
-  
-  <!-- Elevated Luxury Patron Profile Card -->
-  <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#24140E] via-[#362015] to-[#1E110A] text-white shadow-xl border border-[#4A3224] relative overflow-hidden">
-    <!-- Subtle Background Pattern / Glow -->
-    <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-[#C9963F]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- ========================================================= -->
+  <!-- 1. VIBRANT COLORFUL HERO PATRON BANNER                   -->
+  <!-- ========================================================= -->
+  <div class="rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden border border-white/10"
+       style="background: linear-gradient(135deg, #1b0e07 0%, #2e160a 35%, #1e1b4b 75%, #0f172a 100%);">
+    
+    <!-- Ambient colorful glow circles -->
+    <div class="absolute -right-16 -top-16 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute right-1/3 -bottom-16 w-80 h-80 bg-indigo-500/25 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-10 bottom-0 w-48 h-48 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
 
     <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-      <div class="flex items-center gap-4 sm:gap-5">
-        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-[#C9963F] to-[#8C5E28] text-gray-950 flex items-center justify-center text-2xl sm:text-3xl font-black shadow-lg ring-4 ring-white/10 shrink-0">
-          {{ USER_NAME|slice:":1"|default:"G" }}
+      
+      <!-- Avatar & Info -->
+      <div class="flex items-center gap-4 sm:gap-6">
+        <!-- Colorful Glowing Avatar -->
+        <div class="relative">
+          <div class="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-gradient-to-tr from-[#FFB703] via-[#FB8500] to-[#E63946] text-white flex items-center justify-center text-3xl sm:text-4xl font-black shadow-lg shadow-orange-950/40 ring-4 ring-white/20 shrink-0">
+            {{ user_initial|default:"P" }}
+          </div>
+          <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#1b0e07] flex items-center justify-center text-[10px] text-white" title="Verified Google Patron">
+            ✓
+          </span>
         </div>
-        <div class="space-y-1">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight">{{ USER_NAME|default:"Ganesh M." }}</h1>
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#C9963F] text-gray-950 shadow-xs">
-              👑 Master Patron
+
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">{{ customer_name|default:"Valued Patron" }}</h1>
+            
+            {% if auth_provider == 'google' %}
+            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white text-gray-900 shadow-sm border border-gray-200">
+              <svg class="w-3 h-3" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Google Verified</span>
+            </span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-gray-950 shadow-sm">
+              👑 Royal Teak Patron
+            </span>
+            {% endif %}
+          </div>
+
+          <p class="text-xs text-gray-300 flex items-center gap-2.5 flex-wrap">
+            <span class="text-gray-200 font-semibold">{{ customer_email|default:"customer@gloryfurniture.com" }}</span>
+            <span class="text-white/40">&bull;</span>
+            <span class="text-gray-300">{{ customer_phone|default:"+91 98765 43210" }}</span>
+          </p>
+
+          <div class="flex items-center gap-2 pt-0.5">
+            <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
+              🛡️ 10-Yr Guarantee Active
+            </span>
+            <span class="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] font-bold">
+              🚚 Direct White-Glove Route
             </span>
           </div>
-          <p class="text-xs text-gray-300 flex items-center gap-2 flex-wrap">
-            <span>{{ USER_EMAIL|default:"ganesh@gloryfurniture.com" }}</span>
-            <span class="text-gray-500">•</span>
-            <span>{{ USER_PHONE|default:"+91 98765 43210" }}</span>
-          </p>
-          <p class="text-[11px] text-[#E0B058] font-medium pt-0.5">
-            Verified Solid Burma Teak Patron Account
-          </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2.5 shrink-0">
-        <a href="{% url 'customer_edit_profile' %}" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-colors shadow-xs">
-          Edit Profile
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
+        <a href="{% url 'customer_edit_profile' %}" class="flex-1 sm:flex-initial text-center px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold border border-white/25 transition-all shadow-sm active-tap">
+          ✏️ Edit Profile
         </a>
-        <a href="{% url 'logout' %}" class="px-4 py-2 rounded-xl bg-[#C9963F] hover:bg-[#D4A556] text-gray-950 text-xs font-black transition-colors shadow-xs">
-          Logout
+        <a href="{% url 'logout' %}" class="flex-1 sm:flex-initial text-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FFB703] to-[#FB8500] hover:from-[#FB8500] hover:to-[#E63946] text-gray-950 hover:text-white text-xs font-black transition-all shadow-md active-tap">
+          🚪 Sign Out
         </a>
       </div>
     </div>
 
-    <!-- Quick Stats Bar -->
-    <div class="mt-6 pt-5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Orders</span>
-        <span class="text-base sm:text-lg font-black text-white">Active Route</span>
+    <!-- Colorful Stat Chips Bar -->
+    <div class="mt-6 pt-5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3.5 text-center">
+      
+      <!-- Orders Chip (Electric Blue) -->
+      <div class="p-3 rounded-2xl bg-gradient-to-br from-blue-900/50 to-indigo-950/70 border border-blue-400/30 shadow-xs backdrop-blur-sm">
+        <span class="text-[10px] text-blue-300 font-extrabold uppercase tracking-wider block">📦 Total Orders</span>
+        <span class="text-lg sm:text-xl font-black text-white">{{ orders_count|default:0 }} Orders</span>
       </div>
-      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Wishlist</span>
-        <span class="text-base sm:text-lg font-black text-white">{{ WISHLIST_COUNT|default:0 }} Saved</span>
+
+      <!-- Wishlist Chip (Vibrant Rose Pink) -->
+      <div class="p-3 rounded-2xl bg-gradient-to-br from-rose-900/50 to-pink-950/70 border border-rose-400/30 shadow-xs backdrop-blur-sm">
+        <span class="text-[10px] text-rose-300 font-extrabold uppercase tracking-wider block">❤️ Saved Pieces</span>
+        <span class="text-lg sm:text-xl font-black text-white">{{ wishlist_count|default:0 }} Saved</span>
       </div>
-      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Delivery</span>
-        <span class="text-base sm:text-lg font-black text-white">White-Glove</span>
+
+      <!-- Teak Tier Chip (Golden Amber) -->
+      <div class="p-3 rounded-2xl bg-gradient-to-br from-amber-900/50 to-yellow-950/70 border border-amber-400/30 shadow-xs backdrop-blur-sm">
+        <span class="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider block">👑 Teak Club</span>
+        <span class="text-lg sm:text-xl font-black text-amber-200">Gold Tier</span>
       </div>
-      <div class="p-2.5 rounded-xl bg-white/5 border border-white/5">
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Warranty</span>
-        <span class="text-base sm:text-lg font-black text-[#C9963F]">10-Yr Teak</span>
+
+      <!-- Warranty Chip (Emerald Green) -->
+      <div class="p-3 rounded-2xl bg-gradient-to-br from-emerald-900/50 to-teal-950/70 border border-emerald-400/30 shadow-xs backdrop-blur-sm">
+        <span class="text-[10px] text-emerald-300 font-extrabold uppercase tracking-wider block">🛡️ Lifetime Wood</span>
+        <span class="text-lg sm:text-xl font-black text-emerald-300">100% Burma Teak</span>
       </div>
+
     </div>
   </div>
 
-  <!-- Quick Activity Links Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <!-- ========================================================= -->
+  <!-- 2. VIBRANT COLORFUL QUICK ACTION CARDS                   -->
+  <!-- ========================================================= -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
     
-    <!-- 1. Orders -->
-    <a href="{% url 'orders' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
-      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
-        📦
+    <!-- CARD 1: My Future Orders (Royal Sapphire Blue) -->
+    <a href="{% url 'orders' %}" 
+       class="p-5 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 block space-y-3 group text-white active:scale-98 relative overflow-hidden"
+       style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0284c7 100%);">
+      <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+      
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform">
+          📦
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-white/20 text-white border border-white/30">
+          Live Tracker
+        </span>
       </div>
       <div>
-        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">My Future Orders</h3>
-        <p class="text-xs text-gray-500 mt-0.5">Track handcrafted solid teak orders and artisan care guides</p>
+        <h3 class="font-extrabold text-base tracking-tight text-white group-hover:underline">My Future Orders</h3>
+        <p class="text-xs text-blue-100 mt-1 leading-relaxed">
+          Track production stages, dispatched cots &amp; digital dispatch challans.
+        </p>
+      </div>
+      <div class="pt-1 flex items-center gap-1 text-xs font-bold text-blue-200 group-hover:translate-x-1 transition-transform">
+        <span>View Orders</span>
+        <span>&rarr;</span>
       </div>
     </a>
 
-    <!-- 2. Address -->
-    <a href="{% url 'address' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
-      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
-        📍
+    <!-- CARD 2: Saved Wishlist (Ruby Rose Crimson) -->
+    <a href="{% url 'wishlist' %}" 
+       class="p-5 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 block space-y-3 group text-white active:scale-98 relative overflow-hidden"
+       style="background: linear-gradient(135deg, #9f1239 0%, #e11d48 50%, #f43f5e 100%);">
+      <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform">
+          ❤️
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-white/20 text-white border border-white/30">
+          {{ wishlist_count|default:0 }} Saved
+        </span>
       </div>
       <div>
-        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">Delivery Addresses</h3>
-        <p class="text-xs text-gray-500 mt-0.5">Manage white-glove doorstep delivery locations</p>
+        <h3 class="font-extrabold text-base tracking-tight text-white group-hover:underline">Saved Wishlist</h3>
+        <p class="text-xs text-rose-100 mt-1 leading-relaxed">
+          Curated teak beds, dining suites, and diwan cots ready for one-tap cart move.
+        </p>
+      </div>
+      <div class="pt-1 flex items-center gap-1 text-xs font-bold text-rose-200 group-hover:translate-x-1 transition-transform">
+        <span>Open Wishlist</span>
+        <span>&rarr;</span>
       </div>
     </a>
 
-    <!-- 3. Wishlist -->
-    <a href="{% url 'wishlist' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
-      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
-        ❤️
+    <!-- CARD 3: Delivery Addresses (Emerald Jade Green) -->
+    <a href="{% url 'address' %}" 
+       class="p-5 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 block space-y-3 group text-white active:scale-98 relative overflow-hidden"
+       style="background: linear-gradient(135deg, #065f46 0%, #059669 50%, #10b981 100%);">
+      <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform">
+          📍
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-white/20 text-white border border-white/30">
+          White-Glove
+        </span>
       </div>
       <div>
-        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">Saved Wishlist</h3>
-        <p class="text-xs text-gray-500 mt-0.5">View curated handcrafted teak pieces ready to order</p>
+        <h3 class="font-extrabold text-base tracking-tight text-white group-hover:underline">Delivery Addresses</h3>
+        <p class="text-xs text-emerald-100 mt-1 leading-relaxed">
+          Manage doorstep shipping destinations with floor delivery coordinates.
+        </p>
+      </div>
+      <div class="pt-1 flex items-center gap-1 text-xs font-bold text-emerald-200 group-hover:translate-x-1 transition-transform">
+        <span>Manage Addresses</span>
+        <span>&rarr;</span>
       </div>
     </a>
 
-    <!-- 4. Custom Requests -->
-    <a href="{% url 'custom_request' %}" class="p-5 bg-[#FAF6F0] rounded-2xl border border-[#EADBCE] shadow-2xs hover:shadow-warm transition-all block space-y-2 group">
-      <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-lg shadow-xs group-hover:scale-105 transition-transform">
-        📐
+    <!-- CARD 4: Custom Bespoke Blueprint (Imperial Violet Purple) -->
+    <a href="{% url 'custom_request' %}" 
+       class="p-5 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 block space-y-3 group text-white active:scale-98 relative overflow-hidden"
+       style="background: linear-gradient(135deg, #581c87 0%, #7c3aed 50%, #8b5cf6 100%);">
+      <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform">
+          📐
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-white/20 text-white border border-white/30">
+          Custom 3D
+        </span>
       </div>
       <div>
-        <h3 class="font-bold text-sm text-gray-950 group-hover:text-[#5C3D2E] transition-colors">Custom Requests</h3>
-        <p class="text-xs text-gray-500 mt-0.5">View bespoke 3D blueprints and master artisan quotes</p>
+        <h3 class="font-extrabold text-base tracking-tight text-white group-hover:underline">Custom Requests</h3>
+        <p class="text-xs text-purple-100 mt-1 leading-relaxed">
+          Review personalized room dimensions, wood grain polish &amp; artisan blueprints.
+        </p>
+      </div>
+      <div class="pt-1 flex items-center gap-1 text-xs font-bold text-purple-200 group-hover:translate-x-1 transition-transform">
+        <span>View Blueprints</span>
+        <span>&rarr;</span>
       </div>
     </a>
 
   </div>
 
-  <!-- Studio Concierge & White-Glove Guarantee Banner -->
-  <div class="p-6 rounded-3xl bg-[#1E140F] text-white border border-[#3D2517] flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="space-y-1 text-center sm:text-left">
-      <h4 class="font-black text-sm text-[#C9963F] uppercase tracking-wider">🪵 Master Studio Concierge</h4>
-      <p class="text-xs text-gray-300">Direct assistance for custom dimensions, wood polish swatches &amp; route logistics.</p>
-    </div>
-    <div class="flex items-center gap-3">
-      <a href="tel:+919440123456" class="px-5 py-2.5 rounded-xl bg-[#C9963F] hover:bg-[#D4A556] text-gray-950 text-xs font-black uppercase tracking-wider transition-colors shadow-xs">
-        📞 +91 94401 23456
+  <!-- ========================================================= -->
+  <!-- 3. RECENT ORDERS & STUDIO WORKSHOP STATUS                -->
+  <!-- ========================================================= -->
+  <div class="p-6 sm:p-7 rounded-3xl bg-white border border-[#EADBCE] shadow-sm space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+      <div>
+        <h2 class="text-base sm:text-lg font-black text-gray-950 flex items-center gap-2">
+          <span>🪵 Workshop Production Activity</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+            Real-Time
+          </span>
+        </h2>
+        <p class="text-xs text-gray-500">Live progress of your solid Burma teak orders and studio appointments.</p>
+      </div>
+      <a href="{% url 'orders' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1">
+        <span>View All</span>
+        <span>&rarr;</span>
       </a>
     </div>
+
+    {% if bookings %}
+    <div class="space-y-3">
+      {% for b in bookings %}
+      <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE] flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-amber-50/40 transition-colors">
+        <div class="flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center font-black text-xs shrink-0">
+            #{{ forloop.counter }}
+          </div>
+          <div>
+            <div class="font-bold text-xs sm:text-sm text-gray-950">{{ b.product_name|default:"Handcrafted Teak Suite" }}</div>
+            <div class="text-[11px] text-gray-500 flex items-center gap-2">
+              <span>Token: <strong>{{ b.booking_id|default:b.id }}</strong></span>
+              <span>&bull;</span>
+              <span>{{ b.created_at|date:"M d, Y" }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+            {{ b.status|default:"In Production" }}
+          </span>
+          <span class="text-xs font-black text-[#5C3D2E]">
+            ₹{{ b.product_price|floatformat:0 }}
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="py-8 text-center space-y-2">
+      <div class="text-3xl">🪑</div>
+      <div class="text-xs font-bold text-gray-700">No active orders placed yet.</div>
+      <p class="text-[11px] text-gray-500 max-w-sm mx-auto">Explore our solid Burma teak showroom to order handcrafted master cots, dining tables, or sofas.</p>
+      <div class="pt-2">
+        <a href="{% url 'catalog' %}" class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-[#5C3D2E] text-white text-xs font-bold shadow-xs hover:bg-black transition-colors">
+          <span>Explore Teak Catalog</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 4. COLORFUL VIP CONCIERGE & WHATSAPP SUPPORT BANNER       -->
+  <!-- ========================================================= -->
+  <div class="p-6 sm:p-7 rounded-3xl shadow-lg border border-amber-900/20 text-white flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden"
+       style="background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #b45309 100%);">
+    
+    <div class="space-y-1 text-center md:text-left relative z-10">
+      <div class="flex items-center justify-center md:justify-start gap-2">
+        <span class="text-lg">👑</span>
+        <h4 class="font-black text-sm uppercase tracking-wider text-amber-200">Personal Master Carpenter Concierge</h4>
+      </div>
+      <p class="text-xs text-amber-100 leading-relaxed max-w-lg">
+        Need customized dimensions, wood grain polish swatches, or expedited festival delivery? Contact our master workshop directly.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0 relative z-10 w-full md:w-auto justify-center">
+      <!-- WhatsApp Direct Button -->
+      <a href="https://wa.me/919440123456?text=Hello%20Glory%20Furniture%20Hub,%20I%20am%20a%20patron%20inquiring%20about%20custom%20woodwork." target="_blank" class="flex-1 md:flex-initial text-center px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all">
+        <span>💬 WhatsApp Us</span>
+      </a>
+
+      <!-- Direct Call Button -->
+      <a href="tel:+919440123456" class="flex-1 md:flex-initial text-center px-4 py-2.5 rounded-xl bg-white hover:bg-amber-100 text-gray-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition-all">
+        <span>📞 Call Studio</span>
+      </a>
+    </div>
+
   </div>
 
 </div>

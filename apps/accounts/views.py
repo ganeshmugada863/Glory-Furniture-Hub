@@ -312,16 +312,28 @@ def customer_payments_view(request):
 
 
 def customer_profile_view(request):
-    """Customer profile and preferences."""
-    customer_email = request.session.get('glory_user_email', 'ganesh@example.com')
-    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:3]
+    """Customer profile and preferences with real user stats."""
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+    
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email') or ''
+    customer_name = (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or request.session.get('glory_user_name') or 'Valued Patron'
+    customer_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or '+91 98765 43210'
+
+    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5] if customer_email else []
     custom_requests = CustomRequest.objects.all().order_by('-created_at')[:3]
+    wishlist = request.session.get('glory_wishlist', [])
+
     return render(request, 'accounts/profile.html', {
         'bookings': bookings,
         'custom_requests': custom_requests,
-        'customer_name': request.session.get('glory_user_name', 'Ganesh M.'),
+        'customer_name': customer_name,
         'customer_email': customer_email,
-        'customer_phone': request.session.get('glory_user_phone', '+91 98765 43210'),
+        'customer_phone': customer_phone,
+        'user_initial': customer_name[:1].upper() if customer_name else 'P',
+        'orders_count': len(bookings),
+        'wishlist_count': len(wishlist),
+        'auth_provider': getattr(profile, 'auth_provider', 'email') if profile else 'email',
     })
 
 
