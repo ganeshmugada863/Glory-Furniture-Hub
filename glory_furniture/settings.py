@@ -47,6 +47,16 @@ CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
 CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
 CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
+if CLOUDINARY_URL:
+    if CLOUDINARY_URL.startswith('CLOUDINARY_URL='):
+        CLOUDINARY_URL = CLOUDINARY_URL.split('=', 1)[1].strip()
+    if '<' in CLOUDINARY_URL or '>' in CLOUDINARY_URL:
+        CLOUDINARY_URL = None
+
+if CLOUDINARY_CLOUD_NAME and ('<' in CLOUDINARY_CLOUD_NAME or CLOUDINARY_CLOUD_NAME == 'Glory'):
+    # Fix cloud name if set to display name instead of account identifier
+    CLOUDINARY_CLOUD_NAME = 'dskull48t'
+
 USE_CLOUDINARY = bool(CLOUDINARY_URL or (CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET))
 
 # Application definition
@@ -104,6 +114,10 @@ WSGI_APPLICATION = 'glory_furniture.wsgi.application'
 
 # Database: Supabase Managed PostgreSQL in production, SQLite in local development
 DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL and ('[YOUR-PASSWORD]' in DATABASE_URL or 'YOUR-PASSWORD' in DATABASE_URL or '[PASSWORD]' in DATABASE_URL):
+    print("[Warning] DATABASE_URL contains placeholder password. Falling back to local SQLite.")
+    DATABASE_URL = None
+
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(
