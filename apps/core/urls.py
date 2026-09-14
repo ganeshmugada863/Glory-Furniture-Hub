@@ -12,5 +12,6 @@ urlpatterns = [
     path('guide/', views.guide_view, name='guide'),
     path('api/switch-role/', views.switch_role_api, name='switch_role_api'),
     path('api/ai-chat/', views.ai_chat_api, name='ai_chat_api'),
+    path('api/reverse-geocode/', views.reverse_geocode_api, name='reverse_geocode_api'),
 ]
 

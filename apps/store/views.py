@@ -210,7 +210,6 @@ def cart_view(request):
     return render(request, 'store/cart.html', context)
 
 
-@csrf_exempt
 def cart_add_api(request):
     if request.method == 'POST':
         try:
@@ -248,7 +247,6 @@ def cart_add_api(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
 
 
-@csrf_exempt
 def cart_remove_api(request):
     if request.method == 'POST':
         try:
@@ -295,7 +293,6 @@ def _serialize_wishlist_items(wishlist_ids):
         return []
 
 
-@csrf_exempt
 def wishlist_toggle_api(request):
     wishlist = request.session.get('glory_wishlist', [])
     if request.method == 'GET':

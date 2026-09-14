@@ -23,8 +23,13 @@ CSRF_TRUSTED_ORIGINS = [
 # Allow iframe sessions & CSRF across Hugging Face Space embeds on mobile & desktop
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_AGE = 31536000  # 1 year
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_PATH = '/'
 
 # Application definition
 INSTALLED_APPS = [
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'apps.core.middleware.SecurityAndPermissionsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware', # Disabled to allow Hugging Face Space iframe

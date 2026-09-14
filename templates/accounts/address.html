@@ -225,7 +225,7 @@
           <input type="text" 
                  name="name" 
                  required 
-                 value="{{ request.session.glory_user_name|default:'Ganesh M.' }}"
+                 value="{{ request.user.profile.full_name|default:request.session.glory_user_name|default:'' }}"
                  placeholder="Full Name"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
         </div>
@@ -236,7 +236,7 @@
           <input type="tel" 
                  name="phone" 
                  required 
-                 value="{{ request.session.glory_user_phone|default:'+91 98765 43210' }}"
+                 value="{{ request.user.profile.phone|default:request.session.glory_user_phone|default:'' }}"
                  placeholder="+91 98765 43210"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
         </div>
@@ -247,11 +247,36 @@
           <input type="email" 
                  name="email" 
                  required 
-                 value="{{ request.session.glory_user_email|default:'ganesh@example.com' }}"
+                 value="{{ request.user.email|default:request.session.glory_user_email|default:'' }}"
                  placeholder="yourname@example.com"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
         </div>
       </div>
+
+      <!-- HTML5 Geolocation Permission & Location Auto-Detection -->
+      <div class="p-3.5 bg-gradient-to-r from-amber-50 via-orange-50/60 to-amber-100/40 border border-amber-300/80 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-[#5C3D2E] text-white flex items-center justify-center text-sm shadow-xs shrink-0">
+            📍
+          </div>
+          <div>
+            <div class="text-xs font-black text-gray-900 flex items-center gap-1.5">
+              <span>Auto-Detect Address via GPS</span>
+              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded">HTML5 Location</span>
+            </div>
+            <div class="text-[11px] text-gray-600">Tap to allow browser location permission and auto-fill street, city & pincode.</div>
+          </div>
+        </div>
+        <button type="button" 
+                id="btn-detect-gps" 
+                onclick="detectCurrentLocation()" 
+                class="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer active-tap shrink-0">
+          <span id="gps-spinner" class="hidden animate-spin">⏳</span>
+          <span id="gps-icon">🛰️</span>
+          <span id="gps-text">Use Current Location</span>
+        </button>
+      </div>
+      <div id="gps-status-badge" class="hidden text-xs font-bold p-2.5 rounded-xl"></div>
 
       <!-- Address Fields -->
       <div>
@@ -259,6 +284,7 @@
           Flat / House / Villa No. & Building <span class="text-red-500">*</span>
         </label>
         <input type="text" 
+               id="addr_flat"
                name="flat" 
                required 
                placeholder="e.g. Villa #42, Fortune Enclave"
@@ -270,6 +296,7 @@
           Street / Area / Colony <span class="text-red-500">*</span>
         </label>
         <input type="text" 
+               id="addr_street"
                name="street" 
                required 
                placeholder="e.g. Road No. 12, Banjara Hills"
@@ -282,6 +309,7 @@
             Landmark
           </label>
           <input type="text" 
+                 id="addr_landmark"
                  name="landmark" 
                  placeholder="Near Park Hyatt"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
@@ -291,6 +319,7 @@
             City <span class="text-red-500">*</span>
           </label>
           <input type="text" 
+                 id="addr_city"
                  name="city" 
                  required 
                  value="Hyderabad"
@@ -301,6 +330,7 @@
             Pincode <span class="text-red-500">*</span>
           </label>
           <input type="text" 
+                 id="addr_pincode"
                  name="pincode" 
                  required 
                  placeholder="500034"
@@ -314,6 +344,7 @@
             State <span class="text-red-500">*</span>
           </label>
           <input type="text" 
+                 id="addr_state"
                  name="state" 
                  required 
                  value="Telangana"
@@ -359,6 +390,97 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
+  }
+
+  // HTML5 Geolocation Permission Handler
+  async function detectCurrentLocation() {
+    const btn = document.getElementById('btn-detect-gps');
+    const spinner = document.getElementById('gps-spinner');
+    const icon = document.getElementById('gps-icon');
+    const text = document.getElementById('gps-text');
+    const badge = document.getElementById('gps-status-badge');
+
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    // Set loading state
+    btn.disabled = true;
+    spinner.classList.remove('hidden');
+    icon.classList.add('hidden');
+    text.textContent = 'Detecting GPS...';
+    badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 block';
+    badge.textContent = '📡 Requesting browser location permission... Please click "Allow" on the prompt.';
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block';
+        badge.textContent = `📍 Coordinates obtained (${lat.toFixed(4)}, ${lon.toFixed(4)}). Resolving street address...`;
+
+        try {
+          const res = await fetch(`/api/reverse-geocode/?lat=${lat}&lon=${lon}`);
+          const json = await res.json();
+          if (json.status === 'success' || json.status === 'partial') {
+            const d = json.data;
+            if (d.flat && !document.getElementById('addr_flat').value) {
+              document.getElementById('addr_flat').value = d.flat;
+            }
+            if (d.street) {
+              document.getElementById('addr_street').value = d.street;
+            }
+            if (d.city) {
+              document.getElementById('addr_city').value = d.city;
+            }
+            if (d.state) {
+              document.getElementById('addr_state').value = d.state;
+            }
+            if (d.pincode) {
+              document.getElementById('addr_pincode').value = d.pincode;
+            }
+            if (d.suburb && !document.getElementById('addr_landmark').value) {
+              document.getElementById('addr_landmark').value = 'Near ' + d.suburb;
+            }
+
+            badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+            badge.textContent = `✅ Location detected & address filled: ${d.display_name || d.city || 'Hyderabad'}`;
+          } else {
+            badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block';
+            badge.textContent = '⚠️ Location coordinates found. Please verify the street and pincode details.';
+          }
+        } catch (err) {
+          console.error('Reverse geocode error:', err);
+          badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block';
+          badge.textContent = '📍 GPS coordinates received. Please confirm your building and flat details.';
+        } finally {
+          btn.disabled = false;
+          spinner.classList.add('hidden');
+          icon.classList.remove('hidden');
+          text.textContent = 'Location Detected';
+        }
+      },
+      (err) => {
+        console.error('Geolocation permission error:', err);
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        icon.classList.remove('hidden');
+        text.textContent = 'Retry Location';
+
+        badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-red-50 text-red-800 border border-red-200 block';
+        if (err.code === 1) {
+          badge.innerHTML = '⚠️ <strong>Location permission denied.</strong> Please click the lock/settings icon in your browser address bar to allow location, or type your address manually below.';
+        } else if (err.code === 2) {
+          badge.textContent = '⚠️ Device GPS position unavailable. Please type your delivery address manually.';
+        } else if (err.code === 3) {
+          badge.textContent = '⚠️ Location request timed out. Please try again.';
+        } else {
+          badge.textContent = '⚠️ Location could not be detected. Please type your address manually.';
+        }
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
   }
 
   // Close modal on Escape

@@ -88,6 +88,7 @@ async function moveToCart(productId) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': window.getCsrfToken ? window.getCsrfToken() : '{{ csrf_token }}'
       },
       body: JSON.stringify({ product_id: productId, quantity: 1, size: 'Standard' })
     });
@@ -96,7 +97,10 @@ async function moveToCart(productId) {
       // Remove from wishlist
       await fetch('/api/wishlist/toggle/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': window.getCsrfToken ? window.getCsrfToken() : '{{ csrf_token }}'
+        },
         body: JSON.stringify({ product_id: productId })
       });
       // Redirect to Cart page

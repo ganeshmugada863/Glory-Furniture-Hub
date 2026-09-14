@@ -87,12 +87,23 @@
                 <p class="text-[11px] text-gray-500">Saved address from your settings</p>
               </div>
             </div>
-            <a href="{% url 'address' %}" 
-               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:text-black hover:border-black transition-all">
-              <svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-              <span>Change in Settings</span>
-            </a>
+            <div class="flex items-center gap-2">
+              <button type="button" 
+                      id="btn-chk-gps"
+                      onclick="detectCheckoutLocation()" 
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-xs font-bold text-[#5C3D2E] transition-all cursor-pointer shadow-2xs active-tap">
+                <span id="chk-gps-icon">📍</span>
+                <span id="chk-gps-text">Use Current Location</span>
+              </button>
+              <a href="{% url 'address' %}" 
+                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:text-black hover:border-black transition-all">
+                <svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>Change</span>
+              </a>
+            </div>
           </div>
+
+          <div id="chk-gps-badge" class="hidden text-xs font-bold p-2.5 rounded-xl"></div>
 
           <!-- Recipient & Address Details -->
           <div class="p-5 rounded-2xl bg-amber-50/40 border border-amber-200/60 space-y-3">
@@ -111,7 +122,7 @@
               </span>
             </div>
 
-            <p class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
+            <p id="chk-address-text" class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
               {{ saved_address.flat }}{% if saved_address.street %}, {{ saved_address.street }}{% endif %}
               {% if saved_address.landmark %}, Landmark: {{ saved_address.landmark }}{% endif %}, 
               {{ saved_address.city|default:"Hyderabad" }}, {{ saved_address.state|default:"Telangana" }} - {{ saved_address.pincode|default:"500034" }}
@@ -264,6 +275,75 @@
 
     const badgeAmt = document.getElementById('summary-badge-amount');
     if (badgeAmt) badgeAmt.innerText = formatRupee(grandTotal);
+  }
+
+  // HTML5 Geolocation Permission Handler for Checkout Summary
+  async function detectCheckoutLocation() {
+    const btn = document.getElementById('btn-chk-gps');
+    const badge = document.getElementById('chk-gps-badge');
+    const addrP = document.getElementById('chk-address-text');
+    const form = document.getElementById('checkout-booking-form');
+
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    btn.disabled = true;
+    document.getElementById('chk-gps-text').innerText = 'Detecting GPS...';
+    badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 block mt-2';
+    badge.textContent = '📡 Requesting browser location permission... Please tap "Allow".';
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
+        badge.textContent = `📍 Coordinates obtained. Resolving street address...`;
+
+        try {
+          const res = await fetch(`/api/reverse-geocode/?lat=${lat}&lon=${lon}`);
+          const json = await res.json();
+          if (json.status === 'success' || json.status === 'partial') {
+            const d = json.data;
+            if (form) {
+              if (d.flat) form.querySelector('[name=flat]').value = d.flat;
+              if (d.street) form.querySelector('[name=street]').value = d.street;
+              if (d.city) form.querySelector('[name=city]').value = d.city;
+              if (d.state) form.querySelector('[name=state]').value = d.state;
+              if (d.pincode) form.querySelector('[name=pincode]').value = d.pincode;
+              if (d.suburb) form.querySelector('[name=landmark]').value = 'Near ' + d.suburb;
+            }
+
+            const formatted = `${d.flat ? d.flat + ', ' : ''}${d.street || 'Current Location'}, ${d.suburb ? 'Near ' + d.suburb + ', ' : ''}${d.city || 'Hyderabad'}, ${d.state || 'Telangana'} - ${d.pincode || '500034'}`;
+            if (addrP) {
+              addrP.innerHTML = `<span class="text-emerald-800 font-bold">📍 GPS Detected Address:</span> ${formatted}`;
+            }
+
+            badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block mt-2';
+            badge.textContent = `✅ Location detected & applied to this order: ${d.display_name || d.city || 'Hyderabad'}`;
+          }
+        } catch (err) {
+          console.error('Checkout geocode error:', err);
+          badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
+          badge.textContent = '📍 GPS received. Delivery address updated.';
+        } finally {
+          btn.disabled = false;
+          document.getElementById('chk-gps-text').innerText = 'Location Updated';
+        }
+      },
+      (err) => {
+        btn.disabled = false;
+        document.getElementById('chk-gps-text').innerText = 'Use Current Location';
+        badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-red-50 text-red-800 border border-red-200 block mt-2';
+        if (err.code === 1) {
+          badge.innerHTML = '⚠️ <strong>Location permission denied.</strong> You can change the saved address in Settings.';
+        } else {
+          badge.textContent = '⚠️ Location unavailable. Using saved address.';
+        }
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
   }
 </script>
 {% endblock %}

@@ -246,11 +246,14 @@
             <p class="text-[11px] text-gray-500">Upload 4 distinct photos (Main Cover, Side Angle, Wood Carving Detail, Room Layout).</p>
           </div>
 
-          <!-- Quick Multi-file Batch Selector -->
-          <div>
+          <!-- Quick Multi-file Batch & Camera Selector -->
+          <div class="flex items-center gap-2 flex-wrap">
             <input type="file" id="add_batch_input" multiple accept="image/*" class="hidden" onchange="handleBatchFileSelect(this, 'add')" />
             <button type="button" onclick="document.getElementById('add_batch_input').click()" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-[#5C3D2E] border border-amber-300 text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
-              <span>📁 Select up to 4 Photos at once</span>
+              <span>📁 Select up to 4 Photos</span>
+            </button>
+            <button type="button" onclick="openAdminCameraModal('add')" class="px-3 py-1.5 rounded-xl bg-gray-950 hover:bg-[#5C3D2E] text-white text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
+              <span>📷 Snap Workshop Photo</span>
             </button>
           </div>
         </div>
@@ -481,12 +484,14 @@
       <!-- 4 IMAGES UPLOAD SECTION (EDIT MODAL)                            -->
       <!-- =============================================================== -->
       <div class="space-y-3 p-4 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE]">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-2">
           <h3 class="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
             <span>🖼️ Product Gallery Photos</span>
             <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">4 Photo Slots</span>
           </h3>
-          <span class="text-[11px] text-gray-500">Upload new files to replace existing images</span>
+          <button type="button" onclick="openAdminCameraModal('edit')" class="px-3 py-1.5 rounded-xl bg-gray-950 hover:bg-[#5C3D2E] text-white text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
+            <span>📷 Snap Workshop Photo</span>
+          </button>
         </div>
 
         <!-- 4 Image Slots Grid for Edit -->
@@ -913,7 +918,140 @@ document.addEventListener('keydown', function(e) {
     closeAddModal();
     closeEditModal();
     closeDeleteModal();
+    closeAdminCameraModal();
   }
 });
+
+// =========================================================================
+// HTML5 WORKSHOP CAMERA CAPTURE STUDIO
+// =========================================================================
+let adminCameraStream = null;
+let adminCameraTargetMode = 'add'; // 'add' or 'edit'
+
+function openAdminCameraModal(mode, defaultSlot) {
+  adminCameraTargetMode = mode || 'add';
+  if (defaultSlot) {
+    document.getElementById('admin-camera-slot-select').value = defaultSlot;
+  }
+  const modal = document.getElementById('admin-camera-modal');
+  const video = document.getElementById('admin-camera-video');
+  const loader = document.getElementById('admin-camera-loader');
+  const status = document.getElementById('admin-camera-status');
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  loader.classList.remove('hidden');
+  status.textContent = 'Requesting camera permission... Please tap "Allow".';
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    loader.classList.add('hidden');
+    status.innerHTML = '<span class="text-red-400 font-bold">⚠️ Camera API not supported on this browser.</span> Please upload files directly.';
+    return;
+  }
+
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+    audio: false
+  }).then(stream => {
+    adminCameraStream = stream;
+    video.srcObject = stream;
+    video.onloadedmetadata = () => {
+      video.play();
+      loader.classList.add('hidden');
+      status.textContent = 'Camera active. Frame your handcrafted piece and tap "Snap & Attach Photo".';
+    };
+  }).catch(err => {
+    console.error('Camera access error:', err);
+    loader.classList.add('hidden');
+    status.innerHTML = '<span class="text-red-400 font-bold">⚠️ Camera permission denied or device busy.</span> You can still select images using the file picker.';
+  });
+}
+
+function closeAdminCameraModal() {
+  if (adminCameraStream) {
+    adminCameraStream.getTracks().forEach(t => t.stop());
+    adminCameraStream = null;
+  }
+  const modal = document.getElementById('admin-camera-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+}
+
+function takeAdminCameraSnapshot() {
+  const video = document.getElementById('admin-camera-video');
+  const canvas = document.getElementById('admin-camera-canvas');
+  const slot = parseInt(document.getElementById('admin-camera-slot-select').value || 1);
+
+  if (!video || !adminCameraStream) return;
+
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  canvas.toBlob(blob => {
+    if (!blob) return;
+    const file = new File([blob], `workshop_teak_${slot}_${Date.now()}.jpg`, { type: 'image/jpeg' });
+    const dt = new DataTransfer();
+    dt.items.add(file);
+
+    const fileInput = document.getElementById(`${adminCameraTargetMode}_file_${slot}`);
+    if (fileInput) {
+      fileInput.files = dt.files;
+      previewFileSlot(fileInput, adminCameraTargetMode, slot);
+    }
+    closeAdminCameraModal();
+  }, 'image/jpeg', 0.9);
+}
 </script>
+
+<!-- ADMIN CAMERA MODAL DIALOG -->
+<div id="admin-camera-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="bg-[#140d08] text-white border border-[#3d2719] rounded-3xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+    <div class="flex items-center justify-between pb-2 border-b border-[#2b1b11]">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">📷</span>
+        <h3 class="font-black text-sm text-amber-200">Workshop Camera Studio</h3>
+      </div>
+      <button type="button" onclick="closeAdminCameraModal()" class="p-1 text-gray-400 hover:text-white text-sm font-bold cursor-pointer">✕</button>
+    </div>
+
+    <!-- Target Slot Selector -->
+    <div class="flex items-center justify-between bg-black/40 p-2.5 rounded-xl border border-white/10 text-xs">
+      <label class="font-bold text-gray-300">Assign To Photo Slot:</label>
+      <select id="admin-camera-slot-select" class="bg-[#241710] text-amber-200 font-bold border border-amber-500/40 rounded-lg px-2.5 py-1 text-xs focus:outline-none">
+        <option value="1">Photo 1 (Cover / Main)</option>
+        <option value="2">Photo 2 (Side Angle)</option>
+        <option value="3">Photo 3 (Carving Detail)</option>
+        <option value="4">Photo 4 (Room Layout)</option>
+      </select>
+    </div>
+
+    <!-- Live Viewfinder -->
+    <div class="relative aspect-video rounded-2xl overflow-hidden bg-black border border-[#3d2719] flex items-center justify-center">
+      <video id="admin-camera-video" autoplay playsinline class="w-full h-full object-cover"></video>
+      <canvas id="admin-camera-canvas" class="hidden"></canvas>
+      <div id="admin-camera-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 gap-2">
+        <div class="w-7 h-7 border-2 border-amber-400/30 border-t-amber-400 rounded-full animate-spin"></div>
+        <span class="text-xs text-amber-200 font-semibold">Opening Camera Stream...</span>
+      </div>
+    </div>
+
+    <div id="admin-camera-status" class="text-xs text-gray-300 text-center">
+      Point camera at finished piece in workshop.
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between gap-3 pt-2">
+      <button type="button" onclick="closeAdminCameraModal()" class="px-4 py-2.5 rounded-xl border border-gray-600 text-gray-300 hover:bg-white/10 text-xs font-bold cursor-pointer transition-colors">
+        Cancel
+      </button>
+      <button type="button" onclick="takeAdminCameraSnapshot()" class="flex-1 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-black shadow-md cursor-pointer flex items-center justify-center gap-2 transition-colors active-tap">
+        <span>📸 Snap &amp; Attach Photo</span>
+      </button>
+    </div>
+  </div>
+</div>
 {% endblock %}

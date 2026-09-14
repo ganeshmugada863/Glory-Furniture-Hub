@@ -210,3 +210,73 @@ def guide_view(request):
     }
     return render(request, 'core/guide.html', context)
 
+
+def reverse_geocode_api(request):
+    """
+    Reverse geocodes lat/lon into street address, city, state, pincode
+    to support HTML5 Geolocation permission auto-fill.
+    """
+    lat = request.GET.get('lat', '').strip()
+    lon = request.GET.get('lon', '').strip()
+
+    if not lat or not lon:
+        return JsonResponse({'status': 'error', 'message': 'Latitude and Longitude are required'}, status=400)
+
+    try:
+        import urllib.request
+        import json
+
+        url = f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}&addressdetails=1"
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'GloryFurnitureHub/1.0 (contact@gloryfurniture.com)'
+        })
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode('utf-8'))
+            address = data.get('address', {})
+
+            street = (
+                address.get('road') or
+                address.get('suburb') or
+                address.get('neighbourhood') or
+                address.get('residential') or
+                ''
+            )
+            flat = address.get('house_number') or address.get('building') or ''
+            city = (
+                address.get('city') or
+                address.get('town') or
+                address.get('village') or
+                address.get('state_district') or
+                'Hyderabad'
+            )
+            state = address.get('state') or 'Telangana'
+            pincode = address.get('postcode') or ''
+
+            return JsonResponse({
+                'status': 'success',
+                'data': {
+                    'flat': flat,
+                    'street': street,
+                    'city': city,
+                    'state': state,
+                    'pincode': pincode,
+                    'display_name': data.get('display_name', ''),
+                    'suburb': address.get('suburb', ''),
+                }
+            })
+    except Exception as e:
+        # Graceful fallback: return partial coords with default Hyderabad state
+        return JsonResponse({
+            'status': 'partial',
+            'data': {
+                'flat': '',
+                'street': '',
+                'city': 'Hyderabad',
+                'state': 'Telangana',
+                'pincode': '',
+                'display_name': f"Coordinates: {lat}, {lon}",
+                'error': str(e)
+            }
+        })
+
+

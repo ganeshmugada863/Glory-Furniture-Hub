@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#5C3D2E" />
+  <meta name="csrf-token" content="{{ csrf_token }}" />
   <title>{% block title %}Glory Furniture Hub — Handcrafted Elegance{% endblock %}</title>
 
   <!-- Google Fonts: Plus Jakarta Sans -->
@@ -951,7 +952,27 @@
       });
     };
 
-    // Global Add to Cart & Move to Cart Handlers
+    // Bulletproof CSRF Cookie & Token Extractor for AJAX Security
+    window.getCsrfToken = function() {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, 10) === 'csrftoken=') {
+            cookieValue = decodeURIComponent(cookie.substring(10));
+            break;
+          }
+        }
+      }
+      if (!cookieValue) {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        if (meta) cookieValue = meta.getAttribute('content');
+      }
+      return cookieValue || '{{ csrf_token }}';
+    };
+
+    // Global Add to Cart & Move to Cart Handlers with CSRF Protection
     window.addToCart = async function(productId, size, quantity) {
       size = size || 'Standard';
       quantity = quantity || 1;
@@ -960,6 +981,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': window.getCsrfToken()
           },
           body: JSON.stringify({ product_id: productId, size: size, quantity: quantity })
         });
@@ -985,6 +1007,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': window.getCsrfToken()
           },
           body: JSON.stringify({ product_id: productId, size: 'Standard', quantity: 1 })
         });
@@ -992,7 +1015,10 @@
         if (data.status === 'success') {
           await fetch('/api/wishlist/toggle/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': window.getCsrfToken()
+            },
             body: JSON.stringify({ product_id: productId })
           });
           window.location.href = '/cart/';

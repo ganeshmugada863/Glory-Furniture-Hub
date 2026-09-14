@@ -3,15 +3,49 @@ from .models import CustomRequest
 
 def custom_request_view(request):
     if request.method == 'POST':
-        name = request.POST.get('name', 'Ganesh M.')
-        email = request.POST.get('email', 'ganesh@example.com')
-        phone = request.POST.get('phone', '+91 98765 43210')
+        user_name = ''
+        user_email = ''
+        user_phone = ''
+        if request.user.is_authenticated:
+            user_name = getattr(getattr(request.user, 'profile', None), 'full_name', '') or request.user.get_full_name() or request.user.username
+            user_email = request.user.email
+            user_phone = getattr(getattr(request.user, 'profile', None), 'phone', '')
+
+        name = request.POST.get('name') or user_name or request.session.get('glory_user_name', '')
+        email = request.POST.get('email') or user_email or request.session.get('glory_user_email', '')
+        phone = request.POST.get('phone') or user_phone or request.session.get('glory_user_phone', '')
         category = request.POST.get('category', 'Custom Cot / Wooden Bed')
         wood_type = request.POST.get('wood_type', 'Pure Grade-A Burma Teak')
         dimensions = request.POST.get('dimensions', '6x6 King Bed Frame')
         budget_range = request.POST.get('budget_range', '₹75,000 - ₹1,50,000')
         description = request.POST.get('description', '')
-        reference_image = request.POST.get('reference_image', '')
+        reference_image = request.POST.get('reference_image', '').strip()
+
+        # Handle uploaded photo from device gallery or camera capture
+        uploaded_file = request.FILES.get('reference_photo')
+        captured_data = request.POST.get('captured_photo_data', '').strip()
+
+        if uploaded_file:
+            from django.core.files.storage import default_storage
+            import uuid
+            ext = uploaded_file.name.split('.')[-1] if '.' in uploaded_file.name else 'jpg'
+            filename = f"custom_requests/{uuid.uuid4().hex[:10]}.{ext}"
+            saved_path = default_storage.save(filename, uploaded_file)
+            reference_image = default_storage.url(saved_path)
+        elif captured_data and captured_data.startswith('data:image'):
+            import base64
+            import uuid
+            from django.core.files.base import ContentFile
+            from django.core.files.storage import default_storage
+            try:
+                format_prefix, imgstr = captured_data.split(';base64,')
+                ext = 'jpg' if 'jpeg' in format_prefix else ('png' if 'png' in format_prefix else 'jpg')
+                file_data = base64.b64decode(imgstr)
+                filename = f"custom_requests/cam_{uuid.uuid4().hex[:10]}.{ext}"
+                saved_path = default_storage.save(filename, ContentFile(file_data))
+                reference_image = default_storage.url(saved_path)
+            except Exception as e:
+                print('Error saving camera snapshot:', e)
 
         custom_req = CustomRequest.objects.create(
             customer_name=name,
