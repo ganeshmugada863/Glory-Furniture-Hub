@@ -44,6 +44,7 @@ class RoleBasedAccessMiddleware:
             '/register/',
             '/login/',
             '/accounts/google-auth/',
+            '/accounts/supabase-callback/',
             '/forgot-password/',
             '/admin/login/',
             '/admin/logout/',

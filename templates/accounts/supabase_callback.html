@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifying Google Authentication — Glory Furniture Hub</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Compiled Tailwind CSS for Glory Furniture Hub -->
+  <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}" />
+
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-[#FAF7F2] text-gray-900 min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md bg-white rounded-3xl p-8 border border-amber-200/80 shadow-warm text-center space-y-6">
+    <!-- Brand Crest -->
+    <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto overflow-hidden shadow-2xs">
+      <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture" class="w-full h-full object-cover" />
+    </div>
+
+    <div class="space-y-2">
+      <h1 class="text-xl font-black text-gray-950 tracking-tight">Authenticating with Google</h1>
+      <p id="status-msg" class="text-xs text-gray-500 font-medium">Verifying your Google credentials with Glory Furniture Hub...</p>
+    </div>
+
+    <!-- Spinner -->
+    <div class="flex justify-center items-center py-4">
+      <div class="w-10 h-10 border-3 border-amber-200 border-t-[#5C3D2E] rounded-full animate-spin"></div>
+    </div>
+
+    <p class="text-[11px] text-gray-400">Please wait while we redirect you to the storefront...</p>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://qxxrghelhlrafdkveeqo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eHJnaGVsaGxyYWZka3ZlZXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDMwNTEsImV4cCI6MjEwNDAxOTA1MX0.mc-5c84wqAaD5_ybaHS_vHZSYgczA2bIjWC2KwIPfZA';
+
+    let supabaseClient = null;
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (e) {
+      console.error("Supabase client init error:", e);
+    }
+
+    let isExchanged = false;
+
+    async function exchangeWithDjango(session) {
+      if (isExchanged) return;
+      isExchanged = true;
+
+      const user = session.user;
+      const meta = user.user_metadata || {};
+      const payload = {
+        email: user.email,
+        name: meta.full_name || meta.name || user.email.split('@')[0],
+        google_id: user.id,
+        avatar_url: meta.avatar_url || meta.picture || '',
+        access_token: session.access_token || ''
+      };
+
+      document.getElementById('status-msg').innerText = "Logging in as " + payload.name + "...";
+
+      try {
+        const res = await fetch('/accounts/google-auth/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await res.json();
+        if (result.status === 'success') {
+          document.getElementById('status-msg').innerText = "Success! Redirecting to Glory Furniture Home...";
+          setTimeout(() => {
+            window.location.href = result.redirect_url || '/';
+          }, 350);
+        } else {
+          document.getElementById('status-msg').innerText = "Error: " + (result.message || 'Authentication failed');
+          setTimeout(() => { window.location.href = '/register/'; }, 2500);
+        }
+      } catch (err) {
+        console.error("Backend login error:", err);
+        document.getElementById('status-msg').innerText = "Connection error. Redirecting...";
+        setTimeout(() => { window.location.href = '/'; }, 1500);
+      }
+    }
+
+    async function initAuthProcessing() {
+      if (!supabaseClient) {
+        document.getElementById('status-msg').innerText = "Supabase initialization failed.";
+        return;
+      }
+
+      // 1. Check current session first
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+          await exchangeWithDjango(session);
+          return;
+        }
+      } catch (err) {
+        console.warn("getSession error:", err);
+      }
+
+      // 2. Listen for auth state change
+      supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        if (session && session.user) {
+          await exchangeWithDjango(session);
+        }
+      });
+
+      // 3. Fallback: Parse URL hash if direct tokens returned
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        if (accessToken) {
+          try {
+            const { data: { user }, error } = await supabaseClient.auth.getUser(accessToken);
+            if (user) {
+              await exchangeWithDjango({ access_token: accessToken, user: user });
+              return;
+            }
+          } catch (tokenErr) {
+            console.warn("getUser from token error:", tokenErr);
+          }
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initAuthProcessing);
+  </script>
+</body>
+</html>

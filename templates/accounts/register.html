@@ -1,351 +1,311 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Create Customer Account — Glory Furniture Hub</title>
 
-{% block title %}Create Customer Account — Glory Furniture Hub{% endblock %}
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet" />
 
-{% block content %}
-<div class="w-full max-w-md mx-auto px-4 py-8 sm:py-12">
-  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-warm space-y-6">
+  <!-- Compiled Tailwind CSS for Glory Furniture Hub -->
+  <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}" />
+
+  <!-- Supabase Official JS SDK Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #FAF7F2;
+      color: #1E1E1E;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .active-tap:active { transform: scale(0.97); transition: transform 0.1s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center px-4 py-8 sm:py-12 bg-gradient-to-b from-[#FAF7F2] via-[#F5EFE6] to-[#FAF7F2]">
+
+  <!-- Dedicated Distraction-Free Registration Container -->
+  <div class="w-full max-w-md mx-auto animate-fade-in">
     
-    <!-- Header -->
-    <div class="text-center space-y-2">
-      <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mx-auto text-2xl shadow-2xs">
-        👑
-      </div>
-      <h1 class="text-xl sm:text-2xl font-black text-gray-950 tracking-tight">Create Customer Account</h1>
-      <p class="text-xs text-gray-500">Access exclusive handcrafted solid Burma teak collections, custom orders, and doorstep delivery.</p>
-    </div>
-
-    <!-- Error Alert -->
-    {% if error %}
-    <div class="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-start gap-2 animate-fade-in">
-      <svg class="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-      <span>{{ error }}</span>
-    </div>
-    {% endif %}
-
-    <!-- Google Authentication Section -->
-    <div class="space-y-3">
-      <button 
-        type="button" 
-        onclick="initiateGoogleSignIn()"
-        class="w-full py-3 px-4 rounded-xl border border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-3 active-tap cursor-pointer"
-      >
-        <!-- Google Logo SVG -->
-        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <span>Sign up with Google</span>
-      </button>
-
-      <!-- Google GSI Container -->
-      <div id="g_id_onload"
-           data-client_id="812345678901-placeholder.apps.googleusercontent.com"
-           data-context="signup"
-           data-ux_mode="popup"
-           data-callback="handleGoogleCredentialResponse"
-           data-auto_prompt="false">
-      </div>
-    </div>
-
-    <!-- Divider -->
-    <div class="relative flex items-center justify-center">
-      <div class="border-t border-gray-200 w-full"></div>
-      <span class="bg-white px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400 absolute">
-        or register with email
-      </span>
-    </div>
-
-    <!-- Registration Form -->
-    <form method="POST" action="{% url 'register' %}" class="space-y-4">
-      {% csrf_token %}
-      
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Full Name *</label>
-        <input 
-          type="text" 
-          name="name" 
-          placeholder="e.g. Ganesh Mugada" 
-          required 
-          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-        />
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Email Address *</label>
-        <input 
-          type="email" 
-          name="email" 
-          placeholder="your.email@example.com" 
-          required 
-          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-        />
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Phone / WhatsApp Number</label>
-        <input 
-          type="tel" 
-          name="phone" 
-          placeholder="+91 98765 43210" 
-          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-        />
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Password *</label>
-        <input 
-          type="password" 
-          name="password" 
-          placeholder="At least 6 characters" 
-          required 
-          minlength="6"
-          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-        />
-      </div>
-
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Confirm Password *</label>
-        <input 
-          type="password" 
-          name="confirm_password" 
-          placeholder="Re-enter password" 
-          required 
-          minlength="6"
-          class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-        />
-      </div>
-
-      <button 
-        type="submit" 
-        class="w-full py-3.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors shadow-md active-tap cursor-pointer"
-        style="background-color: #5C3D2E !important;"
-      >
-        Create Account & Continue →
-      </button>
-    </form>
-
-    <!-- Footer Links -->
-    <div class="text-center text-xs text-gray-500 pt-3 border-t border-gray-100">
-      Already have an account? 
-      <a href="{% url 'login' %}" class="font-bold text-[#5C3D2E] hover:underline ml-1">Sign In</a>
-    </div>
-
-  </div>
-</div>
-
-<!-- Google One-Tap Interactive Modal (Clean & Dynamic Google Sign-In) -->
-<div id="google-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
-  <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-gray-100 animate-scale-up" style="border-radius: 26px !important;">
-    
-    <!-- Header -->
-    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-      <div class="flex items-center gap-2.5">
-        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <span class="font-black text-sm text-gray-900 tracking-tight">Sign in with Google</span>
-      </div>
-      <button type="button" onclick="closeGoogleModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 flex items-center justify-center text-xs font-black cursor-pointer">
-        ✕
-      </button>
-    </div>
-
-    <!-- Description -->
-    <p class="text-xs text-gray-500 leading-relaxed">
-      Choose your Google account to access <strong>Glory Furniture Hub</strong>:
-    </p>
-
-    <!-- Previously saved accounts on this device (if any) -->
-    <div id="google-saved-accounts" class="space-y-2 hidden"></div>
-
-    <!-- Google Email & Name Form -->
-    <form id="google-direct-form" onsubmit="handleGoogleFormSubmit(event)" class="space-y-3 pt-1">
-      <div>
-        <label class="block text-[11px] font-black uppercase tracking-wider text-gray-700 mb-1">Your Google Email *</label>
-        <div class="relative">
-          <input type="email" id="google_custom_email" placeholder="e.g. name@gmail.com" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#4285F4] pr-8" />
-          <span class="absolute right-3 top-2.5 text-xs text-gray-400 font-bold">@</span>
+    <!-- Brand Crest Header -->
+    <div class="text-center mb-5">
+      <a href="{% url 'home' %}" class="inline-flex flex-col items-center group cursor-pointer">
+        <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-md border-2 border-[#7A533E] group-hover:scale-105 transition-transform bg-white mb-2.5">
+          <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture" class="w-full h-full object-cover" />
         </div>
+        <span class="font-black text-xl text-[#382115] tracking-wider leading-none">
+          GLORY FURNITURE HUB
+        </span>
+        <span class="text-[9px] font-bold tracking-[0.25em] text-[#C9963F] uppercase mt-1 leading-tight">
+          Handcrafted Solid Burma Teak
+        </span>
+      </a>
+    </div>
+
+    <!-- Main Registration Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/70 shadow-warm space-y-6">
+      
+      <!-- Card Title & Subtitle -->
+      <div class="text-center space-y-1">
+        <h1 class="text-xl sm:text-2xl font-black text-gray-950 tracking-tight">Create Customer Account</h1>
+        <p class="text-xs text-gray-500">Access exclusive handcrafted solid teak collections & custom orders</p>
       </div>
 
-      <div>
-        <label class="block text-[11px] font-black uppercase tracking-wider text-gray-700 mb-1">Your Name</label>
-        <input type="text" id="google_custom_name" placeholder="e.g. John Doe" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#4285F4]" />
+      <!-- Error Alert Message -->
+      {% if error %}
+      <div class="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-start gap-2 animate-fade-in">
+        <svg class="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span>{{ error }}</span>
       </div>
+      {% endif %}
 
-      <div class="pt-2">
-        <button type="submit" id="google-action-btn" class="w-full py-2.5 px-4 rounded-xl bg-[#4285F4] hover:bg-[#3367D6] text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span id="google-btn-text">Continue with Google</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      <!-- Google Authentication Section (Powered by Supabase Google OAuth) -->
+      <div class="space-y-3">
+        <button 
+          type="button" 
+          id="google-signin-btn"
+          onclick="signInWithGoogleViaSupabase()"
+          class="w-full py-3.5 px-4 rounded-xl border border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-3 active-tap cursor-pointer"
+        >
+          <!-- Google Icon SVG -->
+          <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span id="google-btn-text">Sign up with Google</span>
+          <div id="google-btn-spinner" class="hidden w-4 h-4 border-2 border-gray-400 border-t-[#5C3D2E] rounded-full animate-spin"></div>
         </button>
       </div>
-    </form>
+
+      <!-- Divider -->
+      <div class="relative flex items-center justify-center">
+        <div class="border-t border-gray-200 w-full"></div>
+        <span class="bg-white px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400 absolute">
+          or register with email
+        </span>
+      </div>
+
+      <!-- Registration Form -->
+      <form method="POST" action="{% url 'register' %}" class="space-y-4">
+        {% csrf_token %}
+        
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Full Name *</label>
+          <input 
+            type="text" 
+            name="name" 
+            placeholder="e.g. Ganesh Mugada" 
+            required 
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Email Address *</label>
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="your.email@example.com" 
+            required 
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Phone / WhatsApp Number</label>
+          <input 
+            type="tel" 
+            name="phone" 
+            placeholder="+91 98765 43210" 
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Password *</label>
+          <input 
+            type="password" 
+            name="password" 
+            placeholder="Minimum 6 characters" 
+            required 
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Confirm Password *</label>
+          <input 
+            type="password" 
+            name="confirm_password" 
+            placeholder="Re-enter password" 
+            required 
+            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3.5 px-4 rounded-xl text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active-tap cursor-pointer hover:opacity-95" 
+          style="background-color: #382115 !important;"
+        >
+          Create Customer Account &rarr;
+        </button>
+      </form>
+
+      <!-- Existing Account / Sign In Link -->
+      <div class="pt-4 border-t border-gray-100 text-center space-y-3">
+        <p class="text-xs text-gray-600">
+          Already have an account? 
+          <a href="{% url 'login' %}" class="font-bold text-[#5C3D2E] hover:underline">
+            Sign In here
+          </a>
+        </p>
+        <div>
+          <a href="{% url 'home' %}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">
+            <span>&larr; Return to Storefront</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Security & Assurance Badge -->
+    <div class="mt-6 text-center text-[11px] text-gray-500 flex items-center justify-center gap-2">
+      <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      <span>256-Bit SSL Encrypted &bull; Direct Google Supabase OAuth</span>
+    </div>
 
   </div>
-</div>
 
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script>
-  function handleGoogleCredentialResponse(response) {
-    if (response && response.credential) {
-      sendGoogleAuthData({ credential: response.credential });
+  <!-- Supabase Google Authentication Script -->
+  <script>
+    const SUPABASE_URL = 'https://qxxrghelhlrafdkveeqo.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eHJnaGVsaGxyYWZka3ZlZXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDMwNTEsImV4cCI6MjEwNDAxOTA1MX0.mc-5c84wqAaD5_ybaHS_vHZSYgczA2bIjWC2KwIPfZA';
+
+    let supabaseClient = null;
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (e) {
+      console.error("Supabase init error:", e);
     }
-  }
 
-  function initiateGoogleSignIn() {
-    renderSavedGoogleAccounts();
-    if (window.google && window.google.accounts && window.google.accounts.id) {
+    async function signInWithGoogleViaSupabase() {
+      const btn = document.getElementById('google-signin-btn');
+      const text = document.getElementById('google-btn-text');
+      const spinner = document.getElementById('google-btn-spinner');
+
+      if (!supabaseClient) {
+        alert("Authentication client loading error. Please refresh and try again.");
+        return;
+      }
+
       try {
-        window.google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            openGoogleModal();
+        btn.disabled = true;
+        text.innerText = "Connecting to Google...";
+        spinner.classList.remove('hidden');
+
+        // Always target supabase-callback route on current origin
+        const callbackUrl = window.location.origin + '/accounts/supabase-callback/';
+
+        // Use skipBrowserRedirect: true so we can inspect and safely escape iframe if running inside Hugging Face
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: callbackUrl,
+            skipBrowserRedirect: true,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'select_account'
+            }
           }
         });
-      } catch (e) {
-        openGoogleModal();
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.url) {
+          // If embedded inside an iframe (e.g. Hugging Face Space), escape iframe so Google doesn't block with X-Frame-Options
+          if (window.top !== window.self) {
+            try {
+              window.top.location.href = data.url;
+            } catch (frameErr) {
+              window.location.href = data.url;
+            }
+          } else {
+            window.location.href = data.url;
+          }
+        } else {
+          // Fallback direct redirect
+          await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: callbackUrl
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Google Auth error:", err);
+        btn.disabled = false;
+        text.innerText = "Sign up with Google";
+        spinner.classList.add('hidden');
+        alert("Google Authentication error: " + (err.message || err));
       }
-    } else {
-      openGoogleModal();
-    }
-  }
-
-  function openGoogleModal() {
-    const modal = document.getElementById('google-auth-modal');
-    renderSavedGoogleAccounts();
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    const input = document.getElementById('google_custom_email');
-    if (input) setTimeout(() => input.focus(), 150);
-  }
-
-  function closeGoogleModal() {
-    const modal = document.getElementById('google-auth-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-  }
-
-  function renderSavedGoogleAccounts() {
-    const container = document.getElementById('google-saved-accounts');
-    if (!container) return;
-    
-    let saved = [];
-    try {
-      saved = JSON.parse(localStorage.getItem('glory_saved_google_users') || '[]');
-    } catch(e) {
-      saved = [];
     }
 
-    if (saved && saved.length > 0) {
-      container.innerHTML = saved.map((acc, i) => `
-        <div class="p-2.5 rounded-xl border border-gray-200 hover:border-[#4285F4] hover:bg-blue-50/40 flex items-center justify-between gap-3 transition-colors cursor-pointer" onclick="selectSavedGoogleAccount('${acc.email}', '${acc.name || ''}')">
-          <div class="flex items-center gap-2.5 min-w-0 flex-1">
-            <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
-              ${(acc.name || acc.email)[0].toUpperCase()}
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="text-xs font-bold text-gray-900 truncate">${acc.name || acc.email.split('@')[0]}</p>
-              <p class="text-[10px] text-gray-500 truncate">${acc.email}</p>
-            </div>
-          </div>
-          <button type="button" onclick="event.stopPropagation(); removeSavedGoogleAccount(${i});" class="text-xs text-gray-400 hover:text-red-600 p-1" title="Remove account">✕</button>
-        </div>
-      `).join('') + `
-        <div class="text-[11px] text-gray-400 font-bold uppercase tracking-wider text-center pt-1 pb-0.5">Or use another account:</div>
-      `;
-      container.classList.remove('hidden');
-    } else {
-      container.innerHTML = '';
-      container.classList.add('hidden');
-    }
-  }
+    // Failsafe: In case Supabase redirects back to /register/ directly with access_token hash
+    document.addEventListener('DOMContentLoaded', async function() {
+      const hash = window.location.hash.substring(1);
+      if (hash && hash.includes('access_token')) {
+        const btn = document.getElementById('google-signin-btn');
+        const text = document.getElementById('google-btn-text');
+        const spinner = document.getElementById('google-btn-spinner');
+        if (btn) btn.disabled = true;
+        if (text) text.innerText = "Verifying Google Account...";
+        if (spinner) spinner.classList.remove('hidden');
 
-  function removeSavedGoogleAccount(index) {
-    let saved = JSON.parse(localStorage.getItem('glory_saved_google_users') || '[]');
-    saved.splice(index, 1);
-    localStorage.setItem('glory_saved_google_users', JSON.stringify(saved));
-    renderSavedGoogleAccounts();
-  }
-
-  function selectSavedGoogleAccount(email, name) {
-    submitGoogleProfile(email, name || email.split('@')[0]);
-  }
-
-  function handleGoogleFormSubmit(e) {
-    e.preventDefault();
-    const emailInput = document.getElementById('google_custom_email');
-    const nameInput = document.getElementById('google_custom_name');
-    const email = emailInput.value.trim().toLowerCase();
-    const name = nameInput.value.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-    if (!email || !email.includes('@')) {
-      alert('Please enter a valid Google Account email.');
-      emailInput.focus();
-      return;
-    }
-
-    // Save to device local storage
-    try {
-      let saved = JSON.parse(localStorage.getItem('glory_saved_google_users') || '[]');
-      saved = saved.filter(a => a.email.toLowerCase() !== email);
-      saved.unshift({ email: email, name: name });
-      localStorage.setItem('glory_saved_google_users', JSON.stringify(saved.slice(0, 3)));
-    } catch(err) {}
-
-    submitGoogleProfile(email, name);
-  }
-
-  function submitGoogleProfile(email, name) {
-    const btn = document.getElementById('google-action-btn');
-    const btnText = document.getElementById('google-btn-text');
-    if (btn) {
-      btn.disabled = true;
-      if (btnText) btnText.innerText = 'Connecting to Google...';
-    }
-
-    sendGoogleAuthData({
-      email: email,
-      name: name,
-      google_id: 'goog_' + Math.floor(Math.random() * 1000000000),
-      avatar_url: 'https://lh3.googleusercontent.com/a/default-user'
-    });
-  }
-
-  function sendGoogleAuthData(payload) {
-    fetch("{% url 'google_auth' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(r => r.json())
-    .then(data => {
-      if (data.status === 'success') {
-        window.location.href = data.redirect_url || '/';
-      } else {
-        alert(data.message || 'Google Authentication failed. Please try again.');
-        const btn = document.getElementById('google-action-btn');
-        const btnText = document.getElementById('google-btn-text');
-        if (btn) btn.disabled = false;
-        if (btnText) btnText.innerText = 'Continue with Google';
+        if (supabaseClient) {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          if (session && session.user) {
+            const user = session.user;
+            const meta = user.user_metadata || {};
+            const res = await fetch('/accounts/google-auth/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: user.email,
+                name: meta.full_name || meta.name || user.email.split('@')[0],
+                google_id: user.id,
+                avatar_url: meta.avatar_url || meta.picture || '',
+                access_token: session.access_token || ''
+              })
+            });
+            const result = await res.json();
+            if (result.status === 'success') {
+              window.location.href = result.redirect_url || '/';
+            }
+          }
+        }
       }
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Network error connecting to Google Auth service.');
-      const btn = document.getElementById('google-action-btn');
-      const btnText = document.getElementById('google-btn-text');
-      if (btn) btn.disabled = false;
-      if (btnText) btnText.innerText = 'Continue with Google';
     });
-  }
-</script>
-{% endblock %}
+  </script>
+</body>
+</html>

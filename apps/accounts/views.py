@@ -133,8 +133,8 @@ def customer_register_view(request):
 @csrf_exempt
 def google_auth_view(request):
     """
-    Google Authentication Endpoint.
-    Decodes Google OAuth credentials (JWT / token payload) and creates or logs in
+    Google Authentication Endpoint (Supabase OAuth & Google Identity Services).
+    Decodes Google OAuth credentials or verifies Supabase tokens and creates or logs in
     a permanent customer in db.sqlite3.
     """
     if request.method != 'POST':
@@ -143,13 +143,34 @@ def google_auth_view(request):
     try:
         data = json.loads(request.body.decode('utf-8')) if request.body else request.POST
         credential = data.get('credential', '')
+        access_token = data.get('access_token', '')
         
         email = data.get('email', '').strip().lower()
         name = data.get('name', '').strip()
         google_id = data.get('google_id', '')
         avatar_url = data.get('avatar_url', '')
 
-        # If credential JWT was sent by Google Identity Services, decode payload
+        # 1. If Supabase access_token is present and email missing, verify with Supabase Auth API
+        if access_token and not email:
+            try:
+                import urllib.request
+                supabase_url = 'https://qxxrghelhlrafdkveeqo.supabase.co/auth/v1/user'
+                anon_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eHJnaGVsaGxyYWZka3ZlZXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDMwNTEsImV4cCI6MjEwNDAxOTA1MX0.mc-5c84wqAaD5_ybaHS_vHZSYgczA2bIjWC2KwIPfZA'
+                req = urllib.request.Request(supabase_url, headers={
+                    'Authorization': f'Bearer {access_token}',
+                    'apikey': anon_key
+                })
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    user_data = json.loads(response.read().decode('utf-8'))
+                    email = user_data.get('email', '').strip().lower()
+                    meta = user_data.get('user_metadata', {})
+                    name = meta.get('full_name') or meta.get('name') or name
+                    avatar_url = meta.get('avatar_url') or meta.get('picture') or avatar_url
+                    google_id = user_data.get('id') or google_id
+            except Exception as token_err:
+                print(f"[Supabase Auth Token Verification Error]: {token_err}")
+
+        # 2. If credential JWT was sent by Google Identity Services, decode payload
         if credential and not email:
             parts = credential.split('.')
             if len(parts) >= 2:
@@ -204,11 +225,20 @@ def google_auth_view(request):
         request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
         request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
 
-        messages.success(request, f"Signed in with Google as {profile.full_name}!")
+        messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}!")
         return JsonResponse({'status': 'success', 'redirect_url': '/'})
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+def supabase_callback_view(request):
+    """
+    Supabase OAuth Callback view.
+    Receives OAuth callback from Google via Supabase, extracts session,
+    and logs customer into Django session before redirecting to home page (/).
+    """
+    return render(request, 'accounts/supabase_callback.html')
 
 
 def customer_logout_view(request):
