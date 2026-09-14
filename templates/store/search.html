@@ -60,9 +60,14 @@
         </a>
         <div class="flex items-center justify-between pt-1">
           <span class="text-sm font-black text-gray-950">{{ product.formatted_price }}</span>
-          <button onclick="addToCart({{ product.id }})" class="px-3 py-1.5 rounded-full bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-bold transition-colors">
-            Add to Bag
-          </button>
+          <div class="flex items-center gap-1.5">
+            <a href="{% url 'booking_summary' %}?product={{ product.id }}" class="px-3 py-1.5 rounded-full bg-[#1E140F] hover:bg-black text-white text-xs font-bold transition-colors">
+              Book Now
+            </a>
+            <button onclick="addToCart({{ product.id }})" class="px-2.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-[#5C3D2E] border border-amber-300 text-xs font-bold transition-colors cursor-pointer">
+              + Bag
+            </button>
+          </div>
         </div>
       </div>
     </div>

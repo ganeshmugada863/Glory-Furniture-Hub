@@ -222,6 +222,11 @@
         text.innerText = "Connecting to Google...";
         spinner.classList.remove('hidden');
 
+        // Store return URL in localStorage
+        try {
+          localStorage.setItem('glory_auth_return_url', window.location.origin + '/');
+        } catch (storageErr) {}
+
         // Always target supabase-callback route on current origin
         const callbackUrl = window.location.origin + '/accounts/supabase-callback/';
 

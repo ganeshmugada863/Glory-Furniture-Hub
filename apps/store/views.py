@@ -210,6 +210,7 @@ def cart_view(request):
     return render(request, 'store/cart.html', context)
 
 
+@csrf_exempt
 def cart_add_api(request):
     if request.method == 'POST':
         try:
@@ -241,12 +242,26 @@ def cart_add_api(request):
                 profile, _ = UserProfile.objects.get_or_create(user=request.user)
                 profile.cart_items = cart
                 profile.save(update_fields=['cart_items'])
-            return JsonResponse({'status': 'success', 'cart_count': len(cart), 'cart': cart})
+
+            subtotal = sum(float(i['price']) * int(i.get('quantity', 1)) for i in cart)
+            for item in cart:
+                item['formatted_price'] = f"₹{int(float(item['price'])):,}"
+                item['url'] = f"/product/{item['id']}/"
+                item['booking_url'] = f"/booking-summary/?product={item['id']}"
+
+            return JsonResponse({
+                'status': 'success',
+                'cart_count': len(cart),
+                'cart': cart,
+                'subtotal': subtotal,
+                'formatted_subtotal': f"₹{int(subtotal):,}"
+            })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
 
 
+@csrf_exempt
 def cart_remove_api(request):
     if request.method == 'POST':
         try:
@@ -262,7 +277,20 @@ def cart_remove_api(request):
                 profile, _ = UserProfile.objects.get_or_create(user=request.user)
                 profile.cart_items = cart
                 profile.save(update_fields=['cart_items'])
-            return JsonResponse({'status': 'success', 'cart_count': len(cart), 'cart': cart})
+
+            subtotal = sum(float(i['price']) * int(i.get('quantity', 1)) for i in cart)
+            for item in cart:
+                item['formatted_price'] = f"₹{int(float(item['price'])):,}"
+                item['url'] = f"/product/{item['id']}/"
+                item['booking_url'] = f"/booking-summary/?product={item['id']}"
+
+            return JsonResponse({
+                'status': 'success',
+                'cart_count': len(cart),
+                'cart': cart,
+                'subtotal': subtotal,
+                'formatted_subtotal': f"₹{int(subtotal):,}"
+            })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
@@ -293,6 +321,7 @@ def _serialize_wishlist_items(wishlist_ids):
         return []
 
 
+@csrf_exempt
 def wishlist_toggle_api(request):
     wishlist = request.session.get('glory_wishlist', [])
     if request.method == 'GET':

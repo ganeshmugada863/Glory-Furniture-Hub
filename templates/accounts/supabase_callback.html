@@ -58,6 +58,21 @@
 
     let isExchanged = false;
 
+    function getCsrfToken() {
+      let cookieValue = '';
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, 10) === 'csrftoken=') {
+            cookieValue = decodeURIComponent(cookie.substring(10));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
     async function exchangeWithDjango(session) {
       if (isExchanged) return;
       isExchanged = true;
@@ -79,6 +94,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
           },
           body: JSON.stringify(payload)
         });
@@ -86,12 +102,14 @@
         const result = await res.json();
         if (result.status === 'success') {
           document.getElementById('status-msg').innerText = "Success! Redirecting to Glory Furniture Home...";
+          const returnUrl = localStorage.getItem('glory_auth_return_url') || result.redirect_url || '/';
+          try { localStorage.removeItem('glory_auth_return_url'); } catch (e) {}
           setTimeout(() => {
-            window.location.href = result.redirect_url || '/';
+            window.location.href = returnUrl;
           }, 350);
         } else {
           document.getElementById('status-msg').innerText = "Error: " + (result.message || 'Authentication failed');
-          setTimeout(() => { window.location.href = '/register/'; }, 2500);
+          setTimeout(() => { window.location.href = '/login/'; }, 2500);
         }
       } catch (err) {
         console.error("Backend login error:", err);
@@ -106,7 +124,34 @@
         return;
       }
 
-      // 1. Check current session first
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const authError = urlParams.get('error_description') || urlParams.get('error');
+
+      if (authError) {
+        document.getElementById('status-msg').innerText = "Google Authentication was not completed: " + authError;
+        setTimeout(() => { window.location.href = '/login/'; }, 3000);
+        return;
+      }
+
+      // 1. If PKCE flow returned ?code=..., exchange it for session
+      if (code) {
+        document.getElementById('status-msg').innerText = "Exchanging authorization code...";
+        try {
+          const { data, error } = await supabaseClient.auth.exchangeCodeForSession(code);
+          if (data && data.session && data.session.user) {
+            await exchangeWithDjango(data.session);
+            return;
+          }
+          if (error) {
+            console.warn("exchangeCodeForSession error:", error);
+          }
+        } catch (codeErr) {
+          console.warn("exchangeCodeForSession exception:", codeErr);
+        }
+      }
+
+      // 2. Check current session
       try {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session && session.user) {
@@ -117,14 +162,14 @@
         console.warn("getSession error:", err);
       }
 
-      // 2. Listen for auth state change
+      // 3. Listen for auth state change
       supabaseClient.auth.onAuthStateChange(async (event, session) => {
         if (session && session.user) {
           await exchangeWithDjango(session);
         }
       });
 
-      // 3. Fallback: Parse URL hash if direct tokens returned
+      // 4. Parse URL hash if direct access_token returned
       const hash = window.location.hash.substring(1);
       if (hash) {
         const params = new URLSearchParams(hash);

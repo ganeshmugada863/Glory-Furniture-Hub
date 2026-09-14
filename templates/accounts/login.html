@@ -3,6 +3,11 @@
 
 {% block title %}Sign In — Glory Furniture Hub{% endblock %}
 
+{% block extra_head %}
+<!-- Supabase Official JS SDK Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+{% endblock %}
+
 {% block content %}
 <div class="w-full max-w-md mx-auto px-4 py-8 sm:py-12">
   <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200/80 shadow-warm space-y-6">
@@ -96,216 +101,119 @@
 
   </div>
 </div>
+{% endblock %}
 
-<!-- Google One-Tap Interactive Modal (Clean & Dynamic Google Sign-In) -->
-<div id="google-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
-  <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-gray-100 animate-scale-up" style="border-radius: 26px !important;">
-    
-    <!-- Header -->
-    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-      <div class="flex items-center gap-2.5">
-        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
-        <span class="font-black text-sm text-gray-900 tracking-tight">Sign in with Google</span>
-      </div>
-      <button type="button" onclick="closeGoogleModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 flex items-center justify-center text-xs font-black cursor-pointer">
-        ✕
-      </button>
-    </div>
-
-    <!-- Description -->
-    <p class="text-xs text-gray-500 leading-relaxed">
-      Choose your Google account to access <strong>Glory Furniture Hub</strong>:
-    </p>
-
-    <!-- Previously saved accounts on this device (if any) -->
-    <div id="google-saved-accounts" class="space-y-2 hidden"></div>
-
-    <!-- Google Email & Name Form -->
-    <form id="google-direct-form" onsubmit="handleGoogleFormSubmit(event)" class="space-y-3 pt-1">
-      <div>
-        <label class="block text-[11px] font-black uppercase tracking-wider text-gray-700 mb-1">Your Google Email *</label>
-        <div class="relative">
-          <input type="email" id="google_custom_email" placeholder="e.g. name@gmail.com" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#4285F4] pr-8" />
-          <span class="absolute right-3 top-2.5 text-xs text-gray-400 font-bold">@</span>
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-[11px] font-black uppercase tracking-wider text-gray-700 mb-1">Your Name</label>
-        <input type="text" id="google_custom_name" placeholder="e.g. John Doe" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#4285F4]" />
-      </div>
-
-      <div class="pt-2">
-        <button type="submit" id="google-action-btn" class="w-full py-2.5 px-4 rounded-xl bg-[#4285F4] hover:bg-[#3367D6] text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span id="google-btn-text">Continue with Google</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </button>
-      </div>
-    </form>
-
-  </div>
-</div>
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+{% block extra_js %}
 <script>
-  function handleGoogleCredentialResponse(response) {
-    if (response && response.credential) {
-      sendGoogleAuthData({ credential: response.credential });
-    }
+  const SUPABASE_URL = 'https://qxxrghelhlrafdkveeqo.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eHJnaGVsaGxyYWZka3ZlZXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDMwNTEsImV4cCI6MjEwNDAxOTA1MX0.mc-5c84wqAaD5_ybaHS_vHZSYgczA2bIjWC2KwIPfZA';
+
+  let supabaseClient = null;
+  try {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } catch (e) {
+    console.error("Supabase init error:", e);
   }
 
-  function initiateGoogleSignIn() {
-    renderSavedGoogleAccounts();
-    if (window.google && window.google.accounts && window.google.accounts.id) {
-      try {
-        window.google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            openGoogleModal();
-          }
-        });
-      } catch (e) {
-        openGoogleModal();
-      }
-    } else {
-      openGoogleModal();
-    }
-  }
+  async function signInWithGoogleViaSupabase() {
+    const btn = document.getElementById('login-google-btn');
+    const text = document.getElementById('login-google-btn-text');
+    const spinner = document.getElementById('login-google-spinner');
 
-  function openGoogleModal() {
-    const modal = document.getElementById('google-auth-modal');
-    renderSavedGoogleAccounts();
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    const input = document.getElementById('google_custom_email');
-    if (input) setTimeout(() => input.focus(), 150);
-  }
-
-  function closeGoogleModal() {
-    const modal = document.getElementById('google-auth-modal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-  }
-
-  function renderSavedGoogleAccounts() {
-    const container = document.getElementById('google-saved-accounts');
-    if (!container) return;
-    
-    let saved = [];
-    try {
-      saved = JSON.parse(localStorage.getItem('glory_saved_google_users') || '[]');
-    } catch(e) {
-      saved = [];
-    }
-
-    if (saved && saved.length > 0) {
-      container.innerHTML = saved.map((acc, i) => `
-        <div class="p-2.5 rounded-xl border border-gray-200 hover:border-[#4285F4] hover:bg-blue-50/40 flex items-center justify-between gap-3 transition-colors cursor-pointer" onclick="selectSavedGoogleAccount('${acc.email}', '${acc.name || ''}')">
-          <div class="flex items-center gap-2.5 min-w-0 flex-1">
-            <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
-              ${(acc.name || acc.email)[0].toUpperCase()}
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="text-xs font-bold text-gray-900 truncate">${acc.name || acc.email.split('@')[0]}</p>
-              <p class="text-[10px] text-gray-500 truncate">${acc.email}</p>
-            </div>
-          </div>
-          <button type="button" onclick="event.stopPropagation(); removeSavedGoogleAccount(${i});" class="text-xs text-gray-400 hover:text-red-600 p-1" title="Remove account">✕</button>
-        </div>
-      `).join('') + `
-        <div class="text-[11px] text-gray-400 font-bold uppercase tracking-wider text-center pt-1 pb-0.5">Or use another account:</div>
-      `;
-      container.classList.remove('hidden');
-    } else {
-      container.innerHTML = '';
-      container.classList.add('hidden');
-    }
-  }
-
-  function removeSavedGoogleAccount(index) {
-    let saved = JSON.parse(localStorage.getItem('glory_saved_google_users') || '[]');
-    saved.splice(index, 1);
-    localStorage.setItem('glory_saved_google_users', JSON.stringify(saved));
-    renderSavedGoogleAccounts();
-  }
-
-  function selectSavedGoogleAccount(email, name) {
-    submitGoogleProfile(email, name || email.split('@')[0]);
-  }
-
-  function handleGoogleFormSubmit(e) {
-    e.preventDefault();
-    const emailInput = document.getElementById('google_custom_email');
-    const nameInput = document.getElementById('google_custom_name');
-    const email = emailInput.value.trim().toLowerCase();
-    const name = nameInput.value.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-
-    if (!email || !email.includes('@')) {
-      alert('Please enter a valid Google Account email.');
-      emailInput.focus();
+    if (!supabaseClient) {
+      alert("Authentication service is loading. Please refresh and try again.");
       return;
     }
 
-    // Save to device local storage
     try {
-      let saved = JSON.parse(localStorage.getItem('glory_saved_google_users') || '[]');
-      saved = saved.filter(a => a.email.toLowerCase() !== email);
-      saved.unshift({ email: email, name: name });
-      localStorage.setItem('glory_saved_google_users', JSON.stringify(saved.slice(0, 3)));
-    } catch(err) {}
+      if (btn) btn.disabled = true;
+      if (text) text.innerText = "Connecting to Google...";
+      if (spinner) spinner.classList.remove('hidden');
 
-    submitGoogleProfile(email, name);
-  }
+      // Store return url in localStorage
+      try {
+        localStorage.setItem('glory_auth_return_url', window.location.origin + '/');
+      } catch(e) {}
 
-  function submitGoogleProfile(email, name) {
-    const btn = document.getElementById('google-action-btn');
-    const btnText = document.getElementById('google-btn-text');
-    if (btn) {
-      btn.disabled = true;
-      if (btnText) btnText.innerText = 'Connecting to Google...';
-    }
+      const callbackUrl = window.location.origin + '/accounts/supabase-callback/';
 
-    sendGoogleAuthData({
-      email: email,
-      name: name,
-      google_id: 'goog_' + Math.floor(Math.random() * 1000000000),
-      avatar_url: 'https://lh3.googleusercontent.com/a/default-user'
-    });
-  }
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: callbackUrl,
+          skipBrowserRedirect: true,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account'
+          }
+        }
+      });
 
-  function sendGoogleAuthData(payload) {
-    fetch("{% url 'google_auth' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(r => r.json())
-    .then(data => {
-      if (data.status === 'success') {
-        window.location.href = data.redirect_url || '/';
+      if (error) throw error;
+
+      if (data && data.url) {
+        // Escape iframe if embedded in Hugging Face or another frame
+        if (window.top !== window.self) {
+          try {
+            window.top.location.href = data.url;
+          } catch(frameErr) {
+            window.location.href = data.url;
+          }
+        } else {
+          window.location.href = data.url;
+        }
       } else {
-        alert(data.message || 'Google Authentication failed. Please try again.');
-        const btn = document.getElementById('google-action-btn');
-        const btnText = document.getElementById('google-btn-text');
-        if (btn) btn.disabled = false;
-        if (btnText) btnText.innerText = 'Continue with Google';
+        await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: callbackUrl }
+        });
       }
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Network error connecting to Google Auth service.');
-      const btn = document.getElementById('google-action-btn');
-      const btnText = document.getElementById('google-btn-text');
+    } catch (err) {
+      console.error("Google Auth error:", err);
       if (btn) btn.disabled = false;
-      if (btnText) btnText.innerText = 'Continue with Google';
-    });
+      if (text) text.innerText = "Continue with Google";
+      if (spinner) spinner.classList.add('hidden');
+      alert("Google Authentication error: " + (err.message || err));
+    }
   }
+
+  // Failsafe: if redirected back to /accounts/login/ with hash tokens
+  document.addEventListener('DOMContentLoaded', async function() {
+    const hash = window.location.hash.substring(1);
+    if (hash && hash.includes('access_token')) {
+      const btn = document.getElementById('login-google-btn');
+      const text = document.getElementById('login-google-btn-text');
+      const spinner = document.getElementById('login-google-spinner');
+      if (btn) btn.disabled = true;
+      if (text) text.innerText = "Verifying Google Account...";
+      if (spinner) spinner.classList.remove('hidden');
+
+      if (supabaseClient) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+          const user = session.user;
+          const meta = user.user_metadata || {};
+          const res = await fetch('/accounts/google-auth/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': window.getCsrfToken ? window.getCsrfToken() : '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              email: user.email,
+              name: meta.full_name || meta.name || user.email.split('@')[0],
+              google_id: user.id,
+              avatar_url: meta.avatar_url || meta.picture || '',
+              access_token: session.access_token || ''
+            })
+          });
+          const result = await res.json();
+          if (result.status === 'success') {
+            window.location.href = result.redirect_url || '/';
+          }
+        }
+      }
+    }
+  });
 </script>
 {% endblock %}
