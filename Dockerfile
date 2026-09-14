@@ -10,6 +10,8 @@ WORKDIR /home/user/app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    libjpeg-dev \
+    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 user
@@ -21,10 +23,10 @@ COPY . /home/user/app/
 
 RUN python manage.py collectstatic --noinput
 
-RUN chown -R user:user /home/user/app
+RUN chown -R user:user /home/user/app && chmod -R 777 /home/user/app
 
 USER user
 
-EXPOSE 7860
+EXPOSE 10000
 
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:${PORT:-7860} --workers 2 --timeout 120 glory_furniture.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate --noinput || true; exec gunicorn --bind 0.0.0.0:${PORT:-10000} --workers 2 --timeout 120 glory_furniture.wsgi:application"]

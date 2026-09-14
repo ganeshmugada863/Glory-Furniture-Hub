@@ -12,13 +12,3 @@ services:
         value: "False"
       - key: SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        sync: false
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
-      - key: CLOUDINARY_URL
-        sync: false
