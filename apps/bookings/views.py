@@ -65,32 +65,44 @@ def booking_summary_view(request):
     gst_included = round(item_subtotal * 0.18, 2)
     grand_total = item_subtotal + delivery_charge
 
-    # Fetch saved address from session/settings
-    addresses = request.session.get('glory_addresses')
+    # Fetch saved address strictly from authenticated user profile first, then session
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+
+    addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses')
     if not addresses:
         default_address = {
             'id': 1,
             'tag': 'Home (Default)',
             'is_default': True,
-            'name': request.session.get('glory_user_name', 'Ganesh M.'),
-            'phone': request.session.get('glory_user_phone', '+91 98765 43210'),
-            'email': request.session.get('glory_user_email', 'ganesh@example.com'),
-            'flat': 'Villa #42, Fortune Enclave',
-            'street': 'Road No. 12, Banjara Hills',
-            'landmark': 'Near Park Hyatt & KBR Park',
+            'name': profile.full_name if (profile and profile.full_name) else (user.get_full_name() if user else 'Valued Patron'),
+            'phone': profile.phone if (profile and profile.phone) else '',
+            'email': user.email if user else '',
+            'flat': profile.address if (profile and profile.address) else 'Plot 42, Jubilee Hills',
+            'street': 'Road No. 10',
+            'landmark': '',
             'city': 'Hyderabad',
             'state': 'Telangana',
-            'pincode': '500034',
+            'pincode': '500033',
         }
         addresses = [default_address]
+        if profile:
+            profile.saved_addresses = addresses
+            profile.save(update_fields=['saved_addresses'])
         request.session['glory_addresses'] = addresses
     else:
         default_address = next((a for a in addresses if a.get('is_default')), addresses[0])
 
     if request.method == 'POST':
-        customer_name = request.POST.get('customer_name') or default_address.get('name') or request.session.get('glory_user_name', 'Ganesh M.')
-        email = request.POST.get('email') or default_address.get('email') or request.session.get('glory_user_email', 'ganesh@example.com')
-        phone = request.POST.get('phone') or default_address.get('phone') or request.session.get('glory_user_phone', '+91 98765 43210')
+        # Strictly guarantee email & user association to prevent cross-account pollution
+        if user:
+            email = user.email
+            customer_name = (profile.full_name if profile and profile.full_name else user.get_full_name()) or request.POST.get('customer_name', '').strip() or user.username
+            phone = (profile.phone if profile and profile.phone else None) or request.POST.get('phone', '').strip() or ''
+        else:
+            email = request.POST.get('email', '').strip().lower() or default_address.get('email') or ''
+            customer_name = request.POST.get('customer_name', '').strip() or default_address.get('name') or 'Valued Patron'
+            phone = request.POST.get('phone', '').strip() or default_address.get('phone') or ''
 
         flat = request.POST.get('flat') or default_address.get('flat', '')
         street = request.POST.get('street') or default_address.get('street', '')
@@ -200,9 +212,9 @@ def booking_summary_view(request):
         'formatted_gst': f"₹{int(gst_included):,}",
         'default_delivery_date': default_delivery_date,
         'saved_address': default_address,
-        'user_name': default_address.get('name') or request.session.get('glory_user_name', 'Ganesh M.'),
-        'user_email': default_address.get('email') or request.session.get('glory_user_email', 'ganesh@example.com'),
-        'user_phone': default_address.get('phone') or request.session.get('glory_user_phone', '+91 98765 43210'),
+        'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or default_address.get('name') or 'Valued Patron',
+        'user_email': (user.email if user else None) or default_address.get('email') or '',
+        'user_phone': (profile.phone if profile and profile.phone else None) or default_address.get('phone') or '',
     }
     return render(request, 'bookings/checkout_summary.html', context)
 

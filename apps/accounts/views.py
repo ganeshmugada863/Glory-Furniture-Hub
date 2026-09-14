@@ -17,6 +17,43 @@ from .models import UserProfile, Notification
 # 1. CUSTOMER AUTHENTICATION & PORTAL VIEWS
 # =====================================================================
 
+# =====================================================================
+# USER DATA SYNCHRONIZATION & MULTI-TENANT ISOLATION HELPERS
+# =====================================================================
+
+def sync_user_session(request, user):
+    """
+    Synchronizes authenticated database User & UserProfile data directly into the active session.
+    Restores persistent cart_items, wishlist_ids, and saved_addresses.
+    Guarantees strict data isolation per user.
+    """
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+    request.session['glory_user_email'] = user.email
+    request.session['glory_user_name'] = profile.full_name or user.get_full_name() or user.username
+    request.session['glory_user_phone'] = profile.phone or ''
+    request.session['glory_role'] = profile.role or ('admin' if (user.is_staff or user.is_superuser) else 'customer')
+    request.session['glory_cart'] = profile.cart_items or []
+    request.session['glory_wishlist'] = profile.wishlist_ids or []
+    request.session['glory_addresses'] = profile.saved_addresses or []
+    request.session.modified = True
+
+
+def persist_session_to_user(request):
+    """
+    Saves current session cart_items, wishlist_ids, and saved_addresses to the database UserProfile.
+    Called before logout or whenever cart/wishlist/addresses are updated.
+    """
+    if request.user.is_authenticated:
+        try:
+            profile, _ = UserProfile.objects.get_or_create(user=request.user)
+            profile.cart_items = request.session.get('glory_cart', [])
+            profile.wishlist_ids = request.session.get('glory_wishlist', [])
+            profile.saved_addresses = request.session.get('glory_addresses', [])
+            profile.save(update_fields=['cart_items', 'wishlist_ids', 'saved_addresses'])
+        except Exception as e:
+            print(f"[persist_session_to_user error]: {e}")
+
+
 def customer_login_view(request):
     """
     Dedicated Customer & Staff Login view.
@@ -64,11 +101,7 @@ def customer_login_view(request):
                     return redirect(next_url)
                 return redirect('admin_dashboard')
             else:
-                request.session['glory_role'] = 'customer'
-                request.session['glory_user_email'] = user.email
-                request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
-                request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
-
+                sync_user_session(request, user)
                 messages.success(request, f"Welcome back, {request.session['glory_user_name']}!")
                 next_url = request.GET.get('next')
                 if next_url and not next_url.startswith('/admin'):
@@ -119,11 +152,7 @@ def customer_register_view(request):
 
             # Log user in
             auth_login(request, user)
-            request.session['glory_role'] = 'customer'
-            request.session['glory_user_email'] = user.email
-            request.session['glory_user_name'] = profile.full_name
-            request.session['glory_user_phone'] = profile.phone
-
+            sync_user_session(request, user)
             messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
             return redirect('home')
 
@@ -220,11 +249,7 @@ def google_auth_view(request):
 
         # Log in the user
         auth_login(request, user)
-        request.session['glory_role'] = 'customer'
-        request.session['glory_user_email'] = user.email
-        request.session['glory_user_name'] = profile.full_name or user.get_full_name() or email.split('@')[0].title()
-        request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
-
+        sync_user_session(request, user)
         messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}!")
         return JsonResponse({'status': 'success', 'redirect_url': '/'})
 
@@ -243,8 +268,10 @@ def supabase_callback_view(request):
 
 def customer_logout_view(request):
     """
-    Customer Logout: Clears customer session and redirects to Register page.
+    Customer Logout: Persists user cart/wishlist/addresses to DB,
+    then clears session completely and redirects to Register page.
     """
+    persist_session_to_user(request)
     auth_logout(request)
     request.session.flush()
     return redirect('register')
@@ -255,25 +282,43 @@ def customer_home_view(request):
     Dedicated Customer Home / Dashboard.
     Customer-facing view with personalized welcome, order tracking,
     recent bookings, and quick catalog actions.
+    Strictly isolated to this specific customer.
     """
-    customer_email = request.session.get('glory_user_email', 'ganesh@example.com')
-    customer_name = request.session.get('glory_user_name', 'Ganesh M.')
+    from django.db.models import Q
+    user = request.user if request.user.is_authenticated else None
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
     
-    # Strictly fetch only this customer's data
-    orders = Order.objects.filter(email__iexact=customer_email).prefetch_related('transactions').order_by('-created_at')
-    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
-    
+    if user:
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        customer_name = profile.full_name or user.get_full_name() or user.username
+        customer_phone = profile.phone or ''
+    else:
+        customer_name = request.session.get('glory_user_name', 'Valued Patron')
+        customer_phone = request.session.get('glory_user_phone', '')
+
+    if user or customer_email:
+        query = Q()
+        if user:
+            query |= Q(user=user)
+        if customer_email:
+            query |= Q(email__iexact=customer_email)
+        orders = Order.objects.filter(query).distinct().prefetch_related('transactions').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at') if customer_email else Booking.objects.none()
+    else:
+        orders = Order.objects.none()
+        bookings = Booking.objects.none()
+
     latest_order = orders.first()
     featured_products = Product.objects.filter(featured=True)[:4]
     if not featured_products.exists():
         featured_products = Product.objects.all()[:4]
-        
+
     total_spent = sum((o.paid_amount for o in orders), Decimal('0.00'))
-    
+
     context = {
         'customer_name': customer_name,
-        'customer_email': customer_email,
-        'customer_phone': request.session.get('glory_user_phone', '+91 98765 43210'),
+        'customer_email': customer_email or '',
+        'customer_phone': customer_phone,
         'orders': orders[:4],
         'total_orders': orders.count(),
         'bookings': bookings[:3],
@@ -287,27 +332,24 @@ def customer_home_view(request):
 
 def customer_orders_view(request):
     """
-    Dedicated My Orders page: Customers can view their own handcrafted orders.
+    Dedicated My Orders page: Customers can view ONLY their own handcrafted orders.
     Shows 100% Full Payment status, product specifications, and verified UTR reference numbers.
-    Always updates when a new order is placed in the session.
+    Strictly isolated to request.user and verified customer email.
     """
     from django.db.models import Q
-    customer_email = request.session.get('glory_user_email')
-    session_order_ids = request.session.get('glory_customer_order_ids', [])
-    
-    query = Q()
-    if session_order_ids:
-        query |= Q(id__in=session_order_ids)
-    if customer_email:
-        query |= Q(email__iexact=customer_email)
-    if request.user.is_authenticated:
-        query |= Q(user=request.user)
+    user = request.user if request.user.is_authenticated else None
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
 
-    if not query:
+    if not user and not customer_email:
         orders = Order.objects.none()
     else:
+        query = Q()
+        if user:
+            query |= Q(user=user)
+        if customer_email:
+            query |= Q(email__iexact=customer_email)
         orders = Order.objects.filter(query).distinct().select_related('product').prefetch_related('transactions').order_by('-created_at')
-    
+
     return render(request, 'customer/customer_orders.html', {
         'orders': orders,
         'total_orders': orders.count(),
@@ -319,9 +361,13 @@ def customer_bookings_view(request):
     """
     Dedicated My Bookings page: Customers can view ONLY their own consultations.
     """
-    customer_email = request.session.get('glory_user_email', 'ganesh@example.com')
-    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
-    
+    user = request.user if request.user.is_authenticated else None
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
+    if customer_email:
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
+    else:
+        bookings = Booking.objects.none()
+
     return render(request, 'customer/customer_bookings.html', {
         'bookings': bookings,
         'total_bookings': bookings.count(),
@@ -331,10 +377,22 @@ def customer_bookings_view(request):
 def customer_payments_view(request):
     """
     Dedicated Payment History page: Verified transactions with UTR receipts.
+    Strictly isolated to this specific user.
     """
-    customer_email = request.session.get('glory_user_email', 'ganesh@example.com')
-    transactions = PaymentTransaction.objects.filter(order__email__iexact=customer_email).select_related('order').order_by('-paid_at')
-    
+    from django.db.models import Q
+    user = request.user if request.user.is_authenticated else None
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
+
+    if user or customer_email:
+        query = Q()
+        if user:
+            query |= Q(order__user=user)
+        if customer_email:
+            query |= Q(order__email__iexact=customer_email)
+        transactions = PaymentTransaction.objects.filter(query).distinct().select_related('order').order_by('-paid_at')
+    else:
+        transactions = PaymentTransaction.objects.none()
+
     return render(request, 'customer/customer_payments.html', {
         'transactions': transactions,
         'total_transactions': transactions.count(),
@@ -342,59 +400,97 @@ def customer_payments_view(request):
 
 
 def customer_profile_view(request):
-    """Customer profile and preferences with real user stats."""
+    """Customer profile and preferences with real user stats and orders."""
+    from django.db.models import Q
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
     
     customer_email = (user.email if user else None) or request.session.get('glory_user_email') or ''
     customer_name = (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or request.session.get('glory_user_name') or 'Valued Patron'
-    customer_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or '+91 98765 43210'
+    customer_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or ''
 
-    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5] if customer_email else []
-    custom_requests = CustomRequest.objects.all().order_by('-created_at')[:3]
-    wishlist = request.session.get('glory_wishlist', [])
+    if user or customer_email:
+        query = Q()
+        if user:
+            query |= Q(user=user)
+        if customer_email:
+            query |= Q(email__iexact=customer_email)
+        orders = Order.objects.filter(query).distinct().select_related('product').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5] if customer_email else []
+        custom_requests = CustomRequest.objects.filter(email__iexact=customer_email).order_by('-created_at')[:3] if customer_email else []
+    else:
+        orders = Order.objects.none()
+        bookings = []
+        custom_requests = []
+
+    wishlist_ids = (profile.wishlist_ids if profile else None) or request.session.get('glory_wishlist', [])
 
     return render(request, 'accounts/profile.html', {
+        'orders': orders[:5],
+        'orders_count': orders.count(),
         'bookings': bookings,
         'custom_requests': custom_requests,
         'customer_name': customer_name,
         'customer_email': customer_email,
         'customer_phone': customer_phone,
         'user_initial': customer_name[:1].upper() if customer_name else 'P',
-        'orders_count': len(bookings),
-        'wishlist_count': len(wishlist),
+        'wishlist_count': len(wishlist_ids),
         'auth_provider': getattr(profile, 'auth_provider', 'email') if profile else 'email',
     })
 
 
 def edit_profile_view(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
     if request.method == 'POST':
-        request.session['glory_user_name'] = request.POST.get('name', request.session.get('glory_user_name'))
-        request.session['glory_user_phone'] = request.POST.get('phone', request.session.get('glory_user_phone'))
+        new_name = request.POST.get('name', '').strip()
+        new_phone = request.POST.get('phone', '').strip()
+        if new_name:
+            request.session['glory_user_name'] = new_name
+            if profile:
+                profile.full_name = new_name
+        if new_phone:
+            request.session['glory_user_phone'] = new_phone
+            if profile:
+                profile.phone = new_phone
+        if profile:
+            profile.save(update_fields=['full_name', 'phone'])
         messages.success(request, 'Profile updated successfully!')
         return redirect('customer_profile')
     return render(request, 'accounts/edit_profile.html')
 
 
 def address_view(request):
-    addresses = request.session.get('glory_addresses')
+    """
+    Delivery Address Management:
+    Persists addresses directly to user.profile.saved_addresses in DB and request.session.
+    Strictly isolated per user.
+    """
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+
+    # Load from profile first, then session
+    addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses')
     if addresses is None:
-        addresses = [
-            {
+        addresses = []
+        if profile and profile.address:
+            addresses.append({
                 'id': 1,
                 'tag': 'Home (Default)',
                 'is_default': True,
-                'name': request.session.get('glory_user_name', 'Ganesh M.'),
-                'phone': request.session.get('glory_user_phone', '+91 98765 43210'),
-                'email': request.session.get('glory_user_email', 'ganesh@example.com'),
-                'flat': 'Villa #42, Fortune Enclave',
-                'street': 'Road No. 12, Banjara Hills',
-                'landmark': 'Near Park Hyatt & KBR Park',
+                'name': profile.full_name or 'Valued Patron',
+                'phone': profile.phone or '',
+                'email': user.email if user else '',
+                'flat': profile.address,
+                'street': '',
+                'landmark': '',
                 'city': 'Hyderabad',
                 'state': 'Telangana',
                 'pincode': '500034',
-            }
-        ]
+            })
+        if profile:
+            profile.saved_addresses = addresses
+            profile.save(update_fields=['saved_addresses'])
         request.session['glory_addresses'] = addresses
 
     if request.method == 'POST':
@@ -402,7 +498,6 @@ def address_view(request):
         if action == 'add':
             new_id = max([a['id'] for a in addresses], default=0) + 1
             tag = request.POST.get('tag', 'Home').strip() or 'Home'
-            # If set as default or first address
             is_default = request.POST.get('is_default') == '1' or len(addresses) == 0
             if is_default:
                 for a in addresses:
@@ -412,9 +507,9 @@ def address_view(request):
                 'id': new_id,
                 'tag': tag,
                 'is_default': is_default,
-                'name': request.POST.get('name', '').strip() or request.session.get('glory_user_name', 'Ganesh M.'),
-                'phone': request.POST.get('phone', '').strip() or request.session.get('glory_user_phone', '+91 98765 43210'),
-                'email': request.POST.get('email', '').strip() or request.session.get('glory_user_email', 'ganesh@example.com'),
+                'name': request.POST.get('name', '').strip() or (profile.full_name if profile else '') or (user.get_full_name() if user else 'Valued Patron'),
+                'phone': request.POST.get('phone', '').strip() or (profile.phone if profile else ''),
+                'email': (user.email if user else '') or request.POST.get('email', '').strip(),
                 'flat': request.POST.get('flat', '').strip(),
                 'street': request.POST.get('street', '').strip(),
                 'landmark': request.POST.get('landmark', '').strip(),
@@ -422,33 +517,40 @@ def address_view(request):
                 'state': request.POST.get('state', 'Telangana').strip(),
                 'pincode': request.POST.get('pincode', '500034').strip(),
             }
-            # Also update session user profile info if provided
-            if new_addr['name']:
-                request.session['glory_user_name'] = new_addr['name']
-            if new_addr['phone']:
-                request.session['glory_user_phone'] = new_addr['phone']
-            if new_addr['email']:
-                request.session['glory_user_email'] = new_addr['email']
 
             addresses.append(new_addr)
+            if profile:
+                profile.saved_addresses = addresses
+                profile.save(update_fields=['saved_addresses'])
             request.session['glory_addresses'] = addresses
+            request.session.modified = True
             return redirect('address')
+
         elif action == 'set_default':
             try:
                 addr_id = int(request.POST.get('address_id', 0))
                 for a in addresses:
                     a['is_default'] = (a['id'] == addr_id)
+                if profile:
+                    profile.saved_addresses = addresses
+                    profile.save(update_fields=['saved_addresses'])
                 request.session['glory_addresses'] = addresses
+                request.session.modified = True
             except ValueError:
                 pass
             return redirect('address')
+
         elif action == 'delete':
             try:
                 addr_id = int(request.POST.get('address_id', 0))
                 addresses = [a for a in addresses if a['id'] != addr_id]
                 if addresses and not any(a.get('is_default') for a in addresses):
                     addresses[0]['is_default'] = True
+                if profile:
+                    profile.saved_addresses = addresses
+                    profile.save(update_fields=['saved_addresses'])
                 request.session['glory_addresses'] = addresses
+                request.session.modified = True
             except ValueError:
                 pass
             return redirect('address')

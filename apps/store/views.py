@@ -179,13 +179,23 @@ def search_view(request):
 
 
 def wishlist_view(request):
-    wishlist_ids = request.session.get('glory_wishlist', [])
+    if request.user.is_authenticated:
+        from apps.accounts.models import UserProfile
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        wishlist_ids = profile.wishlist_ids or request.session.get('glory_wishlist', [])
+    else:
+        wishlist_ids = request.session.get('glory_wishlist', [])
     products = Product.objects.filter(id__in=wishlist_ids)
     return render(request, 'store/wishlist.html', {'products': products})
 
 
 def cart_view(request):
-    cart = request.session.get('glory_cart', [])
+    if request.user.is_authenticated:
+        from apps.accounts.models import UserProfile
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        cart = profile.cart_items or request.session.get('glory_cart', [])
+    else:
+        cart = request.session.get('glory_cart', [])
 
     subtotal = sum(item['price'] * item['quantity'] for item in cart)
     gst = round(subtotal * 0.18, 2)
@@ -227,6 +237,11 @@ def cart_add_api(request):
                 })
             request.session['glory_cart'] = cart
             request.session.modified = True
+            if request.user.is_authenticated:
+                from apps.accounts.models import UserProfile
+                profile, _ = UserProfile.objects.get_or_create(user=request.user)
+                profile.cart_items = cart
+                profile.save(update_fields=['cart_items'])
             return JsonResponse({'status': 'success', 'cart_count': len(cart), 'cart': cart})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
@@ -244,6 +259,11 @@ def cart_remove_api(request):
             cart = [i for i in cart if not (i['id'] == product_id and (not size or i.get('size') == size))]
             request.session['glory_cart'] = cart
             request.session.modified = True
+            if request.user.is_authenticated:
+                from apps.accounts.models import UserProfile
+                profile, _ = UserProfile.objects.get_or_create(user=request.user)
+                profile.cart_items = cart
+                profile.save(update_fields=['cart_items'])
             return JsonResponse({'status': 'success', 'cart_count': len(cart), 'cart': cart})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
@@ -294,6 +314,11 @@ def wishlist_toggle_api(request):
                 added = True
             request.session['glory_wishlist'] = wishlist
             request.session.modified = True
+            if request.user.is_authenticated:
+                from apps.accounts.models import UserProfile
+                profile, _ = UserProfile.objects.get_or_create(user=request.user)
+                profile.wishlist_ids = wishlist
+                profile.save(update_fields=['wishlist_ids'])
             items = _serialize_wishlist_items(wishlist)
             return JsonResponse({
                 'status': 'success',

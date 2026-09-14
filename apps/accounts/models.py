@@ -8,13 +8,16 @@ class UserProfile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', null=True, blank=True)
-    full_name = models.CharField(max_length=150, default='Ganesh M.')
-    phone = models.CharField(max_length=25, default='+91 98765 43210')
-    address = models.TextField(default='Plot 42, Road No. 10, Jubilee Hills, Hyderabad, Telangana 500033')
+    full_name = models.CharField(max_length=150, default='Valued Patron', blank=True)
+    phone = models.CharField(max_length=25, default='', blank=True)
+    address = models.TextField(default='', blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
     auth_provider = models.CharField(max_length=50, default='email')  # 'email', 'google'
     google_id = models.CharField(max_length=150, blank=True, null=True)
     avatar_url = models.URLField(max_length=500, blank=True, null=True)
+    cart_items = models.JSONField(default=list, blank=True)
+    wishlist_ids = models.JSONField(default=list, blank=True)
+    saved_addresses = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
