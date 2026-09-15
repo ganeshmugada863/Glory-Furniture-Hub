@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'apps.bookings',
     'apps.custom_orders',
     'apps.accounts',
+    'apps.payments',
 ]
 
 MIDDLEWARE = [
@@ -175,4 +176,11 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cashfree Payment Gateway Configuration
+CASHFREE_CLIENT_ID = os.getenv('CASHFREE_CLIENT_ID', '').strip()
+CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '').strip()
+CASHFREE_ENVIRONMENT = os.getenv('CASHFREE_ENVIRONMENT', 'SANDBOX').strip().upper()
+CASHFREE_API_VERSION = os.getenv('CASHFREE_API_VERSION', '2023-08-01').strip()
+CASHFREE_BASE_URL = 'https://api.cashfree.com' if CASHFREE_ENVIRONMENT == 'PRODUCTION' else 'https://sandbox.cashfree.com'
 

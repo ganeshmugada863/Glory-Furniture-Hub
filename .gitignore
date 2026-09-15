@@ -18,6 +18,8 @@ logs/
 .env.local
 .env.*.local
 cloudflared.exe
+*.sqlite3
+db.sqlite3
 
 # Legacy
 node_modules/

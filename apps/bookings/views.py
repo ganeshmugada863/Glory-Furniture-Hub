@@ -187,7 +187,7 @@ def booking_summary_view(request):
         request.session['glory_user_phone'] = phone
         request.session['glory_role'] = 'customer'
 
-        return redirect('booking_payment', booking_id=booking.booking_id)
+        return redirect('payment_checkout', order_number=order.order_number)
 
     default_delivery_date = str(timezone.now().date() + timedelta(days=5))
 
@@ -375,7 +375,7 @@ def pay_installment_direct_view(request, installment_id):
         order.booking = booking
         order.save()
 
-    return redirect(f"/booking/payment/{booking.booking_id}/?installment_id={installment.id}")
+    return redirect(f"/payments/checkout/{order.order_number}/?installment_id={installment.id}")
 
 
 def booking_view(request):

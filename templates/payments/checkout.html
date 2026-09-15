@@ -1,0 +1,631 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Secure Payment & Checkout | Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Cashfree Official JS SDK v3 -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8" style="font-family: system-ui, -apple-system, sans-serif;">
+
+  <!-- ========================================================= -->
+  <!-- 1. LUXURY 3-STEP CHECKOUT STEPPER                         -->
+  <!-- ========================================================= -->
+  <div class="bg-white rounded-3xl p-4 sm:p-6 border border-[#DECBB7] shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-[#5C3D2E] text-white flex items-center justify-center font-serif text-lg font-bold shadow-sm">
+        G
+      </div>
+      <div>
+        <span class="text-[11px] font-black uppercase tracking-widest text-[#8B0000] block">GLORY FURNITURE HUB</span>
+        <h1 class="text-base sm:text-lg font-black text-gray-900 tracking-tight">Verified Secure Checkout</h1>
+      </div>
+    </div>
+
+    <!-- Stepper Indicator -->
+    <div class="flex items-center gap-2 sm:gap-4 text-xs font-bold">
+      <!-- Step 1: Order Details -->
+      <div class="flex items-center gap-1.5 text-emerald-700">
+        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-[11px] font-black">✓</span>
+        <span class="hidden sm:inline">01 Order</span>
+      </div>
+      <span class="text-gray-300 font-bold">&rarr;</span>
+
+      <!-- Step 2: Payment (Active) -->
+      <div class="flex items-center gap-1.5 text-[#8B0000] bg-red-50/80 px-3 py-1.5 rounded-full border border-red-200">
+        <span class="w-6 h-6 rounded-full bg-[#8B0000] text-white flex items-center justify-center text-[11px] font-black animate-pulse">02</span>
+        <span class="font-black">Payment</span>
+      </div>
+      <span class="text-gray-300 font-bold">&rarr;</span>
+
+      <!-- Step 3: Confirmation -->
+      <div class="flex items-center gap-1.5 text-gray-400">
+        <span class="w-6 h-6 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-[11px]">03</span>
+        <span class="hidden sm:inline">Confirmation</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 2. TWO-COLUMN CHECKOUT: ORDER SUMMARY + PAYMENT SELECTION -->
+  <!-- ========================================================= -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- ------------------------------------------------------- -->
+    <!-- LEFT COLUMN: YOUR ORDER SUMMARY (5 Cols on Desktop)     -->
+    <!-- ------------------------------------------------------- -->
+    <div class="lg:col-span-5 space-y-6">
+
+      <!-- Order Details Card -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-[#DECBB7] shadow-sm space-y-5" style="border: 2px solid #DECBB7 !important;">
+        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div>
+            <h2 class="text-xs font-black uppercase tracking-widest text-[#5C3D2E]">YOUR ORDER</h2>
+            <span class="text-[11px] text-gray-500 font-mono">Ref: {{ order.order_number }}</span>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-900 border border-amber-200">
+            Solid Burma Teak
+          </span>
+        </div>
+
+        <!-- Product Presentation -->
+        <div class="flex items-center gap-4">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#FAF6F0] p-2 border border-[#DECBB7] shrink-0 flex items-center justify-center overflow-hidden shadow-xs">
+            {% if order.product and order.product.primary_image %}
+              <img src="{{ order.product.primary_image }}" alt="{{ order.product_name }}" class="w-full h-full object-contain rounded-xl">
+            {% else %}
+              <span class="text-3xl">🪵</span>
+            {% endif %}
+          </div>
+          <div class="min-w-0 space-y-1">
+            <h3 class="text-sm sm:text-base font-extrabold text-gray-900 line-clamp-2 leading-tight">
+              {{ order.product_name }}
+            </h3>
+            <p class="text-xs text-gray-500">
+              <span class="font-bold text-gray-700">Size:</span> {{ order.selected_size }} |
+              <span class="font-bold text-gray-700">Finish:</span> {{ order.selected_wood }}
+            </p>
+            <p class="text-xs text-gray-500">
+              <span class="font-bold text-gray-700">Quantity:</span> {{ order.quantity }}
+            </p>
+            <div class="text-sm font-black text-[#8B0000] pt-1">
+              ₹{{ order.total_amount|floatformat:0 }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Price Breakdown Table -->
+        <div class="pt-3 border-t border-gray-100 space-y-2 text-xs">
+          <div class="flex justify-between text-gray-600">
+            <span>Unit Price</span>
+            <span class="font-semibold text-gray-900">₹{{ order.unit_price|floatformat:0 }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>Quantity</span>
+            <span class="font-semibold text-gray-900">&times; {{ order.quantity }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>White-Glove In-Home Delivery</span>
+            <span class="font-bold text-emerald-700 uppercase">FREE (Hyderabad)</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>GST Included (18%)</span>
+            <span class="text-gray-500 font-mono">Included</span>
+          </div>
+          <div class="pt-2 border-t border-gray-200 flex justify-between items-baseline text-sm sm:text-base">
+            <span class="font-extrabold text-gray-950">Grand Total</span>
+            <span class="font-black text-[#8B0000] text-lg sm:text-xl font-mono">₹{{ order.total_amount|floatformat:0 }}</span>
+          </div>
+        </div>
+
+        <!-- Shipping & Recipient Details -->
+        <div class="pt-3 border-t border-gray-100 space-y-1.5 text-xs text-gray-600 bg-[#FAF7F4] p-3.5 rounded-2xl border border-[#EADBCE]">
+          <div class="flex items-center gap-1.5 font-bold text-gray-900 pb-1">
+            <span>📍 White-Glove Delivery Destination</span>
+          </div>
+          <p><span class="font-semibold text-gray-800">Patron:</span> {{ order.customer_name }}</p>
+          <p><span class="font-semibold text-gray-800">Phone:</span> {{ order.phone }}</p>
+          <p><span class="font-semibold text-gray-800">Email:</span> {{ order.email }}</p>
+          {% if order.shipping_address %}
+            <p class="leading-relaxed"><span class="font-semibold text-gray-800">Address:</span> {{ order.shipping_address }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="grid grid-cols-2 gap-2 pt-2 text-[11px] text-gray-600 font-semibold">
+          <div class="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/80 flex items-center gap-2">
+            <span class="text-base">🪵</span>
+            <span>100% Solid Burma Teak</span>
+          </div>
+          <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-center gap-2">
+            <span class="text-base">🛡️</span>
+            <span>Lifetime Joinery Warranty</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ------------------------------------------------------- -->
+    <!-- RIGHT COLUMN: PAYMENT SELECTION (7 Cols on Desktop)    -->
+    <!-- ------------------------------------------------------- -->
+    <div class="lg:col-span-7 space-y-6">
+
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-[#DECBB7] shadow-sm space-y-6" style="border: 2px solid #DECBB7 !important;">
+        
+        <div class="pb-3 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-xs font-black uppercase tracking-widest text-[#5C3D2E]">PAYMENT DETAILS</h2>
+            <h3 class="text-base sm:text-lg font-black text-gray-950">Select How You Wish To Pay</h3>
+          </div>
+          <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+            <span>🔒 256-Bit SSL Encrypted</span>
+          </div>
+        </div>
+
+        {% if target_installment %}
+        <!-- =================================================== -->
+        <!-- PAYING SPECIFIC INSTALLMENT ROUTE                   -->
+        <!-- =================================================== -->
+        <div class="p-5 rounded-3xl bg-amber-50/80 border-2 border-amber-400 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-amber-900 bg-amber-200 px-3 py-1 rounded-full">
+              Installment #{{ target_installment.installment_number }}
+            </span>
+            <span class="text-xs font-bold text-gray-600">Due Date: {{ target_installment.due_date|date:"d M Y" }}</span>
+          </div>
+          <div class="flex items-baseline justify-between pt-2">
+            <div>
+              <h4 class="text-base font-extrabold text-gray-900">Amount Due for this Stage</h4>
+              <p class="text-xs text-gray-600">Workshop crafting and timber milestone payment</p>
+            </div>
+            <div class="text-2xl font-black text-[#8B0000] font-mono">
+              ₹{{ target_installment.amount|floatformat:2 }}
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="selected-plan-input" value="installment-direct">
+        <input type="hidden" id="target-installment-id" value="{{ target_installment.id }}">
+
+        {% else %}
+        <!-- =================================================== -->
+        <!-- DUAL PAYMENT CHOICES: FULL PAYMENT VS INSTALLMENTS  -->
+        <!-- =================================================== -->
+        <div class="space-y-4">
+
+          <!-- OPTION 1: FULL PAYMENT CARD -->
+          <label class="block cursor-pointer relative" onclick="selectPaymentMode('full')">
+            <input type="radio" name="payment_mode" value="full" id="radio-full" checked class="sr-only peer">
+            <div id="card-full"
+                 class="p-5 rounded-3xl border-2 transition-all duration-300 relative overflow-hidden"
+                 style="border-color: #8B0000; background: linear-gradient(135deg, #FFF9F5 0%, #FFFFFF 100%); box-shadow: 0 4px 20px rgba(139, 0, 0, 0.08);">
+              
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                  <div class="w-6 h-6 rounded-full border-2 border-[#8B0000] bg-[#8B0000] text-white flex items-center justify-center mt-0.5 shrink-0" id="indicator-full">
+                    <span class="text-xs font-black">✓</span>
+                  </div>
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-base font-extrabold text-gray-950">Option A: 100% Full Payment</h4>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">RECOMMENDED</span>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                      Settle total order upfront in a single secure transaction. No future reminders or milestones.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="text-right shrink-0">
+                  <span class="text-xs text-gray-500 block">Total Due Today</span>
+                  <span class="text-lg sm:text-xl font-black text-[#8B0000] font-mono">₹{{ order.total_amount|floatformat:0 }}</span>
+                </div>
+              </div>
+
+              <!-- Full Payment Perks -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-4 mt-3 border-t border-amber-100 text-xs text-gray-700">
+                <div class="flex items-center gap-1.5 font-medium">
+                  <span class="text-emerald-600 font-bold">✓</span> Fully paid immediately
+                </div>
+                <div class="flex items-center gap-1.5 font-medium">
+                  <span class="text-emerald-600 font-bold">✓</span> Expedited dispatch
+                </div>
+                <div class="flex items-center gap-1.5 font-medium">
+                  <span class="text-emerald-600 font-bold">✓</span> Zero future payments
+                </div>
+              </div>
+
+            </div>
+          </label>
+
+          <!-- OPTION 2: INSTALLMENT PLAN CARD -->
+          <label class="block cursor-pointer relative" onclick="selectPaymentMode('installment')">
+            <input type="radio" name="payment_mode" value="installment" id="radio-installment" class="sr-only peer">
+            <div id="card-installment"
+                 class="p-5 rounded-3xl border-2 transition-all duration-300 relative overflow-hidden"
+                 style="border-color: #DECBB7; background-color: #FAF7F4;">
+              
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                  <div class="w-6 h-6 rounded-full border-2 border-gray-400 bg-white flex items-center justify-center mt-0.5 shrink-0" id="indicator-installment">
+                    <span class="text-xs font-black text-transparent">✓</span>
+                  </div>
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-base font-extrabold text-gray-950">Option B: Multi-Stage Installment Plan</h4>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800">FLEXIBLE</span>
+                    </div>
+                    <p class="text-xs text-gray-600 leading-relaxed">
+                      Split the cost over master craftsman milestones. Pay 1st installment now, rest tracked on patron dashboard.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="text-right shrink-0">
+                  <span class="text-xs text-gray-500 block">Starts from</span>
+                  <span class="text-base sm:text-lg font-black text-gray-900 font-mono">
+                    {% if active_plans %}₹{{ active_plans.0.formatted_first }}{% else %}Flexible{% endif %}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Nested Installment Plan Cards (Visible when Option B is selected) -->
+              <div id="installment-options-drawer" class="mt-4 pt-4 border-t border-[#EADBCE] space-y-3" style="display: none;">
+                <h5 class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">Select Available Installment Contract:</h5>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {% for p_item in active_plans %}
+                  <div onclick="selectInstallmentPlan('{{ p_item.plan.slug }}', {{ p_item.first_payment }}, {{ order.total_amount }}, this)"
+                       class="plan-choice-card p-3.5 rounded-2xl border-2 transition-all cursor-pointer bg-white relative {% if forloop.first %}selected-plan border-[#8B0000] bg-red-50/40{% else %}border-gray-200 hover:border-amber-300{% endif %}"
+                       data-plan-slug="{{ p_item.plan.slug }}"
+                       data-first-payment="{{ p_item.first_payment }}"
+                       style="{% if forloop.first %}border-color: #8B0000 !important;{% endif %}">
+                    
+                    <div class="flex items-center justify-between pb-1.5 border-b border-gray-100">
+                      <span class="text-xs font-black text-gray-900">{{ p_item.plan.name }}</span>
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                        {{ p_item.plan.installment_count }} Parts
+                      </span>
+                    </div>
+
+                    <div class="pt-2 space-y-1">
+                      <div class="flex justify-between text-xs">
+                        <span class="text-gray-500">Pay Today:</span>
+                        <span class="font-extrabold text-[#8B0000] font-mono">₹{{ p_item.first_payment|floatformat:2 }}</span>
+                      </div>
+                      <div class="text-[11px] text-gray-400">
+                        Then {{ p_item.plan.installment_count|add:"-1" }} &times; monthly milestones
+                      </div>
+                    </div>
+
+                    <!-- Milestone schedule preview -->
+                    <div class="mt-2.5 pt-2 border-t border-gray-100 space-y-1 text-[10px] text-gray-600">
+                      {% for s in p_item.schedule %}
+                        <div class="flex justify-between">
+                          <span>Part {{ s.number }} ({{ s.due_date|date:"d M" }}):</span>
+                          <span class="font-mono font-bold">₹{{ s.amount|floatformat:2 }}</span>
+                        </div>
+                      {% endfor %}
+                    </div>
+
+                  </div>
+                  {% empty %}
+                  <div class="col-span-2 text-center py-4 text-xs text-gray-500">
+                    No multi-installment plans configured for this amount. Please proceed with Full Payment.
+                  </div>
+                  {% endfor %}
+                </div>
+
+              </div>
+
+            </div>
+          </label>
+
+        </div>
+
+        <input type="hidden" id="selected-plan-input" value="full-payment">
+        <input type="hidden" id="target-installment-id" value="">
+        {% endif %}
+
+        <!-- =================================================== -->
+        <!-- 3. PAYMENT SUMMARY SIDEBAR ACCORDION                -->
+        <!-- =================================================== -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-[#FAF7F4] border border-[#DECBB7] space-y-2.5 text-xs">
+          <div class="flex justify-between text-gray-600">
+            <span>Total Order Commitment</span>
+            <span class="font-mono font-semibold text-gray-900">₹{{ order.total_amount|floatformat:0 }}</span>
+          </div>
+
+          <div class="flex justify-between text-gray-600 font-bold">
+            <span>Selected Payment Option</span>
+            <span id="summary-plan-label" class="text-gray-900">100% Full Payment</span>
+          </div>
+
+          <div class="pt-2 border-t border-[#DECBB7] flex justify-between items-baseline text-sm">
+            <div>
+              <span class="font-extrabold text-gray-950 block">Amount Payable Today</span>
+              <span class="text-[10px] text-gray-500">via Cashfree Secure Gateway</span>
+            </div>
+            <span id="summary-payable-today" class="font-black text-[#8B0000] text-xl font-mono">
+              {% if target_installment %}
+                ₹{{ target_installment.amount|floatformat:2 }}
+              {% else %}
+                ₹{{ order.total_amount|floatformat:0 }}
+              {% endif %}
+            </span>
+          </div>
+
+          <div class="flex justify-between text-gray-500 text-[11px] pt-1" id="summary-balance-row" style="display: none;">
+            <span>Remaining Balance after today</span>
+            <span id="summary-balance-after" class="font-mono font-bold text-gray-800">₹0</span>
+          </div>
+        </div>
+
+        <!-- =================================================== -->
+        <!-- 4. GATEWAY BADGES (UPI • CARDS • NETBANKING)        -->
+        <!-- =================================================== -->
+        <div class="p-3.5 rounded-2xl bg-white border border-gray-200 text-center space-y-2">
+          <div class="flex items-center justify-center gap-2 text-xs font-bold text-gray-700">
+            <span>🛡️ Official Cashfree Payment Gateway</span>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-3 text-[11px] font-bold text-gray-600">
+            <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800 border border-gray-200">
+              ⚡ UPI (Google Pay, PhonePe, Paytm, BHIM)
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800 border border-gray-200">
+              💳 Credit &amp; Debit Cards
+            </span>
+            <span class="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800 border border-gray-200">
+              🏦 Net Banking (50+ Banks)
+            </span>
+          </div>
+        </div>
+
+        <!-- =================================================== -->
+        <!-- 5. CTA BUTTON TO INITIATE CASHFREE CHECKOUT         -->
+        <!-- =================================================== -->
+        <div class="space-y-3 pt-2">
+          <button id="pay-now-btn"
+                  onclick="triggerCashfreeCheckout()"
+                  class="w-full py-4 px-6 rounded-2xl text-white font-extrabold text-sm sm:text-base tracking-wide flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg active:scale-[0.99]"
+                  style="background: linear-gradient(135deg, #8B0000 0%, #5C3D2E 100%) !important;">
+            <span id="btn-text">
+              {% if target_installment %}
+                PROCEED TO PAY ₹{{ target_installment.amount|floatformat:0 }} &rarr;
+              {% else %}
+                PROCEED TO SECURE PAYMENT &rarr;
+              {% endif %}
+            </span>
+            <svg id="btn-spinner" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+
+          <p class="text-[11px] text-center text-gray-400">
+            By clicking proceed, your payment session is created securely with Cashfree. No card details are ever stored on our servers.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Development Simulation Modal (Shown if Cashfree keys are absent in dev environment) -->
+<div id="simulation-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+  <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-amber-300 shadow-2xl space-y-5 text-center">
+    <div class="w-14 h-14 rounded-full bg-amber-100 text-amber-800 text-2xl flex items-center justify-center mx-auto">
+      🛠️
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-lg font-black text-gray-900">Sandbox Simulation Mode</h3>
+      <p class="text-xs text-gray-500">
+        Live Cashfree credentials are not yet configured in this environment. You can simulate instant gateway payment confirmation to verify the full flow:
+      </p>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#DECBB7] text-left text-xs space-y-1.5 font-mono">
+      <p><span class="text-gray-500">Order:</span> <strong class="text-gray-900">{{ order.order_number }}</strong></p>
+      <p><span class="text-gray-500">Simulated Amount:</span> <strong class="text-[#8B0000]" id="sim-amount">₹...</strong></p>
+      <p><span class="text-gray-500">Simulated Method:</span> <strong>UPI (Instant Intent)</strong></p>
+    </div>
+
+    <div class="space-y-2 pt-2">
+      <button onclick="confirmSimulatedPayment('SUCCESS')"
+              class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer">
+        ✓ Simulate Payment Success (Verify Flow)
+      </button>
+      <button onclick="confirmSimulatedPayment('FAILED')"
+              class="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs transition-colors cursor-pointer">
+        Simulate Payment Failure
+      </button>
+      <button onclick="closeSimulationModal()"
+              class="w-full py-2 text-gray-400 hover:text-gray-600 text-xs">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentOrderNumber = "{{ order.order_number }}";
+  let totalOrderAmount = parseFloat("{{ order.total_amount }}");
+  let currentPlanSlug = "full-payment";
+  let currentSimulatedOrderId = "";
+
+  // 1. Payment Mode Switching (Full vs Installment)
+  function selectPaymentMode(mode) {
+    const cardFull = document.getElementById('card-full');
+    const cardInst = document.getElementById('card-installment');
+    const indFull = document.getElementById('indicator-full');
+    const indInst = document.getElementById('indicator-installment');
+    const drawer = document.getElementById('installment-options-drawer');
+    const planInput = document.getElementById('selected-plan-input');
+
+    const summaryLabel = document.getElementById('summary-plan-label');
+    const payableToday = document.getElementById('summary-payable-today');
+    const balanceRow = document.getElementById('summary-balance-row');
+    const balanceAfter = document.getElementById('summary-balance-after');
+    const btnText = document.getElementById('btn-text');
+
+    if (mode === 'full') {
+      cardFull.style.borderColor = '#8B0000';
+      cardFull.style.backgroundColor = '#FFF9F5';
+      cardInst.style.borderColor = '#DECBB7';
+      cardInst.style.backgroundColor = '#FAF7F4';
+
+      indFull.style.backgroundColor = '#8B0000';
+      indFull.style.borderColor = '#8B0000';
+      indFull.querySelector('span').style.color = '#FFFFFF';
+
+      indInst.style.backgroundColor = '#FFFFFF';
+      indInst.style.borderColor = '#9CA3AF';
+      indInst.querySelector('span').style.color = 'transparent';
+
+      drawer.style.display = 'none';
+      currentPlanSlug = 'full-payment';
+      planInput.value = 'full-payment';
+
+      summaryLabel.textContent = '100% Full Payment';
+      payableToday.textContent = `₹${Math.round(totalOrderAmount).toLocaleString('en-IN')}`;
+      balanceRow.style.display = 'none';
+      btnText.textContent = `PROCEED TO PAY ₹${Math.round(totalOrderAmount).toLocaleString('en-IN')} →`;
+    } else {
+      cardInst.style.borderColor = '#8B0000';
+      cardInst.style.backgroundColor = '#FFF9F5';
+      cardFull.style.borderColor = '#DECBB7';
+      cardFull.style.backgroundColor = '#FAF7F4';
+
+      indInst.style.backgroundColor = '#8B0000';
+      indInst.style.borderColor = '#8B0000';
+      indInst.querySelector('span').style.color = '#FFFFFF';
+
+      indFull.style.backgroundColor = '#FFFFFF';
+      indFull.style.borderColor = '#9CA3AF';
+      indFull.querySelector('span').style.color = 'transparent';
+
+      drawer.style.display = 'block';
+
+      // Pick first plan if available
+      const firstPlanCard = drawer.querySelector('.plan-choice-card');
+      if (firstPlanCard) {
+        firstPlanCard.click();
+      }
+    }
+  }
+
+  // 2. Multi-Stage Plan Card Selection
+  function selectInstallmentPlan(slug, firstPayment, totalAmount, cardEl) {
+    document.querySelectorAll('.plan-choice-card').forEach(c => {
+      c.classList.remove('selected-plan', 'border-[#8B0000]', 'bg-red-50/40');
+      c.style.borderColor = '#E5E7EB';
+    });
+
+    cardEl.classList.add('selected-plan', 'border-[#8B0000]', 'bg-red-50/40');
+    cardEl.style.borderColor = '#8B0000';
+
+    currentPlanSlug = slug;
+    document.getElementById('selected-plan-input').value = slug;
+
+    const remaining = totalAmount - firstPayment;
+    document.getElementById('summary-plan-label').textContent = cardEl.querySelector('span.font-black').textContent;
+    document.getElementById('summary-payable-today').textContent = `₹${firstPayment.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+    document.getElementById('summary-balance-row').style.display = 'flex';
+    document.getElementById('summary-balance-after').textContent = `₹${remaining.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+    document.getElementById('btn-text').textContent = `PAY 1ST INSTALLMENT (₹${Math.round(firstPayment).toLocaleString('en-IN')}) →`;
+  }
+
+  // 3. Initiate Cashfree Checkout Session
+  async function triggerCashfreeCheckout() {
+    const btn = document.getElementById('pay-now-btn');
+    const spinner = document.getElementById('btn-spinner');
+    const planSlug = document.getElementById('selected-plan-input').value;
+    const installmentId = document.getElementById('target-installment-id').value;
+
+    btn.disabled = true;
+    spinner.classList.remove('hidden');
+
+    try {
+      const response = await fetch('/payments/api/create-session/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken(),
+        },
+        body: JSON.stringify({
+          order_number: currentOrderNumber,
+          plan_slug: planSlug,
+          installment_id: installmentId || null,
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.status !== 'success') {
+        alert(data.message || 'Payment initiation failed. Please try again.');
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        return;
+      }
+
+      currentSimulatedOrderId = data.order_id;
+
+      // Check if simulation mode
+      if (data.is_simulated) {
+        document.getElementById('sim-amount').textContent = data.formatted_amount;
+        document.getElementById('simulation-modal').classList.remove('hidden');
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        return;
+      }
+
+      // Initialize Cashfree Official Web SDK v3
+      if (typeof Cashfree !== 'undefined') {
+        const cashfree = Cashfree({
+          mode: "{{ cashfree_env }}" // "sandbox" or "production"
+        });
+
+        cashfree.checkout({
+          paymentSessionId: data.payment_session_id,
+          redirectTarget: "_self", // Redirects back smoothly to /payments/return/
+        });
+      } else {
+        // Fallback redirect
+        window.location.href = `/payments/return/?order_id=${data.order_id}`;
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Payment service is temporarily unavailable. Please check connection.");
+      btn.disabled = false;
+      spinner.classList.add('hidden');
+    }
+  }
+
+  // Development simulation helper
+  function confirmSimulatedPayment(status) {
+    window.location.href = `/payments/return/?order_id=${currentSimulatedOrderId}&sim_status=${status}`;
+  }
+
+  function closeSimulationModal() {
+    document.getElementById('simulation-modal').classList.add('hidden');
+  }
+
+  function getCsrfToken() {
+    const cookies = document.cookie.split(';');
+    for (let c of cookies) {
+      const [name, val] = c.trim().split('=');
+      if (name === 'csrftoken') return decodeURIComponent(val);
+    }
+    return '';
+  }
+</script>
+{% endblock %}

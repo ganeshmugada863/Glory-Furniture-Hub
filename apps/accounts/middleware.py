@@ -53,8 +53,16 @@ class RoleBasedAccessMiddleware:
             path.startswith('/static/') or
             path.startswith('/media/') or
             path.startswith('/api/') or
+            path.startswith('/admin-portal') or
             path == '/favicon.ico' or
             path == '/favicon.svg'
+        )
+
+        is_payment_path = (
+            path.startswith('/payments/') or
+            path.startswith('/installment/') or
+            path.startswith('/booking/payment/') or
+            path.startswith('/booking-confirmation/')
         )
 
         # Public storefront pages that visitors can freely browse
@@ -67,8 +75,8 @@ class RoleBasedAccessMiddleware:
         )
 
         # 1. ADMIN ROUTE GUARD
-        is_admin_path = (path.startswith('/admin/') and not path.startswith('/django-admin/')) or path.startswith('/admin-portal')
-        is_admin_auth_path = path in ['/admin/login/', '/admin/logout/', '/admin-portal/login/']
+        is_admin_path = path.startswith('/admin/') and not path.startswith('/django-admin/')
+        is_admin_auth_path = path in ['/admin/login/', '/admin/logout/']
 
         if is_admin_path and not is_admin_auth_path:
             if role != 'admin':
@@ -83,7 +91,7 @@ class RoleBasedAccessMiddleware:
             return redirect('admin_dashboard')
 
         # 2. PROTECTED CUSTOMER ROUTES (Cart, Checkout, Booking, Profile) REQUIRE ACCOUNT
-        if not is_authenticated_user and not is_auth_path and not is_static_or_api and not is_public_storefront:
+        if not is_authenticated_user and not is_auth_path and not is_static_or_api and not is_public_storefront and not is_payment_path:
             return redirect(f'/register/?next={path}')
 
         # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO MAIN PAGES

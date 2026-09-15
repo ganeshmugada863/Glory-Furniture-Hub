@@ -82,7 +82,11 @@ class Order(models.Model):
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
     paid_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     remaining_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    payment_plan = models.CharField(max_length=30, choices=PLAN_CHOICES, default='FULL_PAYMENT')
+    payment_plan = models.CharField(max_length=50, choices=PLAN_CHOICES, default='FULL_PAYMENT')
+    payment_type = models.CharField(max_length=20, choices=[('FULL', 'Full Payment'), ('INSTALLMENT', 'Installment Payment')], default='FULL')
+    plan_name = models.CharField(max_length=120, default='Full Payment', blank=True)
+    installment_plan_snapshot = models.JSONField(default=dict, blank=True, help_text="Snapshot of the chosen installment plan schedule")
+    next_due_date = models.DateField(null=True, blank=True)
     order_status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='PENDING_PAYMENT')
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -124,8 +128,10 @@ class Order(models.Model):
     def update_financial_status(self):
         """Recalculate paid and remaining amounts from successful transactions/paid installments."""
         from decimal import Decimal
-        if self.payment_plan == 'THREE_INSTALLMENTS' and self.installments.exists():
+        if self.installments.exists():
             paid_sum = sum((inst.amount for inst in self.installments.filter(status='PAID')), Decimal('0.00'))
+        elif hasattr(self, 'payments') and self.payments.filter(status='PAID').exists():
+            paid_sum = sum((p.amount for p in self.payments.filter(status='PAID')), Decimal('0.00'))
         else:
             paid_sum = sum((t.amount for t in self.transactions.filter(status='SUCCESS')), Decimal('0.00'))
 
@@ -137,6 +143,9 @@ class Order(models.Model):
             self.order_status = 'FULLY_PAID'
         else:
             self.order_status = 'PARTIALLY_PAID'
+
+        next_inst = self.next_due_installment
+        self.next_due_date = next_inst.due_date if next_inst else None
         self.save()
 
 

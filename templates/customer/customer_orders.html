@@ -35,55 +35,153 @@
   <div class="space-y-4">
     {% for o in orders %}
     <!-- Ultra-Clean Curved Order Card -->
-    <div class="glory-curved-card bg-white p-4 sm:p-5 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4" style="border-radius: 28px !important; border: 1.8px solid #E2D2C0 !important; background-color: #ffffff;">
+    <div class="glory-curved-card bg-white p-5 sm:p-6 shadow-sm hover:shadow-md transition-all space-y-4" style="border-radius: 28px !important; border: 2px solid #DECBB7 !important; background-color: #ffffff;">
       
-      <!-- Left: Thumbnail + Name + Attributes -->
-      <div class="flex items-center gap-4 sm:gap-5 min-w-0">
-        {% if o.product and o.product.primary_image %}
-        <img src="{{ o.product.primary_image }}" alt="{{ o.product_name }}" class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image object-cover border border-[#E5D9CC] flex-shrink-0 shadow-2xs" style="border-radius: 20px !important;" />
-        {% else %}
-        <div class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl flex-shrink-0" style="border-radius: 20px !important;">
-          🪵
-        </div>
-        {% endif %}
+      <!-- Top Row: Thumbnail + Product Name + Pricing Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-4 sm:gap-5 min-w-0">
+          {% if o.product and o.product.primary_image %}
+          <img src="{{ o.product.primary_image }}" alt="{{ o.product_name }}" class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image object-contain bg-[#FAF6F0] p-1.5 border border-[#E5D9CC] flex-shrink-0 shadow-2xs" style="border-radius: 20px !important;" />
+          {% else %}
+          <div class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl flex-shrink-0" style="border-radius: 20px !important;">
+            🪵
+          </div>
+          {% endif %}
 
-        <div class="min-w-0 space-y-1 text-left">
-          <h2 class="text-sm sm:text-base md:text-lg font-black text-gray-950 truncate tracking-tight leading-snug">
-            {{ o.product_name }}
-          </h2>
-          <!-- Status, Size, Quality in one compact line under the product name -->
-          <div class="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-900 border border-amber-300">
-              Pending
-            </span>
-            <span class="text-gray-400">&bull;</span>
-            <span>Size: <strong class="text-gray-900 font-semibold">{{ o.selected_size|default:"Standard" }}</strong></span>
-            <span class="text-gray-400">&bull;</span>
-            <span>Quality: <strong class="text-gray-900 font-semibold">{{ o.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
-            {% if o.quantity > 1 %}
-            <span class="text-gray-400">&bull;</span>
-            <span class="font-bold text-gray-700">Qty: {{ o.quantity }}</span>
+          <div class="min-w-0 space-y-1 text-left">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xs font-bold text-gray-500 font-mono">#{{ o.order_number }}</span>
+              <!-- Status Badge -->
+              {% if o.order_status == 'FULLY_PAID' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  ✓ FULLY PAID
+                </span>
+              {% elif o.order_status == 'PARTIALLY_PAID' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                  ⚡ PARTIALLY PAID
+                </span>
+              {% else %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">
+                  PENDING PAYMENT
+                </span>
+              {% endif %}
+
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">
+                {{ o.plan_name|default:"Full Payment" }}
+              </span>
+            </div>
+
+            <h2 class="text-sm sm:text-base md:text-lg font-black text-gray-950 truncate tracking-tight leading-snug">
+              {{ o.product_name }}
+            </h2>
+
+            <div class="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
+              <span>Size: <strong class="text-gray-900 font-semibold">{{ o.selected_size|default:"Standard" }}</strong></span>
+              <span class="text-gray-400">&bull;</span>
+              <span>Wood: <strong class="text-gray-900 font-semibold">{{ o.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
+              {% if o.quantity > 1 %}
+              <span class="text-gray-400">&bull;</span>
+              <span class="font-bold text-gray-700">Qty: {{ o.quantity }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Header: Total, Paid, Balance -->
+        <div class="flex items-center justify-between md:justify-end gap-6 flex-shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100">
+          <div class="text-left md:text-right text-xs">
+            <span class="text-gray-400 block font-bold uppercase tracking-wider text-[10px]">Total Order</span>
+            <span class="text-base sm:text-xl font-black text-[#8B0000] font-mono leading-tight block">{{ o.formatted_total }}</span>
+            <div class="text-[11px] text-gray-500 pt-0.5">
+              Paid: <strong class="text-emerald-800">{{ o.formatted_paid }}</strong> | Bal: <strong class="text-amber-900">{{ o.formatted_remaining }}</strong>
+            </div>
+          </div>
+
+          <!-- Checkout or Receipt CTA -->
+          <div class="flex items-center gap-2">
+            {% if o.order_status == 'PENDING_PAYMENT' and not o.installments.exists %}
+              <a href="{% url 'payment_checkout' order_number=o.order_number %}"
+                 class="px-4 py-2.5 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-sm">
+                Pay Now &rarr;
+              </a>
+            {% elif o.payments.exists %}
+              {% with last_pay=o.payments.last %}
+              <a href="{% url 'payment_receipt' payment_id=last_pay.payment_id %}"
+                 class="px-3.5 py-2 rounded-xl bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 transition-all shadow-2xs">
+                📄 Receipt
+              </a>
+              {% endwith %}
             {% endif %}
+
+            <a href="{% url 'guide' %}?product={{ o.product_name|urlencode }}&order={{ o.booking_id|default:o.id|urlencode }}"
+               class="px-3.5 py-2 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-all shadow-2xs">
+              Guide
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- Right: Total Rate & Compact Guide Button -->
-      <div class="flex items-center justify-between md:justify-end gap-5 flex-shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100">
-        <div class="text-left md:text-right">
-          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block leading-none">Total Rate</span>
-          <span class="text-base sm:text-xl font-black text-[#5C3D2E] leading-tight block mt-1">{{ o.formatted_total }}</span>
+      <!-- Installment Milestone Timeline (If multi-installment plan) -->
+      {% if o.installments.exists %}
+      <div class="pt-3 border-t border-gray-100 space-y-2.5">
+        <div class="flex items-center justify-between text-xs font-bold text-gray-700">
+          <span class="text-[#5C3D2E] font-black uppercase tracking-wider text-[11px]">Installment Milestone Schedule</span>
+          <span class="text-gray-500 text-[11px]">
+            {{ o.installments.filter.count }} Parts &bull; Paid {{ o.formatted_paid }} of {{ o.formatted_total }}
+          </span>
         </div>
 
-        <a
-          href="{% url 'guide' %}?product={{ o.product_name|urlencode }}&order={{ o.booking_id|default:o.id|urlencode }}"
-          class="px-5 py-2.5 rounded-2xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-xs hover:shadow-md active-tap cursor-pointer inline-flex items-center gap-1.5"
-          style="background-color: #5C3D2E !important; color: #ffffff !important; border-radius: 16px !important;"
-        >
-          <span>Guide</span>
-          <span>&rarr;</span>
-        </a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+          {% for inst in o.installments.all %}
+          <div class="p-3 rounded-2xl border transition-all text-xs space-y-1.5 {% if inst.status == 'PAID' %}bg-emerald-50/60 border-emerald-300 text-emerald-950{% elif inst.is_eligible_for_payment %}bg-amber-50/80 border-amber-300 shadow-xs{% else %}bg-gray-50/80 border-gray-200 text-gray-400{% endif %}">
+            
+            <div class="flex items-center justify-between">
+              <span class="font-black text-[11px] uppercase tracking-wider">
+                Part {{ inst.installment_number }}
+              </span>
+              {% if inst.status == 'PAID' %}
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-200 text-emerald-900">
+                  ✓ PAID
+                </span>
+              {% elif inst.is_eligible_for_payment %}
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-200 text-amber-900 animate-pulse">
+                  DUE NOW
+                </span>
+              {% else %}
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-gray-200 text-gray-600">
+                  UPCOMING
+                </span>
+              {% endif %}
+            </div>
+
+            <div class="flex items-baseline justify-between">
+              <span class="font-mono font-extrabold text-sm {% if inst.status == 'PAID' %}text-emerald-900{% elif inst.is_eligible_for_payment %}text-[#8B0000]{% else %}text-gray-600{% endif %}">
+                ₹{{ inst.amount|floatformat:0 }}
+              </span>
+              <span class="text-[10px] text-gray-500">
+                Due: {{ inst.due_date|date:"d M Y" }}
+              </span>
+            </div>
+
+            <!-- Action: Pay Now if Due & Eligible -->
+            {% if inst.is_eligible_for_payment %}
+              <div class="pt-1">
+                <a href="{% url 'pay_installment' installment_id=inst.id %}"
+                   class="w-full py-1.5 rounded-xl bg-[#8B0000] hover:bg-black text-white text-[11px] font-bold text-center block shadow-xs transition-colors">
+                  Pay Part {{ inst.installment_number }} (₹{{ inst.amount|floatformat:0 }}) &rarr;
+                </a>
+              </div>
+            {% elif inst.status == 'PAID' and inst.payment_id %}
+              <div class="pt-0.5 text-[10px] text-gray-500 font-mono truncate">
+                Ref: {{ inst.payment_id }}
+              </div>
+            {% endif %}
+
+          </div>
+          {% endfor %}
+        </div>
       </div>
+      {% endif %}
 
     </div>
     {% empty %}

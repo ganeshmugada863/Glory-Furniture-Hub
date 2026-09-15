@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Official Payment Receipt #{{ payment.payment_id }} | Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+  @media print {
+    header, footer, nav, .no-print {
+      display: none !important;
+    }
+    body {
+      background: #FFFFFF !important;
+      color: #000000 !important;
+      padding: 0 !important;
+    }
+    .print-container {
+      border: none !important;
+      box-shadow: none !important;
+      max-width: 100% !important;
+      padding: 0 !important;
+    }
+  }
+</style>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12" style="font-family: system-ui, -apple-system, sans-serif;">
+
+  <!-- Print Actions Bar -->
+  <div class="no-print flex items-center justify-between pb-6 flex-wrap gap-3">
+    <a href="{% url 'orders' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1.5">
+      <span>&larr; Back to My Orders</span>
+    </a>
+    <div class="flex items-center gap-2">
+      <button onclick="window.print()"
+              class="px-5 py-2.5 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+        <span>🖨️ Print / Save as PDF</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Official Receipt Invoice Container -->
+  <div class="print-container bg-white rounded-3xl p-8 sm:p-12 border-2 border-[#DECBB7] shadow-xl space-y-8 relative overflow-hidden"
+       style="border: 2px solid #DECBB7 !important;">
+
+    <!-- Watermark Stamp -->
+    <div class="absolute right-6 bottom-16 opacity-10 pointer-events-none text-right select-none font-serif text-8xl font-black text-[#5C3D2E]">
+      PAID
+    </div>
+
+    <!-- 1. Header with Logo & Studio Info -->
+    <div class="flex flex-col sm:flex-row items-start justify-between gap-6 pb-6 border-b-2 border-gray-100">
+      <div class="space-y-1.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#5C3D2E] text-white flex items-center justify-center font-serif text-xl font-black">
+            G
+          </div>
+          <div>
+            <h1 class="text-xl font-black text-gray-950 tracking-tight">GLORY FURNITURE HUB</h1>
+            <p class="text-[11px] font-bold tracking-widest text-[#8B0000] uppercase">Master Handcrafted Solid Burma Teak</p>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 pt-1">
+          Workshop: Kukatpally &amp; Banjara Hills Artisan Studios<br>
+          Hyderabad, Telangana 500072 | GSTIN: 36AAACG1234F1Z8<br>
+          patron@gloryfurniturehub.com | +91 94401 23456
+        </p>
+      </div>
+
+      <div class="text-left sm:text-right space-y-1">
+        <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+          OFFICIAL TAX RECEIPT
+        </span>
+        <div class="pt-2">
+          <span class="text-xs text-gray-400 block">Receipt Number:</span>
+          <span class="text-sm font-black font-mono text-gray-900">{{ payment.payment_id }}</span>
+        </div>
+        <div>
+          <span class="text-xs text-gray-400 block">Date &amp; Time:</span>
+          <span class="text-xs font-semibold text-gray-700">{{ formatted_date }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Patron & Order Reference Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE] text-xs">
+      <div class="space-y-1">
+        <span class="text-[11px] font-black uppercase text-[#5C3D2E] tracking-wider block">Billed To (Valued Patron)</span>
+        <h3 class="text-sm font-bold text-gray-950">{{ order.customer_name }}</h3>
+        <p class="text-gray-600">Phone: {{ order.phone }}</p>
+        <p class="text-gray-600">Email: {{ order.email }}</p>
+        {% if order.shipping_address %}
+          <p class="text-gray-600 pt-1 leading-relaxed"><span class="font-semibold">Delivery:</span> {{ order.shipping_address }}</p>
+        {% endif %}
+      </div>
+
+      <div class="space-y-1 sm:text-right">
+        <span class="text-[11px] font-black uppercase text-[#5C3D2E] tracking-wider block">Order &amp; Gateway Details</span>
+        <p class="text-gray-700"><span class="font-bold">Order Number:</span> {{ order.order_number }}</p>
+        <p class="text-gray-700"><span class="font-bold">Payment Gateway:</span> Cashfree PG</p>
+        <p class="text-gray-700"><span class="font-bold">Gateway Reference:</span> {{ payment.gateway_payment_id|default:payment.gateway_order_id }}</p>
+        <p class="text-gray-700"><span class="font-bold">Payment Method:</span> {{ payment.payment_method|default:"UPI" }}</p>
+        <p class="text-gray-700">
+          <span class="font-bold">Plan Type:</span>
+          {% if installment %}
+            Installment #{{ installment.installment_number }} of {{ order.installments.count }}
+          {% else %}
+            100% Full Payment
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- 3. Line Items Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead>
+          <tr class="border-b-2 border-gray-200 text-gray-400 font-bold uppercase tracking-wider text-[11px]">
+            <th class="py-3">Description</th>
+            <th class="py-3 text-center">Qty</th>
+            <th class="py-3 text-right">Unit Price</th>
+            <th class="py-3 text-right">Amount</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr>
+            <td class="py-4 space-y-0.5">
+              <span class="font-bold text-gray-900 text-sm block">{{ order.product_name }}</span>
+              <span class="text-gray-500">
+                Wood: {{ order.selected_wood }} | Size: {{ order.selected_size }} | White-Glove In-Home Assembly
+              </span>
+            </td>
+            <td class="py-4 text-center font-bold text-gray-700">{{ order.quantity }}</td>
+            <td class="py-4 text-right font-mono text-gray-700">₹{{ order.unit_price|floatformat:2 }}</td>
+            <td class="py-4 text-right font-mono font-bold text-gray-900">₹{{ order.total_amount|floatformat:2 }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. Financial Calculations -->
+    <div class="flex justify-end pt-2">
+      <div class="w-full sm:w-80 space-y-2 text-xs">
+        <div class="flex justify-between text-gray-600">
+          <span>Order Subtotal</span>
+          <span class="font-mono text-gray-800">₹{{ order.total_amount|floatformat:2 }}</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>White-Glove Delivery</span>
+          <span class="font-bold text-emerald-700">FREE</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>GST (Included 18%)</span>
+          <span class="font-mono text-gray-500">Included</span>
+        </div>
+        
+        <div class="pt-2 border-t-2 border-gray-200 flex justify-between items-baseline text-sm">
+          <span class="font-black text-gray-950">Amount Paid in this Receipt</span>
+          <span class="font-black text-[#8B0000] text-lg font-mono">₹{{ payment.amount|floatformat:2 }}</span>
+        </div>
+
+        {% if installment %}
+        <div class="pt-2 border-t border-gray-100 space-y-1 text-[11px] text-gray-500">
+          <div class="flex justify-between">
+            <span>Cumulative Paid to Date:</span>
+            <span class="font-mono font-bold text-emerald-800">₹{{ order.paid_amount|floatformat:2 }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Outstanding Order Balance:</span>
+            <span class="font-mono font-bold text-amber-900">₹{{ order.remaining_amount|floatformat:2 }}</span>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 5. Authenticity Seal & Sign-off -->
+    <div class="pt-6 border-t-2 border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🪵</span>
+        <div>
+          <span class="font-bold text-gray-800 block">Burma Teak Timber Certificate of Authenticity</span>
+          <span class="text-[11px] text-gray-500">Hand-selected seasoning &bull; Master craftsman jointed in Telangana</span>
+        </div>
+      </div>
+      <div class="text-center sm:text-right">
+        <div class="font-serif italic text-gray-700 font-bold text-sm">Glory Furniture Hub</div>
+        <span class="text-[10px] text-gray-400">Authorized Master Studio Seal</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

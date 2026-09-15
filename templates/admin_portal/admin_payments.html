@@ -1,51 +1,258 @@
 {% extends 'admin_portal/admin_base.html' %}
 
-{% block title %}Payment Ledger — Glory Furniture Hub{% endblock %}
+{% block title %}Payment Analytics & Gateway Ledger — Glory Furniture Hub{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
+<div class="space-y-6" style="font-family: system-ui, -apple-system, sans-serif;">
 
+  <!-- Page Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Payment Ledger &amp; UPI Verification</h1>
-      <p class="text-xs text-gray-500">Verified bank and gateway transactions with customer 12-digit UTR references.</p>
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Payment Analytics &amp; Cashfree Gateway Ledger</h1>
+      <p class="text-xs text-gray-500">Real-time revenue metrics, multi-installment tracking, and server-verified Cashfree transactions.</p>
     </div>
-    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900 text-xs font-black">
-      Total Collected: {{ total_collected }}
+    <div class="flex items-center gap-2">
+      <span class="px-3 py-1.5 bg-emerald-50 text-emerald-800 text-xs font-black rounded-xl border border-emerald-200">
+        🛡️ Cashfree Webhooks Active
+      </span>
     </div>
   </div>
 
-  <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden">
+  {% if success == 'refunded' %}
+  <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between">
+    <span>✓ Refund request successfully initiated through Cashfree Gateway.</span>
+    <button onclick="this.parentElement.remove()" class="text-emerald-700 hover:text-emerald-950 font-black">&times;</button>
+  </div>
+  {% endif %}
+
+  {% if error_message %}
+  <div class="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-900 text-xs font-bold flex items-center justify-between">
+    <span>✕ {{ error_message }}</span>
+    <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-950 font-black">&times;</button>
+  </div>
+  {% endif %}
+
+  <!-- ========================================================= -->
+  <!-- 1. PAYMENT ANALYTICS CARDS                                -->
+  <!-- ========================================================= -->
+  <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
+    
+    <!-- Card 1: Total Revenue -->
+    <div class="p-4 rounded-2xl bg-white border border-[#DECBB7] shadow-xs space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 block">Total Revenue</span>
+      <div class="text-lg sm:text-xl font-black text-[#8B0000] font-mono leading-tight">
+        {{ formatted_total_revenue|default:"₹0" }}
+      </div>
+      <span class="text-[10px] text-gray-400">All verified payments</span>
+    </div>
+
+    <!-- Card 2: Full Payment Revenue -->
+    <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 block">100% Upfront</span>
+      <div class="text-lg sm:text-xl font-black text-emerald-800 font-mono leading-tight">
+        {{ formatted_full_revenue|default:"₹0" }}
+      </div>
+      <span class="text-[10px] text-emerald-700 font-semibold">{{ fully_paid_orders_count }} fully paid orders</span>
+    </div>
+
+    <!-- Card 3: Installment Revenue -->
+    <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 block">Installment Inflow</span>
+      <div class="text-lg sm:text-xl font-black text-blue-800 font-mono leading-tight">
+        {{ formatted_installment_revenue|default:"₹0" }}
+      </div>
+      <span class="text-[10px] text-blue-700 font-semibold">{{ installment_orders_count }} active contracts</span>
+    </div>
+
+    <!-- Card 4: Outstanding Installments -->
+    <div class="p-4 rounded-2xl bg-white border border-amber-300 bg-amber-50/40 shadow-xs space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-amber-900 block">Outstanding Balance</span>
+      <div class="text-lg sm:text-xl font-black text-amber-950 font-mono leading-tight">
+        {{ formatted_outstanding|default:"₹0" }}
+      </div>
+      <span class="text-[10px] text-amber-800 font-semibold">Future milestone dues</span>
+    </div>
+
+    <!-- Card 5: Pending Transactions -->
+    <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 block">Pending Gateway</span>
+      <div class="text-lg sm:text-xl font-black text-gray-700 font-mono leading-tight">
+        {{ pending_payments_count|default:0 }}
+      </div>
+      <span class="text-[10px] text-gray-400">Awaiting settlement</span>
+    </div>
+
+    <!-- Card 6: Failed Payments -->
+    <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs space-y-1">
+      <span class="text-[10px] font-black uppercase tracking-wider text-gray-400 block">Failed Attempts</span>
+      <div class="text-lg sm:text-xl font-black text-red-600 font-mono leading-tight">
+        {{ failed_payments_count|default:0 }}
+      </div>
+      <span class="text-[10px] text-red-500">Declined / dropped</span>
+    </div>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 2. SEARCH & FILTERS BAR                                   -->
+  <!-- ========================================================= -->
+  <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-xs">
+    <form method="GET" class="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+      
+      <!-- Search input -->
+      <div class="relative w-full md:w-80">
+        <input type="text"
+               name="q"
+               value="{{ q }}"
+               placeholder="Search payment ID, order, customer, UTR..."
+               class="w-full pl-8 pr-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#8B0000] text-xs">
+        <span class="absolute left-2.5 top-2.5 text-gray-400">🔍</span>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex items-center gap-2 w-full md:w-auto flex-wrap">
+        <select name="type" class="px-3 py-2 rounded-xl border border-gray-300 focus:outline-none text-xs">
+          <option value="">All Payment Types</option>
+          <option value="FULL" {% if type_filter == 'FULL' %}selected{% endif %}>Full Payment</option>
+          <option value="INSTALLMENT" {% if type_filter == 'INSTALLMENT' %}selected{% endif %}>Installment</option>
+        </select>
+
+        <select name="status" class="px-3 py-2 rounded-xl border border-gray-300 focus:outline-none text-xs">
+          <option value="">All Statuses</option>
+          <option value="PAID" {% if status_filter == 'PAID' %}selected{% endif %}>PAID</option>
+          <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>PENDING</option>
+          <option value="FAILED" {% if status_filter == 'FAILED' %}selected{% endif %}>FAILED</option>
+          <option value="REFUNDED" {% if status_filter == 'REFUNDED' %}selected{% endif %}>REFUNDED</option>
+        </select>
+
+        <button type="submit" class="px-4 py-2 rounded-xl bg-[#5C3D2E] hover:bg-black text-white font-bold transition-colors cursor-pointer">
+          Apply Filters
+        </button>
+
+        {% if q or status_filter or type_filter %}
+        <a href="{% url 'admin_payments_analytics' %}" class="px-3 py-2 text-gray-500 hover:text-gray-800 font-semibold">
+          Reset
+        </a>
+        {% endif %}
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 3. COMPREHENSIVE PAYMENT TRANSACTIONS TABLE               -->
+  <!-- ========================================================= -->
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left text-xs">
-        <thead class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black border-b border-gray-200">
+        <thead class="bg-[#FAF7F4] text-gray-500 uppercase text-[10px] font-black border-b border-gray-200">
           <tr>
-            <th class="py-3.5 px-4">Gateway Reference / UTR</th>
-            <th class="py-3.5 px-4">Order #</th>
-            <th class="py-3.5 px-4">Customer</th>
-            <th class="py-3.5 px-4">Amount Paid</th>
-            <th class="py-3.5 px-4">Channel</th>
-            <th class="py-3.5 px-4">Timestamp</th>
-            <th class="py-3.5 px-4">Status</th>
+            <th class="py-3 px-4">Payment ID</th>
+            <th class="py-3 px-4">Order #</th>
+            <th class="py-3 px-4">Customer</th>
+            <th class="py-3 px-4">Type / Milestone</th>
+            <th class="py-3 px-4 text-right">Amount</th>
+            <th class="py-3 px-4">Gateway &amp; Ref</th>
+            <th class="py-3 px-4 text-center">Status</th>
+            <th class="py-3 px-4">Date</th>
+            <th class="py-3 px-4 text-right">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 font-medium">
-          {% for t in transactions %}
-          <tr class="hover:bg-gray-50/50 transition-colors">
-            <td class="py-3.5 px-4 font-mono font-bold text-gray-900">{{ t.gateway_payment_id }}</td>
-            <td class="py-3.5 px-4 font-mono text-[#5C3D2E]">#{{ t.order.order_number }}</td>
-            <td class="py-3.5 px-4 font-bold text-gray-900">{{ t.order.customer_name }}</td>
-            <td class="py-3.5 px-4 font-black text-emerald-700">₹{{ t.amount|floatformat:0 }}</td>
-            <td class="py-3.5 px-4">{{ t.gateway }}</td>
-            <td class="py-3.5 px-4 text-gray-500">{{ t.paid_at|date:"M d, Y H:i" }}</td>
+          {% for p in payments %}
+          <tr class="hover:bg-gray-50/60 transition-colors">
+            <!-- Payment ID -->
+            <td class="py-3.5 px-4 font-mono font-bold text-gray-900">
+              {{ p.payment_id }}
+            </td>
+
+            <!-- Order # -->
             <td class="py-3.5 px-4">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
-                {{ t.status }}
+              <a href="{% url 'admin_order_detail' order_id=p.order.id %}" class="font-mono text-[#5C3D2E] hover:underline font-bold">
+                #{{ p.order.order_number }}
+              </a>
+            </td>
+
+            <!-- Customer -->
+            <td class="py-3.5 px-4">
+              <span class="font-bold text-gray-900 block">{{ p.order.customer_name }}</span>
+              <span class="text-[10px] text-gray-400">{{ p.order.phone }}</span>
+            </td>
+
+            <!-- Type -->
+            <td class="py-3.5 px-4">
+              {% if p.payment_type == 'INSTALLMENT' and p.installment %}
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                  Part {{ p.installment.installment_number }}
+                </span>
+              {% else %}
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  Full 100%
+                </span>
+              {% endif %}
+            </td>
+
+            <!-- Amount -->
+            <td class="py-3.5 px-4 text-right font-black font-mono text-[#8B0000] text-sm">
+              ₹{{ p.amount|floatformat:0 }}
+            </td>
+
+            <!-- Gateway & Reference -->
+            <td class="py-3.5 px-4">
+              <span class="text-gray-800 font-semibold block">{{ p.gateway }} ({{ p.payment_method|default:"UPI" }})</span>
+              <span class="text-[10px] font-mono text-gray-400 block truncate max-w-[140px]" title="{{ p.gateway_payment_id|default:p.gateway_order_id }}">
+                {{ p.gateway_payment_id|default:p.gateway_order_id }}
               </span>
+            </td>
+
+            <!-- Status -->
+            <td class="py-3.5 px-4 text-center">
+              {% if p.status == 'PAID' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
+                  PAID
+                </span>
+              {% elif p.status == 'PENDING' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900">
+                  PENDING
+                </span>
+              {% elif p.status == 'REFUNDED' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-900">
+                  REFUNDED
+                </span>
+              {% else %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-800">
+                  FAILED
+                </span>
+              {% endif %}
+            </td>
+
+            <!-- Date -->
+            <td class="py-3.5 px-4 text-gray-500 text-[11px]">
+              {{ p.paid_at|default:p.created_at|date:"M d, Y H:i" }}
+            </td>
+
+            <!-- Actions -->
+            <td class="py-3.5 px-4 text-right space-x-1.5">
+              <a href="{% url 'payment_receipt' payment_id=p.payment_id %}"
+                 target="_blank"
+                 class="px-2.5 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-bold inline-block shadow-2xs">
+                Receipt
+              </a>
+
+              {% if p.status == 'PAID' %}
+              <button onclick="openRefundModal('{{ p.payment_id }}', '{{ p.order.order_number }}', '{{ p.amount }}')"
+                      class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 text-[11px] font-bold border border-red-200 inline-block cursor-pointer">
+                Refund
+              </button>
+              {% endif %}
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="7" class="py-8 text-center text-gray-400">No payment transactions recorded yet.</td></tr>
+          <tr>
+            <td colspan="9" class="py-10 text-center text-gray-400">
+              No payment transactions found matching your criteria.
+            </td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -53,4 +260,55 @@
   </div>
 
 </div>
+
+<!-- Admin Refund Confirmation Modal -->
+<div id="refund-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+  <div class="bg-white rounded-3xl p-6 max-w-md w-full border border-red-300 shadow-2xl space-y-4">
+    <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+      <h3 class="text-base font-black text-gray-950">Initiate Gateway Refund</h3>
+      <button onclick="closeRefundModal()" class="text-gray-400 hover:text-gray-600 font-bold">&times;</button>
+    </div>
+
+    <p class="text-xs text-gray-500">
+      This will send an official refund request directly to Cashfree for order <strong id="modal-order-number" class="text-gray-800"></strong>.
+    </p>
+
+    <form method="POST" class="space-y-3">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="refund_payment">
+      <input type="hidden" name="payment_id" id="modal-payment-id" value="">
+
+      <div class="p-3 rounded-xl bg-red-50 text-xs text-red-900 border border-red-200 font-mono">
+        Refund Amount: <strong id="modal-refund-amount" class="text-sm">₹0</strong>
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs font-bold text-gray-700 block">Reason for Refund:</label>
+        <textarea name="refund_reason" rows="2" class="w-full p-2.5 rounded-xl border border-gray-300 text-xs focus:outline-none focus:border-red-500" required placeholder="e.g. Patron cancellation or dimension change"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button type="button" onclick="closeRefundModal()" class="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 text-xs font-semibold cursor-pointer">
+          Cancel
+        </button>
+        <button type="submit" class="px-5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-xs font-bold shadow-sm transition-colors cursor-pointer">
+          Confirm Refund via Cashfree
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openRefundModal(paymentId, orderNumber, amount) {
+    document.getElementById('modal-payment-id').value = paymentId;
+    document.getElementById('modal-order-number').textContent = `#${orderNumber}`;
+    document.getElementById('modal-refund-amount').textContent = `₹${parseFloat(amount).toLocaleString('en-IN')}`;
+    document.getElementById('refund-modal').classList.remove('hidden');
+  }
+
+  function closeRefundModal() {
+    document.getElementById('refund-modal').classList.add('hidden');
+  }
+</script>
 {% endblock %}

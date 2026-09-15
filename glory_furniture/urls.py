@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('apps.bookings.urls')),
     path('', include('apps.custom_orders.urls')),
     path('', include('apps.accounts.urls')),
+    path('payments/', include('apps.payments.urls')),
 ]
 
 from django.views.static import serve
