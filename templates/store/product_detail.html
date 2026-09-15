@@ -51,18 +51,19 @@
       <div class="lg:col-span-6 space-y-4">
         
         <!-- Main Image Card -->
-        <div class="relative w-full aspect-square bg-[#FAF6F0] rounded-2xl overflow-hidden border border-gray-200/80 shadow-xs group product-image-container flex items-center justify-center p-3 sm:p-5">
+        <div class="relative w-full aspect-square bg-[#FAF6F0] rounded-2xl overflow-hidden border border-gray-200/80 shadow-xs group product-image-container flex items-center justify-center p-3 sm:p-5" style="position: relative !important;">
           
-          <!-- Top-Right Stack: [❤️ Favorite] directly above [↗ Share] -->
-          <div class="absolute top-3.5 right-3.5 z-20 flex flex-col gap-2">
+          <!-- Top-Right Stack: [❤️ Favorite] directly above [↗ Share] - STRICT TOP-RIGHT CORNER -->
+          <div style="position: absolute !important; top: 16px !important; right: 16px !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; gap: 10px !important;">
             <!-- Favorite / Wishlist Button -->
             <button type="button"
                     data-wishlist-id="{{ product.id }}"
                     onclick="event.stopPropagation(); toggleWishlist({{ product.id }});"
-                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-[#8B0000] shadow-md border border-gray-200/90 flex items-center justify-center transition-all hover:scale-105 active-tap cursor-pointer"
+                    class="active-tap"
+                    style="width: 42px !important; height: 42px !important; min-width: 42px !important; min-height: 42px !important; border-radius: 9999px !important; background: rgba(255, 255, 255, 0.96) !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important; border: 1.5px solid #E5E7EB !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; transition: transform 0.15s ease, background-color 0.15s ease !important;"
                     title="Save to Wishlist"
                     aria-label="Save to Wishlist">
-              <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5 {% if product.id in WISHLIST_IDS %}fill-[#8B0000] text-[#8B0000]{% else %}fill-none{% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg style="width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important;" class="{% if product.id in WISHLIST_IDS %}fill-[#8B0000] text-[#8B0000]{% else %}fill-none text-gray-700{% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
               </svg>
             </button>
@@ -70,10 +71,11 @@
             <!-- Share Button (Web Share API + Clipboard Copy) -->
             <button type="button"
                     onclick="event.stopPropagation(); shareProduct();"
-                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-[#8B0000] shadow-md border border-gray-200/90 flex items-center justify-center transition-all hover:scale-105 active-tap cursor-pointer"
+                    class="active-tap"
+                    style="width: 42px !important; height: 42px !important; min-width: 42px !important; min-height: 42px !important; border-radius: 9999px !important; background: rgba(255, 255, 255, 0.96) !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important; border: 1.5px solid #E5E7EB !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; transition: transform 0.15s ease, background-color 0.15s ease !important;"
                     title="Share Product"
                     aria-label="Share Product">
-              <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important;" fill="none" stroke="#374151" stroke-width="2.2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
               </svg>
             </button>
@@ -83,7 +85,8 @@
           <img id="main-product-img"
                src="{{ product.primary_image }}"
                alt="{{ product.name }}"
-               class="max-w-full max-h-full w-auto h-auto object-contain object-center transition-opacity duration-200 select-none" />
+               style="max-width: 100% !important; max-height: 100% !important; width: auto !important; height: auto !important; object-fit: contain !important; object-position: center !important; margin: auto !important; display: block !important;"
+               class="transition-opacity duration-200 select-none" />
 
           <!-- Slider Arrow Left (<) -->
           <button type="button"
@@ -105,14 +108,14 @@
 
         </div>
 
-        <!-- 4 Thumbnails Row -->
-        <div class="grid grid-cols-4 gap-3">
+        <!-- 4 Thumbnails Row (Strict Aspect Ratio & Centering & Vivid Card Colors) -->
+        <div style="display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 12px !important; width: 100% !important; margin-top: 14px !important;">
           {% for img in product.all_images %}
           <button type="button"
                   onclick="selectThumbnail('{{ img }}', this, {{ forloop.counter0 }})"
-                  class="thumb-btn aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer active-tap bg-[#FAF6F0] {% if forloop.first %}ring-1 ring-[#8B0000]/40 shadow-xs{% else %}border-gray-200 hover:border-gray-400{% endif %}"
-                  {% if forloop.first %}style="border-color: #8B0000 !important;"{% else %}style="border-color: #E5E7EB !important;"{% endif %}>
-            <img src="{{ img }}" alt="Thumbnail {{ forloop.counter }}" onerror="this.src='{{ product.primary_image }}';" class="w-full h-full object-contain object-center p-1" />
+                  class="thumb-btn active-tap"
+                  style="aspect-ratio: 1 / 1 !important; width: 100% !important; height: auto !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 5px !important; border-radius: 14px !important; overflow: hidden !important; cursor: pointer !important; transition: all 0.2s ease !important; {% if forloop.first %}border: 2.5px solid #8B0000 !important; background-color: #FFF5F5 !important; box-shadow: 0 4px 12px rgba(139, 0, 0, 0.22) !important; transform: scale(1.02);{% else %}border: 2px solid #D4B996 !important; background-color: #FAF6F0 !important; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;{% endif %}">
+            <img src="{{ img }}" alt="Thumbnail {{ forloop.counter }}" onerror="this.src='{{ product.primary_image }}';" style="width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; border-radius: 9px !important; display: block !important; margin: auto !important;" />
           </button>
           {% endfor %}
           <!-- Fillers if fewer than 4 images to match exact 4-box layout -->
@@ -121,9 +124,9 @@
               {% if forloop.counter <= 4|add:"-"|add:product.all_images|length %}
               <button type="button"
                       onclick="selectThumbnail('{{ product.primary_image }}', this, 0)"
-                      class="thumb-btn aspect-square rounded-xl overflow-hidden border-2 border-gray-200 hover:border-gray-400 transition-all cursor-pointer active-tap bg-[#FAF6F0]"
-                      style="border-color: #E5E7EB !important;">
-                <img src="{{ product.primary_image }}" alt="Thumbnail filler" class="w-full h-full object-contain object-center p-1 opacity-80" />
+                      class="thumb-btn active-tap"
+                      style="aspect-ratio: 1 / 1 !important; width: 100% !important; height: auto !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 5px !important; border-radius: 14px !important; overflow: hidden !important; cursor: pointer !important; transition: all 0.2s ease !important; border: 2px solid #D4B996 !important; background-color: #FAF6F0 !important; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;">
+                <img src="{{ product.primary_image }}" alt="Thumbnail filler" style="width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; border-radius: 9px !important; display: block !important; margin: auto !important; opacity: 0.85 !important;" />
               </button>
               {% endif %}
             {% endfor %}
@@ -243,21 +246,23 @@
             </button>
           </div>
 
-          <!-- Add To Cart Button (Prominent Crimson CTA with Cart Icon) -->
+          <!-- Add To Cart Button (Prominent Crimson CTA with Perfectly Sized White Cart Icon) -->
           <button type="button"
                   onclick="triggerAddToCart()"
-                  class="flex-1 min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all hover:opacity-95 active-tap cursor-pointer shrink-0"
-                  style="background-color: #8B0000 !important; color: #FFFFFF !important;">
-            <span style="color: #FFFFFF !important; font-weight: 800;">Add To Cart</span>
-            <svg class="w-4.5 h-4.5 fill-none stroke-current" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                  class="flex-1 active-tap shrink-0"
+                  style="min-height: 48px !important; height: 48px !important; padding: 0 22px !important; border-radius: 12px !important; background: linear-gradient(135deg, #8B0000 0%, #A30000 100%) !important; color: #FFFFFF !important; border: 1px solid #700000 !important; box-shadow: 0 4px 12px rgba(139, 0, 0, 0.28) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; cursor: pointer !important; transition: all 0.15s ease !important;">
+            <svg style="width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important; fill: none !important; stroke: #FFFFFF !important; stroke-width: 2.2 !important; display: inline-block !important;" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <span style="color: #FFFFFF !important; font-weight: 800; font-size: 14px !important; letter-spacing: 0.02em; white-space: nowrap !important;">Add To Cart</span>
           </button>
 
           <!-- Buy Now / Book Now Button (White with Crimson Border) -->
           <a href="{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price={{ product.price }}"
              id="main-buy-now-btn"
-             class="flex-1 min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl bg-white font-bold text-xs sm:text-sm flex items-center justify-center transition-all hover:bg-gray-50 active-tap cursor-pointer shrink-0"
-             style="border: 1.5px solid #8B0000 !important; color: #8B0000 !important;">
-            <span style="color: #8B0000 !important; font-weight: 800;">Buy Now</span>
+             class="flex-1 active-tap shrink-0"
+             style="min-height: 48px !important; height: 48px !important; padding: 0 22px !important; border-radius: 12px !important; background: #FFFFFF !important; border: 2px solid #8B0000 !important; color: #8B0000 !important; box-shadow: 0 2px 6px rgba(139, 0, 0, 0.08) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; text-decoration: none !important; transition: all 0.15s ease !important;">
+            <span style="color: #8B0000 !important; font-weight: 800; font-size: 14px !important; letter-spacing: 0.02em; white-space: nowrap !important;">Buy Now</span>
           </a>
 
         </div>
@@ -547,8 +552,14 @@
     document.querySelectorAll('.thumb-btn').forEach((btn, idx) => {
       if (idx === currentImageIdx) {
         btn.style.borderColor = '#8B0000';
+        btn.style.backgroundColor = '#FFF5F5';
+        btn.style.boxShadow = '0 4px 12px rgba(139, 0, 0, 0.22)';
+        btn.style.transform = 'scale(1.02)';
       } else {
-        btn.style.borderColor = '#E5E7EB';
+        btn.style.borderColor = '#D4B996';
+        btn.style.backgroundColor = '#FAF6F0';
+        btn.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.05)';
+        btn.style.transform = 'scale(1)';
       }
     });
   }

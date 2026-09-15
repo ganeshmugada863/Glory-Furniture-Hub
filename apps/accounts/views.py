@@ -406,7 +406,14 @@ def customer_profile_view(request):
     profile = getattr(user, 'profile', None) if user else None
     
     customer_email = (user.email if user else None) or request.session.get('glory_user_email') or ''
-    customer_name = (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or request.session.get('glory_user_name') or 'Valued Patron'
+    customer_name = ''
+    if profile and profile.full_name and profile.full_name.strip():
+        customer_name = profile.full_name.strip()
+    elif user:
+        full = user.get_full_name().strip()
+        customer_name = full if full else (user.username or '')
+    if not customer_name:
+        customer_name = request.session.get('glory_user_name') or 'Valued Patron'
     customer_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or ''
 
     if user or customer_email:

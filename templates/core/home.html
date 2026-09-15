@@ -171,7 +171,7 @@
         class="home-product-card glory-curved-card bg-[#FAF6F0] p-3.5 sm:p-4 cursor-pointer group flex flex-col justify-between"
         data-category="{{ product.category.name|lower }}"
         data-name="{{ product.name|lower }}"
-        style="border-radius: 28px !important; border: 1.8px solid #E2D2C0 !important;"
+        style="border-radius: 28px !important; border: 2px solid #DECBB7 !important; box-shadow: 0 4px 14px rgba(92, 61, 46, 0.08) !important;"
       >
         <div>
           <!-- Compact Card Image Container with Auto-Fit & Centering -->
@@ -199,7 +199,7 @@
           <p class="text-[11px] sm:text-xs text-[#6B6B6B] line-clamp-1 mt-0.5 px-0.5">{{ product.material }}</p>
 
           <div class="flex items-center justify-between mt-1.5 mb-3 px-0.5">
-            <span class="font-sans font-extrabold text-sm sm:text-base text-[#1E140F]">{{ product.formatted_price }}</span>
+            <span class="font-sans font-extrabold text-sm sm:text-base" style="color: #8B0000 !important; font-weight: 900 !important;">{{ product.formatted_price }}</span>
             <div class="flex items-center gap-1 text-[11px] text-[#3D281E] font-semibold">
               <svg class="w-3.5 h-3.5 fill-[#C9963F] text-[#C9963F]" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
               <span>{{ product.rating }}</span>
