@@ -445,7 +445,7 @@
             }
 
             badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block';
-            badge.textContent = `✅ Location detected & address filled: ${d.display_name || d.city || 'Hyderabad'}`;
+            badge.textContent = `Address: ${d.display_name || d.city || 'Hyderabad'}`;
           } else {
             badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block';
             badge.textContent = '⚠️ Location coordinates found. Please verify the street and pincode details.';

@@ -234,19 +234,36 @@ def reverse_geocode_api(request):
             data = json.loads(resp.read().decode('utf-8'))
             address = data.get('address', {})
 
-            street = (
-                address.get('road') or
+            # Comprehensive rural & urban address parsing for India
+            village_or_locality = (
+                address.get('village') or
+                address.get('hamlet') or
                 address.get('suburb') or
                 address.get('neighbourhood') or
                 address.get('residential') or
                 ''
             )
+            road = address.get('road') or address.get('pedestrian') or address.get('footway') or ''
+            mandal_or_taluk = address.get('subdistrict') or address.get('county') or address.get('tehsil') or ''
+            district = address.get('state_district') or address.get('district') or ''
+            
+            street_parts = []
+            if road:
+                street_parts.append(road)
+            if village_or_locality and village_or_locality not in street_parts:
+                street_parts.append(village_or_locality)
+            if mandal_or_taluk and mandal_or_taluk not in street_parts:
+                street_parts.append(f"Mandal: {mandal_or_taluk}")
+            
+            street = ", ".join(street_parts) if street_parts else (district or '')
             flat = address.get('house_number') or address.get('building') or ''
             city = (
                 address.get('city') or
                 address.get('town') or
-                address.get('village') or
-                address.get('state_district') or
+                address.get('municipality') or
+                district or
+                mandal_or_taluk or
+                village_or_locality or
                 'Hyderabad'
             )
             state = address.get('state') or 'Telangana'
@@ -261,7 +278,10 @@ def reverse_geocode_api(request):
                     'state': state,
                     'pincode': pincode,
                     'display_name': data.get('display_name', ''),
-                    'suburb': address.get('suburb', ''),
+                    'suburb': address.get('suburb') or village_or_locality or mandal_or_taluk or '',
+                    'district': district,
+                    'village': address.get('village', ''),
+                    'mandal': mandal_or_taluk,
                 }
             })
     except Exception as e:

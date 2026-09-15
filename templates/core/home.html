@@ -174,13 +174,13 @@
         style="border-radius: 28px !important; border: 1.8px solid #E2D2C0 !important;"
       >
         <div>
-          <!-- Compact Card Image Container with Curved Corners -->
-          <div class="glory-curved-image relative aspect-[4/3] bg-[#F2ECE4] mb-3 shadow-2xs">
+          <!-- Compact Card Image Container with Auto-Fit & Centering -->
+          <div class="glory-curved-image relative aspect-[4/3] bg-[#FAF6F0] mb-3 shadow-2xs product-image-container flex items-center justify-center p-2 overflow-hidden">
             <img
               src="{{ product.primary_image }}"
               alt="{{ product.name }}"
               loading="lazy"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-[22px]"
+              class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 rounded-[18px]"
             />
             <!-- Wishlist Heart Button -->
             <button
@@ -207,13 +207,15 @@
           </div>
         </div>
 
-        <!-- Action Button: Book Now (Curved Pill Button) -->
+        <!-- Action Button: Book Now (High-Contrast Solid Action Button) -->
         <button
+          type="button"
           onclick="event.stopPropagation(); window.location.href='{% url 'booking_summary' %}?product={{ product.id }}';"
-          class="w-full py-2.5 bg-[#1E140F] hover:bg-[#2E1E17] text-white text-xs sm:text-[13px] font-bold rounded-full active-tap flex items-center justify-center gap-1.5 shadow-2xs transition-all"
+          class="w-full py-2.5 bg-[#1E140F] hover:bg-black text-white text-xs sm:text-[13px] font-black rounded-full active-tap flex items-center justify-center gap-2 shadow-sm transition-all border border-[#1E140F] cursor-pointer"
+          style="background-color: #1E140F !important; color: #FFFFFF !important;"
         >
-          <svg class="w-3.5 h-3.5 text-[#E0B058]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          <span>Book Now</span>
+          <svg class="w-3.5 h-3.5 text-[#E0B058]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span style="color: #FFFFFF !important; font-weight: 800;">Book Now</span>
         </button>
       </div>
       {% empty %}

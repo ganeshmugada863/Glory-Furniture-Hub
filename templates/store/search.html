@@ -48,9 +48,9 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 pt-4">
     {% for product in products %}
     <div class="group bg-white rounded-2xl border border-gray-200/80 hover:border-gray-300 shadow-2xs transition-all flex flex-col justify-between overflow-hidden">
-      <div class="relative aspect-[4/3] bg-gray-100 overflow-hidden">
-        <a href="{% url 'product_detail' pk=product.pk %}">
-          <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      <div class="relative aspect-[4/3] bg-[#FAF6F0] overflow-hidden product-image-container flex items-center justify-center p-2">
+        <a href="{% url 'product_detail' pk=product.pk %}" class="w-full h-full flex items-center justify-center">
+          <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 rounded-lg" />
         </a>
       </div>
       <div class="p-4 space-y-2">
@@ -61,7 +61,7 @@
         <div class="flex items-center justify-between pt-1">
           <span class="text-sm font-black text-gray-950">{{ product.formatted_price }}</span>
           <div class="flex items-center gap-1.5">
-            <a href="{% url 'booking_summary' %}?product={{ product.id }}" class="px-3 py-1.5 rounded-full bg-[#1E140F] hover:bg-black text-white text-xs font-bold transition-colors">
+            <a href="{% url 'booking_summary' %}?product={{ product.id }}" class="px-3 py-1.5 rounded-full bg-[#1E140F] hover:bg-black text-white text-xs font-black transition-colors shadow-xs" style="background-color: #1E140F !important; color: #FFFFFF !important;">
               Book Now
             </a>
             <button onclick="addToCart({{ product.id }})" class="px-2.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-[#5C3D2E] border border-amber-300 text-xs font-bold transition-colors cursor-pointer">

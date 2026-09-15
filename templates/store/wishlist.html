@@ -28,10 +28,10 @@
     {% for product in products %}
     <div class="glory-curved-card bg-white p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 group" style="border-radius: 28px !important; border: 1.8px solid #E2D2C0 !important;">
       <div>
-        <!-- Curved Image Container -->
-        <div class="glory-curved-image relative aspect-[4/3] bg-gray-100 mb-3.5 shadow-2xs">
-          <a href="{% url 'product_detail' pk=product.pk %}">
-            <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-[22px]" />
+        <!-- Curved Image Container with Auto-Fit & Centering -->
+        <div class="glory-curved-image relative aspect-[4/3] bg-[#FAF6F0] mb-3.5 shadow-2xs product-image-container flex items-center justify-center p-2">
+          <a href="{% url 'product_detail' pk=product.pk %}" class="w-full h-full flex items-center justify-center">
+            <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 rounded-[18px]" />
           </a>
           <!-- Wishlist Heart Toggle Button -->
           <button

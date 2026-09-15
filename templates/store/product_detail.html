@@ -51,26 +51,44 @@
       <div class="lg:col-span-6 space-y-4">
         
         <!-- Main Image Card -->
-        <div class="relative w-full aspect-square bg-[#FBF7F4] rounded-2xl overflow-hidden border border-gray-200/80 shadow-xs group">
+        <div class="relative w-full aspect-square bg-[#FAF6F0] rounded-2xl overflow-hidden border border-gray-200/80 shadow-xs group product-image-container flex items-center justify-center p-3 sm:p-5">
           
-          <!-- Circular Red Discount Badge (-24%) -->
-          <div class="absolute top-4 left-4 z-10 pointer-events-none">
-            <span class="w-11 h-11 rounded-full text-white font-black text-xs flex items-center justify-center shadow-md"
-                  style="background-color: #8B0000 !important; color: #FFFFFF !important;">
-              -24%
-            </span>
+          <!-- Top-Right Stack: [❤️ Favorite] directly above [↗ Share] -->
+          <div class="absolute top-3.5 right-3.5 z-20 flex flex-col gap-2">
+            <!-- Favorite / Wishlist Button -->
+            <button type="button"
+                    data-wishlist-id="{{ product.id }}"
+                    onclick="event.stopPropagation(); toggleWishlist({{ product.id }});"
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-[#8B0000] shadow-md border border-gray-200/90 flex items-center justify-center transition-all hover:scale-105 active-tap cursor-pointer"
+                    title="Save to Wishlist"
+                    aria-label="Save to Wishlist">
+              <svg class="w-4.5 h-4.5 sm:w-5 sm:h-5 {% if product.id in WISHLIST_IDS %}fill-[#8B0000] text-[#8B0000]{% else %}fill-none{% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </button>
+
+            <!-- Share Button (Web Share API + Clipboard Copy) -->
+            <button type="button"
+                    onclick="event.stopPropagation(); shareProduct();"
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white text-gray-700 hover:text-[#8B0000] shadow-md border border-gray-200/90 flex items-center justify-center transition-all hover:scale-105 active-tap cursor-pointer"
+                    title="Share Product"
+                    aria-label="Share Product">
+              <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+              </svg>
+            </button>
           </div>
 
-          <!-- Main Image -->
+          <!-- Main Image (Auto-fit & Centered) -->
           <img id="main-product-img"
                src="{{ product.primary_image }}"
                alt="{{ product.name }}"
-               class="w-full h-full object-cover transition-opacity duration-200 select-none" />
+               class="max-w-full max-h-full w-auto h-auto object-contain object-center transition-opacity duration-200 select-none" />
 
           <!-- Slider Arrow Left (<) -->
           <button type="button"
                   onclick="prevImage()"
-                  class="absolute left-3.5 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-gray-800 flex items-center justify-center shadow-md border border-gray-200 transition-all hover:scale-110 active-tap cursor-pointer"
+                  class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-gray-800 flex items-center justify-center shadow-md border border-gray-200 transition-all hover:scale-110 active-tap cursor-pointer"
                   title="Previous Image"
                   aria-label="Previous Image">
             <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -79,7 +97,7 @@
           <!-- Slider Arrow Right (>) -->
           <button type="button"
                   onclick="nextImage()"
-                  class="absolute right-3.5 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-gray-800 flex items-center justify-center shadow-md border border-gray-200 transition-all hover:scale-110 active-tap cursor-pointer"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-gray-800 flex items-center justify-center shadow-md border border-gray-200 transition-all hover:scale-110 active-tap cursor-pointer"
                   title="Next Image"
                   aria-label="Next Image">
             <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
@@ -92,9 +110,9 @@
           {% for img in product.all_images %}
           <button type="button"
                   onclick="selectThumbnail('{{ img }}', this, {{ forloop.counter0 }})"
-                  class="thumb-btn aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer active-tap {% if forloop.first %}ring-1 ring-[#8B0000]/40 shadow-xs{% else %}border-gray-200 hover:border-gray-400{% endif %}"
+                  class="thumb-btn aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer active-tap bg-[#FAF6F0] {% if forloop.first %}ring-1 ring-[#8B0000]/40 shadow-xs{% else %}border-gray-200 hover:border-gray-400{% endif %}"
                   {% if forloop.first %}style="border-color: #8B0000 !important;"{% else %}style="border-color: #E5E7EB !important;"{% endif %}>
-            <img src="{{ img }}" alt="Thumbnail {{ forloop.counter }}" onerror="this.src='{{ product.primary_image }}';" class="w-full h-full object-cover" />
+            <img src="{{ img }}" alt="Thumbnail {{ forloop.counter }}" onerror="this.src='{{ product.primary_image }}';" class="w-full h-full object-contain object-center p-1" />
           </button>
           {% endfor %}
           <!-- Fillers if fewer than 4 images to match exact 4-box layout -->
@@ -103,9 +121,9 @@
               {% if forloop.counter <= 4|add:"-"|add:product.all_images|length %}
               <button type="button"
                       onclick="selectThumbnail('{{ product.primary_image }}', this, 0)"
-                      class="thumb-btn aspect-square rounded-xl overflow-hidden border-2 border-gray-200 hover:border-gray-400 transition-all cursor-pointer active-tap"
+                      class="thumb-btn aspect-square rounded-xl overflow-hidden border-2 border-gray-200 hover:border-gray-400 transition-all cursor-pointer active-tap bg-[#FAF6F0]"
                       style="border-color: #E5E7EB !important;">
-                <img src="{{ product.primary_image }}" alt="Thumbnail filler" class="w-full h-full object-cover opacity-80" />
+                <img src="{{ product.primary_image }}" alt="Thumbnail filler" class="w-full h-full object-contain object-center p-1 opacity-80" />
               </button>
               {% endif %}
             {% endfor %}
@@ -211,78 +229,43 @@
           </div>
         </div>
 
-        <!-- Quantity + Add To Cart + Buy Now + Wishlist Row -->
-        <div class="pt-3 flex items-center gap-3 flex-wrap sm:flex-nowrap">
+        <!-- Quantity + Add To Cart + Buy Now Row -->
+        <div class="pt-3 flex items-center gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap">
           
           <!-- Quantity Counter [-] [1] [+] -->
-          <div class="flex items-center border border-gray-300 rounded-lg h-10 px-1 bg-white shadow-2xs">
-            <button type="button" onclick="changeQty(-1)" class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 font-black text-sm cursor-pointer select-none">
+          <div class="flex items-center border border-gray-300 rounded-xl h-11 px-1 bg-white shadow-2xs shrink-0">
+            <button type="button" onclick="changeQty(-1)" class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 font-black text-base cursor-pointer select-none">
               -
             </button>
             <input type="text" id="product-quantity-input" value="1" readonly class="w-8 text-center text-xs font-black text-gray-900 focus:outline-none bg-transparent select-none" />
-            <button type="button" onclick="changeQty(1)" class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 font-black text-sm cursor-pointer select-none">
+            <button type="button" onclick="changeQty(1)" class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 font-black text-base cursor-pointer select-none">
               +
             </button>
           </div>
 
-          <!-- Add To Cart Button (Crimson with Shopping Cart Icon) -->
+          <!-- Add To Cart Button (Prominent Crimson CTA with Cart Icon) -->
           <button type="button"
                   onclick="triggerAddToCart()"
-                  class="flex-1 sm:flex-initial px-6 h-10 rounded-lg font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors active-tap cursor-pointer"
+                  class="flex-1 min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all hover:opacity-95 active-tap cursor-pointer shrink-0"
                   style="background-color: #8B0000 !important; color: #FFFFFF !important;">
-            <span style="color: #FFFFFF !important;">Add To Cart</span>
-            <svg class="w-4 h-4 fill-none stroke-current" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span style="color: #FFFFFF !important; font-weight: 800;">Add To Cart</span>
+            <svg class="w-4.5 h-4.5 fill-none stroke-current" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
           </button>
 
           <!-- Buy Now / Book Now Button (White with Crimson Border) -->
           <a href="{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price={{ product.price }}"
              id="main-buy-now-btn"
-             class="flex-1 sm:flex-initial px-6 h-10 rounded-lg bg-white font-bold text-xs flex items-center justify-center transition-colors active-tap cursor-pointer"
-             style="border: 1px solid #8B0000 !important; color: #8B0000 !important;">
-            <span>Buy Now</span>
+             class="flex-1 min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl bg-white font-bold text-xs sm:text-sm flex items-center justify-center transition-all hover:bg-gray-50 active-tap cursor-pointer shrink-0"
+             style="border: 1.5px solid #8B0000 !important; color: #8B0000 !important;">
+            <span style="color: #8B0000 !important; font-weight: 800;">Buy Now</span>
           </a>
-
-          <!-- Circular Wishlist Button -->
-          <button type="button"
-                  data-wishlist-id="{{ product.id }}"
-                  onclick="toggleWishlist({{ product.id }})"
-                  class="w-10 h-10 rounded-full border border-gray-300 hover:border-[#8B0000] text-gray-600 hover:text-[#8B0000] bg-white flex items-center justify-center transition-colors active-tap cursor-pointer shrink-0"
-                  title="Save to Wishlist"
-                  aria-label="Save to Wishlist">
-            <svg class="w-4.5 h-4.5 {% if product.id in WISHLIST_IDS %}fill-[#8B0000] text-[#8B0000]{% else %}fill-none{% endif %}" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-            </svg>
-          </button>
 
         </div>
 
-        <!-- Metadata Section (SKU, Tags, Share) -->
+        <!-- Metadata Section (SKU, Tags) -->
         <div class="pt-5 space-y-2 border-t border-gray-100 text-xs text-gray-500">
           <p><strong class="text-gray-900 font-bold">SKU :</strong> <span class="text-gray-600">GLORY-TEAK-{{ product.id }}098</span></p>
           <p><strong class="text-gray-900 font-bold">Tags :</strong> <span class="text-gray-600">Burma Teak, {{ product.category.name }}, Solid Timber, Handcrafted</span></p>
-          
-          <!-- Share with Circular Social Icons -->
-          <div class="flex items-center gap-2 pt-1">
-            <strong class="text-gray-900 font-bold">Share :</strong>
-            <div class="flex items-center gap-1.5">
-              <!-- Facebook -->
-              <button type="button" onclick="shareSocial('facebook')" class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-bold transition-transform hover:scale-110 active-tap cursor-pointer" style="background-color: #8B0000 !important; color: #FFFFFF !important;" title="Facebook">
-                f
-              </button>
-              <!-- X / Twitter -->
-              <button type="button" onclick="shareSocial('twitter')" class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-bold transition-transform hover:scale-110 active-tap cursor-pointer" style="background-color: #8B0000 !important; color: #FFFFFF !important;" title="X / Twitter">
-                ✕
-              </button>
-              <!-- Pinterest -->
-              <button type="button" onclick="shareSocial('pinterest')" class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-bold transition-transform hover:scale-110 active-tap cursor-pointer" style="background-color: #8B0000 !important; color: #FFFFFF !important;" title="Pinterest">
-                P
-              </button>
-              <!-- WhatsApp -->
-              <button type="button" onclick="shareSocial('whatsapp')" class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-bold transition-transform hover:scale-110 active-tap cursor-pointer" style="background-color: #8B0000 !important; color: #FFFFFF !important;" title="WhatsApp">
-                💬
-              </button>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -440,17 +423,9 @@
              class="bg-white rounded-2xl p-3 border border-gray-200/90 hover:border-gray-400 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between relative">
           
           <div>
-            <!-- Card Image Area with Circular -50% Badge and Heart -->
-            <div class="relative aspect-square rounded-xl overflow-hidden bg-[#FBF7F4] mb-2.5">
+            <!-- Card Image Area with Heart -->
+            <div class="relative aspect-square rounded-xl overflow-hidden bg-[#FAF6F0] mb-2.5 product-image-container flex items-center justify-center p-2">
               
-              <!-- Circular -50% Discount Badge -->
-              <div class="absolute top-2 left-2 z-10 pointer-events-none">
-                <span class="w-8 h-8 rounded-full text-white font-black text-[10px] flex items-center justify-center shadow-xs"
-                      style="background-color: #8B0000 !important; color: #FFFFFF !important;">
-                  -50%
-                </span>
-              </div>
-
               <!-- Circular Wishlist Button -->
               <button type="button"
                       data-wishlist-id="{{ rel.id }}"
@@ -462,16 +437,16 @@
                 </svg>
               </button>
 
-              <!-- Image -->
+              <!-- Image (Auto-fit contain) -->
               <img src="{{ rel.primary_image }}"
                    alt="{{ rel.name }}"
                    loading="lazy"
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                   class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300" />
             </div>
 
             <!-- Sub-Category & Rating Row -->
             <div class="flex items-center justify-between text-[11px] text-gray-500 mb-1">
-              <span class="truncate">{{ rel.category.name|default:"Skin Care" }}</span>
+              <span class="truncate">{{ rel.category.name|default:"Solid Teak Furniture" }}</span>
               <div class="flex items-center gap-0.5 font-bold text-[10px]" style="color: #8B0000 !important;">
                 <span>★</span>
                 <span>{{ rel.rating|default:"4.9" }} ({{ rel.review_count|default:"128" }})</span>
@@ -671,7 +646,42 @@
     }
   }
 
-  // Social Share
+  // Native Web Share API with Clipboard Fallback
+  async function shareProduct() {
+    const title = "{{ product.name }} — Glory Furniture Hub";
+    const text = "Explore {{ product.name }} handcrafted in solid Burma teakwood at Glory Furniture Hub!";
+    const url = window.location.href;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          copyProductLink();
+        }
+      }
+    } else {
+      copyProductLink();
+    }
+  }
+
+  function copyProductLink() {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        if (typeof window.showGloryToast === 'function') {
+          window.showGloryToast('Product link copied to clipboard! 📋');
+        } else {
+          alert('Product link copied to clipboard! 📋');
+        }
+      }).catch(() => {
+        prompt('Copy link to product:', window.location.href);
+      });
+    } else {
+      prompt('Copy link to product:', window.location.href);
+    }
+  }
+
+  // Social Share (Fallback)
   function shareSocial(network) {
     const url = encodeURIComponent(window.location.href);
     const title = encodeURIComponent("{{ product.name }} — Glory Furniture Hub");

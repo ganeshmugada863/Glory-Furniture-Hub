@@ -57,6 +57,15 @@ class RoleBasedAccessMiddleware:
             path == '/favicon.svg'
         )
 
+        # Public storefront pages that visitors can freely browse
+        is_public_storefront = (
+            path == '/' or
+            path.startswith('/catalog') or
+            path.startswith('/product/') or
+            path.startswith('/search') or
+            path in ['/about/', '/contact/', '/faq/', '/guide/', '/splash/', '/onboarding/']
+        )
+
         # 1. ADMIN ROUTE GUARD
         is_admin_path = (path.startswith('/admin/') and not path.startswith('/django-admin/')) or path.startswith('/admin-portal')
         is_admin_auth_path = path in ['/admin/login/', '/admin/logout/', '/admin-portal/login/']
@@ -73,9 +82,9 @@ class RoleBasedAccessMiddleware:
         if path == '/admin/login/' and role == 'admin':
             return redirect('admin_dashboard')
 
-        # 2. THE WEBSITE MUST START WITH REGISTER PAGE FOR ALL UNAUTHENTICATED VISITORS
-        if not is_authenticated_user and not is_auth_path and not is_static_or_api:
-            return redirect('register')
+        # 2. PROTECTED CUSTOMER ROUTES (Cart, Checkout, Booking, Profile) REQUIRE ACCOUNT
+        if not is_authenticated_user and not is_auth_path and not is_static_or_api and not is_public_storefront:
+            return redirect(f'/register/?next={path}')
 
         # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO MAIN PAGES
         if path in ['/login/', '/register/']:
