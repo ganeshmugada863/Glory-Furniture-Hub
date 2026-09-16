@@ -113,28 +113,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'glory_furniture.wsgi.application'
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Database: Supabase Managed PostgreSQL in production, SQLite in local development
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL and ('[YOUR-PASSWORD]' in DATABASE_URL or 'YOUR-PASSWORD' in DATABASE_URL or '[PASSWORD]' in DATABASE_URL):
-    print("[Warning] DATABASE_URL contains placeholder password. Falling back to local SQLite.")
+    print("[Warning] DATABASE_URL contains placeholder password.")
     DATABASE_URL = None
 
 if DATABASE_URL:
+    is_postgres = DATABASE_URL.startswith(('postgres://', 'postgresql://'))
+    parse_options = {
+        'conn_max_age': 600,
+        'conn_health_checks': True,
+    }
+    if is_postgres:
+        parse_options['ssl_require'] = True
+
     DATABASES = {
         'default': dj_database_url.parse(
             DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-            ssl_require=True,
+            **parse_options
         )
     }
-else:
+elif DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+else:
+    raise ImproperlyConfigured(
+        "DATABASE CONFIGURATION ERROR: In production mode (DEBUG=False), the DATABASE_URL environment variable "
+        "must be configured with a persistent database connection (e.g. Supabase Managed PostgreSQL). "
+        "Running on ephemeral SQLite in production is strictly prohibited as user accounts and order records will be lost on container restart. "
+        "Please configure DATABASE_URL in your Render Dashboard environment settings."
+    )
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

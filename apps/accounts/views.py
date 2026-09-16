@@ -43,7 +43,7 @@ def persist_session_to_user(request):
     Saves current session cart_items, wishlist_ids, and saved_addresses to the database UserProfile.
     Called before logout or whenever cart/wishlist/addresses are updated.
     """
-    if request.user.is_authenticated:
+    if hasattr(request, 'user') and request.user.is_authenticated:
         try:
             profile, _ = UserProfile.objects.get_or_create(user=request.user)
             profile.cart_items = request.session.get('glory_cart', [])
@@ -63,68 +63,81 @@ def customer_login_view(request):
     error = None
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
-        password = request.POST.get('password', '').strip()
+        password = request.POST.get('password', '')  # Note: DO NOT strip password characters
 
-        # 1. Authenticate with Django User credentials
-        user = authenticate(request, username=email, password=password)
-        if user is None:
-            # Check by email lookup if username differs (e.g. username='admin', email='admin@gloryfurniture.com')
-            matched_user = User.objects.filter(email__iexact=email).first() or User.objects.filter(username__iexact=email).first()
-            if matched_user:
-                user = authenticate(request, username=matched_user.username, password=password)
-
-        # 2. Check if this is an admin logging in
-        is_admin = False
-        if user is not None:
-            profile = getattr(user, 'profile', None)
-            if user.is_staff or user.is_superuser or (profile and profile.role == 'admin'):
-                is_admin = True
-        elif email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com'] and password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
-            is_admin = True
-            user = User.objects.filter(is_staff=True).first()
-
-        if user is not None:
-            auth_login(request, user)
-            profile, _ = UserProfile.objects.get_or_create(user=user)
-
-            if is_admin:
-                request.session['glory_role'] = 'admin'
-                request.session['glory_user_email'] = user.email or 'admin@gloryfurniture.com'
-                request.session['glory_user_name'] = 'Master Studio Admin'
-                request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
-                profile.role = 'admin'
-                profile.save()
-
-                messages.success(request, "Welcome to the Studio Admin Console!")
-                next_url = request.GET.get('next')
-                if next_url and next_url.startswith('/admin/'):
-                    return redirect(next_url)
-                return redirect('admin_dashboard')
-            else:
-                sync_user_session(request, user)
-                messages.success(request, f"Welcome back, {request.session['glory_user_name']}!")
-                next_url = request.GET.get('next')
-                if next_url and not next_url.startswith('/admin'):
-                    return redirect(next_url)
-                return redirect('home')
+        if not email or not password:
+            error = "Please enter both email and password."
         else:
-            error = "Invalid email or password. Please verify your credentials or create a new account."
+            # 1. Authenticate with Django User credentials
+            user = authenticate(request, username=email, password=password)
+            if user is None:
+                # Check by email lookup if username differs (e.g. username='admin', email='admin@gloryfurniture.com')
+                matched_user = User.objects.filter(email__iexact=email).first() or User.objects.filter(username__iexact=email).first()
+                if matched_user:
+                    user = authenticate(request, username=matched_user.username, password=password)
+
+            # 2. Check if this is an admin logging in
+            is_admin = False
+            if user is not None:
+                profile = getattr(user, 'profile', None)
+                if user.is_staff or user.is_superuser or (profile and profile.role == 'admin'):
+                    is_admin = True
+            elif email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com'] and password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
+                is_admin = True
+                user = User.objects.filter(is_staff=True).first()
+
+            if user is not None:
+                if not user.is_active:
+                    error = "This account has been deactivated. Please contact customer support."
+                else:
+                    auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    profile, _ = UserProfile.objects.get_or_create(user=user)
+
+                    if is_admin:
+                        request.session['glory_role'] = 'admin'
+                        request.session['glory_user_email'] = user.email or 'admin@gloryfurniture.com'
+                        request.session['glory_user_name'] = 'Master Studio Admin'
+                        request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
+                        profile.role = 'admin'
+                        profile.save()
+
+                        messages.success(request, "Welcome to the Studio Admin Console!")
+                        next_url = request.GET.get('next')
+                        if next_url and next_url.startswith('/admin/'):
+                            return redirect(next_url)
+                        return redirect('admin_dashboard')
+                    else:
+                        sync_user_session(request, user)
+                        user_display_name = profile.full_name or user.get_full_name() or user.username
+                        messages.success(request, f"Welcome back, {user_display_name}!")
+                        next_url = request.GET.get('next')
+                        if next_url and not next_url.startswith('/admin'):
+                            return redirect(next_url)
+                        return redirect('home')
+            else:
+                matched_user = User.objects.filter(email__iexact=email).first() or User.objects.filter(username__iexact=email).first()
+                if matched_user and not matched_user.has_usable_password():
+                    error = "This account was created with Google. Please continue with Google or reset your password."
+                elif matched_user and not matched_user.is_active:
+                    error = "This account has been deactivated. Please contact customer support."
+                else:
+                    error = "Invalid email or password. Please verify your credentials or create a new account."
 
     return render(request, 'accounts/login.html', {'error': error})
 
 
 def customer_register_view(request):
     """
-    Dedicated Customer Registration page with permanent SQLite database persistence.
-    Creates User and UserProfile models in db.sqlite3.
+    Dedicated Customer Registration page.
+    Creates User and UserProfile models in the persistent database.
     """
     error = None
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         email = request.POST.get('email', '').strip().lower()
         phone = request.POST.get('phone', '').strip()
-        password = request.POST.get('password', '').strip()
-        confirm_password = request.POST.get('confirm_password', '').strip()
+        password = request.POST.get('password', '')  # Preserve exact password characters
+        confirm_password = request.POST.get('confirm_password', '')
 
         if not email or not password or not name:
             error = "Please fill in all required fields (Name, Email, Password)."
@@ -135,14 +148,15 @@ def customer_register_view(request):
         elif User.objects.filter(email__iexact=email).exists() or User.objects.filter(username__iexact=email).exists():
             error = "An account with this email address already exists. Please sign in."
         else:
-            # Create permanent User record in SQLite
+            # Create permanent User record
             user = User.objects.create_user(username=email, email=email, password=password)
+            user.is_active = True
             name_parts = name.split()
             user.first_name = name_parts[0] if name_parts else ''
             user.last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
             user.save()
 
-            # Create permanent UserProfile record in SQLite
+            # Create permanent UserProfile record
             profile, _ = UserProfile.objects.get_or_create(user=user)
             profile.full_name = name
             profile.phone = phone or '+91 98765 43210'
@@ -151,7 +165,7 @@ def customer_register_view(request):
             profile.save()
 
             # Log user in
-            auth_login(request, user)
+            auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             sync_user_session(request, user)
             messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
             return redirect('home')
@@ -164,7 +178,7 @@ def google_auth_view(request):
     """
     Google Authentication Endpoint (Supabase OAuth & Google Identity Services).
     Decodes Google OAuth credentials or verifies Supabase tokens and creates or logs in
-    a permanent customer in db.sqlite3.
+    a customer in the persistent database without conflicting with email/password accounts.
     """
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'POST request required'}, status=405)
@@ -214,14 +228,16 @@ def google_auth_view(request):
         if not email:
             return JsonResponse({'status': 'error', 'message': 'Could not extract verified email from Google authentication.'}, status=400)
 
-        # Retrieve or create User in SQLite
+        # Retrieve or create User in persistent database
         user = User.objects.filter(email__iexact=email).first()
         if not user:
             user = User.objects.filter(username__iexact=email).first()
 
         if not user:
+            # Create new Google-only user
             user = User.objects.create_user(username=email, email=email)
             user.set_unusable_password()
+            user.is_active = True
             name_parts = (name or '').split()
             user.first_name = name_parts[0] if name_parts else ''
             user.last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
@@ -238,17 +254,20 @@ def google_auth_view(request):
             )
         else:
             profile, _ = UserProfile.objects.get_or_create(user=user)
-            profile.auth_provider = 'google'
+            # CRITICAL: If the user registered previously with email/password,
+            # NEVER wipe out or disable their password! Keep user.password intact.
             if google_id:
                 profile.google_id = google_id
             if avatar_url:
                 profile.avatar_url = avatar_url
             if name and not profile.full_name:
                 profile.full_name = name
+            if not profile.auth_provider:
+                profile.auth_provider = 'google'
             profile.save()
 
-        # Log in the user
-        auth_login(request, user)
+        # Log in the user safely specifying backend
+        auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         sync_user_session(request, user)
         messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}!")
         return JsonResponse({'status': 'success', 'redirect_url': '/'})
@@ -269,12 +288,13 @@ def supabase_callback_view(request):
 def customer_logout_view(request):
     """
     Customer Logout: Persists user cart/wishlist/addresses to DB,
-    then clears session completely and redirects to Register page.
+    clears session completely, and redirects cleanly to Login page.
     """
     persist_session_to_user(request)
     auth_logout(request)
     request.session.flush()
-    return redirect('register')
+    messages.success(request, "You have been signed out successfully.")
+    return redirect('login')
 
 
 def customer_home_view(request):
@@ -590,7 +610,7 @@ def admin_login_view(request):
     error = None
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
-        password = request.POST.get('password', '').strip()
+        password = request.POST.get('password', '')
 
         # 1. Authenticate with Django auth
         user = authenticate(request, username=email, password=password)
@@ -607,7 +627,7 @@ def admin_login_view(request):
             user = User.objects.filter(is_staff=True).first()
 
         if is_admin and user is not None:
-            auth_login(request, user)
+            auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             profile, _ = UserProfile.objects.get_or_create(user=user)
             profile.role = 'admin'
             profile.save()

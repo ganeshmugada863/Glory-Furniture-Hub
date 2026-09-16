@@ -29,6 +29,16 @@
     </div>
     {% endif %}
 
+    <!-- Success & Status Messages -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% else %}bg-green-50 border border-green-200 text-green-800{% endif %} rounded-xl text-xs flex items-start gap-2 animate-fade-in">
+      <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+
     <!-- Google Authentication Button (Supabase Google OAuth) -->
     <div class="space-y-3">
       <button 

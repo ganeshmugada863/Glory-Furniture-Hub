@@ -6,7 +6,7 @@ def global_furniture_context(request):
     except Exception:
         categories = []
 
-    user = request.user if request.user.is_authenticated else None
+    user = request.user if (hasattr(request, 'user') and request.user.is_authenticated) else None
     profile = getattr(user, 'profile', None) if user else None
 
     if user:
