@@ -1036,18 +1036,9 @@ def admin_categories_view(request):
 
 
 def admin_payments_view(request):
-    """Dedicated Payment Ledger & UTR Verification."""
-    transactions = PaymentTransaction.objects.select_related('order').order_by('-paid_at')
-    total_collected = sum((t.amount for t in transactions if t.status == 'SUCCESS'), Decimal('0.00'))
-    
-    context = {
-        'page_title': 'Payment Ledger & UPI UTR Verification',
-        'active_nav': 'payments',
-        'transactions': transactions,
-        'total_transactions': transactions.count(),
-        'total_collected': f"₹{int(total_collected):,}",
-    }
-    return render(request, 'admin_portal/admin_payments.html', context)
+    """Dedicated Cashfree Payment Ledger & Gateway Analytics."""
+    from apps.payments.views import admin_payments_view as real_admin_payments
+    return real_admin_payments(request)
 
 
 def admin_reports_view(request):

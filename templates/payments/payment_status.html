@@ -35,31 +35,37 @@
     <div class="p-5 sm:p-6 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE] text-left text-xs space-y-3 max-w-lg mx-auto">
       <div class="flex justify-between items-baseline pb-2 border-b border-gray-200">
         <span class="text-gray-500">Amount Paid</span>
-        <span class="text-xl font-black text-[#8B0000] font-mono">₹{{ payment.amount|floatformat:2 }}</span>
+        <span class="text-xl font-black text-[#8B0000] font-mono">
+          ₹{% if payment %}{{ payment.amount|floatformat:2 }}{% elif amount %}{{ amount|floatformat:2 }}{% else %}0.00{% endif %}
+        </span>
       </div>
 
       <div class="flex justify-between text-gray-600">
         <span>Payment Reference:</span>
-        <span class="font-mono font-bold text-gray-900">{{ payment.payment_id }}</span>
+        <span class="font-mono font-bold text-gray-900">
+          {% if payment and payment.payment_id %}{{ payment.payment_id }}{% else %}{{ payment_id|default:gateway_payment_id }}{% endif %}
+        </span>
       </div>
 
       <div class="flex justify-between text-gray-600">
         <span>Order Number:</span>
-        <span class="font-mono font-bold text-gray-900">{{ order.order_number }}</span>
+        <span class="font-mono font-bold text-gray-900">
+          {% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:"N/A" }}{% endif %}
+        </span>
       </div>
 
       <div class="flex justify-between text-gray-600">
         <span>Payment Type:</span>
         <span class="font-bold text-gray-900">
           {% if installment %}
-            Installment #{{ installment.installment_number }} of {{ order.installments.count }}
+            Installment #{{ installment.installment_number }} of {% if order %}{{ order.installments.count }}{% else %}1{% endif %}
           {% else %}
             100% Full Payment
           {% endif %}
         </span>
       </div>
 
-      {% if installment and order.remaining_amount > 0 %}
+      {% if installment and order and order.remaining_amount > 0 %}
       <div class="pt-2 border-t border-dashed border-gray-300 flex justify-between text-amber-900 bg-amber-50/70 p-2.5 rounded-xl">
         <span>Remaining Order Balance:</span>
         <span class="font-mono font-bold">₹{{ order.remaining_amount|floatformat:2 }}</span>
@@ -68,13 +74,23 @@
 
       <div class="flex justify-between text-gray-600 text-[11px] pt-1">
         <span>Gateway Transaction ID:</span>
-        <span class="font-mono text-gray-500">{{ payment.gateway_payment_id|default:payment.gateway_order_id }}</span>
+        <span class="font-mono text-gray-500">
+          {% if payment and payment.gateway_payment_id %}
+            {{ payment.gateway_payment_id }}
+          {% elif gateway_payment_id %}
+            {{ gateway_payment_id }}
+          {% elif payment and payment.gateway_order_id %}
+            {{ payment.gateway_order_id }}
+          {% else %}
+            {{ cf_order_id|default:gateway_order_id }}
+          {% endif %}
+        </span>
       </div>
     </div>
 
     <!-- Action Buttons -->
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
-      {% if payment %}
+      {% if payment and payment.payment_id %}
       <a href="{% url 'payment_receipt' payment_id=payment.payment_id %}"
          class="w-full sm:w-auto px-6 py-3 rounded-xl text-white font-bold text-xs tracking-wide shadow-md hover:shadow-lg transition-all"
          style="background: linear-gradient(135deg, #8B0000 0%, #5C3D2E 100%) !important;">
@@ -107,24 +123,40 @@
         Payment Could Not Be Completed
       </h1>
       <p class="text-xs sm:text-sm text-gray-500 max-w-md mx-auto">
-        {{ payment.failure_reason|default:"Your issuing bank or UPI application could not authorize the payment. No funds were debited." }}
+        {% if payment and payment.failure_reason %}
+          {{ payment.failure_reason }}
+        {% elif failure_reason %}
+          {{ failure_reason }}
+        {% else %}
+          Your issuing bank or UPI application could not authorize the payment. No funds were debited.
+        {% endif %}
       </p>
     </div>
 
     <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#DECBB7] text-left text-xs space-y-2 max-w-md mx-auto font-mono text-gray-600">
-      <p><span class="text-gray-400">Order:</span> <strong>{{ order.order_number }}</strong></p>
-      <p><span class="text-gray-400">Attempted Amount:</span> <strong class="text-[#8B0000]">₹{{ payment.amount|floatformat:2 }}</strong></p>
+      <p><span class="text-gray-400">Order:</span> <strong>{% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:cf_order_id }}{% endif %}</strong></p>
+      <p><span class="text-gray-400">Attempted Amount:</span> <strong class="text-[#8B0000]">₹{% if payment %}{{ payment.amount|floatformat:2 }}{% elif amount %}{{ amount|floatformat:2 }}{% else %}0.00{% endif %}</strong></p>
       <p><span class="text-gray-400">Gateway Status:</span> <strong class="text-red-600">FAILED</strong></p>
     </div>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
-      {% if order %}
+      {% if order and order.order_number %}
       <a href="{% url 'payment_checkout' order_number=order.order_number %}"
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#8B0000] hover:bg-black text-white font-bold text-xs shadow-md transition-all">
         🔄 Try Payment Again
       </a>
+      {% elif order_number %}
+      <a href="{% url 'payment_checkout' order_number=order_number %}"
+         class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#8B0000] hover:bg-black text-white font-bold text-xs shadow-md transition-all">
+        🔄 Try Payment Again
+      </a>
+      {% else %}
+      <a href="{% url 'orders' %}"
+         class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#8B0000] hover:bg-black text-white font-bold text-xs shadow-md transition-all">
+        📦 View Orders
+      </a>
       {% endif %}
-      <a href="https://wa.me/919440123456?text=Hello%20Glory%20Furniture%20Hub,%20my%20payment%20failed%20for%20order%20{{ order.order_number }}"
+      <a href="https://wa.me/919440123456?text=Hello%20Glory%20Furniture%20Hub,%20my%20payment%20failed%20for%20order%20{% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:cf_order_id }}{% endif %}"
          target="_blank"
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all">
         💬 Contact Concierge on WhatsApp

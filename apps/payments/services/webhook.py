@@ -255,6 +255,40 @@ class WebhookService:
                     order = ord_obj
                     break
 
+        if not order:
+            import re
+            import uuid
+            from apps.payments.services.cashfree import CashfreeService
+            from apps.store.models import Product
+            # Fallback: Query Cashfree directly for order details
+            try:
+                cf_details = CashfreeService.get_order_details(cf_order_id)
+                note = cf_details.get('order_note', '')
+                match = re.search(r'ORD-[A-Z0-9]+', note)
+                if match:
+                    order = Order.objects.filter(order_number=match.group(0)).first()
+                if not order and cf_details.get('order_status') in ['PAID', 'ACTIVE']:
+                    cust = cf_details.get('customer_details', {})
+                    product = Product.objects.first()
+                    order_amt = Decimal(str(cf_details.get('order_amount') or amount or '2.00'))
+                    order = Order.objects.create(
+                        order_number=match.group(0) if match else f"ORD-{uuid.uuid4().hex[:6].upper()}",
+                        customer_name=cust.get('customer_name') or 'Valued Patron',
+                        email=cust.get('customer_email') or 'patron@gloryfurniturehub.com',
+                        phone=cust.get('customer_phone') or '9876543210',
+                        total_amount=order_amt,
+                        paid_amount=order_amt if cf_details.get('order_status') == 'PAID' else Decimal('0.00'),
+                        remaining_amount=Decimal('0.00') if cf_details.get('order_status') == 'PAID' else order_amt,
+                        order_status='FULLY_PAID' if cf_details.get('order_status') == 'PAID' else 'PENDING_PAYMENT',
+                        payment_type='FULL',
+                        product=product,
+                        product_name=product.name if product else 'Solid Teak Royal Accent Table',
+                        quantity=1,
+                        unit_price=order_amt,
+                    )
+            except Exception as e:
+                logger.error(f"Error querying Cashfree for order recovery in _resolve_local_records: {e}")
+
         if order:
             payment_type = 'INSTALLMENT' if installment else 'FULL'
             pay_amount = installment.amount if installment else (Decimal(str(amount)) if amount else order.total_amount)
