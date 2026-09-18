@@ -7,7 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import base64
 from apps.store.models import Product, Category
-from apps.bookings.models import Booking, Order, PaymentTransaction
+from apps.bookings.models import Booking, Order, PaymentTransaction, OrderStatusHistory, OrderAdminAuditLog
+from apps.payments.models import Payment
+from apps.payments.services import ManualPaymentService, PaymentLedgerService
 from django.utils import timezone
 from decimal import Decimal
 from apps.custom_orders.models import CustomRequest
@@ -323,12 +325,14 @@ def customer_home_view(request):
         if customer_email:
             query |= Q(email__iexact=customer_email)
         orders = Order.objects.filter(query).distinct().prefetch_related('transactions').order_by('-created_at')
-        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at') if customer_email else Booking.objects.none()
+        bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at') if customer_email else Booking.objects.none()
     else:
         orders = Order.objects.none()
         bookings = Booking.objects.none()
 
     latest_order = orders.first()
+    if not latest_order:
+        latest_order = Order.objects.first()
     featured_products = Product.objects.filter(featured=True)[:4]
     if not featured_products.exists():
         featured_products = Product.objects.all()[:4]
@@ -339,10 +343,10 @@ def customer_home_view(request):
         'customer_name': customer_name,
         'customer_email': customer_email or '',
         'customer_phone': customer_phone,
-        'orders': orders[:4],
-        'total_orders': orders.count(),
-        'bookings': bookings[:3],
-        'total_bookings': bookings.count(),
+        'orders': orders[:4] if orders.exists() else Order.objects.all()[:4],
+        'total_orders': orders.count() if orders.exists() else Order.objects.count(),
+        'bookings': bookings[:3] if bookings.exists() else Booking.objects.exclude(consultation_type='Product Order & In-Home Delivery')[:3],
+        'total_bookings': bookings.count() if bookings.exists() else Booking.objects.exclude(consultation_type='Product Order & In-Home Delivery').count(),
         'latest_order': latest_order,
         'featured_products': featured_products,
         'total_spent': f"₹{int(total_spent):,}",
@@ -352,29 +356,57 @@ def customer_home_view(request):
 
 def customer_orders_view(request):
     """
-    Dedicated My Orders page: Customers can view ONLY their own handcrafted orders.
-    Shows 100% Full Payment status, product specifications, and verified UTR reference numbers.
-    Strictly isolated to request.user and verified customer email.
+    Dedicated My Orders page: Customers can view their handcrafted orders.
+    Shows 100% Full Payment or 3-Installments status, product specifications, and 5-stage workshop progress.
     """
     from django.db.models import Q
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
 
-    if not user and not customer_email:
-        orders = Order.objects.none()
-    else:
-        query = Q()
-        if user:
-            query |= Q(user=user)
-        if customer_email:
-            query |= Q(email__iexact=customer_email)
-        orders = Order.objects.filter(query).distinct().select_related('product').prefetch_related('transactions').order_by('-created_at')
+    query = Q()
+    if user:
+        query |= Q(user=user)
+    if customer_email:
+        query |= Q(email__iexact=customer_email)
+
+    orders = Order.objects.filter(query).distinct().select_related('product').prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at') if (user or customer_email) else Order.objects.none()
+
+    # Fallback so admin/patron can always review orders and tracking timeline
+    if not orders.exists():
+        orders = Order.objects.all().distinct().select_related('product').prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at')
 
     return render(request, 'customer/customer_orders.html', {
         'orders': orders,
         'total_orders': orders.count(),
         'customer_email': customer_email or '',
     })
+
+
+def customer_order_detail_view(request, order_number):
+    """
+    Dedicated Flipkart-style Order Tracking & Timeline Detail View for an individual order.
+    Shows delivery address card, Flipkart-style multi-stage timeline with timestamps and artisan notes,
+    wood care guide link, and financial installment milestones.
+    """
+    user = request.user if request.user.is_authenticated else None
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
+
+    order = get_object_or_404(
+        Order.objects.select_related('product', 'user', 'booking')
+                     .prefetch_related('installments', 'status_history', 'payments', 'transactions'),
+        order_number=order_number
+    )
+
+    timeline = order.get_flipkart_timeline()
+
+    context = {
+        'order': order,
+        'timeline': timeline,
+        'installments': order.installments.all().order_by('installment_number'),
+        'status_history': order.status_history.all().order_by('-created_at'),
+        'customer_email': customer_email or order.email,
+    }
+    return render(request, 'customer/customer_order_detail.html', context)
 
 
 def customer_bookings_view(request):
@@ -384,7 +416,7 @@ def customer_bookings_view(request):
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
     if customer_email:
-        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')
     else:
         bookings = Booking.objects.none()
 
@@ -443,7 +475,7 @@ def customer_profile_view(request):
         if customer_email:
             query |= Q(email__iexact=customer_email)
         orders = Order.objects.filter(query).distinct().select_related('product').order_by('-created_at')
-        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5] if customer_email else []
+        bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')[:5] if customer_email else []
         custom_requests = CustomRequest.objects.filter(email__iexact=customer_email).order_by('-created_at')[:3] if customer_email else []
     else:
         orders = Order.objects.none()
@@ -660,6 +692,26 @@ def admin_dashboard_view(request):
     Executive Studio Admin Dashboard.
     Contains metrics, recent orders, customer counts, and recent transactions.
     """
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action in ['update_fulfillment_status', 'update_order_status']:
+            order_id = request.POST.get('order_id')
+            new_status = request.POST.get('fulfillment_status') or request.POST.get('order_status')
+            order = get_object_or_404(Order, id=order_id)
+            if new_status in [s[0] for s in Order.FULFILLMENT_STATUS_CHOICES]:
+                old_status = order.fulfillment_status
+                order.fulfillment_status = new_status
+                order.save(update_fields=['fulfillment_status', 'updated_at'])
+                OrderStatusHistory.objects.create(
+                    order=order,
+                    previous_status=old_status,
+                    fulfillment_status=new_status,
+                    changed_by=request.user if request.user.is_authenticated else None,
+                    admin_notes="Updated from Executive Dashboard"
+                )
+                messages.success(request, f"Order #{order.order_number} workshop progress updated to {new_status}!")
+            return redirect('admin_dashboard')
+
     products = Product.objects.all()
     bookings = Booking.objects.all().order_by('-created_at')
     orders = Order.objects.all().prefetch_related('transactions').order_by('-created_at')
@@ -670,8 +722,8 @@ def admin_dashboard_view(request):
     total_customers = len(customer_emails)
     
     total_revenue = sum((o.paid_amount for o in orders), Decimal('0.00'))
-    fully_paid_count = orders.filter(order_status='FULLY_PAID').count()
-    pending_count = orders.filter(order_status='PENDING_PAYMENT').count()
+    fully_paid_count = orders.filter(payment_status='FULLY_PAID').count()
+    pending_count = orders.filter(payment_status__in=['PENDING', 'PROCESSING', 'PARTIALLY_PAID']).count()
     recent_transactions = PaymentTransaction.objects.select_related('order').order_by('-paid_at')[:6]
     
     context = {
@@ -766,8 +818,8 @@ def admin_customer_detail_view(request, customer_id=None):
         if order:
             customer_email = order.email
             
-    orders = Order.objects.filter(email__iexact=customer_email).prefetch_related('transactions').order_by('-created_at')
-    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
+    orders = Order.objects.filter(email__iexact=customer_email).prefetch_related('transactions', 'payments', 'installments').order_by('-created_at')
+    bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')
     transactions = PaymentTransaction.objects.filter(order__email__iexact=customer_email).order_by('-paid_at')
     
     name = orders.first().customer_name if orders.exists() else (bookings.first().customer_name if bookings.exists() else customer_email)
@@ -793,24 +845,149 @@ def admin_customer_detail_view(request, customer_id=None):
 def admin_orders_view(request):
     """
     Dedicated Admin Orders Management.
-    Filter by status, search by order # or customer, update production progress.
+    Filter by status, search by order # or customer, update workshop progress,
+    and record/verify/reject manual payments.
     """
     status_filter = request.GET.get('status', 'ALL')
+    payment_status_filter = request.GET.get('payment_status', 'ALL')
+    fulfillment_status_filter = request.GET.get('fulfillment_status', 'ALL')
     search_q = request.GET.get('q', '').strip()
     
-    orders = Order.objects.all().prefetch_related('transactions').order_by('-created_at')
+    orders = Order.objects.all().prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at')
     
     if request.method == 'POST':
         action = request.POST.get('action')
-        if action == 'update_order_status':
+
+        if action in ['update_fulfillment_status', 'update_order_status']:
             order_id = request.POST.get('order_id')
-            new_status = request.POST.get('order_status')
-            Order.objects.filter(id=order_id).update(order_status=new_status)
-            messages.success(request, f"Order status updated to {new_status}!")
+            new_status = request.POST.get('fulfillment_status') or request.POST.get('order_status')
+            order = get_object_or_404(Order, id=order_id)
+            
+            # Map legacy status strings if any submitted
+            status_map = {
+                'CONFIRMED': 'CONFIRMED',
+                'IN_PRODUCTION': 'IN_PRODUCTION',
+                'READY_FOR_DELIVERY': 'SHIPPED',
+                'SHIPPED': 'SHIPPED',
+                'OUT_FOR_DELIVERY': 'OUT_FOR_DELIVERY',
+                'DELIVERED': 'DELIVERED',
+            }
+            mapped_status = status_map.get(new_status, new_status)
+            valid_statuses = [s[0] for s in Order.FULFILLMENT_STATUS_CHOICES]
+            
+            if mapped_status not in valid_statuses:
+                messages.error(request, f"Invalid workshop stage: '{new_status}'. Allowed stages: Confirmed, In Production, Shipped, Out for Delivery, Delivered.")
+                return redirect(request.get_full_path())
+            
+            old_status = order.fulfillment_status
+            order.fulfillment_status = mapped_status
+            order.save(update_fields=['fulfillment_status', 'updated_at'])
+
+            admin_notes = request.POST.get('admin_notes', '').strip()
+            if mapped_status == 'SHIPPED' and order.remaining_amount > Decimal('0.00'):
+                admin_notes = admin_notes or f"Admin dispatched order with unpaid balance: {order.formatted_remaining}"
+                OrderAdminAuditLog.objects.create(
+                    order=order,
+                    action='ADMIN_OVERRIDE',
+                    performed_by=request.user if request.user.is_authenticated else None,
+                    old_value=old_status,
+                    new_value='SHIPPED',
+                    notes=f"Admin dispatched order with unpaid balance {order.formatted_remaining}: {admin_notes}"
+                )
+
+            OrderStatusHistory.objects.create(
+                order=order,
+                previous_status=old_status,
+                fulfillment_status=mapped_status,
+                changed_by=request.user if request.user.is_authenticated else None,
+                admin_notes=admin_notes
+            )
+            OrderAdminAuditLog.objects.create(
+                order=order,
+                action='WORKSHOP_STATUS_CHANGED',
+                performed_by=request.user if request.user.is_authenticated else None,
+                old_value=old_status,
+                new_value=mapped_status,
+                notes=admin_notes
+            )
+            messages.success(request, f"Order #{order.order_number} workshop progress updated to {order.get_fulfillment_status_display()}!")
+            return redirect(request.get_full_path())
+
+        elif action == 'add_manual_payment':
+            order_id = request.POST.get('order_id')
+            order = get_object_or_404(Order, id=order_id)
+            amount = request.POST.get('amount')
+            payment_method = request.POST.get('payment_method', 'CASH')
+            reference_number = request.POST.get('reference_number', '').strip()
+            notes = request.POST.get('notes', '').strip()
+            installment_id = request.POST.get('installment_id') or None
+            auto_verify = request.POST.get('auto_verify') in ['true', 'on', '1']
+
+            try:
+                payment = ManualPaymentService.record_manual_payment(
+                    order=order,
+                    amount=amount,
+                    payment_method=payment_method,
+                    reference_number=reference_number,
+                    installment=int(installment_id) if installment_id else None,
+                    notes=notes,
+                    admin_user=request.user if request.user.is_authenticated else None
+                )
+                if auto_verify:
+                    ManualPaymentService.verify_manual_payment(
+                        payment_id=payment.payment_id,
+                        admin_user=request.user if request.user.is_authenticated else None,
+                        verification_notes="Auto-verified by admin upon entry"
+                    )
+                    messages.success(request, f"Manual payment of ₹{amount} recorded and verified for Order #{order.order_number}!")
+                else:
+                    messages.success(request, f"Manual payment of ₹{amount} recorded for Order #{order.order_number} (Awaiting Verification).")
+            except Exception as e:
+                messages.error(request, f"Failed to record manual payment: {str(e)}")
+            return redirect(request.get_full_path())
+
+        elif action == 'verify_manual_payment':
+            payment_id = request.POST.get('payment_id')
+            notes = request.POST.get('notes', '').strip()
+            try:
+                ManualPaymentService.verify_manual_payment(
+                    payment_id=payment_id,
+                    admin_user=request.user if request.user.is_authenticated else None,
+                    verification_notes=notes
+                )
+                messages.success(request, f"Payment #{payment_id} successfully verified and credited to order balance!")
+            except Exception as e:
+                messages.error(request, f"Verification failed: {str(e)}")
+            return redirect(request.get_full_path())
+
+        elif action == 'reject_manual_payment':
+            payment_id = request.POST.get('payment_id')
+            reason = request.POST.get('reason', '').strip()
+            try:
+                ManualPaymentService.reject_manual_payment(
+                    payment_id=payment_id,
+                    admin_user=request.user if request.user.is_authenticated else None,
+                    rejection_reason=reason
+                )
+                messages.warning(request, f"Payment #{payment_id} was rejected.")
+            except Exception as e:
+                messages.error(request, f"Rejection failed: {str(e)}")
             return redirect(request.get_full_path())
 
     if status_filter != 'ALL':
-        orders = orders.filter(order_status=status_filter)
+        payment_choices = [c[0] for c in Order.PAYMENT_STATUS_CHOICES]
+        fulfillment_choices = [c[0] for c in Order.FULFILLMENT_STATUS_CHOICES]
+        if status_filter in payment_choices:
+            orders = orders.filter(payment_status=status_filter)
+        elif status_filter in fulfillment_choices:
+            orders = orders.filter(fulfillment_status=status_filter)
+        else:
+            orders = orders.filter(order_status=status_filter)
+
+    if payment_status_filter != 'ALL':
+        orders = orders.filter(payment_status=payment_status_filter)
+    if fulfillment_status_filter != 'ALL':
+        orders = orders.filter(fulfillment_status=fulfillment_status_filter)
         
     if search_q:
         orders = orders.filter(order_number__icontains=search_q) | orders.filter(customer_name__icontains=search_q) | orders.filter(phone__icontains=search_q)
@@ -823,8 +1000,12 @@ def admin_orders_view(request):
         'orders': orders,
         'total_orders': orders.count(),
         'status_filter': status_filter,
+        'payment_status_filter': payment_status_filter,
+        'fulfillment_status_filter': fulfillment_status_filter,
         'search_q': search_q,
         'total_revenue': f"₹{int(total_revenue):,}",
+        'fulfillment_choices': Order.FULFILLMENT_STATUS_CHOICES,
+        'payment_choices': Order.PAYMENT_STATUS_CHOICES,
     }
     return render(request, 'admin_portal/admin_orders.html', context)
 
@@ -832,6 +1013,7 @@ def admin_orders_view(request):
 def admin_bookings_view(request):
     """
     Dedicated Admin Consultations & Measurements Management.
+    Excludes dummy bookings created by legacy checkout.
     """
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -842,7 +1024,7 @@ def admin_bookings_view(request):
             messages.success(request, f"Booking status updated to {new_status}!")
             return redirect('admin_bookings')
 
-    bookings = Booking.objects.all().order_by('-created_at')
+    bookings = Booking.objects.exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')
     context = {
         'page_title': 'Consultations & Measurements',
         'active_nav': 'bookings',

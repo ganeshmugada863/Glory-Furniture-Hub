@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Track Order #{{ order.order_number }} — Glory Furniture Hub{% endblock %}
+
+{% block back_bar %}
+<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
+  <div class="flex items-center gap-2.5">
+    <a href="{% url 'customer_orders' %}" 
+       class="p-1 rounded-full hover:bg-gray-200 text-gray-800 transition-colors cursor-pointer" 
+       aria-label="Back to My Orders">
+      <svg class="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+    </a>
+    <div class="border-l border-gray-300 pl-2.5">
+      <span class="text-[10px] font-black uppercase tracking-wider text-[#5C3D2E] block leading-none">Order Tracking</span>
+      <span class="text-xs sm:text-sm font-extrabold text-gray-950 leading-none">Order #{{ order.order_number }}</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <a href="{% url 'customer_orders' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">
+      ← All My Orders
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="glory-container-96 py-6 sm:py-10 space-y-6 font-sans text-left selection:bg-[#5C3D2E] selection:text-white">
+
+  <!-- Top Order Info Header -->
+  <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#DECBB7] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2 flex-wrap">
+        <h1 class="text-lg sm:text-xl font-black text-gray-950">
+          Order #{{ order.order_number }}
+        </h1>
+        
+        <!-- Payment Status Badge -->
+        {% if order.payment_status == 'FULLY_PAID' %}
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+            ✓ FULLY PAID
+          </span>
+        {% elif order.payment_status == 'PARTIALLY_PAID' %}
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+            ⏳ PARTIALLY PAID
+          </span>
+        {% elif order.payment_status == 'REFUNDED' %}
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-blue-100 text-blue-900 border border-blue-300">
+            ↩ REFUNDED
+          </span>
+        {% elif order.payment_status == 'FAILED' %}
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-red-100 text-red-900 border border-red-300">
+            ✕ PAYMENT FAILED
+          </span>
+        {% else %}
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-gray-100 text-gray-700 border border-gray-300">
+            • PENDING PAYMENT
+          </span>
+        {% endif %}
+
+        <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#FAF7F4] text-[#5C3D2E] border border-[#DECBB7]">
+          {{ order.plan_name|default:"Full Payment" }}
+        </span>
+      </div>
+      <p class="text-xs text-gray-500">
+        Placed on <strong>{{ order.created_at|date:"l, F d, Y" }}</strong> at {{ order.created_at|date:"h:i A" }}
+      </p>
+    </div>
+
+    <!-- Total Financial Header -->
+    <div class="flex items-center gap-4 sm:gap-6 flex-wrap">
+      <div class="text-left md:text-right">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Total Order</span>
+        <span class="text-xl sm:text-2xl font-black text-[#8B0000] font-mono leading-tight block">
+          {{ order.formatted_total }}
+        </span>
+        <span class="text-[11px] text-gray-500">
+          Paid: <strong class="text-emerald-800">{{ order.formatted_paid }}</strong> | 
+          Bal: <strong class="text-amber-900">{{ order.formatted_remaining }}</strong>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        {% if order.remaining_amount > 0 and not order.installments.exists %}
+        <a href="{% url 'payment_checkout' order_number=order.order_number %}"
+           class="px-4 py-2 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors shadow-sm">
+          Pay Balance &rarr;
+        </a>
+        {% elif order.payments.exists %}
+        {% with last_pay=order.payments.last %}
+        <a href="{% url 'payment_receipt' payment_id=last_pay.payment_id %}"
+           class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold transition-colors">
+          📄 Receipt
+        </a>
+        {% endwith %}
+        {% endif %}
+
+        <a href="{% url 'guide' %}?product={{ order.product_name|urlencode }}&order={{ order.booking_id|default:order.id|urlencode }}"
+           class="px-3 py-2 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-colors">
+          Artisan Guide
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main 2-Column Flipkart Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- LEFT COLUMN: Delivery Address & Financial Info -->
+    <div class="space-y-6 lg:col-span-1">
+
+      <!-- FLIPKART DELIVERY ADDRESS CARD -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#DECBB7] shadow-sm space-y-3.5">
+        <div class="flex items-center justify-between pb-2.5 border-b border-gray-100">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📍</span>
+            <h2 class="text-xs font-black uppercase tracking-wider text-gray-900">
+              Delivery Address
+            </h2>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            Confirmed
+          </span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <div class="font-extrabold text-sm sm:text-base text-gray-950">
+              {{ order.customer_name }}
+            </div>
+            <div class="text-gray-700 font-medium leading-relaxed mt-1 whitespace-pre-line">
+              {{ order.delivery_address_display }}
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-gray-100 space-y-1">
+            <div class="flex items-center gap-2 text-gray-700">
+              <span class="text-gray-400">📞 Phone:</span>
+              <strong class="text-gray-950 font-mono">{{ order.phone }}</strong>
+            </div>
+            {% if order.email %}
+            <div class="flex items-center gap-2 text-gray-500 text-[11px]">
+              <span class="text-gray-400">✉️ Email:</span>
+              <span class="truncate">{{ order.email }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENT BREAKDOWN & MILESTONES CARD -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#DECBB7] shadow-sm space-y-3.5">
+        <div class="flex items-center justify-between pb-2.5 border-b border-gray-100">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">💳</span>
+            <h2 class="text-xs font-black uppercase tracking-wider text-gray-900">
+              Payment Summary
+            </h2>
+          </div>
+          <span class="text-[10px] font-bold text-gray-500">
+            {{ order.get_payment_plan_display }}
+          </span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between py-1 border-b border-gray-50 text-gray-600">
+            <span>Total Value</span>
+            <span class="font-mono font-bold text-gray-950">{{ order.formatted_total }}</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-gray-50 text-gray-600">
+            <span>Paid to Date</span>
+            <span class="font-mono font-bold text-emerald-800">{{ order.formatted_paid }}</span>
+          </div>
+          <div class="flex justify-between py-1 text-gray-600">
+            <span>Remaining Balance</span>
+            <span class="font-mono font-bold {% if order.remaining_amount > 0 %}text-amber-900{% else %}text-gray-400{% endif %}">
+              {{ order.formatted_remaining }}
+            </span>
+          </div>
+        </div>
+
+        {% if order.installments.exists %}
+        <!-- 3-Installments Breakdown -->
+        <div class="pt-3 border-t border-gray-100 space-y-2">
+          <div class="text-[10px] font-black uppercase tracking-wider text-[#5C3D2E]">
+            Milestone Schedule
+          </div>
+          <div class="space-y-1.5">
+            {% for inst in installments %}
+            <div class="p-2.5 rounded-xl border flex items-center justify-between text-xs {% if inst.status == 'PAID' %}bg-emerald-50/70 border-emerald-200 text-emerald-950{% elif inst.is_eligible_for_payment %}bg-amber-50 border-amber-300 text-amber-950{% else %}bg-gray-50 border-gray-200 text-gray-400{% endif %}">
+              <div>
+                <span class="font-bold">Part {{ inst.installment_number }}</span>
+                <span class="text-[10px] text-gray-500 block">Due: {{ inst.due_date|date:"d M Y" }}</span>
+              </div>
+              <div class="text-right">
+                <span class="font-mono font-bold block">₹{{ inst.amount|floatformat:0 }}</span>
+                {% if inst.status == 'PAID' %}
+                  <span class="text-[9px] font-black text-emerald-700 uppercase">✓ Paid</span>
+                {% elif inst.is_eligible_for_payment %}
+                  <a href="{% url 'pay_installment' installment_id=inst.id %}" class="text-[10px] font-black text-[#8B0000] underline">
+                    Pay Now &rarr;
+                  </a>
+                {% else %}
+                  <span class="text-[9px] font-semibold text-gray-400">Upcoming</span>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ARTISAN WOOD CARE MANUAL CARD -->
+      <div class="p-5 rounded-3xl bg-gradient-to-br from-[#FAF7F4] to-[#F5EFEB] border border-[#E2D8CC] shadow-2xs space-y-2.5">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🪵</span>
+          <h3 class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">Master Artisan Care</h3>
+        </div>
+        <p class="text-xs text-gray-600 leading-relaxed">
+          Each solid teak piece is handcrafted using mortise-and-tenon joinery and natural oils. Access maintenance advice and your 10-year warranty.
+        </p>
+        <a href="{% url 'guide' %}?product={{ order.product_name|urlencode }}&order={{ order.booking_id|default:order.id|urlencode }}"
+           class="inline-flex items-center gap-1.5 text-xs font-bold text-[#5C3D2E] hover:underline pt-1">
+          <span>View Artisan Owner's Guide</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Ordered Item + Flipkart-Style Timeline -->
+    <div class="space-y-6 lg:col-span-2">
+
+      <!-- ORDERED ITEM CARD -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#DECBB7] shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+        {% if order.product and order.product.primary_image %}
+        <img src="{{ order.product.primary_image }}" alt="{{ order.product_name }}" 
+             class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-contain bg-[#FAF6F0] p-2 border border-[#E5D9CC] flex-shrink-0 shadow-2xs" />
+        {% else %}
+        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-3xl flex-shrink-0">
+          🪵
+        </div>
+        {% endif %}
+
+        <div class="min-w-0 space-y-1.5 flex-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] font-black uppercase tracking-wider text-[#5C3D2E] bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              Handcrafted Timber Piece
+            </span>
+          </div>
+          <h2 class="text-base sm:text-lg font-black text-gray-950 truncate tracking-tight">
+            {{ order.product_name }}
+          </h2>
+          <div class="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
+            <span>Wood: <strong class="text-gray-900">{{ order.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
+            <span class="text-gray-400">&bull;</span>
+            <span>Size: <strong class="text-gray-900">{{ order.selected_size|default:"Standard" }}</strong></span>
+            {% if order.quantity > 1 %}
+            <span class="text-gray-400">&bull;</span>
+            <span>Qty: <strong class="text-gray-900">{{ order.quantity }}</strong></span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="text-left sm:text-right flex-shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100 w-full sm:w-auto">
+          <span class="text-[10px] text-gray-400 uppercase font-bold block">Unit Price</span>
+          <span class="text-base sm:text-lg font-black text-gray-950 font-mono">
+            ₹{{ order.unit_price|floatformat:0 }}
+          </span>
+        </div>
+      </div>
+
+      <!-- FLIPKART-STYLE ORDER TRACKING TIMELINE -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#DECBB7] shadow-sm space-y-6">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h2 class="text-sm sm:text-base font-black text-gray-950 uppercase tracking-wider">
+                Order Status Timeline
+              </h2>
+            </div>
+            <p class="text-xs text-gray-500">
+              Live tracking from Hyderabad central workshop through white-glove installation
+            </p>
+          </div>
+
+          <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
+            {{ order.get_fulfillment_status_display }}
+          </span>
+        </div>
+
+        <!-- Vertical Flipkart Stepper Component -->
+        <div class="relative pl-2 sm:pl-4 space-y-0">
+          {% for step in timeline %}
+          <div class="flex items-start gap-4 sm:gap-6 relative pb-8 {% if forloop.last %}pb-0{% endif %}">
+            
+            <!-- Connecting Vertical Bar (Flipkart Solid Green / Gray) -->
+            {% if not forloop.last %}
+            <div class="absolute left-4 top-8 w-0.5 -ml-px h-full {% if step.is_completed and not step.is_current %}bg-emerald-500{% else %}bg-gray-200{% endif %}" style="z-index: 1;"></div>
+            {% endif %}
+
+            <!-- Milestone Node Icon / Circle (Flipkart Style) -->
+            <div class="relative z-10 flex-shrink-0">
+              {% if step.is_completed and not step.is_current %}
+                <!-- Completed Stage: Vibrant Green Circle with Checkmark -->
+                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                  ✓
+                </div>
+              {% elif step.is_current %}
+                <!-- Current Stage: Pulsing Ring with Active Icon -->
+                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white ring-4 ring-emerald-100 flex items-center justify-center font-bold text-sm shadow-md animate-pulse">
+                  {{ step.icon }}
+                </div>
+              {% else %}
+                <!-- Upcoming Stage: Subtle Gray Circle with Number -->
+                <div class="w-8 h-8 rounded-full bg-white border-2 border-gray-300 text-gray-400 flex items-center justify-center font-bold text-xs">
+                  {{ step.stage_number }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Stage Details Content -->
+            <div class="flex-1 min-w-0 pt-0.5 space-y-1">
+              <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-sm sm:text-base font-extrabold {% if step.is_completed or step.is_current %}text-gray-950{% else %}text-gray-400{% endif %}">
+                    {{ step.title }}
+                  </h3>
+                  {% if step.is_current %}
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 animate-pulse">
+                    CURRENT STAGE
+                  </span>
+                  {% elif step.is_completed %}
+                  <span class="text-[10px] font-bold text-emerald-700">
+                    ✓ Completed
+                  </span>
+                  {% endif %}
+                </div>
+
+                <!-- Timestamp / Date (Flipkart style right aligned) -->
+                {% if step.timestamp %}
+                <span class="text-xs font-semibold {% if step.is_completed or step.is_current %}text-gray-700 font-mono{% else %}text-gray-400{% endif %}">
+                  {% if step.is_upcoming %}
+                    Expected by {{ step.timestamp|date:"D, M d" }}
+                  {% else %}
+                    {{ step.timestamp|date:"D, M d, Y • h:i A" }}
+                  {% endif %}
+                </span>
+                {% endif %}
+              </div>
+
+              <p class="text-xs {% if step.is_completed or step.is_current %}text-gray-600{% else %}text-gray-400{% endif %} leading-relaxed">
+                {{ step.subtitle }}
+              </p>
+
+              <!-- Real Artisan / Workshop History Update Note -->
+              {% if step.notes and step.is_completed or step.is_current %}
+              <div class="mt-2 p-3 rounded-2xl {% if step.has_admin_note %}bg-amber-50/80 border border-amber-200/90 text-amber-950{% else %}bg-[#FAF7F4] border border-[#EADBCE] text-gray-700{% endif %} text-xs flex items-start gap-2">
+                <span class="text-sm shrink-0">{% if step.has_admin_note %}📝{% else %}ℹ️{% endif %}</span>
+                <div class="space-y-0.5">
+                  <strong class="font-bold block text-[11px] uppercase tracking-wider {% if step.has_admin_note %}text-amber-900{% else %}text-gray-800{% endif %}">
+                    {% if step.has_admin_note %}Artisan Workshop Log:{% else %}Status Details:{% endif %}
+                  </strong>
+                  <p class="leading-relaxed italic">"{{ step.notes }}"</p>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

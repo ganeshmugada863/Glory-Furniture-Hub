@@ -153,7 +153,9 @@
             <th class="py-3.5 px-5">Handcrafted Item</th>
             <th class="py-3.5 px-5">Total Rate</th>
             <th class="py-3.5 px-5">Payment &amp; Ref</th>
-            <th class="py-3.5 px-5">Status</th>
+            <th class="py-3.5 px-5">Payment Status</th>
+            <th class="py-3.5 px-5">Workshop Progress</th>
+            <th class="py-3.5 px-5 text-right">Action</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 font-medium">
@@ -186,14 +188,44 @@
               {% endif %}
             </td>
             <td class="py-4 px-5 whitespace-nowrap">
-              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {% if o.order_status == 'FULLY_PAID' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% else %}bg-amber-100 text-amber-900 border border-amber-300{% endif %}">
-                {{ o.order_status }}
+              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {% if o.payment_status == 'FULLY_PAID' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% elif o.payment_status == 'PARTIALLY_PAID' %}bg-amber-100 text-amber-900 border border-amber-300{% else %}bg-gray-100 text-gray-700 border border-gray-300{% endif %}">
+                {{ o.payment_status }}
               </span>
+            </td>
+            <td class="py-4 px-5 whitespace-nowrap">
+              <form method="POST" action="{% url 'admin_orders' %}" id="dash-status-form-{{ o.id }}" class="inline-flex items-center gap-1.5">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_fulfillment_status" />
+                <input type="hidden" name="order_id" value="{{ o.id }}" />
+                <select name="fulfillment_status" 
+                        id="dash-status-select-{{ o.id }}"
+                        data-current="{{ o.fulfillment_status }}"
+                        onchange="this.form.submit()"
+                        class="px-2.5 py-1.5 rounded-lg text-xs font-bold border shadow-2xs cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] transition-colors {% if o.fulfillment_status == 'CONFIRMED' %}bg-amber-50 border-amber-300 text-amber-950{% elif o.fulfillment_status == 'IN_PRODUCTION' %}bg-amber-100 border-amber-400 text-amber-950 font-black{% elif o.fulfillment_status == 'SHIPPED' %}bg-purple-50 border-purple-300 text-purple-950{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' %}bg-blue-50 border-blue-300 text-blue-950{% elif o.fulfillment_status == 'DELIVERED' %}bg-emerald-50 border-emerald-300 text-emerald-950{% else %}bg-white border-gray-300 text-gray-900{% endif %}">
+                  <option value="CONFIRMED" {% if o.fulfillment_status == 'CONFIRMED' %}selected{% endif %}>CONFIRMED</option>
+                  <option value="IN_PRODUCTION" {% if o.fulfillment_status == 'IN_PRODUCTION' %}selected{% endif %}>IN_PRODUCTION</option>
+                  <option value="SHIPPED" {% if o.fulfillment_status == 'SHIPPED' %}selected{% endif %}>SHIPPED</option>
+                  <option value="OUT_FOR_DELIVERY" {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}selected{% endif %}>OUT_FOR_DELIVERY</option>
+                  <option value="DELIVERED" {% if o.fulfillment_status == 'DELIVERED' %}selected{% endif %}>DELIVERED</option>
+                </select>
+                <button type="button" 
+                        onclick="resetDashSelect('dash-status-select-{{ o.id }}')" 
+                        class="p-1 text-gray-400 hover:text-gray-700 transition-colors" 
+                        title="Reset to current stage">
+                  ↺
+                </button>
+              </form>
+            </td>
+            <td class="py-4 px-5 text-right whitespace-nowrap">
+              <a href="/admin-portal/order/{{ o.id }}/" 
+                 class="px-3 py-1.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-[11px] font-black uppercase tracking-wider transition-colors inline-block shadow-2xs">
+                Manage &rarr;
+              </a>
             </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="6" class="py-8 text-center text-gray-400">No orders placed yet.</td>
+            <td colspan="8" class="py-8 text-center text-gray-400">No orders placed yet.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -264,4 +296,13 @@
   </div>
 
 </div>
+
+<script>
+  function resetDashSelect(selectId) {
+    const sel = document.getElementById(selectId);
+    if (sel) {
+      sel.value = sel.getAttribute('data-current');
+    }
+  }
+</script>
 {% endblock %}

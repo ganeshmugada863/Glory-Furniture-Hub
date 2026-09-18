@@ -14,6 +14,7 @@ urlpatterns = [
     path('customer/home/', views.customer_home_view, name='customer_home'),
     path('customer/dashboard/', views.customer_home_view, name='customer_dashboard'),
     path('customer/orders/', views.customer_orders_view, name='customer_orders'),
+    path('customer/orders/<str:order_number>/', views.customer_order_detail_view, name='customer_order_detail'),
     path('customer/bookings/', views.customer_bookings_view, name='customer_bookings'),
     path('customer/payments/', views.customer_payments_view, name='customer_payments'),
     path('customer/profile/', views.customer_profile_view, name='customer_profile'),
@@ -22,6 +23,7 @@ urlpatterns = [
     
     # Customer Legacy / Shortcut Routes
     path('orders/', views.customer_orders_view, name='orders'),
+    path('orders/<str:order_number>/', views.customer_order_detail_view, name='order_detail'),
     path('settings/orders/', views.customer_orders_view, name='settings_orders'),
     path('profile/', views.customer_profile_view, name='profile'),
     path('profile/edit/', views.edit_profile_view, name='edit_profile'),

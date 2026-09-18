@@ -128,6 +128,8 @@ class WebhookService:
 
             if payment_status in ['SUCCESS', 'PAID']:
                 payment.status = 'PAID'
+                payment.verification_status = 'VERIFIED'
+                payment.is_manual = False
                 payment.gateway_payment_id = str(cf_payment_id)
                 payment.paid_at = timezone.now()
                 payment.gateway_response = payload
@@ -142,15 +144,15 @@ class WebhookService:
                     NotificationService.notify_installment_paid(order, installment)
 
                 # Recalculate order financial standing
-                order.update_financial_status()
+                order.recalculate_financials()
 
-                # Update booking status
+                # Update booking status if exists
                 if order.booking:
                     order.booking.status = 'Confirmed'
                     order.booking.notes += f" | Cashfree Paid: ₹{payment.amount} (Ref: {cf_payment_id})"
                     order.booking.save()
 
-                if order.order_status == 'FULLY_PAID':
+                if order.payment_status == 'FULLY_PAID':
                     NotificationService.notify_order_fully_paid(order)
                 else:
                     NotificationService.notify_order_created(order)
@@ -163,12 +165,15 @@ class WebhookService:
 
             elif payment_status in ['FAILED', 'USER_DROPPED', 'CANCELLED']:
                 payment.status = 'FAILED'
+                payment.verification_status = 'REJECTED'
                 payment.failure_reason = payload.get('data', {}).get('payment', {}).get('payment_message') or 'Transaction failed at gateway.'
                 payment.save()
 
                 if installment and installment.status != 'PAID':
                     installment.status = 'FAILED'
                     installment.save()
+
+                order.recalculate_financials()
 
                 webhook_event.status = 'PROCESSED'
                 webhook_event.processed_at = timezone.now()
@@ -279,7 +284,8 @@ class WebhookService:
                         total_amount=order_amt,
                         paid_amount=order_amt if cf_details.get('order_status') == 'PAID' else Decimal('0.00'),
                         remaining_amount=Decimal('0.00') if cf_details.get('order_status') == 'PAID' else order_amt,
-                        order_status='FULLY_PAID' if cf_details.get('order_status') == 'PAID' else 'PENDING_PAYMENT',
+                        payment_status='FULLY_PAID' if cf_details.get('order_status') == 'PAID' else 'PENDING',
+                        fulfillment_status='CONFIRMED',
                         payment_type='FULL',
                         product=product,
                         product_name=product.name if product else 'Solid Teak Royal Accent Table',

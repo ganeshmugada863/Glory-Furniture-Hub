@@ -101,7 +101,7 @@ class ThreeInstallmentOrderFlowTests(TestCase):
         })
 
         self.assertEqual(order.payment_plan, 'THREE_INSTALLMENTS')
-        self.assertEqual(order.payment_status, 'PENDING_PAYMENT')
+        self.assertEqual(order.payment_status, 'PENDING')
         self.assertEqual(order.paid_amount, Decimal('0.00'))
         self.assertEqual(order.remaining_amount, Decimal('75000.00'))
 
@@ -380,7 +380,7 @@ class FullPaymentBackwardCompatibilityTests(TestCase):
 
     def test_full_payment_order_flow(self):
         self.assertEqual(self.order.payment_plan, 'FULL_PAYMENT')
-        self.assertEqual(self.order.payment_status, 'PENDING_PAYMENT')
+        self.assertEqual(self.order.payment_status, 'PENDING')
         self.assertEqual(self.order.remaining_amount, Decimal('45000.00'))
         self.assertEqual(self.order.installments.count(), 0)
 

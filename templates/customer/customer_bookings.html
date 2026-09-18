@@ -28,7 +28,21 @@
       <div class="space-y-1">
         <div class="flex items-center gap-2">
           <span class="font-mono text-xs font-bold text-[#5C3D2E]">{{ b.booking_id }}</span>
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">{{ b.status }}</span>
+          {% if b.status == 'Confirmed' %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">✓ Confirmed</span>
+          {% elif b.status == 'Scheduled' %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 border border-blue-300">📅 Scheduled</span>
+          {% elif b.status == 'In Review' %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">🔍 In Review</span>
+          {% elif b.status == 'Payment Pending' %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-orange-100 text-orange-900 border border-orange-300">⏳ Payment Pending</span>
+          {% elif b.status == 'Completed' %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-teal-100 text-teal-800 border border-teal-300">🎉 Completed</span>
+          {% elif b.status == 'Cancelled' %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-800 border border-red-300">✕ Cancelled</span>
+          {% else %}
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-gray-100 text-gray-700 border border-gray-300">{{ b.status }}</span>
+          {% endif %}
         </div>
         <h2 class="font-bold text-sm text-gray-950">{{ b.consultation_type }}</h2>
         <p class="text-xs text-gray-500">📅 {{ b.preferred_date|date:"F d, Y" }} &bull; ⏰ {{ b.time_slot }} &bull; 🪵 {{ b.wood_preference }}</p>

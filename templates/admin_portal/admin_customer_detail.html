@@ -40,7 +40,7 @@
             <td class="py-2.5 px-3 font-mono font-bold text-[#5C3D2E]">#{{ o.order_number }}</td>
             <td class="py-2.5 px-3">{{ o.product_name }}</td>
             <td class="py-2.5 px-3 font-bold">{{ o.formatted_total }}</td>
-            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">{{ o.order_status }}</span></td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">{{ o.payment_status|default:o.order_status }} &bull; {{ o.fulfillment_status }}</span></td>
           </tr>
           {% empty %}
           <tr><td colspan="4" class="py-4 text-center text-gray-400">No orders placed.</td></tr>

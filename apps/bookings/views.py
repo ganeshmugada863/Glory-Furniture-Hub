@@ -10,8 +10,10 @@ from django.utils import timezone
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .models import Booking, Order, Installment, PaymentTransaction, InstallmentRescheduleAudit
+from .models import Booking, Order, Installment, PaymentTransaction, InstallmentRescheduleAudit, OrderStatusHistory, OrderAdminAuditLog
 from .services import InstallmentService, PaymentService, RescheduleService, InstallmentRescheduleError
+from apps.payments.models import Payment
+from apps.payments.services import ManualPaymentService, PaymentLedgerService
 from apps.store.models import Product
 
 
@@ -23,28 +25,44 @@ def booking_summary_view(request):
     2. Calculation of Item (product details, unit price, quantity, discount, GST, total)
     3. Payment Plan selection (Full Payment vs Three Installments) with transparent calculation.
     """
-    product_id = request.GET.get('product') or request.POST.get('product_id') or 15
+    # Check product or load from cart
+    product_id = request.GET.get('product') or request.POST.get('product_id')
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+    cart = (profile.cart_items if profile else None) or request.session.get('glory_cart', [])
+
+    selected_size = request.GET.get('bedSize') or request.GET.get('size') or request.POST.get('selected_size')
+    quantity = None
+    if not product_id and cart:
+        primary_item = cart[0]
+        product_id = primary_item.get('id')
+        if not selected_size:
+            selected_size = primary_item.get('size', 'Standard')
+        quantity = int(primary_item.get('quantity', 1))
+
     try:
-        product = Product.objects.filter(pk=int(product_id)).first()
-    except Exception:
+        product = Product.objects.filter(pk=int(product_id)).first() if product_id else None
+    except (ValueError, TypeError):
         product = None
 
     if not product:
-        product = Product.objects.filter(pk=15).first() or Product.objects.first()
+        product = Product.objects.first()
 
-    # Determine variant choices
-    selected_size = request.GET.get('bedSize') or request.GET.get('size') or request.POST.get('selected_size') or 'Standard'
+    if not selected_size:
+        selected_size = 'Standard'
+
     selected_wood = request.GET.get('woodType') or request.GET.get('wood') or request.POST.get('selected_wood')
     if not selected_wood:
         selected_wood = product.finishes[0] if product and product.finishes else 'Natural Burma Teak'
 
     # Quantity & Pricing
-    try:
-        quantity = int(request.GET.get('qty') or request.POST.get('quantity') or 1)
-        if quantity < 1:
+    if quantity is None:
+        try:
+            quantity = int(request.GET.get('qty') or request.POST.get('quantity') or 1)
+            if quantity < 1:
+                quantity = 1
+        except ValueError:
             quantity = 1
-    except ValueError:
-        quantity = 1
 
     try:
         raw_price = request.GET.get('price') or request.POST.get('unit_price')
@@ -127,24 +145,10 @@ def booking_summary_view(request):
         if customer_notes:
             order_notes += f" | Note: {customer_notes}"
 
-        # 1. Create Booking
-        booking = Booking.objects.create(
-            customer_name=customer_name,
-            email=email,
-            phone=phone,
-            consultation_type='Product Order & In-Home Delivery',
-            preferred_date=preferred_date,
-            time_slot=delivery_preference,
-            wood_preference=selected_wood,
-            address=full_address,
-            notes=order_notes,
-            status='Payment Pending'
-        )
-
-        # 2. Create Order (Full Payment)
+        # Create Order directly without fake Booking
         order = Order.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            booking=booking,
+            user=user,
+            booking=None,
             customer_name=customer_name,
             email=email,
             phone=phone,
@@ -159,11 +163,28 @@ def booking_summary_view(request):
             paid_amount=Decimal('0.00'),
             remaining_amount=Decimal(str(grand_total)),
             payment_plan='FULL_PAYMENT',
+            payment_status='PENDING',
+            fulfillment_status='CONFIRMED',
             order_status='PENDING_PAYMENT'
         )
 
+        OrderStatusHistory.objects.create(
+            order=order,
+            fulfillment_status='CONFIRMED',
+            previous_status='ORDER_PLACED',
+            admin_notes='Order placed by patron at checkout.'
+        )
+
+        # Clear cart if order placed from cart
+        if cart:
+            if profile:
+                profile.cart_items = []
+                profile.save(update_fields=['cart_items'])
+            request.session['glory_cart'] = []
+            request.session.modified = True
+
         prod_img = product.primary_image if product and hasattr(product, 'primary_image') else ''
-        request.session[f'order_payment_{booking.booking_id}'] = {
+        request.session[f'order_payment_{order.order_number}'] = {
             'order_id': order.id,
             'order_number': order.order_number,
             'product_name': prod_name,
@@ -279,10 +300,7 @@ def booking_payment_view(request, booking_id):
                 idempotency_key=f"IDEMP-UPI-{order.order_number}-{utr_number}",
                 paid_at=timezone.now()
             )
-            order.paid_amount = payable_amount
-            order.remaining_amount = Decimal('0.00')
-            order.order_status = 'FULLY_PAID'
-            order.save()
+            order.recalculate_financials()
 
             booking.status = 'Confirmed'
             booking.notes += f" | Paid via WordPress UPI Gateway (UTR: {utr_number})"
@@ -290,8 +308,9 @@ def booking_payment_view(request, booking_id):
             request.session['last_payment_utr'] = utr_number
 
         elif payment_method == 'Cash on Delivery':
-            order.order_status = 'CONFIRMED'
-            order.save()
+            order.fulfillment_status = 'CONFIRMED'
+            order.payment_status = 'PENDING'
+            order.save(update_fields=['fulfillment_status', 'payment_status', 'updated_at'])
             booking.status = 'Confirmed'
             booking.notes += f" | Cash on Delivery (Total: ₹{payable_amount:,.0f})"
             booking.save()
@@ -309,10 +328,7 @@ def booking_payment_view(request, booking_id):
                 idempotency_key=f"IDEMP-CARD-{order.order_number}-{uuid.uuid4().hex[:6]}",
                 paid_at=timezone.now()
             )
-            order.paid_amount = payable_amount
-            order.remaining_amount = Decimal('0.00')
-            order.order_status = 'FULLY_PAID'
-            order.save()
+            order.recalculate_financials()
         # Keep customer session and order tracking updated
         order_ids = request.session.get('glory_customer_order_ids', [])
         if order.id not in order_ids:
@@ -380,14 +396,68 @@ def pay_installment_direct_view(request, installment_id):
 
 def booking_view(request):
     """
-    Consultation booking page removed.
-    Redirects product requests directly to checkout summary (/booking/summary/?product=...)
-    and direct visits to the furniture catalog (/catalog/).
+    Genuine Studio & In-Home Consultation scheduling page.
+    Renders templates/bookings/booking.html and processes appointment requests.
+    Supports Showroom Visit, In-Home Site Measurement, and Video Consultation.
     """
-    product_id = request.GET.get('productId') or request.GET.get('product') or request.POST.get('product_id')
-    if product_id:
+    # If a product_id was explicitly passed, redirect to checkout summary
+    product_id = request.GET.get('productId') or request.GET.get('product')
+    if product_id and request.method != 'POST':
         return redirect(f"/booking/summary/?product={product_id}")
-    return redirect('catalog')
+
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+
+    if request.method == 'POST':
+        consultation_type = request.POST.get('consultation_type', 'Showroom Visit')
+        preferred_date = request.POST.get('preferred_date') or str(timezone.now().date() + timedelta(days=3))
+        time_slot = request.POST.get('time_slot', '11:00 AM - 01:00 PM')
+        wood_preference = request.POST.get('wood_preference', 'Royal Burma Teak')
+        name = request.POST.get('name', '').strip() or (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else 'Valued Patron'))
+        email = request.POST.get('email', '').strip().lower() or (user.email if user else '')
+        phone = request.POST.get('phone', '').strip() or (profile.phone if profile and profile.phone else '')
+        address = request.POST.get('address', '').strip()
+        notes = request.POST.get('notes', '').strip()
+
+        booking = Booking.objects.create(
+            customer_name=name,
+            email=email,
+            phone=phone,
+            consultation_type=consultation_type,
+            preferred_date=preferred_date,
+            time_slot=time_slot,
+            wood_preference=wood_preference,
+            address=address,
+            notes=notes,
+            status='Scheduled'
+        )
+
+        request.session['last_booking_id'] = booking.booking_id
+        return redirect('booking_confirmation', booking_id=booking.booking_id)
+
+    time_slots = [
+        '10:00 AM - 12:00 PM',
+        '12:00 PM - 02:00 PM',
+        '03:00 PM - 05:00 PM',
+        '05:00 PM - 07:00 PM',
+    ]
+    wood_types = [
+        'Royal Burma Teak (Grade-A)',
+        'Central Province (CP) Teak',
+        'Golden Teak with Natural Grains',
+        'Dark Walnut Stained Teak',
+    ]
+    default_date = str(timezone.now().date() + timedelta(days=2))
+
+    context = {
+        'time_slots': time_slots,
+        'wood_types': wood_types,
+        'default_date': default_date,
+        'USER_NAME': profile.full_name if profile and profile.full_name else (user.get_full_name() if user else ''),
+        'USER_EMAIL': user.email if user else '',
+        'USER_PHONE': profile.phone if profile and profile.phone else '',
+    }
+    return render(request, 'bookings/booking.html', context)
 
 
 def booking_confirmation_view(request, booking_id):
@@ -430,51 +500,178 @@ def _is_admin(request):
 def admin_order_detail_view(request, order_id):
     """
     Admin view for an individual customer order:
-    Displays Order Summary, Financial Status, Installment Schedule,
-    and Reschedule Audit History.
+    Displays Order Summary, Decoupled Financial Status, Payment Ledger,
+    5-Stage Workshop Progress, Installment Schedule, Reschedule Audits,
+    Manual Payment Verification, and Workshop Status History.
     """
     if not _is_admin(request):
         return HttpResponseForbidden("Access Denied: Admin privileges required.")
 
     order = get_object_or_404(Order, id=order_id)
+    error_message = None
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # 1. Reschedule installment
+        if action == 'reschedule_installment':
+            inst_id = request.POST.get('installment_id')
+            new_due_str = request.POST.get('new_due_date', '').strip()
+            reason = request.POST.get('reason', '').strip()
+            notify_customer = request.POST.get('notify_customer') == 'on'
+
+            try:
+                new_date = datetime.strptime(new_due_str, '%Y-%m-%d').date()
+                admin_name = request.session.get('glory_user_name', 'Master Studio Admin')
+                RescheduleService.reschedule_installment(
+                    installment_id=inst_id,
+                    new_due_date=new_date,
+                    reason=reason,
+                    changed_by=admin_name,
+                    notify_customer=notify_customer
+                )
+                return redirect(f"/admin-portal/order/{order.id}/?success=rescheduled")
+            except (ValueError, InstallmentRescheduleError) as err:
+                error_message = str(err)
+
+        # 2. Update workshop / fulfillment status
+        elif action in ['update_fulfillment_status', 'update_order_status']:
+            new_status = request.POST.get('fulfillment_status') or request.POST.get('order_status')
+            status_map = {
+                'CONFIRMED': 'CONFIRMED',
+                'IN_PRODUCTION': 'IN_PRODUCTION',
+                'READY_FOR_DELIVERY': 'SHIPPED',
+                'SHIPPED': 'SHIPPED',
+                'OUT_FOR_DELIVERY': 'OUT_FOR_DELIVERY',
+                'DELIVERED': 'DELIVERED',
+            }
+            mapped_status = status_map.get(new_status, new_status)
+            valid_statuses = [s[0] for s in Order.FULFILLMENT_STATUS_CHOICES]
+
+            if mapped_status not in valid_statuses:
+                error_message = f"Invalid workshop stage: '{new_status}'. Allowed stages: Confirmed, In Production, Shipped, Out for Delivery, Delivered."
+            else:
+                override_shipping = request.POST.get('override_shipping_payment') in ['true', 'on', '1']
+                override_reason = request.POST.get('override_reason', '').strip()
+
+                if mapped_status == 'SHIPPED' and order.remaining_amount > Decimal('0.00') and not override_shipping:
+                    error_message = (
+                        f"Warning: Order #{order.order_number} has an unpaid balance of {order.formatted_remaining}. "
+                        f"Shipping an unpaid order requires an authorized Admin Override with mandatory justification."
+                    )
+                else:
+                    old_status = order.fulfillment_status
+                    order.fulfillment_status = mapped_status
+                    order.save(update_fields=['fulfillment_status', 'updated_at'])
+
+                    admin_notes = request.POST.get('admin_notes', '').strip()
+                    if override_shipping and mapped_status == 'SHIPPED' and order.remaining_amount > Decimal('0.00'):
+                        admin_notes = f"SHIPPING OVERRIDE: {override_reason}. {admin_notes}".strip()
+                        OrderAdminAuditLog.objects.create(
+                            order=order,
+                            action='ADMIN_OVERRIDE',
+                            performed_by=request.user if request.user.is_authenticated else None,
+                            old_value=old_status,
+                            new_value='SHIPPED',
+                            notes=f"Overridden shipping payment rule for unpaid balance {order.formatted_remaining}: {override_reason}"
+                        )
+
+                    OrderStatusHistory.objects.create(
+                        order=order,
+                        previous_status=old_status,
+                        fulfillment_status=mapped_status,
+                        changed_by=request.user if request.user.is_authenticated else None,
+                        admin_notes=admin_notes
+                    )
+                    OrderAdminAuditLog.objects.create(
+                        order=order,
+                        action='WORKSHOP_STATUS_CHANGED',
+                        performed_by=request.user if request.user.is_authenticated else None,
+                        old_value=old_status,
+                        new_value=mapped_status,
+                        notes=admin_notes
+                    )
+                    return redirect(f"/admin-portal/order/{order.id}/?success=status_updated")
+
+        # 3. Add manual payment
+        elif action == 'add_manual_payment':
+            amount = request.POST.get('amount')
+            payment_method = request.POST.get('payment_method', 'CASH')
+            reference_number = request.POST.get('reference_number', '').strip()
+            notes = request.POST.get('notes', '').strip()
+            installment_id = request.POST.get('installment_id') or None
+            auto_verify = request.POST.get('auto_verify') in ['true', 'on', '1']
+
+            try:
+                payment = ManualPaymentService.record_manual_payment(
+                    order=order,
+                    amount=amount,
+                    payment_method=payment_method,
+                    reference_number=reference_number,
+                    installment=int(installment_id) if installment_id else None,
+                    notes=notes,
+                    admin_user=request.user if request.user.is_authenticated else None
+                )
+                if auto_verify:
+                    ManualPaymentService.verify_manual_payment(
+                        payment_id=payment.payment_id,
+                        admin_user=request.user if request.user.is_authenticated else None,
+                        verification_notes="Auto-verified by admin upon entry"
+                    )
+                    return redirect(f"/admin-portal/order/{order.id}/?success=payment_verified")
+                return redirect(f"/admin-portal/order/{order.id}/?success=payment_recorded")
+            except Exception as e:
+                error_message = f"Failed to record manual payment: {str(e)}"
+
+        # 4. Verify manual payment
+        elif action == 'verify_manual_payment':
+            payment_id = request.POST.get('payment_id')
+            notes = request.POST.get('notes', '').strip()
+            try:
+                ManualPaymentService.verify_manual_payment(
+                    payment_id=payment_id,
+                    admin_user=request.user if request.user.is_authenticated else None,
+                    verification_notes=notes
+                )
+                return redirect(f"/admin-portal/order/{order.id}/?success=payment_verified")
+            except Exception as e:
+                error_message = f"Verification failed: {str(e)}"
+
+        # 5. Reject manual payment
+        elif action == 'reject_manual_payment':
+            payment_id = request.POST.get('payment_id')
+            reason = request.POST.get('reason', '').strip()
+            try:
+                ManualPaymentService.reject_manual_payment(
+                    payment_id=payment_id,
+                    admin_user=request.user if request.user.is_authenticated else None,
+                    rejection_reason=reason
+                )
+                return redirect(f"/admin-portal/order/{order.id}/?success=payment_rejected")
+            except Exception as e:
+                error_message = f"Rejection failed: {str(e)}"
+
+    order.refresh_from_db()
     installments = order.installments.all().order_by('installment_number')
     audits = order.reschedule_audits.all().order_by('-created_at')
     transactions = order.transactions.all().order_by('-created_at')
-
-    # Handle rescheduling form post from modal
-    if request.method == 'POST' and request.POST.get('action') == 'reschedule_installment':
-        inst_id = request.POST.get('installment_id')
-        new_due_str = request.POST.get('new_due_date', '').strip()
-        reason = request.POST.get('reason', '').strip()
-        notify_customer = request.POST.get('notify_customer') == 'on'
-
-        try:
-            new_date = datetime.strptime(new_due_str, '%Y-%m-%d').date()
-            admin_name = request.session.get('glory_user_name', 'Master Studio Admin')
-            RescheduleService.reschedule_installment(
-                installment_id=inst_id,
-                new_due_date=new_date,
-                reason=reason,
-                changed_by=admin_name,
-                notify_customer=notify_customer
-            )
-            return redirect(f"/admin-portal/order/{order.id}/?success=rescheduled")
-        except (ValueError, InstallmentRescheduleError) as err:
-            context_err = {
-                'order': order,
-                'installments': installments,
-                'audits': audits,
-                'transactions': transactions,
-                'error_message': str(err),
-            }
-            return render(request, 'admin_portal/order_detail.html', context_err)
+    ledger = PaymentLedgerService.get_order_transactions(order)
+    status_history = order.status_history.all().order_by('-created_at')
+    admin_audit_logs = order.admin_audit_logs.all().order_by('-created_at')
+    pending_manual_payments = order.payments.filter(is_manual=True, verification_status='PENDING_VERIFICATION')
 
     context = {
         'order': order,
         'installments': installments,
         'audits': audits,
         'transactions': transactions,
+        'ledger': ledger,
+        'status_history': status_history,
+        'admin_audit_logs': admin_audit_logs,
+        'pending_manual_payments': pending_manual_payments,
+        'fulfillment_choices': Order.FULFILLMENT_STATUS_CHOICES,
         'success': request.GET.get('success'),
+        'error_message': error_message,
     }
     return render(request, 'admin_portal/order_detail.html', context)
 

@@ -55,6 +55,12 @@ class Payment(models.Model):
         ('REFUNDED', 'Refunded'),
     ]
 
+    VERIFICATION_STATUS_CHOICES = [
+        ('PENDING_VERIFICATION', 'Pending Verification'),
+        ('VERIFIED', 'Verified'),
+        ('REJECTED', 'Rejected'),
+    ]
+
     payment_id = models.CharField(max_length=100, unique=True, blank=True, db_index=True)
     order = models.ForeignKey('bookings.Order', on_delete=models.CASCADE, related_name='payments')
     customer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
@@ -64,7 +70,7 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     currency = models.CharField(max_length=10, default='INR')
 
-    # Gateway Details
+    # Gateway / Payment Method Details
     gateway = models.CharField(max_length=50, default='Cashfree')
     gateway_order_id = models.CharField(max_length=120, blank=True, default='', db_index=True)
     gateway_payment_id = models.CharField(max_length=120, blank=True, default='', db_index=True)
@@ -74,6 +80,15 @@ class Payment(models.Model):
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='PENDING', db_index=True)
     gateway_response = models.JSONField(default=dict, blank=True)
     failure_reason = models.TextField(blank=True, default='')
+
+    # Manual payment & Admin verification workflow
+    is_manual = models.BooleanField(default=False, db_index=True)
+    verification_status = models.CharField(max_length=30, choices=VERIFICATION_STATUS_CHOICES, default='VERIFIED', db_index=True)
+    verified_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='verified_payments')
+    verified_at = models.DateTimeField(null=True, blank=True)
+    reference_number = models.CharField(max_length=120, blank=True, default='', help_text="Manual UTR / Bank Ref", db_index=True)
+    admin_notes = models.TextField(blank=True, default='')
+    receipt_image = models.CharField(max_length=500, blank=True, default='')
 
     # Refund management
     refund_status = models.CharField(max_length=30, blank=True, default='')

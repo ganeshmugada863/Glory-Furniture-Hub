@@ -62,32 +62,16 @@ def checkout_payment_view(request, order_number):
         return HttpResponseForbidden("Access Denied: You do not have permission to view this order payment.")
 
     # If already fully paid, redirect to confirmation/receipt
-    if order.order_status == 'FULLY_PAID' or (order.remaining_amount and order.remaining_amount <= Decimal('0.00')):
+    if order.payment_status == 'FULLY_PAID' or (order.remaining_amount and order.remaining_amount <= Decimal('0.00')):
         last_payment = order.payments.filter(status='PAID').order_by('-paid_at').first()
         if last_payment:
             return redirect('payment_receipt', payment_id=last_payment.payment_id)
         return redirect('booking_confirmation', booking_id=order.booking.booking_id if order.booking else order.order_number)
 
-    # Fetch active installment plans
-    active_plans = InstallmentEngine.get_active_plans_for_amount(order.total_amount)
-
-    # Compute dynamic breakdown previews for each plan
-    plans_with_schedules = []
-    for plan in active_plans:
-        if plan.installment_count > 1:
-            schedule = InstallmentEngine.calculate_schedule(
-                total_amount=order.total_amount,
-                count=plan.installment_count,
-                percentages=plan.percentages,
-                interval_days=plan.interval_days
-            )
-            first_payment = schedule[0]['amount']
-            plans_with_schedules.append({
-                'plan': plan,
-                'schedule': schedule,
-                'first_payment': first_payment,
-                'formatted_first': f"₹{int(first_payment):,}",
-            })
+    # 3 Equal Installments schedule calculation matching Image 1
+    installment_schedule = InstallmentEngine.get_three_equal_installments_schedule(order.total_amount)
+    installment_part_amount = installment_schedule[0]['amount']
+    installment_plan = InstallmentEngine.get_three_equal_installments_plan()
 
     # Check if this checkout is for a specific installment
     installment_id = request.GET.get('installment_id')
@@ -98,7 +82,9 @@ def checkout_payment_view(request, order_number):
     context = {
         'order': order,
         'product': order.product,
-        'active_plans': plans_with_schedules,
+        'installment_schedule': installment_schedule,
+        'installment_part_amount': installment_part_amount,
+        'installment_plan': installment_plan,
         'target_installment': target_installment,
         'cashfree_env': getattr(settings, 'CASHFREE_ENVIRONMENT', 'SANDBOX').lower(),
         'cashfree_base_url': getattr(settings, 'CASHFREE_BASE_URL', 'https://sandbox.cashfree.com'),
@@ -144,8 +130,10 @@ def initiate_payment_session_api(request):
         if not target_installment.is_eligible_for_payment:
             return JsonResponse({'status': 'error', 'message': f'Installment #{target_installment.installment_number} is not yet eligible for payment. Prior installments must be settled first.'}, status=400)
     elif plan_slug != 'full-payment':
-        # Applying a multi-part installment plan
+        # Applying the 3 Equal Installments plan (Image 1)
         plan = InstallmentPlan.objects.filter(slug=plan_slug, is_active=True).first()
+        if not plan:
+            plan = InstallmentEngine.get_three_equal_installments_plan()
         if not plan:
             return JsonResponse({'status': 'error', 'message': f'Installment plan {plan_slug} not found or inactive.'}, status=404)
 
@@ -258,6 +246,7 @@ def payment_return_view(request):
 
                 if payment:
                     payment.status = 'PAID'
+                    payment.verification_status = 'VERIFIED'
                     payment.gateway_payment_id = str(successful_payment.get('cf_payment_id', ''))
                     payment.paid_at = timezone.now()
                     payment.gateway_response = successful_payment
@@ -281,13 +270,13 @@ def payment_return_view(request):
                             logger.warning(f"Failed sending installment notification: {ne}")
 
                     if payment.order:
-                        payment.order.update_financial_status()
+                        payment.order.recalculate_financials()
 
                         if payment.order.booking:
                             payment.order.booking.status = 'Confirmed'
                             payment.order.booking.save()
 
-                        if payment.order.order_status == 'FULLY_PAID':
+                        if payment.order.payment_status == 'FULLY_PAID':
                             try:
                                 NotificationService.notify_order_fully_paid(payment.order)
                             except Exception as ne:
@@ -440,7 +429,7 @@ def admin_payments_view(request):
     all_installments = Installment.objects.all()
     outstanding_amount = sum((i.amount for i in all_installments.filter(status__in=['PENDING', 'OVERDUE'])), Decimal('0.00'))
 
-    fully_paid_orders_count = Order.objects.filter(order_status='FULLY_PAID').count()
+    fully_paid_orders_count = Order.objects.filter(payment_status='FULLY_PAID').count()
     installment_orders_count = Order.objects.filter(payment_type='INSTALLMENT').count()
     failed_payments_count = all_payments.filter(status='FAILED').count()
     pending_payments_count = all_payments.filter(status='PENDING').count()

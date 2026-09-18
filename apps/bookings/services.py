@@ -138,6 +138,9 @@ class InstallmentService:
             NotificationService.notify_order_created(order)
             return order
 
+    # Convenient alias for creating installment orders
+    create_installment_order = create_order_with_installments
+
 
 class PaymentService:
     """
@@ -226,14 +229,12 @@ class PaymentService:
 
             # Update associated booking if linked
             if order.booking:
-                if order.order_status == 'FULLY_PAID':
-                    order.booking.status = 'Confirmed'
-                elif order.order_status == 'PARTIALLY_PAID':
+                if order.payment_status in ['FULLY_PAID', 'PARTIALLY_PAID']:
                     order.booking.status = 'Confirmed'
                 order.booking.notes += f" | Order: {order.order_number} | Paid: ₹{amount:,.0f} via {gateway} ({txn.gateway_payment_id})"
                 order.booking.save()
 
-            if order.order_status == 'FULLY_PAID':
+            if order.payment_status == 'FULLY_PAID':
                 NotificationService.notify_order_fully_paid(order)
 
             return True, txn, "Payment recorded and processed successfully."

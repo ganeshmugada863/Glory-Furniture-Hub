@@ -32,10 +32,10 @@
   </div>
 
   <!-- Orders List Under My Future Orders -->
-  <div class="space-y-4">
+  <div class="space-y-6">
     {% for o in orders %}
     <!-- Ultra-Clean Curved Order Card -->
-    <div class="glory-curved-card bg-white p-5 sm:p-6 shadow-sm hover:shadow-md transition-all space-y-4" style="border-radius: 28px !important; border: 2px solid #DECBB7 !important; background-color: #ffffff;">
+    <div class="glory-curved-card bg-white p-5 sm:p-7 shadow-sm hover:shadow-md transition-all space-y-6" style="border-radius: 28px !important; border: 2px solid #DECBB7 !important; background-color: #ffffff;">
       
       <!-- Top Row: Thumbnail + Product Name + Pricing Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -51,18 +51,27 @@
           <div class="min-w-0 space-y-1 text-left">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-xs font-bold text-gray-500 font-mono">#{{ o.order_number }}</span>
-              <!-- Status Badge -->
-              {% if o.order_status == 'FULLY_PAID' %}
+              
+              <!-- Payment Status Badge (Decoupled from Workshop Progress) -->
+              {% if o.payment_status == 'FULLY_PAID' %}
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
                   ✓ FULLY PAID
                 </span>
-              {% elif o.order_status == 'PARTIALLY_PAID' %}
+              {% elif o.payment_status == 'PARTIALLY_PAID' %}
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
-                  ⚡ PARTIALLY PAID
+                  ⏳ PARTIALLY PAID
+                </span>
+              {% elif o.payment_status == 'REFUNDED' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-900 border border-blue-300">
+                  ↩ REFUNDED
+                </span>
+              {% elif o.payment_status == 'FAILED' %}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-900 border border-red-300">
+                  ✕ PAYMENT FAILED
                 </span>
               {% else %}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-red-50 text-red-700 border border-red-200">
-                  PENDING PAYMENT
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gray-100 text-gray-700 border border-gray-300">
+                  • PENDING PAYMENT
                 </span>
               {% endif %}
 
@@ -97,37 +106,164 @@
             </div>
           </div>
 
-          <!-- Checkout or Receipt CTA -->
-          <div class="flex items-center gap-2">
-            {% if o.order_status == 'PENDING_PAYMENT' and not o.installments.exists %}
+          <!-- Checkout, Track or Receipt CTA -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <a href="{% url 'customer_order_detail' order_number=o.order_number %}"
+               class="px-3.5 py-2 rounded-xl bg-gray-950 hover:bg-black text-white text-xs font-extrabold uppercase tracking-wider transition-all shadow-xs">
+              Track Order &rarr;
+            </a>
+
+            {% if o.remaining_amount > 0 and not o.installments.exists %}
               <a href="{% url 'payment_checkout' order_number=o.order_number %}"
-                 class="px-4 py-2.5 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-sm">
-                Pay Now &rarr;
+                 class="px-3.5 py-2 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-sm">
+                Pay Bal ({{ o.formatted_remaining }})
               </a>
             {% elif o.payments.exists %}
               {% with last_pay=o.payments.last %}
               <a href="{% url 'payment_receipt' payment_id=last_pay.payment_id %}"
-                 class="px-3.5 py-2 rounded-xl bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 transition-all shadow-2xs">
+                 class="px-3 py-2 rounded-xl bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 transition-all shadow-2xs">
                 📄 Receipt
               </a>
               {% endwith %}
             {% endif %}
 
             <a href="{% url 'guide' %}?product={{ o.product_name|urlencode }}&order={{ o.booking_id|default:o.id|urlencode }}"
-               class="px-3.5 py-2 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-all shadow-2xs">
+               class="px-3 py-2 rounded-xl bg-[#FAF7F4] hover:bg-gray-100 text-[#5C3D2E] border border-[#DECBB7] text-xs font-bold uppercase tracking-wider transition-all shadow-2xs">
               Guide
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Installment Milestone Timeline (If multi-installment plan) -->
+      <!-- ========================================================= -->
+      <!-- AREA 2: FLIPKART-STYLE ORDER TRACKING TIMELINE & ADDRESS  -->
+      <!-- ========================================================= -->
+      <div class="pt-4 border-t border-[#EADBCE] space-y-4">
+        
+        <!-- Header row with Address Summary and Current Status -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+          
+          <!-- Delivery Address Badge (Flipkart Style) -->
+          <div class="md:col-span-2 flex items-start gap-2.5 p-3 rounded-2xl bg-[#FAF7F4] border border-[#DECBB7] text-xs">
+            <span class="text-base text-gray-600 shrink-0 mt-0.5">📍</span>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <strong class="font-extrabold text-gray-950">{{ o.customer_name }}</strong>
+                <span class="text-gray-400">&bull;</span>
+                <span class="text-gray-600 font-mono font-semibold">{{ o.phone }}</span>
+              </div>
+              <p class="text-gray-600 text-[11px] truncate mt-0.5" title="{{ o.delivery_address_display }}">
+                {{ o.delivery_address_display }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Current Stage Badge -->
+          <div class="flex items-center justify-between md:justify-end gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">
+                Stage: {{ o.get_fulfillment_status_display }}
+              </span>
+            </div>
+            <a href="{% url 'customer_order_detail' order_number=o.order_number %}" class="text-[11px] font-bold text-[#5C3D2E] hover:underline whitespace-nowrap">
+              Timeline &rarr;
+            </a>
+          </div>
+
+        </div>
+
+        <!-- 5-Stage Flipkart Visual Stepper Component -->
+        <div class="relative pt-2">
+          
+          <!-- Connecting Bar Layer (Flipkart Green / Gray) -->
+          <div class="hidden sm:block absolute top-6 left-8 right-8 h-1 bg-gray-200 -z-0 rounded-full" style="top: 24px;">
+            <div class="h-full bg-emerald-500 rounded-full transition-all duration-500" 
+                 style="width: {% if o.fulfillment_status == 'CONFIRMED' %}10%{% elif o.fulfillment_status == 'IN_PRODUCTION' %}35%{% elif o.fulfillment_status == 'SHIPPED' %}60%{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' %}85%{% elif o.fulfillment_status == 'DELIVERED' %}100%{% else %}10%{% endif %};"></div>
+          </div>
+
+          <!-- Stepper Grid (5 Nodes) -->
+          <div class="grid grid-cols-5 gap-1 text-center relative z-10">
+            
+              <!-- Stage 1: CONFIRMED -->
+            <div class="space-y-1">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs bg-emerald-600 text-white">
+                ✓
+              </div>
+              <div class="font-extrabold text-[10px] sm:text-xs text-gray-950">CONFIRMED</div>
+              <div class="text-[9px] text-gray-400 font-mono hidden sm:block">{{ o.created_at|date:"M d" }}</div>
+            </div>
+
+            <!-- Stage 2: IN_PRODUCTION -->
+            <div class="space-y-1">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'IN_PRODUCTION' %}bg-emerald-600 text-white ring-4 ring-emerald-100 animate-pulse{% elif o.fulfillment_status == 'SHIPPED' or o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
+                {% if o.fulfillment_status == 'IN_PRODUCTION' %}🔨{% elif o.fulfillment_status == 'SHIPPED' or o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}✓{% else %}2{% endif %}
+              </div>
+              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'IN_PRODUCTION' %}text-emerald-950{% elif o.fulfillment_status == 'SHIPPED' or o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}text-gray-950{% else %}text-gray-400{% endif %}">
+                IN_PRODUCTION
+              </div>
+              <div class="text-[9px] text-gray-400 hidden sm:block">Master Joinery</div>
+            </div>
+
+            <!-- Stage 3: SHIPPED -->
+            <div class="space-y-1">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'SHIPPED' %}bg-emerald-600 text-white ring-4 ring-emerald-100 animate-pulse{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
+                {% if o.fulfillment_status == 'SHIPPED' %}🚛{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}✓{% else %}3{% endif %}
+              </div>
+              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'SHIPPED' %}text-emerald-950{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}text-gray-950{% else %}text-gray-400{% endif %}">
+                SHIPPED
+              </div>
+              <div class="text-[9px] text-gray-400 hidden sm:block">Dispatched</div>
+            </div>
+
+            <!-- Stage 4: OUT_FOR_DELIVERY -->
+            <div class="space-y-1">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}bg-emerald-600 text-white ring-4 ring-emerald-100 animate-pulse{% elif o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
+                {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}📦{% elif o.fulfillment_status == 'DELIVERED' %}✓{% else %}4{% endif %}
+              </div>
+              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}text-emerald-950{% elif o.fulfillment_status == 'DELIVERED' %}text-gray-950{% else %}text-gray-400{% endif %}">
+                OUT_FOR_DELIVERY
+              </div>
+              <div class="text-[9px] text-gray-400 hidden sm:block">Artisan Team</div>
+            </div>
+
+            <!-- Stage 5: DELIVERED -->
+            <div class="space-y-1">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white ring-4 ring-emerald-100{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
+                {% if o.fulfillment_status == 'DELIVERED' %}✓{% else %}5{% endif %}
+              </div>
+              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'DELIVERED' %}text-emerald-900{% else %}text-gray-400{% endif %}">
+                DELIVERED
+              </div>
+              <div class="text-[9px] text-gray-400 hidden sm:block">In-Home Placed</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Latest Workshop Update Log (if present) -->
+        {% if o.status_history.first and o.status_history.first.admin_notes %}
+        <div class="p-3 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE] text-xs text-gray-700 flex items-center gap-2">
+          <span class="text-sm">📝</span>
+          <div class="truncate">
+            <strong>Latest Workshop Update:</strong>
+            <span class="italic">"{{ o.status_history.first.admin_notes }}"</span>
+            <span class="text-[10px] text-gray-400 ml-1">({{ o.status_history.first.created_at|date:"M d, h:i A" }})</span>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- AREA 1: FINANCIAL INSTALLMENT MILESTONES (IF 3-PARTS)     -->
+      <!-- ========================================================= -->
       {% if o.installments.exists %}
-      <div class="pt-3 border-t border-gray-100 space-y-2.5">
+      <div class="pt-4 border-t border-[#EADBCE] space-y-2.5">
         <div class="flex items-center justify-between text-xs font-bold text-gray-700">
-          <span class="text-[#5C3D2E] font-black uppercase tracking-wider text-[11px]">Installment Milestone Schedule</span>
+          <span class="text-[#5C3D2E] font-black uppercase tracking-wider text-[11px]">Three-Installment Milestone Schedule</span>
           <span class="text-gray-500 text-[11px]">
-            {{ o.installments.filter.count }} Parts &bull; Paid {{ o.formatted_paid }} of {{ o.formatted_total }}
+            {{ o.installments.filter.count }} Milestones &bull; Paid {{ o.formatted_paid }} of {{ o.formatted_total }}
           </span>
         </div>
 

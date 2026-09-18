@@ -149,10 +149,66 @@ class InstallmentEngine:
         return schedule
 
     @classmethod
+    def get_three_equal_installments_plan(cls):
+        """Returns or creates the single standard 3 Equal Installments plan matching Image 1."""
+        cls.ensure_default_plans()
+        plan = InstallmentPlan.objects.filter(
+            slug__in=['3-monthly-payments', 'three-equal-installments'],
+            is_active=True
+        ).first()
+        if not plan:
+            plan = InstallmentPlan.objects.filter(installment_count=3, is_active=True).first()
+        return plan
+
+    @classmethod
+    def get_three_equal_installments_schedule(cls, total_amount, start_date=None):
+        """
+        Generates the exact 3-equal-parts schedule matching Image 1:
+        - Installment 1: Due Today | 'Pay now to confirm your order'
+        - Installment 2: Due in 30 days | 'Pay on the scheduled date'
+        - Installment 3: Due in 60 days | 'Pay on the scheduled date'
+        Strict Decimal precision: sum(installments) == total_amount with remainder in part 3.
+        """
+        raw_schedule = cls.calculate_schedule(
+            total_amount=total_amount,
+            count=3,
+            interval_days=30,
+            start_date=start_date
+        )
+
+        milestones = [
+            {
+                'number': 1,
+                'label': 'Installment 1',
+                'subtext': 'Pay now to confirm your order',
+                'due_text': 'Due Today',
+                'amount': raw_schedule[0]['amount'],
+                'due_date': raw_schedule[0]['due_date'],
+            },
+            {
+                'number': 2,
+                'label': 'Installment 2',
+                'subtext': 'Pay on the scheduled date',
+                'due_text': 'Due in 30 days',
+                'amount': raw_schedule[1]['amount'],
+                'due_date': raw_schedule[1]['due_date'],
+            },
+            {
+                'number': 3,
+                'label': 'Installment 3',
+                'subtext': 'Pay on the scheduled date',
+                'due_text': 'Due in 60 days',
+                'amount': raw_schedule[2]['amount'],
+                'due_date': raw_schedule[2]['due_date'],
+            }
+        ]
+        return milestones
+
+    @classmethod
     def get_active_plans_for_amount(cls, amount):
         """
         Returns active InstallmentPlans eligible for the specified order total.
-        If no plans exist in the database, seeds default plans.
+        Image 1 specifies the single 3 Equal Installments option.
         """
         cls.ensure_default_plans()
         amount_dec = Decimal(str(amount))
@@ -168,49 +224,49 @@ class InstallmentEngine:
 
     @classmethod
     def ensure_default_plans(cls):
-        """Seeds standard plans if none exist in the database."""
-        if not InstallmentPlan.objects.exists():
-            InstallmentPlan.objects.create(
-                name='Full Payment (100% Upfront)',
-                slug='full-payment',
-                installment_count=1,
-                percentages=[100],
-                interval_days=0,
-                min_amount=Decimal('0.00'),
-                is_active=True,
-                display_order=1,
-                description='Pay complete amount now with instant booking confirmation.'
-            )
-            InstallmentPlan.objects.create(
-                name='2 Installments (50/50 Split)',
-                slug='2-installments',
-                installment_count=2,
-                percentages=[50, 50],
-                interval_days=30,
-                min_amount=Decimal('5000.00'),
-                is_active=True,
-                display_order=2,
-                description='Pay 50% now to initiate handcrafting, and 50% upon workshop completion.'
-            )
-            InstallmentPlan.objects.create(
-                name='3 Monthly Payments',
-                slug='3-monthly-payments',
-                installment_count=3,
-                percentages=[33.33, 33.33, 33.34],
-                interval_days=30,
-                min_amount=Decimal('10000.00'),
-                is_active=True,
-                display_order=3,
-                description='Convenient 3-stage payments during timber seasoning, joinery, and final buffing.'
-            )
-            InstallmentPlan.objects.create(
-                name='6 Easy Installments',
-                slug='6-easy-installments',
-                installment_count=6,
-                percentages=[],
-                interval_days=30,
-                min_amount=Decimal('25000.00'),
-                is_active=True,
-                display_order=4,
-                description='Split over 6 monthly installments for bespoke architectural teak suites.'
-            )
+        """
+        Seeds standard plans: Full Payment and 3 Equal Installments (Image 1).
+        Deactivates and removes multi-stage plans (2-installments, 6-easy-installments) from Image 2.
+        """
+        # Deactivate / remove Image 2 multi-contract plans
+        InstallmentPlan.objects.filter(slug__in=['2-installments', '6-easy-installments']).update(is_active=False)
+
+        # Full Payment plan
+        full_plan, created = InstallmentPlan.objects.get_or_create(
+            slug='full-payment',
+            defaults={
+                'name': 'Full Payment (100% Upfront)',
+                'installment_count': 1,
+                'percentages': [100],
+                'interval_days': 0,
+                'min_amount': Decimal('0.00'),
+                'is_active': True,
+                'display_order': 1,
+                'description': 'Pay complete amount now with instant booking confirmation.'
+            }
+        )
+        if not created and not full_plan.is_active:
+            full_plan.is_active = True
+            full_plan.save()
+
+        # 3 Equal Installments plan (Image 1)
+        plan_3, created = InstallmentPlan.objects.get_or_create(
+            slug='3-monthly-payments',
+            defaults={
+                'name': '3 Equal Installments',
+                'installment_count': 3,
+                'percentages': [],
+                'interval_days': 30,
+                'min_amount': Decimal('0.00'),
+                'is_active': True,
+                'display_order': 2,
+                'description': 'Split the total cost into 3 equal parts. Pay the first installment now and the remaining 2 installments later as per schedule.'
+            }
+        )
+        if not created:
+            plan_3.name = '3 Equal Installments'
+            plan_3.description = 'Split the total cost into 3 equal parts. Pay the first installment now and the remaining 2 installments later as per schedule.'
+            plan_3.is_active = True
+            plan_3.min_amount = Decimal('0.00')
+            plan_3.display_order = 2
+            plan_3.save()
