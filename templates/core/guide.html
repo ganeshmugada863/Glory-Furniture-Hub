@@ -1,238 +1,178 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Furniture Guide — Glory Furniture Hub{% endblock %}
-
-{% block back_bar %}
-<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
-  <div class="flex items-center gap-3">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'customer_orders' %}';" 
-            class="p-1 rounded-full hover:bg-gray-200 text-gray-800 transition-colors cursor-pointer" 
-            aria-label="Back">
-      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-    </button>
-    <div class="border-l border-gray-300 pl-3">
-      <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] block leading-none">Support &amp; Care</span>
-      <span class="text-xs sm:text-sm font-extrabold text-gray-950 leading-none">Furniture Owner's Guide</span>
-    </div>
-  </div>
-  <a href="{% url 'customer_orders' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1">
-    <span>&larr; Back to My Orders</span>
-  </a>
-</div>
-{% endblock %}
+{% block title %}Furniture Owner's Guide — Glory Furniture Hub{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8 selection:bg-[#5C3D2E] selection:text-white">
+<style>
+  @keyframes timelineHalo {
+    0% {
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+      transform: scale(0.96);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.18);
+      transform: scale(1.04);
+    }
+    100% {
+      box-shadow: 0 0 0 14px rgba(16, 185, 129, 0);
+      transform: scale(0.96);
+    }
+  }
 
-  <!-- Header Banner -->
-  <div class="bg-gradient-to-br from-[#4A2E1F] via-[#361F13] to-[#25130A] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg">
-    <div class="relative z-10 max-w-2xl space-y-2.5">
-      <span class="px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest bg-[#C9963F] text-gray-950 inline-block shadow-sm">
-        Artisanal Master Guide
+  .timeline-pulse-active {
+    animation: timelineHalo 2.2s infinite ease-in-out;
+  }
+
+  @keyframes stageFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .timeline-stage-animate {
+    animation: stageFadeIn 0.4s ease-out forwards;
+  }
+</style>
+
+<div class="w-full max-w-xl mx-auto px-4 py-4 sm:py-8">
+
+  <!-- Top Minimalist Navigation Bar (From Screenshot Structure) -->
+  <div class="flex items-center justify-between pb-4 sm:pb-6 border-b border-gray-100 mb-6">
+    <div class="flex items-center gap-3">
+      <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'customer_orders' %}';"
+              class="w-9 h-9 rounded-full flex items-center justify-center text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
+              aria-label="Back">
+        <svg class="w-6 h-6 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </button>
+      <div>
+        <h1 class="text-base sm:text-lg font-black text-gray-950 tracking-tight leading-none">
+          Furniture Owner's Guide
+        </h1>
+        <p class="text-xs text-gray-500 mt-0.5">
+          Artisan Handcraft &amp; Workshop Journey
+        </p>
+      </div>
+    </div>
+
+    {% if order %}
+    <div class="hidden sm:flex flex-col items-end">
+      <span class="text-[11px] font-mono font-bold text-[#5C3D2E] bg-[#FAF7F4] px-2.5 py-1 rounded-lg border border-[#DECBB7]">
+        {{ order.order_number }}
       </span>
-      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
-        Handcrafted Furniture &amp; Quality Guide
-      </h1>
-      <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-        Everything you need to know about your solid Burma teakwood piece: wood authentication, precision assembly, care routine, and doorstep delivery guidance.
-      </p>
-
-      {% if product_query %}
-      <div class="mt-4 pt-3 border-t border-white/20 flex items-center gap-2 text-xs text-amber-200">
-        <span class="font-black text-white">Item Focused:</span>
-        <span class="bg-white/10 px-3 py-1 rounded-xl border border-white/20 font-bold text-white">{{ product_query }}</span>
-      </div>
-      {% endif %}
+      <span class="text-[10px] text-gray-400 mt-0.5 max-w-[150px] truncate">
+        {{ product_query }}
+      </span>
     </div>
-
-    <!-- Background Watermark -->
-    <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl select-none pointer-events-none">
-      🪵
-    </div>
+    {% endif %}
   </div>
 
-  <!-- 4 Guide Modules Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-    <!-- 1. Quality & Teak Wood Authenticity -->
-    <div class="bg-white rounded-3xl p-6 border border-[#E2D8CC] shadow-xs space-y-3.5 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl flex-shrink-0">
-        🪵
-      </div>
-      <div>
-        <h2 class="text-base sm:text-lg font-black text-gray-950 tracking-tight">1. Teak Wood Quality &amp; Authenticity</h2>
-        <p class="text-xs text-gray-500 mt-0.5">100% Seasoned Grade-A Burma &amp; CP Teak</p>
-      </div>
-      <ul class="text-xs text-gray-700 space-y-2 border-t border-gray-100 pt-3">
-        <li class="flex items-start gap-2">
-          <span class="text-emerald-600 font-bold">✓</span>
-          <span><strong>Zero Particle / MDF:</strong> Every piece is carved strictly from 100% solid natural timber.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-emerald-600 font-bold">✓</span>
-          <span><strong>Kiln-Dried Seasoning:</strong> Moisture content controlled between 8%–12% to prevent shrinking or warping across seasons.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-emerald-600 font-bold">✓</span>
-          <span><strong>Natural Teak Oils:</strong> High density natural silica and teak resin that naturally repels termites and wood rot.</span>
-        </li>
-      </ul>
+  <!-- Mobile Order Identifier (If Order Attached) -->
+  {% if order %}
+  <div class="sm:hidden mb-5 bg-[#FAF7F4] rounded-2xl p-3 border border-[#E8DAC9] flex items-center justify-between">
+    <div class="min-w-0 pr-2">
+      <span class="text-[10px] font-bold text-[#5C3D2E] uppercase tracking-wider block">Order Active</span>
+      <p class="text-xs font-bold text-gray-900 truncate">{{ product_query }}</p>
     </div>
-
-    <!-- 2. Sizing & Room Placement Specs -->
-    <div class="bg-white rounded-3xl p-6 border border-[#E2D8CC] shadow-xs space-y-3.5 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-2xl flex-shrink-0">
-        📐
-      </div>
-      <div>
-        <h2 class="text-base sm:text-lg font-black text-gray-950 tracking-tight">2. Size, Dimensions &amp; Room Layout</h2>
-        <p class="text-xs text-gray-500 mt-0.5">Custom fit tolerances and ergonomic spacing</p>
-      </div>
-      <ul class="text-xs text-gray-700 space-y-2 border-t border-gray-100 pt-3">
-        <li class="flex items-start gap-2">
-          <span class="text-blue-600 font-bold">✓</span>
-          <span><strong>Doorway &amp; Corridor Clearance:</strong> Ensure doorways and staircases have at least 32 inches width for easy entry.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-blue-600 font-bold">✓</span>
-          <span><strong>Walking Pathway:</strong> Allow 30–36 inches perimeter clearance around dining tables and bed cots for comfortable movement.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-blue-600 font-bold">✓</span>
-          <span><strong>Floor Alignment:</strong> Use felt or rubber leveling glides on marble, tile, or wooden flooring.</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- 3. Assembly & White-Glove Setup -->
-    <div class="bg-white rounded-3xl p-6 border border-[#E2D8CC] shadow-xs space-y-3.5 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-2xl flex-shrink-0">
-        🛠️
-      </div>
-      <div>
-        <h2 class="text-base sm:text-lg font-black text-gray-950 tracking-tight">3. Assembly &amp; Installation Process</h2>
-        <p class="text-xs text-gray-500 mt-0.5">White-glove assembly handled by our trained crew</p>
-      </div>
-      <ul class="text-xs text-gray-700 space-y-2 border-t border-gray-100 pt-3">
-        <li class="flex items-start gap-2">
-          <span class="text-emerald-600 font-bold">✓</span>
-          <span><strong>Mortise &amp; Tenon Joinery:</strong> Precision-fit wooden joints secured with high-grade architectural fasteners.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-emerald-600 font-bold">✓</span>
-          <span><strong>Zero DIY Stress:</strong> Our delivery crew unboxes, places, and fully assembles your item in your chosen room.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-emerald-600 font-bold">✓</span>
-          <span><strong>Post-Assembly Check:</strong> Slat stability, drawer glides, and balance inspected before sign-off.</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- 4. Polish, Cleaning & Maintenance -->
-    <div class="bg-white rounded-3xl p-6 border border-[#E2D8CC] shadow-xs space-y-3.5 hover:shadow-md transition-shadow">
-      <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center text-2xl flex-shrink-0">
-        ✨
-      </div>
-      <div>
-        <h2 class="text-base sm:text-lg font-black text-gray-950 tracking-tight">4. Polish &amp; Long-Term Care Routine</h2>
-        <p class="text-xs text-gray-500 mt-0.5">Keep natural wood lustrous for decades</p>
-      </div>
-      <ul class="text-xs text-gray-700 space-y-2 border-t border-gray-100 pt-3">
-        <li class="flex items-start gap-2">
-          <span class="text-purple-600 font-bold">✓</span>
-          <span><strong>Daily Dusting:</strong> Wipe gently with a dry, lint-free microfiber cloth along the wood grain.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-purple-600 font-bold">✓</span>
-          <span><strong>Beeswax Conditioning:</strong> Apply natural beeswax or teak oil once every 12–18 months to nourish timber depth.</span>
-        </li>
-        <li class="flex items-start gap-2">
-          <span class="text-purple-600 font-bold">✓</span>
-          <span><strong>Protection:</strong> Always use coasters under hot beverage cups and avoid harsh chemical sprays.</span>
-        </li>
-      </ul>
-    </div>
-
+    <span class="text-[11px] font-mono font-bold text-gray-700 bg-white px-2 py-0.5 rounded-md border border-gray-200 shrink-0">
+      {{ order.order_number }}
+    </span>
   </div>
+  {% endif %}
 
-  <!-- 5-Stage Workshop Journey Guide -->
-  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-xs space-y-4">
-    <div class="flex items-center gap-3">
-      <span class="text-2xl">🔨</span>
-      <div>
-        <h3 class="text-base font-black text-gray-950">Your Handcrafted Furniture Journey (5 Stages)</h3>
-        <p class="text-xs text-gray-500">Every solid Burma teak piece follows our transparent 5-stage artisan workshop lifecycle:</p>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-2 text-xs">
-      <div class="p-3.5 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-1">
-        <span class="font-mono font-black text-[#5C3D2E] block">1. Confirmed</span>
-        <strong class="block text-gray-900 font-bold">Timber Selection</strong>
-        <span class="text-gray-500 text-[11px] block">Raw Grade-A Burma teak planks hand-selected and moisture-metered.</span>
-      </div>
-      <div class="p-3.5 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-1">
-        <span class="font-mono font-black text-[#5C3D2E] block">2. In Production</span>
-        <strong class="block text-gray-900 font-bold">Artisan Crafting</strong>
-        <span class="text-gray-500 text-[11px] block">Master mortise-and-tenon joinery, sanding, and rich natural teak finishing.</span>
-      </div>
-      <div class="p-3.5 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-1">
-        <span class="font-mono font-black text-[#5C3D2E] block">3. Shipped</span>
-        <strong class="block text-gray-900 font-bold">Secured Transit</strong>
-        <span class="text-gray-500 text-[11px] block">Multi-layer protective foam packaging and dispatch via logistics transport.</span>
-      </div>
-      <div class="p-3.5 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-1">
-        <span class="font-mono font-black text-[#5C3D2E] block">4. Out for Delivery</span>
-        <strong class="block text-gray-900 font-bold">Local Van Leg</strong>
-        <span class="text-gray-500 text-[11px] block">Our dedicated white-glove team travels to your designated address.</span>
-      </div>
-      <div class="p-3.5 rounded-2xl bg-[#FAF7F4] border border-[#E2D8CC] space-y-1">
-        <span class="font-mono font-black text-emerald-800 block">5. Delivered</span>
-        <strong class="block text-gray-900 font-bold">In-Home Assembly</strong>
-        <span class="text-gray-500 text-[11px] block">Full room placement, unboxing, final assembly, and quality verification.</span>
-      </div>
-    </div>
-  </div>
+  <!-- Timeline Card Container (Clean White Background Matching Screenshot) -->
+  <div class="bg-white rounded-3xl p-5 sm:p-8 shadow-xs border border-gray-100">
+    <div class="space-y-0">
+      {% for stage in timeline %}
+      <div class="flex items-start gap-4 sm:gap-5 timeline-stage-animate" style="animation-delay: {{ forloop.counter0 }}00ms;">
+        
+        <!-- Left Spine: Node Indicator & Vertical Line -->
+        <div class="flex flex-col items-center shrink-0 self-stretch">
+          
+          <!-- Node Circle -->
+          <div class="relative flex items-center justify-center w-6 h-6">
+            {% if stage.is_current %}
+              <!-- Active Node: Animated Pulsing Glowing Ring (Screenshot Structure) -->
+              <span class="timeline-pulse-active absolute w-6 h-6 rounded-full bg-emerald-100/90 border border-emerald-300"></span>
+              <span class="relative w-3.5 h-3.5 rounded-full bg-emerald-600"></span>
+            {% elif stage.is_completed %}
+              <!-- Completed Node: Solid Green Dot -->
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-600"></span>
+            {% else %}
+              <!-- Upcoming Node: Hollow Light Gray Circle -->
+              <span class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 bg-white"></span>
+            {% endif %}
+          </div>
 
-  <!-- Delivery Day Checkpoint -->
-  <div class="bg-amber-50/70 border border-amber-200/90 rounded-3xl p-6 space-y-3">
-    <div class="flex items-center gap-3">
-      <span class="text-2xl">📦</span>
-      <div>
-        <h3 class="text-base font-black text-amber-950">Delivery Day Inspection Checklist</h3>
-        <p class="text-xs text-amber-900/80">Follow these 3 quick checks when receiving your furniture at your residence:</p>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-amber-950">
-      <div class="bg-white/80 p-3.5 rounded-2xl border border-amber-100 space-y-1">
-        <span class="font-black block">1. Surface &amp; Finish</span>
-        <span class="text-gray-600">Inspect finish for scratches, smooth edges, and rich honey luster.</span>
-      </div>
-      <div class="bg-white/80 p-3.5 rounded-2xl border border-amber-100 space-y-1">
-        <span class="font-black block">2. Joint Stability</span>
-        <span class="text-gray-600">Ensure joints, legs, and frames are rock-solid with zero wobble.</span>
-      </div>
-      <div class="bg-white/80 p-3.5 rounded-2xl border border-amber-100 space-y-1">
-        <span class="font-black block">3. Handover Sign-off</span>
-        <span class="text-gray-600">Confirm delivery with the delivery crew and receive your warranty slip.</span>
-      </div>
-    </div>
-  </div>
+          <!-- Vertical Connecting Spine Line -->
+          {% if stage.has_next_line %}
+          <div class="w-0.5 flex-1 my-1 {% if stage.line_is_active %}bg-emerald-600{% else %}bg-gray-200{% endif %}"></div>
+          {% endif %}
+        </div>
 
-  <!-- Direct Artisan Assistance Bar -->
-  <div class="bg-white rounded-3xl p-6 border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="space-y-1 text-center sm:text-left">
-      <h3 class="text-sm sm:text-base font-black text-gray-950">Need Help or Have Custom Fitting Questions?</h3>
-      <p class="text-xs text-gray-500">Our Master Studio Craftsmen in Hyderabad are ready to help with room measurements and assembly advice.</p>
-    </div>
-    <div class="flex items-center gap-3 flex-shrink-0">
-      <a href="tel:+919876543210" class="px-5 py-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-black transition-colors">
-        📞 Call Studio
-      </a>
-      <a href="https://wa.me/919876543210?text=Hello%20Glory%20Furniture,%20I%20need%20guidance%20for%20my%20order." target="_blank" class="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black transition-colors shadow-sm">
-        💬 WhatsApp Artisan
-      </a>
+        <!-- Right Content: Title, Date, Sub-events & Nested Checkpoints -->
+        <div class="flex-1 {% if stage.has_next_line %}pb-7 sm:pb-8{% else %}pb-2{% endif %} pt-0.5">
+          
+          <!-- Stage Header (Title + Date on same line) -->
+          <div class="flex flex-wrap items-baseline gap-x-2">
+            <h2 class="text-sm sm:text-base {% if stage.is_completed or stage.is_current %}font-bold text-gray-900{% else %}font-medium text-gray-400{% endif %}">
+              {{ stage.title }}
+            </h2>
+            {% if stage.date_header %}
+            <span class="text-xs sm:text-sm text-gray-500 font-normal">
+              {{ stage.date_header }}
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Sub-events List -->
+          {% if stage.sub_events %}
+          <div class="mt-1.5 space-y-1.5">
+            {% for ev in stage.sub_events %}
+            <div class="text-xs sm:text-[13px] leading-relaxed">
+              <span class="{% if stage.is_completed or stage.is_current %}text-gray-800 font-medium{% else %}text-gray-400{% endif %}">
+                {{ ev.text }}
+              </span>
+              {% if ev.timestamp %}
+              <div class="text-[11px] sm:text-xs text-gray-400 font-normal">
+                {{ ev.timestamp }}
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Nested Facility / Workshop Checkpoint Logs (Indented, Like Screenshot) -->
+          {% if stage.nested_logs %}
+          <div class="mt-3 ml-2 sm:ml-3 pl-3 sm:pl-4 border-l-2 border-emerald-100 space-y-2 py-0.5">
+            {% for log in stage.nested_logs %}
+            <div class="text-xs sm:text-[13px] leading-snug">
+              <p class="text-gray-700 font-medium">{{ log.text }}</p>
+              <p class="text-[11px] text-gray-400 font-normal">{{ log.timestamp }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Status Notice Note -->
+          {% if stage.note %}
+          <p class="text-xs text-gray-500 mt-2.5 font-normal">
+            {{ stage.note }}
+          </p>
+          {% endif %}
+
+        </div>
+
+      </div>
+      {% endfor %}
     </div>
   </div>
 

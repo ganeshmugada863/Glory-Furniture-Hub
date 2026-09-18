@@ -878,21 +878,32 @@ def admin_orders_view(request):
             if mapped_status not in valid_statuses:
                 messages.error(request, f"Invalid workshop stage: '{new_status}'. Allowed stages: Confirmed, In Production, Shipped, Out for Delivery, Delivered.")
                 return redirect(request.get_full_path())
-            
+
+            override_shipping = request.POST.get('override_shipping_payment') in ['true', 'on', '1']
+            override_reason = request.POST.get('override_reason', '').strip()
+
+            if mapped_status == 'SHIPPED' and order.remaining_amount > Decimal('0.00') and not override_shipping:
+                messages.error(
+                    request,
+                    f"Warning: Order #{order.order_number} has an unpaid balance of {order.formatted_remaining}. "
+                    f"Shipping an unpaid order requires an authorized Admin Override with mandatory justification."
+                )
+                return redirect(request.get_full_path())
+
             old_status = order.fulfillment_status
             order.fulfillment_status = mapped_status
             order.save(update_fields=['fulfillment_status', 'updated_at'])
 
             admin_notes = request.POST.get('admin_notes', '').strip()
-            if mapped_status == 'SHIPPED' and order.remaining_amount > Decimal('0.00'):
-                admin_notes = admin_notes or f"Admin dispatched order with unpaid balance: {order.formatted_remaining}"
+            if override_shipping and mapped_status == 'SHIPPED' and order.remaining_amount > Decimal('0.00'):
+                admin_notes = f"SHIPPING OVERRIDE: {override_reason}. {admin_notes}".strip()
                 OrderAdminAuditLog.objects.create(
                     order=order,
                     action='ADMIN_OVERRIDE',
                     performed_by=request.user if request.user.is_authenticated else None,
                     old_value=old_status,
                     new_value='SHIPPED',
-                    notes=f"Admin dispatched order with unpaid balance {order.formatted_remaining}: {admin_notes}"
+                    notes=f"Overridden shipping payment rule for unpaid balance {order.formatted_remaining}: {override_reason}"
                 )
 
             OrderStatusHistory.objects.create(

@@ -2,7 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Q
 from apps.store.models import Product, Category
+from apps.bookings.models import Order
 
 def home_view(request):
     # If session role is admin and they navigate to home, redirect to admin dashboard
@@ -194,13 +198,262 @@ def ai_chat_api(request):
     return JsonResponse({'status': 'error', 'message': 'Only POST allowed'}, status=405)
 
 
+def get_ordinal_suffix(day):
+    if 11 <= day <= 13:
+        return 'th'
+    return {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
+
+
+def format_ordinal_date(dt):
+    if not dt:
+        return ''
+    day = dt.day
+    suffix = get_ordinal_suffix(day)
+    return f"{dt.strftime('%a')}, {day}{suffix} {dt.strftime('%b')} '{dt.strftime('%y')}"
+
+
+def format_time_only(dt):
+    if not dt:
+        return ''
+    t = dt.strftime("%I:%M%p").lower()
+    if t.startswith('0'):
+        t = t[1:]
+    return t
+
+
+def format_datetime_stamp(dt):
+    if not dt:
+        return ''
+    return f"{format_ordinal_date(dt)} - {format_time_only(dt)}"
+
+
+def build_guide_timeline(order=None, product_query=''):
+    stage_keys = ['CONFIRMED', 'IN_PRODUCTION', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED']
+
+    current_status = getattr(order, 'fulfillment_status', 'SHIPPED') if order else 'SHIPPED'
+    if current_status in stage_keys:
+        active_idx = stage_keys.index(current_status)
+    else:
+        active_idx = 2  # Default to SHIPPED
+
+    t0 = (order.created_at if order and order.created_at else timezone.now()) - timedelta(days=6)
+
+    history_map = {}
+    if order:
+        try:
+            for h in order.status_history.all():
+                history_map[h.fulfillment_status] = h.created_at
+        except Exception:
+            pass
+
+    stages = []
+
+    # 1. CONFIRMED
+    idx = 0
+    dt_c = history_map.get('CONFIRMED') or (order.created_at if order and order.created_at else t0)
+    is_completed = (idx <= active_idx)
+    is_current = (idx == active_idx)
+    is_upcoming = (idx > active_idx)
+    next_is_active_or_done = (idx + 1 <= active_idx)
+
+    stages.append({
+        'key': 'CONFIRMED',
+        'title': 'Order Confirmed',
+        'date_header': format_ordinal_date(dt_c),
+        'is_completed': is_completed,
+        'is_current': is_current,
+        'is_upcoming': is_upcoming,
+        'has_next_line': True,
+        'line_is_active': next_is_active_or_done,
+        'sub_events': [
+            {'text': 'Your Order has been placed.', 'timestamp': format_datetime_stamp(dt_c)},
+            {'text': 'Workshop has processed your order.', 'timestamp': format_datetime_stamp(dt_c + timedelta(days=2, hours=12, minutes=48))},
+            {'text': 'Grade-A Burma Teak seasoned & selected by artisan.', 'timestamp': format_datetime_stamp(dt_c + timedelta(days=2, hours=14, minutes=41))},
+        ],
+        'nested_logs': [],
+        'note': None,
+    })
+
+    # 2. IN_PRODUCTION
+    idx = 1
+    dt_p = history_map.get('IN_PRODUCTION') or (dt_c + timedelta(days=2))
+    is_completed = (idx <= active_idx)
+    is_current = (idx == active_idx)
+    is_upcoming = (idx > active_idx)
+    next_is_active_or_done = (idx + 1 <= active_idx)
+
+    prod_sub_events = []
+    prod_nested_logs = []
+    prod_note = None
+    if is_completed or is_current:
+        prod_sub_events.append({'text': 'Master carpentry & joinery in progress.', 'timestamp': format_datetime_stamp(dt_p)})
+        if is_current:
+            prod_nested_logs = [
+                {'text': 'Mortise-and-tenon structural framing assembled', 'timestamp': format_datetime_stamp(dt_p + timedelta(hours=1, minutes=2)) + ' - HYDERABAD WORKSHOP'},
+                {'text': 'Precision hand-sanding & surface grain inspection', 'timestamp': format_datetime_stamp(dt_p + timedelta(hours=5, minutes=8)) + ' - HYDERABAD WORKSHOP'},
+            ]
+            prod_note = 'Carpentry checkpoint verified. Natural teak buffing underway.'
+    else:
+        prod_sub_events.append({'text': 'Item yet to enter production workshop.', 'timestamp': ''})
+
+    stages.append({
+        'key': 'IN_PRODUCTION',
+        'title': 'In Production',
+        'date_header': format_ordinal_date(dt_p) if (is_completed or is_current) else '',
+        'is_completed': is_completed,
+        'is_current': is_current,
+        'is_upcoming': is_upcoming,
+        'has_next_line': True,
+        'line_is_active': next_is_active_or_done,
+        'sub_events': prod_sub_events,
+        'nested_logs': prod_nested_logs,
+        'note': prod_note,
+    })
+
+    # 3. SHIPPED
+    idx = 2
+    dt_s = history_map.get('SHIPPED') or (dt_c + timedelta(days=3))
+    is_completed = (idx <= active_idx)
+    is_current = (idx == active_idx)
+    is_upcoming = (idx > active_idx)
+    next_is_active_or_done = (idx + 1 <= active_idx)
+
+    ship_sub_events = []
+    ship_nested_logs = []
+    ship_note = None
+    if is_completed or is_current:
+        ship_sub_events.append({'text': 'Specialized Furniture Transport Fleet', 'timestamp': ''})
+        ship_sub_events.append({'text': 'Your item has been securely dispatched.', 'timestamp': format_datetime_stamp(dt_s + timedelta(minutes=4))})
+        if is_current:
+            ship_nested_logs = [
+                {'text': 'Your item has arrived at Central Dispatch Facility', 'timestamp': format_datetime_stamp(dt_s) + ' - HYDERABAD'},
+                {'text': 'Multi-layer corner and foam packaging inspected', 'timestamp': format_datetime_stamp(dt_s + timedelta(minutes=2)) + ' - HYDERABAD'},
+                {'text': 'Your item has departed Central Dispatch Facility', 'timestamp': format_datetime_stamp(dt_s + timedelta(hours=4, minutes=4)) + ' - HYDERABAD'},
+            ]
+            ship_note = 'Item in transit to regional distribution hub nearest to you.'
+    else:
+        ship_sub_events.append({'text': 'Item yet to be shipped.', 'timestamp': ''})
+
+    stages.append({
+        'key': 'SHIPPED',
+        'title': 'Shipped',
+        'date_header': format_ordinal_date(dt_s) if (is_completed or is_current) else '',
+        'is_completed': is_completed,
+        'is_current': is_current,
+        'is_upcoming': is_upcoming,
+        'has_next_line': True,
+        'line_is_active': next_is_active_or_done,
+        'sub_events': ship_sub_events,
+        'nested_logs': ship_nested_logs,
+        'note': ship_note,
+    })
+
+    # 4. OUT_FOR_DELIVERY
+    idx = 3
+    dt_o = history_map.get('OUT_FOR_DELIVERY') or (dt_c + timedelta(days=6))
+    is_completed = (idx <= active_idx)
+    is_current = (idx == active_idx)
+    is_upcoming = (idx > active_idx)
+    next_is_active_or_done = (idx + 1 <= active_idx)
+
+    out_sub_events = []
+    out_nested_logs = []
+    out_note = None
+    if is_completed or is_current:
+        out_sub_events.append({'text': 'Item loaded onto local delivery vehicle.', 'timestamp': format_datetime_stamp(dt_o)})
+        out_sub_events.append({'text': 'White-glove doorstep delivery crew en route.', 'timestamp': format_datetime_stamp(dt_o + timedelta(hours=1))})
+        if is_current:
+            out_note = 'Delivery partner will contact before arrival.'
+    else:
+        out_sub_events.append({'text': 'Item yet to be delivered.', 'timestamp': ''})
+
+    stages.append({
+        'key': 'OUT_FOR_DELIVERY',
+        'title': 'Out For Delivery',
+        'date_header': format_ordinal_date(dt_o) if (is_completed or is_current) else '',
+        'is_completed': is_completed,
+        'is_current': is_current,
+        'is_upcoming': is_upcoming,
+        'has_next_line': True,
+        'line_is_active': next_is_active_or_done,
+        'sub_events': out_sub_events,
+        'nested_logs': out_nested_logs,
+        'note': out_note,
+    })
+
+    # 5. DELIVERED
+    idx = 4
+    dt_d = history_map.get('DELIVERED') or (dt_c + timedelta(days=9))
+    is_completed = (idx <= active_idx)
+    is_current = (idx == active_idx)
+    is_upcoming = (idx > active_idx)
+
+    del_sub_events = []
+    if is_completed or is_current:
+        del_title = f"Delivered {format_ordinal_date(dt_d)}"
+        del_sub_events.append({'text': 'Item delivered to room of choice.', 'timestamp': format_datetime_stamp(dt_d)})
+        del_sub_events.append({'text': 'Assembly inspected & 10-year teak warranty certificate handed over.', 'timestamp': ''})
+    else:
+        del_title = f"Delivery Expected By {format_ordinal_date(dt_d)}"
+        del_sub_events.append({'text': 'Item yet to be delivered.', 'timestamp': ''})
+        del_sub_events.append({'text': f"Expected by {format_ordinal_date(dt_d)}", 'timestamp': ''})
+
+    stages.append({
+        'key': 'DELIVERED',
+        'title': del_title,
+        'date_header': '',
+        'is_completed': is_completed,
+        'is_current': is_current,
+        'is_upcoming': is_upcoming,
+        'has_next_line': False,
+        'line_is_active': False,
+        'sub_events': del_sub_events,
+        'nested_logs': [],
+        'note': None,
+    })
+
+    return stages
+
+
 def guide_view(request):
-    """Glory Furniture Comprehensive Customer, Quality, Care & Assembly Guide."""
+    """
+    Furniture Owner's Guide:
+    Renders the vertical animated tracking timeline structure for the handcrafted furniture journey.
+    """
     product_query = request.GET.get('product', '').strip()
     order_id = request.GET.get('order', '').strip()
+
+    order = None
+    if order_id:
+        try:
+            if order_id.isdigit():
+                order = Order.objects.filter(Q(id=int(order_id)) | Q(order_number=order_id)).first()
+            else:
+                order = Order.objects.filter(
+                    Q(order_number=order_id) | Q(booking__booking_id=order_id)
+                ).first()
+        except Exception:
+            pass
+
+    user = getattr(request, 'user', None)
+    if not order and user and getattr(user, 'is_authenticated', False):
+        order = Order.objects.filter(user=user).first()
+
+    if not order:
+        session = getattr(request, 'session', None)
+        session_email = session.get('glory_user_email') if session else None
+        if session_email:
+            order = Order.objects.filter(email__iexact=session_email).first()
+
+    if not order:
+        order = Order.objects.first()
+
+    timeline = build_guide_timeline(order, product_query=product_query)
+
     context = {
-        'product_query': product_query,
-        'order_id': order_id,
+        'product_query': product_query or (order.product_name if order else 'Solid Burma Teak Masterpiece'),
+        'order': order,
+        'timeline': timeline,
     }
     return render(request, 'core/guide.html', context)
 
