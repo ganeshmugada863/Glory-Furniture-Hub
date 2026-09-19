@@ -1046,14 +1046,58 @@ def admin_bookings_view(request):
 
 
 def _save_product_image_file(upload_file):
-    """Safely saves an uploaded image file and returns its web-accessible media URL."""
+    """
+    Safely saves an uploaded image file to persistent Cloud Storage (Cloudinary)
+    and returns its permanent HTTPS URL.
+    Never relies on ephemeral server filesystem storage.
+    """
     import os, uuid
-    from django.core.files.storage import default_storage
     from django.conf import settings
+
+    # 1. Primary: If Cloudinary is enabled, upload directly to Cloudinary for permanent HTTPS URL
+    if getattr(settings, 'USE_CLOUDINARY', False):
+        try:
+            import cloudinary
+            import cloudinary.uploader
+
+            cloudinary.config(
+                cloud_name=getattr(settings, 'CLOUDINARY_CLOUD_NAME', None),
+                api_key=getattr(settings, 'CLOUDINARY_API_KEY', None),
+                api_secret=getattr(settings, 'CLOUDINARY_API_SECRET', None),
+                secure=True
+            )
+
+            public_id = f"products/{uuid.uuid4().hex[:12]}"
+            if hasattr(upload_file, 'seek'):
+                upload_file.seek(0)
+
+            upload_result = cloudinary.uploader.upload(
+                upload_file,
+                public_id=public_id,
+                resource_type="image",
+                overwrite=True
+            )
+            secure_url = upload_result.get('secure_url')
+            if secure_url:
+                return secure_url
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Cloudinary upload error: {e}")
+
+    # 2. Secondary fallback: use default_storage and retrieve URL
+    from django.core.files.storage import default_storage
     raw_ext = os.path.splitext(upload_file.name)[1].lower()
     ext = raw_ext if raw_ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'] else '.jpg'
     filename = f"products/{uuid.uuid4().hex[:10]}{ext}"
+    if hasattr(upload_file, 'seek'):
+        upload_file.seek(0)
     saved_path = default_storage.save(filename, upload_file)
+    try:
+        url = default_storage.url(saved_path)
+        if url:
+            return url
+    except Exception:
+        pass
     media_url = getattr(settings, 'MEDIA_URL', '/media/')
     return f"{media_url}{saved_path}"
 
