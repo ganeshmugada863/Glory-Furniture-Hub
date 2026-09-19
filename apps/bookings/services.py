@@ -16,6 +16,49 @@ class InstallmentRescheduleError(Exception):
     pass
 
 
+class OrderAccessControl:
+    """
+    Strict multi-tenant customer data isolation.
+    Guarantees Customer A can never access, view, share, or export Customer B's order data.
+    """
+    @staticmethod
+    def check_order_access(request, order):
+        if not order:
+            return False
+
+        # 1. Store Staff & Admins
+        if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser or (getattr(request.user, 'profile', None) and request.user.profile.is_admin)):
+            return True
+        if request.session.get('glory_role') == 'admin':
+            return True
+
+        # 2. Authenticated Customer
+        if request.user.is_authenticated:
+            if order.user_id:
+                return order.user_id == request.user.id
+            # If guest order matches this user's email, claim and link it
+            if request.user.email and order.email and request.user.email.strip().lower() == order.email.strip().lower():
+                order.user = request.user
+                order.save(update_fields=['user'])
+                return True
+            return False
+
+        # 3. Unauthenticated / Guest Customer
+        # Never permit guests to view orders owned by a registered user
+        if order.user_id is not None:
+            return False
+
+        tracked_orders = request.session.get('glory_customer_order_ids', [])
+        session_email = request.session.get('glory_user_email')
+
+        if order.id in tracked_orders:
+            if session_email and order.email:
+                return session_email.strip().lower() == order.email.strip().lower()
+            return True
+
+        return False
+
+
 class InstallmentService:
     """
     Engine for calculating three-installment schedules with exact integer/paise rounding

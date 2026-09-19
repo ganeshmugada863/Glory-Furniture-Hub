@@ -26,9 +26,14 @@ class RoleBasedAccessMiddleware:
             if request.user.is_staff or request.user.is_superuser:
                 role = 'admin'
                 request.session['glory_role'] = 'admin'
-            elif not role:
-                role = 'customer'
-                request.session['glory_role'] = role
+            else:
+                profile = getattr(request.user, 'profile', None)
+                if profile and profile.role == 'admin':
+                    role = 'admin'
+                    request.session['glory_role'] = 'admin'
+                else:
+                    role = 'customer'
+                    request.session['glory_role'] = 'customer'
         elif not role and user_email:
             if user_email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com']:
                 role = 'admin'

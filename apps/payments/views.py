@@ -11,7 +11,7 @@ from django.conf import settings
 from django.db import transaction
 
 from apps.bookings.models import Order, Installment, Booking
-from apps.bookings.services import NotificationService
+from apps.bookings.services import NotificationService, OrderAccessControl
 from apps.store.models import Product
 from apps.payments.models import InstallmentPlan, Payment, WebhookEvent
 from apps.payments.services import InstallmentEngine, CashfreeService, WebhookService
@@ -24,28 +24,7 @@ def _check_order_access(request, order):
     Security check: Customer A cannot access Customer B's payment or order.
     Admins are always granted access.
     """
-    if request.user.is_authenticated and (request.user.is_staff or getattr(request.user, 'profile', None) and request.user.profile.is_admin):
-        return True
-    if request.session.get('glory_role') == 'admin':
-        return True
-
-    # Check authenticated user match
-    if request.user.is_authenticated and order.user_id:
-        if order.user_id == request.user.id:
-            return True
-        return False
-
-    # Check email match
-    session_email = request.session.get('glory_user_email')
-    if session_email and order.email and session_email.strip().lower() == order.email.strip().lower():
-        return True
-
-    # Check session order tracking list
-    tracked_orders = request.session.get('glory_customer_order_ids', [])
-    if order.id in tracked_orders:
-        return True
-
-    return False
+    return OrderAccessControl.check_order_access(request, order)
 
 
 def checkout_payment_view(request, order_number):
@@ -325,6 +304,12 @@ def payment_return_view(request):
         amount_val = successful_payment.get('payment_amount') or (payment.amount if payment else order_details.get('order_amount'))
         order_obj = payment.order if payment else None
         if order_obj:
+            if request.user.is_authenticated and order_obj.user_id is None:
+                order_obj.user = request.user
+                order_obj.save(update_fields=['user'])
+            if payment and request.user.is_authenticated and payment.customer_id is None:
+                payment.customer = request.user
+                payment.save(update_fields=['customer'])
             order_ids = request.session.get('glory_customer_order_ids', [])
             if order_obj.id not in order_ids:
                 order_ids.append(order_obj.id)

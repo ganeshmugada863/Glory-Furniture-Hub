@@ -11,7 +11,7 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbid
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .models import Booking, Order, Installment, PaymentTransaction, InstallmentRescheduleAudit, OrderStatusHistory, OrderAdminAuditLog
-from .services import InstallmentService, PaymentService, RescheduleService, InstallmentRescheduleError
+from .services import InstallmentService, PaymentService, RescheduleService, InstallmentRescheduleError, OrderAccessControl
 from apps.payments.models import Payment
 from apps.payments.services import ManualPaymentService, PaymentLedgerService
 from apps.store.models import Product
@@ -515,6 +515,15 @@ def booking_confirmation_view(request, booking_id):
     if not booking and not order:
         return redirect('orders')
 
+    # Enforce strict multi-tenant access control
+    if order and not OrderAccessControl.check_order_access(request, order):
+        return HttpResponseForbidden("Access Denied: You do not have permission to view this booking confirmation.")
+    if booking and not order:
+        session_email = (request.user.email if request.user.is_authenticated else None) or request.session.get('glory_user_email')
+        is_admin = request.session.get('glory_role') == 'admin' or (request.user.is_authenticated and request.user.is_staff)
+        if not is_admin and (not session_email or booking.email.strip().lower() != session_email.strip().lower()):
+            return HttpResponseForbidden("Access Denied: You do not have permission to view this booking confirmation.")
+
     customer_name = (booking.customer_name if booking else '') or (order.customer_name if order else '') or 'Valued Patron'
     order_number = (order.order_number if order else '') or (booking.booking_id if booking else '')
     product_name = (order.product_name if order else '') or (booking.product_name if booking else '') or "Handcrafted Teak Furniture"
@@ -550,6 +559,15 @@ def my_bookings_view(request):
 def booking_detail_view(request, booking_id):
     booking = get_object_or_404(Booking, booking_id=booking_id)
     order = Order.objects.filter(booking=booking).first()
+
+    # Enforce strict multi-tenant access control
+    if order and not OrderAccessControl.check_order_access(request, order):
+        return HttpResponseForbidden("Access Denied: You do not have permission to view this booking.")
+    session_email = (request.user.email if request.user.is_authenticated else None) or request.session.get('glory_user_email')
+    is_admin = request.session.get('glory_role') == 'admin' or (request.user.is_authenticated and request.user.is_staff)
+    if not is_admin and (not session_email or booking.email.strip().lower() != session_email.strip().lower()):
+        return HttpResponseForbidden("Access Denied: You do not have permission to view this booking.")
+
     return render(request, 'bookings/booking_detail.html', {'booking': booking, 'order': order})
 
 

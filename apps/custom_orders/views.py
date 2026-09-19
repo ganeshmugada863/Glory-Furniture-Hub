@@ -95,10 +95,21 @@ def custom_request_view(request):
 
 def custom_confirmation_view(request):
     req_id = request.session.get('last_custom_req_id')
-    req = CustomRequest.objects.filter(request_id=req_id).first() if req_id else CustomRequest.objects.first()
+    user = request.user if request.user.is_authenticated else None
+    email = (user.email if user else None) or request.session.get('glory_user_email')
+    req = None
+    if req_id:
+        req = CustomRequest.objects.filter(request_id=req_id).first()
+        if req and email and req.email.strip().lower() != email.strip().lower() and not (user and (user.is_staff or user.is_superuser)):
+            req = None
     return render(request, 'custom_orders/custom_confirmation.html', {'custom_req': req})
 
 
 def my_requests_view(request):
-    requests = CustomRequest.objects.all().order_by('-created_at')
+    user = request.user if request.user.is_authenticated else None
+    email = (user.email if user else None) or request.session.get('glory_user_email')
+    if email:
+        requests = CustomRequest.objects.filter(email__iexact=email).order_by('-created_at')
+    else:
+        requests = CustomRequest.objects.none()
     return render(request, 'custom_orders/my_requests.html', {'requests': requests})

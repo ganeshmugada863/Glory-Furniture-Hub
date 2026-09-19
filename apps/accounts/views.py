@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 import json
 import base64
 from apps.store.models import Product, Category
 from apps.bookings.models import Booking, Order, PaymentTransaction, OrderStatusHistory, OrderAdminAuditLog
+from apps.bookings.services import OrderAccessControl
 from apps.payments.models import Payment
 from apps.payments.services import ManualPaymentService, PaymentLedgerService
 from django.utils import timezone
@@ -27,9 +28,17 @@ def sync_user_session(request, user):
     """
     Synchronizes authenticated database User & UserProfile data directly into the active session.
     Restores persistent cart_items, wishlist_ids, and saved_addresses.
-    Guarantees strict data isolation per user.
+    Guarantees strict multi-tenant data isolation per user.
     """
     profile, _ = UserProfile.objects.get_or_create(user=user)
+
+    # Auto-claim any guest orders created with this verified email
+    if user.email:
+        Order.objects.filter(user__isnull=True, email__iexact=user.email.strip()).update(user=user)
+
+    # Strictly populate session with this user's own orders
+    user_order_ids = list(Order.objects.filter(user=user).values_list('id', flat=True))
+
     request.session['glory_user_email'] = user.email
     request.session['glory_user_name'] = profile.full_name or user.get_full_name() or user.username
     request.session['glory_user_phone'] = profile.phone or ''
@@ -37,7 +46,9 @@ def sync_user_session(request, user):
     request.session['glory_cart'] = profile.cart_items or []
     request.session['glory_wishlist'] = profile.wishlist_ids or []
     request.session['glory_addresses'] = profile.saved_addresses or []
-    request.session.modified = True
+    request.session['glory_customer_order_ids'] = user_order_ids
+    if hasattr(request, 'session') and hasattr(request.session, 'modified'):
+        request.session.modified = True
 
 
 def persist_session_to_user(request):
@@ -306,7 +317,6 @@ def customer_home_view(request):
     recent bookings, and quick catalog actions.
     Strictly isolated to this specific customer.
     """
-    from django.db.models import Q
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
     
@@ -314,25 +324,21 @@ def customer_home_view(request):
         profile, _ = UserProfile.objects.get_or_create(user=user)
         customer_name = profile.full_name or user.get_full_name() or user.username
         customer_phone = profile.phone or ''
+        orders = Order.objects.filter(user=user).distinct().prefetch_related('transactions').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=user.email).order_by('-created_at') if user.email else Booking.objects.none()
+    elif customer_email:
+        customer_name = request.session.get('glory_user_name', 'Valued Patron')
+        customer_phone = request.session.get('glory_user_phone', '')
+        tracked_ids = request.session.get('glory_customer_order_ids', [])
+        orders = Order.objects.filter(id__in=tracked_ids, email__iexact=customer_email, user__isnull=True).distinct().prefetch_related('transactions').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
     else:
         customer_name = request.session.get('glory_user_name', 'Valued Patron')
         customer_phone = request.session.get('glory_user_phone', '')
-
-    if user or customer_email:
-        query = Q()
-        if user:
-            query |= Q(user=user)
-        if customer_email:
-            query |= Q(email__iexact=customer_email)
-        orders = Order.objects.filter(query).distinct().prefetch_related('transactions').order_by('-created_at')
-        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at') if customer_email else Booking.objects.none()
-    else:
         orders = Order.objects.none()
         bookings = Booking.objects.none()
 
     latest_order = orders.first()
-    if not latest_order:
-        latest_order = Order.objects.first()
     featured_products = Product.objects.filter(featured=True)[:4]
     if not featured_products.exists():
         featured_products = Product.objects.all()[:4]
@@ -343,10 +349,10 @@ def customer_home_view(request):
         'customer_name': customer_name,
         'customer_email': customer_email or '',
         'customer_phone': customer_phone,
-        'orders': orders[:4] if orders.exists() else Order.objects.all()[:4],
-        'total_orders': orders.count() if orders.exists() else Order.objects.count(),
-        'bookings': bookings[:3] if bookings.exists() else Booking.objects.all()[:3],
-        'total_bookings': bookings.count() if bookings.exists() else Booking.objects.count(),
+        'orders': orders[:4],
+        'total_orders': orders.count(),
+        'bookings': bookings[:3],
+        'total_bookings': bookings.count(),
         'latest_order': latest_order,
         'featured_products': featured_products,
         'total_spent': f"₹{int(total_spent):,}",
@@ -358,22 +364,18 @@ def customer_orders_view(request):
     """
     Dedicated My Orders page: Customers can view their handcrafted orders.
     Shows 100% Full Payment or 3-Installments status, product specifications, and 5-stage workshop progress.
+    Strictly isolated to this specific user.
     """
-    from django.db.models import Q
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
 
-    query = Q()
     if user:
-        query |= Q(user=user)
-    if customer_email:
-        query |= Q(email__iexact=customer_email)
-
-    orders = Order.objects.filter(query).distinct().select_related('product').prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at') if (user or customer_email) else Order.objects.none()
-
-    # Fallback so admin/patron can always review orders and tracking timeline
-    if not orders.exists():
-        orders = Order.objects.all().distinct().select_related('product').prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at')
+        orders = Order.objects.filter(user=user).distinct().select_related('product').prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at')
+    elif customer_email:
+        tracked_ids = request.session.get('glory_customer_order_ids', [])
+        orders = Order.objects.filter(id__in=tracked_ids, email__iexact=customer_email, user__isnull=True).distinct().select_related('product').prefetch_related('transactions', 'payments', 'installments', 'status_history').order_by('-created_at')
+    else:
+        orders = Order.objects.none()
 
     return render(request, 'customer/customer_orders.html', {
         'orders': orders,
@@ -387,17 +389,20 @@ def customer_order_detail_view(request, order_number):
     Dedicated Flipkart-style Order Tracking & Timeline Detail View for an individual order.
     Shows delivery address card, Flipkart-style multi-stage timeline with timestamps and artisan notes,
     wood care guide link, and financial installment milestones.
+    Strictly checks ownership permission.
     """
-    user = request.user if request.user.is_authenticated else None
-    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
-
     order = get_object_or_404(
         Order.objects.select_related('product', 'user', 'booking')
                      .prefetch_related('installments', 'status_history', 'payments', 'transactions'),
         order_number=order_number
     )
 
+    if not OrderAccessControl.check_order_access(request, order):
+        return HttpResponseForbidden("Access Denied: You do not have permission to view this order.")
+
     timeline = order.get_flipkart_timeline()
+    user = request.user if request.user.is_authenticated else None
+    customer_email = (user.email if user else None) or request.session.get('glory_user_email')
 
     context = {
         'order': order,
@@ -415,7 +420,9 @@ def customer_bookings_view(request):
     """
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
-    if customer_email:
+    if user and user.email:
+        bookings = Booking.objects.filter(email__iexact=user.email).order_by('-created_at')
+    elif customer_email:
         bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
     else:
         bookings = Booking.objects.none()
@@ -431,17 +438,18 @@ def customer_payments_view(request):
     Dedicated Payment History page: Verified transactions with UTR receipts.
     Strictly isolated to this specific user.
     """
-    from django.db.models import Q
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
 
-    if user or customer_email:
-        query = Q()
-        if user:
-            query |= Q(order__user=user)
-        if customer_email:
-            query |= Q(order__email__iexact=customer_email)
-        transactions = PaymentTransaction.objects.filter(query).distinct().select_related('order').order_by('-paid_at')
+    if user:
+        transactions = PaymentTransaction.objects.filter(order__user=user).distinct().select_related('order').order_by('-paid_at')
+    elif customer_email:
+        tracked_ids = request.session.get('glory_customer_order_ids', [])
+        transactions = PaymentTransaction.objects.filter(
+            order_id__in=tracked_ids,
+            order__email__iexact=customer_email,
+            order__user__isnull=True
+        ).distinct().select_related('order').order_by('-paid_at')
     else:
         transactions = PaymentTransaction.objects.none()
 
@@ -453,7 +461,6 @@ def customer_payments_view(request):
 
 def customer_profile_view(request):
     """Customer profile and preferences with real user stats and orders."""
-    from django.db.models import Q
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
     
@@ -468,15 +475,15 @@ def customer_profile_view(request):
         customer_name = request.session.get('glory_user_name') or 'Valued Patron'
     customer_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or ''
 
-    if user or customer_email:
-        query = Q()
-        if user:
-            query |= Q(user=user)
-        if customer_email:
-            query |= Q(email__iexact=customer_email)
-        orders = Order.objects.filter(query).distinct().select_related('product').order_by('-created_at')
-        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5] if customer_email else []
-        custom_requests = CustomRequest.objects.filter(email__iexact=customer_email).order_by('-created_at')[:3] if customer_email else []
+    if user:
+        orders = Order.objects.filter(user=user).distinct().select_related('product').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=user.email).order_by('-created_at')[:5] if user.email else []
+        custom_requests = CustomRequest.objects.filter(email__iexact=user.email).order_by('-created_at')[:3] if user.email else []
+    elif customer_email:
+        tracked_ids = request.session.get('glory_customer_order_ids', [])
+        orders = Order.objects.filter(id__in=tracked_ids, email__iexact=customer_email, user__isnull=True).distinct().select_related('product').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5]
+        custom_requests = CustomRequest.objects.filter(email__iexact=customer_email).order_by('-created_at')[:3]
     else:
         orders = Order.objects.none()
         bookings = []

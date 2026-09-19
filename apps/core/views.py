@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.db.models import Q
 from apps.store.models import Product, Category
 from apps.bookings.models import Order
+from apps.bookings.services import OrderAccessControl
 
 def home_view(request):
     # If session role is admin and they navigate to home, redirect to admin dashboard
@@ -427,11 +428,13 @@ def guide_view(request):
     if order_id:
         try:
             if order_id.isdigit():
-                order = Order.objects.filter(Q(id=int(order_id)) | Q(order_number=order_id)).first()
+                potential_order = Order.objects.filter(Q(id=int(order_id)) | Q(order_number=order_id)).first()
             else:
-                order = Order.objects.filter(
+                potential_order = Order.objects.filter(
                     Q(order_number=order_id) | Q(booking__booking_id=order_id)
                 ).first()
+            if potential_order and OrderAccessControl.check_order_access(request, potential_order):
+                order = potential_order
         except Exception:
             pass
 
@@ -442,11 +445,9 @@ def guide_view(request):
     if not order:
         session = getattr(request, 'session', None)
         session_email = session.get('glory_user_email') if session else None
-        if session_email:
-            order = Order.objects.filter(email__iexact=session_email).first()
-
-    if not order:
-        order = Order.objects.first()
+        tracked_ids = session.get('glory_customer_order_ids', []) if session else []
+        if session_email and tracked_ids:
+            order = Order.objects.filter(id__in=tracked_ids, email__iexact=session_email, user__isnull=True).first()
 
     timeline = build_guide_timeline(order, product_query=product_query)
 

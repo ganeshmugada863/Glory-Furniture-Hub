@@ -263,6 +263,51 @@ class CustomerAccessIsolationTests(TestCase):
         resp = self.client_b.get(f"/payments/checkout/{self.order_a.order_number}/")
         self.assertEqual(resp.status_code, 403)
 
+    def test_customer_b_cannot_access_order_a_detail(self):
+        resp = self.client_b.get(f"/customer/orders/{self.order_a.order_number}/")
+        self.assertEqual(resp.status_code, 403)
+
+    def test_customer_b_does_not_see_order_a_in_orders_list(self):
+        resp = self.client_b.get("/customer/orders/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['total_orders'], 0)
+        self.assertEqual(list(resp.context['orders']), [])
+
+    def test_customer_b_dashboard_is_empty_and_does_not_leak_order_a(self):
+        resp = self.client_b.get("/customer/home/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['total_orders'], 0)
+        self.assertIsNone(resp.context['latest_order'])
+
+    def test_customer_b_cannot_view_order_a_in_guide(self):
+        resp = self.client_b.get(f"/guide/?order={self.order_a.order_number}")
+        self.assertEqual(resp.status_code, 200)
+        # Order should not be linked to user B
+        self.assertIsNone(resp.context['order'])
+
+    def test_auto_claim_guest_order_on_login(self):
+        from apps.accounts.views import sync_user_session
+        from django.test import RequestFactory
+        guest_order = Order.objects.create(
+            user=None,
+            order_number='ORD-GUEST-01',
+            customer_name='Guest User',
+            email='userb@example.com',
+            product=self.order_a.product,
+            product_name=self.order_a.product_name,
+            unit_price=Decimal('1000.00'),
+            total_amount=Decimal('1000.00'),
+            remaining_amount=Decimal('1000.00')
+        )
+        factory = RequestFactory()
+        req = factory.get('/')
+        req.user = self.user_b
+        req.session = {}
+        sync_user_session(req, self.user_b)
+        guest_order.refresh_from_db()
+        self.assertEqual(guest_order.user, self.user_b)
+        self.assertIn(guest_order.id, req.session['glory_customer_order_ids'])
+
 
 class ThreeEqualInstallmentsDesignEngineTests(TestCase):
     """
