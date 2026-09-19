@@ -21,13 +21,13 @@
 
     <div class="space-y-1.5">
       <span class="text-xs font-black uppercase tracking-widest text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-        TRANSACTION VERIFIED
+        ORDER CONFIRMED &bull; TRANSACTION VERIFIED
       </span>
-      <h1 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight pt-1">
-        Payment Successfully Received!
+      <h1 class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight pt-1">
+        Your Order is Successfully Confirmed!
       </h1>
       <p class="text-xs sm:text-sm text-gray-500 max-w-md mx-auto">
-        Your payment has been securely confirmed by Cashfree. Our master Hyderabad artisans have queued your solid Burma teak piece.
+        Your payment has been securely received and verified. Our master artisans have queued your handcrafted solid Burma teak piece.
       </p>
     </div>
 
@@ -43,14 +43,22 @@
       <div class="flex justify-between text-gray-600">
         <span>Payment Reference:</span>
         <span class="font-mono font-bold text-gray-900">
-          {% if payment and payment.payment_id %}{{ payment.payment_id }}{% else %}{{ payment_id|default:gateway_payment_id }}{% endif %}
+          {% if payment and payment.payment_id %}
+            {{ payment.payment_id }}
+          {% elif payment_id %}
+            {{ payment_id }}
+          {% elif gateway_payment_id %}
+            {{ gateway_payment_id }}
+          {% else %}
+            N/A
+          {% endif %}
         </span>
       </div>
 
       <div class="flex justify-between text-gray-600">
         <span>Order Number:</span>
         <span class="font-mono font-bold text-gray-900">
-          {% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:"N/A" }}{% endif %}
+          {% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% else %}N/A{% endif %}
         </span>
       </div>
 
@@ -72,6 +80,13 @@
       </div>
       {% endif %}
 
+      {% if order and order.shipping_address %}
+      <div class="pt-2 border-t border-dashed border-gray-200 text-gray-600">
+        <span class="font-bold text-gray-800 block mb-0.5">Delivering to:</span>
+        <p class="text-gray-700 leading-relaxed">{{ order.shipping_address }}</p>
+      </div>
+      {% endif %}
+
       <div class="flex justify-between text-gray-600 text-[11px] pt-1">
         <span>Gateway Transaction ID:</span>
         <span class="font-mono text-gray-500">
@@ -81,8 +96,12 @@
             {{ gateway_payment_id }}
           {% elif payment and payment.gateway_order_id %}
             {{ payment.gateway_order_id }}
+          {% elif cf_order_id %}
+            {{ cf_order_id }}
+          {% elif gateway_order_id %}
+            {{ gateway_order_id }}
           {% else %}
-            {{ cf_order_id|default:gateway_order_id }}
+            N/A
           {% endif %}
         </span>
       </div>
@@ -94,12 +113,16 @@
       <a href="{% url 'payment_receipt' payment_id=payment.payment_id %}"
          class="w-full sm:w-auto px-6 py-3 rounded-xl text-white font-bold text-xs tracking-wide shadow-md hover:shadow-lg transition-all"
          style="background: linear-gradient(135deg, #8B0000 0%, #5C3D2E 100%) !important;">
-        📄 Download &amp; View Official Receipt
+        📄 View Official Receipt
       </a>
       {% endif %}
       <a href="{% url 'orders' %}"
+         class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#5C3D2E] hover:bg-black text-white font-bold text-xs transition-all shadow-md">
+        📦 Check My Orders
+      </a>
+      <a href="{% url 'catalog' %}"
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white hover:bg-gray-50 text-gray-800 font-bold text-xs border border-gray-300 transition-all shadow-xs">
-        📦 Go to My Patron Orders
+        🪵 Continue Browsing
       </a>
     </div>
 
@@ -134,7 +157,7 @@
     </div>
 
     <div class="p-4 rounded-2xl bg-[#FAF7F4] border border-[#DECBB7] text-left text-xs space-y-2 max-w-md mx-auto font-mono text-gray-600">
-      <p><span class="text-gray-400">Order:</span> <strong>{% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:cf_order_id }}{% endif %}</strong></p>
+      <p><span class="text-gray-400">Order:</span> <strong>{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif cf_order_id %}{{ cf_order_id }}{% else %}N/A{% endif %}</strong></p>
       <p><span class="text-gray-400">Attempted Amount:</span> <strong class="text-[#8B0000]">₹{% if payment %}{{ payment.amount|floatformat:2 }}{% elif amount %}{{ amount|floatformat:2 }}{% else %}0.00{% endif %}</strong></p>
       <p><span class="text-gray-400">Gateway Status:</span> <strong class="text-red-600">FAILED</strong></p>
     </div>
@@ -155,8 +178,9 @@
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#8B0000] hover:bg-black text-white font-bold text-xs shadow-md transition-all">
         📦 View Orders
       </a>
+      {% endif %}
       {% if WEBSITE_SETTINGS.whatsapp_number %}
-      <a href="https://wa.me/{{ WEBSITE_SETTINGS.whatsapp_number }}?text=Hello%20Glory%20Furniture%20Hub,%20my%20payment%20failed%20for%20order%20{% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:cf_order_id }}{% endif %}"
+      <a href="https://wa.me/{{ WEBSITE_SETTINGS.whatsapp_number }}?text=Hello%20Glory%20Furniture%20Hub,%20my%20payment%20failed%20for%20order%20{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif cf_order_id %}{{ cf_order_id }}{% else %}Unknown{% endif %}"
          target="_blank"
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all">
         💬 Contact Concierge on WhatsApp

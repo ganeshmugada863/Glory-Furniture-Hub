@@ -324,6 +324,13 @@ def payment_return_view(request):
 
         amount_val = successful_payment.get('payment_amount') or (payment.amount if payment else order_details.get('order_amount'))
         order_obj = payment.order if payment else None
+        if order_obj:
+            order_ids = request.session.get('glory_customer_order_ids', [])
+            if order_obj.id not in order_ids:
+                order_ids.append(order_obj.id)
+            request.session['glory_customer_order_ids'] = order_ids
+            request.session.modified = True
+
         order_num = order_obj.order_number if order_obj else (order_details.get('order_note') or '')
         payment_ref = payment.payment_id if payment else ('PAY-' + str(successful_payment.get('cf_payment_id', '')))
 

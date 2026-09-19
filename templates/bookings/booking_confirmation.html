@@ -18,7 +18,7 @@
       Your furniture order is confirmed.
     </h1>
     <p class="text-sm text-gray-600">
-      Thank you, <strong class="text-gray-950">{{ booking.customer_name }}</strong>.
+      Thank you, <strong class="text-gray-950">{% if customer_name %}{{ customer_name }}{% elif order and order.customer_name %}{{ order.customer_name }}{% elif booking and booking.customer_name %}{{ booking.customer_name }}{% else %}Valued Patron{% endif %}</strong>.
     </p>
   </div>
 
@@ -27,7 +27,7 @@
     <div class="flex items-center justify-between pb-3 border-b border-gray-100">
       <div>
         <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Order Reference</span>
-        <span class="text-sm font-black text-gray-950">#{{ order.order_number|default:booking.booking_id }}</span>
+        <span class="text-sm font-black text-gray-950">#{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif booking and booking.booking_id %}{{ booking.booking_id }}{% else %}N/A{% endif %}</span>
       </div>
       <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black">
         Confirmed
@@ -37,12 +37,12 @@
     <div class="space-y-2 text-xs">
       <div class="flex justify-between items-center text-gray-700">
         <span class="font-medium text-gray-500">Product:</span>
-        <span class="font-bold text-gray-950 text-right">{{ order.product_name|default:"Handcrafted Teak Furniture" }}</span>
+        <span class="font-bold text-gray-950 text-right">{% if order and order.product_name %}{{ order.product_name }}{% elif product_name %}{{ product_name }}{% else %}Handcrafted Teak Furniture{% endif %}</span>
       </div>
 
       <div class="flex justify-between items-center text-gray-700">
         <span class="font-medium text-gray-500">Amount:</span>
-        <span class="font-bold text-[#5C3D2E]">{{ order.formatted_total|default:"100% Paid" }}</span>
+        <span class="font-bold text-[#5C3D2E]">{% if formatted_total %}{{ formatted_total }}{% elif order and order.formatted_total %}{{ order.formatted_total }}{% else %}100% Paid{% endif %}</span>
       </div>
 
       {% if utr_number %}
@@ -52,7 +52,17 @@
       </div>
       {% endif %}
 
-      {% if booking.address %}
+      {% if shipping_address %}
+      <div class="pt-2 border-t border-gray-100 text-gray-700">
+        <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
+        <p class="font-medium text-gray-900">{{ shipping_address }}</p>
+      </div>
+      {% elif order and order.shipping_address %}
+      <div class="pt-2 border-t border-gray-100 text-gray-700">
+        <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
+        <p class="font-medium text-gray-900">{{ order.shipping_address }}</p>
+      </div>
+      {% elif booking and booking.address %}
       <div class="pt-2 border-t border-gray-100 text-gray-700">
         <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
         <p class="font-medium text-gray-900">{{ booking.address }}</p>

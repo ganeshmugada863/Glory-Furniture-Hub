@@ -501,16 +501,40 @@ def booking_view(request):
 
 
 def booking_confirmation_view(request, booking_id):
-    booking = get_object_or_404(Booking, booking_id=booking_id)
-    order = Order.objects.filter(booking=booking).first()
+    booking = Booking.objects.filter(booking_id=booking_id).first()
+    order = None
+    if booking:
+        order = Order.objects.filter(booking=booking).first()
+    else:
+        order = Order.objects.filter(order_number=booking_id).first()
+        if not order and str(booking_id).isdigit():
+            order = Order.objects.filter(id=int(booking_id)).first()
+        if order:
+            booking = order.booking
+
+    if not booking and not order:
+        return redirect('orders')
+
+    customer_name = (booking.customer_name if booking else '') or (order.customer_name if order else '') or 'Valued Patron'
+    order_number = (order.order_number if order else '') or (booking.booking_id if booking else '')
+    product_name = (order.product_name if order else '') or (booking.product_name if booking else '') or "Handcrafted Teak Furniture"
+    formatted_total = f"₹{int(order.total_amount):,}" if (order and order.total_amount) else "100% Paid"
+    shipping_addr = (order.shipping_address if order else '') or (booking.address if booking else '')
+
     utr_number = request.session.get('last_payment_utr')
     if not utr_number and order:
         tx = order.transactions.filter(gateway='WordPress UPI Gateway').last()
         if tx and tx.gateway_payment_id and tx.gateway_payment_id.startswith('UTR-'):
             utr_number = tx.gateway_payment_id.replace('UTR-', '')
+
     return render(request, 'bookings/booking_confirmation.html', {
         'booking': booking,
         'order': order,
+        'customer_name': customer_name,
+        'order_number': order_number,
+        'product_name': product_name,
+        'formatted_total': formatted_total,
+        'shipping_address': shipping_addr,
         'utr_number': utr_number,
     })
 
