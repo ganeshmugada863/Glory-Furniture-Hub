@@ -81,7 +81,7 @@ class ThreeInstallmentOrderFlowTests(TestCase):
         self.booking = Booking.objects.create(
             customer_name='Ganesh Mugada',
             email='ganesh@test.com',
-            phone='+919876543210',
+            phone='+919123456780',
             address='Jubilee Hills, Hyderabad',
             preferred_date=timezone.now().date() + timedelta(days=3),
             consultation_type='Product Order'
@@ -92,7 +92,7 @@ class ThreeInstallmentOrderFlowTests(TestCase):
             'booking': self.booking,
             'customer_name': 'Ganesh Mugada',
             'email': 'ganesh@test.com',
-            'phone': '+919876543210',
+            'phone': '+919123456780',
             'shipping_address': 'Jubilee Hills, Hyderabad',
             'product': self.product,
             'product_name': self.product.name,
@@ -129,7 +129,7 @@ class ThreeInstallmentOrderFlowTests(TestCase):
             'booking': self.booking,
             'customer_name': 'Ganesh Mugada',
             'email': 'ganesh@test.com',
-            'phone': '+919876543210',
+            'phone': '+919123456780',
             'shipping_address': 'Jubilee Hills, Hyderabad',
             'product': self.product,
             'product_name': self.product.name,

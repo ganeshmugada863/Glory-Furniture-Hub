@@ -155,12 +155,13 @@
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#8B0000] hover:bg-black text-white font-bold text-xs shadow-md transition-all">
         📦 View Orders
       </a>
-      {% endif %}
-      <a href="https://wa.me/919440123456?text=Hello%20Glory%20Furniture%20Hub,%20my%20payment%20failed%20for%20order%20{% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:cf_order_id }}{% endif %}"
+      {% if WEBSITE_SETTINGS.whatsapp_number %}
+      <a href="https://wa.me/{{ WEBSITE_SETTINGS.whatsapp_number }}?text=Hello%20Glory%20Furniture%20Hub,%20my%20payment%20failed%20for%20order%20{% if order and order.order_number %}{{ order.order_number }}{% else %}{{ order_number|default:cf_order_id }}{% endif %}"
          target="_blank"
          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all">
         💬 Contact Concierge on WhatsApp
       </a>
+      {% endif %}
     </div>
 
   </div>

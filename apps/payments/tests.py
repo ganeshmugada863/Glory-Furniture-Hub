@@ -58,7 +58,7 @@ class InstallmentEngineTests(TestCase):
             order_number='ORD-TEST-001',
             customer_name='John Doe',
             email='john@example.com',
-            phone='9876543210',
+            phone='9123456789',
             product=prod,
             product_name=prod.name,
             unit_price=Decimal('60000.00'),
@@ -91,10 +91,10 @@ class CashfreeServiceTests(TestCase):
     """Verifies Cashfree order payload construction and phone number sanitization."""
 
     def test_phone_sanitization(self):
-        self.assertEqual(CashfreeService.sanitize_phone('+91 98765 43210'), '9876543210')
-        self.assertEqual(CashfreeService.sanitize_phone('919876543210'), '9876543210')
-        self.assertEqual(CashfreeService.sanitize_phone('09876543210'), '9876543210')
-        self.assertEqual(CashfreeService.sanitize_phone(''), '9876543210')
+        self.assertEqual(CashfreeService.sanitize_phone('+91 91234 56789'), '9123456789')
+        self.assertEqual(CashfreeService.sanitize_phone('919123456789'), '9123456789')
+        self.assertEqual(CashfreeService.sanitize_phone('09123456789'), '9123456789')
+        self.assertEqual(CashfreeService.sanitize_phone(''), '')
 
     def test_create_order_simulation_mode(self):
         cat = Category.objects.create(name='Tables', slug='tables')
@@ -279,7 +279,7 @@ class ThreeEqualInstallmentsDesignEngineTests(TestCase):
             order_number='ORD-IMG1-1000',
             customer_name='Patron One',
             email='patron_image1@example.com',
-            phone='9876543210',
+            phone='9123456789',
             product=self.product,
             product_name=self.product.name,
             unit_price=Decimal('1000.00'),

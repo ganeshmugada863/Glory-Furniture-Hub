@@ -32,9 +32,16 @@ def global_furniture_context(request):
         except Exception:
             wishlist_products = []
 
+    from apps.core.models import WebsiteSettings
+    try:
+        site_settings = WebsiteSettings.get_settings()
+    except Exception:
+        site_settings = None
+
     return {
-        'SITE_NAME': 'Glory Furniture Hub',
-        'SITE_TAGLINE': 'Handcrafted Luxury Solid Wood Furniture',
+        'SITE_NAME': site_settings.website_name if site_settings else 'Glory Furniture Hub',
+        'SITE_TAGLINE': (site_settings.tagline if site_settings and site_settings.tagline else 'Fine Teak Craftsmanship'),
+        'WEBSITE_SETTINGS': site_settings,
         'GLOBAL_CATEGORIES': categories,
         'CURRENT_ROLE': current_role,
         'USER_NAME': user_name,

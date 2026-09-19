@@ -280,7 +280,7 @@ class WebhookService:
                         order_number=match.group(0) if match else f"ORD-{uuid.uuid4().hex[:6].upper()}",
                         customer_name=cust.get('customer_name') or 'Valued Patron',
                         email=cust.get('customer_email') or 'patron@gloryfurniturehub.com',
-                        phone=cust.get('customer_phone') or '9876543210',
+                        phone=cust.get('customer_phone') or '',
                         total_amount=order_amt,
                         paid_amount=order_amt if cf_details.get('order_status') == 'PAID' else Decimal('0.00'),
                         remaining_amount=Decimal('0.00') if cf_details.get('order_status') == 'PAID' else order_amt,

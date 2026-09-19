@@ -64,7 +64,7 @@
         <p class="text-xs text-gray-500 pt-1">
           Workshop: Kukatpally &amp; Banjara Hills Artisan Studios<br>
           Hyderabad, Telangana 500072 | GSTIN: 36AAACG1234F1Z8<br>
-          patron@gloryfurniturehub.com | +91 94401 23456
+          {{ WEBSITE_SETTINGS.primary_email|default:"patron@gloryfurniturehub.com" }}{% if WEBSITE_SETTINGS.phone %} | {{ WEBSITE_SETTINGS.phone }}{% endif %}
         </p>
       </div>
 

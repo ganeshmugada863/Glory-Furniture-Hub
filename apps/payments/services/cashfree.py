@@ -50,16 +50,19 @@ class CashfreeService:
 
     @classmethod
     def sanitize_phone(cls, phone):
-        """Cashfree strictly requires a 10-digit phone number."""
+        """
+        Sanitizes customer phone number to clean digits.
+        Strictly prevents using or returning unauthorized dummy numbers.
+        """
         if not phone:
-            return '9876543210'
+            return ''
         digits = re.sub(r'\D', '', str(phone))
         if len(digits) == 12 and digits.startswith('91'):
             digits = digits[2:]
         if len(digits) > 10:
             digits = digits[-10:]
-        if len(digits) < 10:
-            digits = digits.zfill(10)
+        if digits in ['9876543210', '09876543210']:
+            return ''
         return digits
 
     @classmethod
@@ -79,11 +82,13 @@ class CashfreeService:
 
         amount_float = float(Decimal(str(payable_amount)).quantize(Decimal('0.01')))
 
-        # Customer details
+        # Customer details - strictly use customer's legitimate phone
         customer_id = f"CUST_{order.user_id or order.id or uuid.uuid4().hex[:6]}"
         customer_name = order.customer_name or 'Valued Patron'
         customer_email = order.email or 'patron@gloryfurniturehub.com'
         customer_phone = cls.sanitize_phone(order.phone)
+        if not customer_phone and getattr(order, 'user', None) and getattr(order.user, 'profile', None):
+            customer_phone = cls.sanitize_phone(order.user.profile.phone)
 
         # URLs
         if not return_url:
@@ -91,16 +96,19 @@ class CashfreeService:
         if not notify_url:
             notify_url = "https://glory-furniture-hub.onrender.com/payments/webhook/cashfree/"
 
+        cust_details = {
+            "customer_id": customer_id,
+            "customer_name": customer_name,
+            "customer_email": customer_email,
+        }
+        if customer_phone:
+            cust_details["customer_phone"] = customer_phone
+
         payload = {
             "order_id": cf_order_id,
             "order_amount": amount_float,
             "order_currency": "INR",
-            "customer_details": {
-                "customer_id": customer_id,
-                "customer_name": customer_name,
-                "customer_email": customer_email,
-                "customer_phone": customer_phone,
-            },
+            "customer_details": cust_details,
             "order_meta": {
                 "return_url": return_url,
                 "notify_url": notify_url,

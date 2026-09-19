@@ -96,40 +96,49 @@ def booking_summary_view(request):
             'name': profile.full_name if (profile and profile.full_name) else (user.get_full_name() if user else 'Valued Patron'),
             'phone': profile.phone if (profile and profile.phone) else '',
             'email': user.email if user else '',
-            'flat': profile.address if (profile and profile.address) else 'Plot 42, Jubilee Hills',
-            'street': 'Road No. 10',
+            'flat': profile.address if (profile and profile.address) else '',
+            'street': '',
             'landmark': '',
-            'city': 'Hyderabad',
-            'state': 'Telangana',
-            'pincode': '500033',
+            'city': '',
+            'state': '',
+            'pincode': '',
         }
-        addresses = [default_address]
-        if profile:
+        if profile and profile.address:
+            addresses = [default_address]
             profile.saved_addresses = addresses
             profile.save(update_fields=['saved_addresses'])
-        request.session['glory_addresses'] = addresses
+            request.session['glory_addresses'] = addresses
+        else:
+            addresses = []
     else:
         default_address = next((a for a in addresses if a.get('is_default')), addresses[0])
 
     if request.method == 'POST':
         # Strictly guarantee email & user association to prevent cross-account pollution
+        entered_phone = request.POST.get('phone', '').strip()
         if user:
             email = user.email
             customer_name = (profile.full_name if profile and profile.full_name else user.get_full_name()) or request.POST.get('customer_name', '').strip() or user.username
-            phone = (profile.phone if profile and profile.phone else None) or request.POST.get('phone', '').strip() or ''
+            phone = entered_phone or (profile.phone if profile and profile.phone else '')
+            if entered_phone and profile and not profile.phone:
+                profile.phone = entered_phone
+                profile.save(update_fields=['phone'])
         else:
-            email = request.POST.get('email', '').strip().lower() or default_address.get('email') or ''
-            customer_name = request.POST.get('customer_name', '').strip() or default_address.get('name') or 'Valued Patron'
-            phone = request.POST.get('phone', '').strip() or default_address.get('phone') or ''
+            email = request.POST.get('email', '').strip().lower() or default_address.get('email', '')
+            customer_name = request.POST.get('customer_name', '').strip() or default_address.get('name', 'Valued Patron')
+            phone = entered_phone or default_address.get('phone', '')
 
-        flat = request.POST.get('flat') or default_address.get('flat', '')
-        street = request.POST.get('street') or default_address.get('street', '')
-        landmark = request.POST.get('landmark') or default_address.get('landmark', '')
-        city = request.POST.get('city') or default_address.get('city', 'Hyderabad')
-        state = request.POST.get('state') or default_address.get('state', 'Telangana')
-        pincode = request.POST.get('pincode') or default_address.get('pincode', '500034')
+        flat = request.POST.get('flat', '').strip() or default_address.get('flat', '')
+        street = request.POST.get('street', '').strip() or default_address.get('street', '')
+        landmark = request.POST.get('landmark', '').strip() or default_address.get('landmark', '')
+        city = request.POST.get('city', '').strip() or default_address.get('city', '')
+        state = request.POST.get('state', '').strip() or default_address.get('state', '')
+        pincode = request.POST.get('pincode', '').strip() or default_address.get('pincode', '')
 
-        full_address = f"{flat}, {street}, {landmark}, {city}, {state} - {pincode}".strip(', -')
+        addr_parts = [p for p in [flat, street, landmark, city, state] if p]
+        full_address = ", ".join(addr_parts)
+        if pincode:
+            full_address = f"{full_address} - {pincode}".strip(' -')
         delivery_preference = request.POST.get('delivery_preference', 'Immediate Dispatch (5-7 Days)')
         payment_plan = 'FULL_PAYMENT'
 

@@ -19,7 +19,7 @@ class Command(BaseCommand):
             UserProfile.objects.create(
                 user=u,
                 full_name='Master Studio Admin',
-                phone='+91 98765 43210',
+                phone='',
                 role='admin'
             )
             self.stdout.write(self.style.SUCCESS("Created admin superuser (admin / admin123)"))
@@ -445,7 +445,7 @@ class Command(BaseCommand):
             defaults={
                 'customer_name': 'Kavita Rao',
                 'email': 'kavita.rao@example.com',
-                'phone': '+91 94401 23456',
+                'phone': '',
                 'consultation_type': 'Showroom Visit',
                 'preferred_date': timezone.now().date() + timedelta(days=3),
                 'time_slot': '10:00 AM - 11:30 AM',

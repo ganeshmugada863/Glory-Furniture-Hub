@@ -1,32 +1,234 @@
 {% extends 'admin_portal/admin_base.html' %}
 
-{% block title %}Studio Settings — Glory Furniture Hub{% endblock %}
+{% block title %}Website Settings & Footer CMS — Glory Furniture Hub{% endblock %}
 
 {% block content %}
-<div class="space-y-6 max-w-3xl">
-  <div>
-    <h1 class="text-2xl font-black text-gray-950 tracking-tight">Studio Configuration</h1>
-    <p class="text-xs text-gray-500">Manage payment gateway credentials, workshop addresses, and contact channels.</p>
-  </div>
+<div class="space-y-6 max-w-4xl">
 
-  <div class="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-    <h2 class="text-xs font-black uppercase text-gray-400 tracking-wider">UPI Payment Gateway</h2>
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-gray-200">
     <div>
-      <label class="block text-xs font-bold text-gray-700 mb-1">Payee UPI VPA</label>
-      <input type="text" value="{{ upi_vpa }}" readonly class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-mono font-bold bg-gray-50" />
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Website Settings &amp; Footer CMS</h1>
+      <p class="text-xs text-gray-500 mt-0.5">Manage public store identity, contact details, social links, and footer content.</p>
     </div>
   </div>
 
-  <div class="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-    <h2 class="text-xs font-black uppercase text-gray-400 tracking-wider">Studio &amp; Workshop Contact</h2>
-    <div>
-      <label class="block text-xs font-bold text-gray-700 mb-1">Workshop Phone</label>
-      <input type="text" value="{{ studio_phone }}" readonly class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-bold bg-gray-50" />
+  <form method="POST" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- 1. Website Information -->
+    <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-5 sm:p-6 space-y-4">
+      <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+        <span class="text-lg">🏪</span>
+        <div>
+          <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Website Information</h2>
+          <p class="text-[11px] text-gray-500">Core store branding displayed across navbar, page titles, and metadata.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Website Name <span class="text-red-500">*</span></label>
+          <input type="text" 
+                 name="website_name" 
+                 value="{{ settings.website_name }}" 
+                 required 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Tagline / Subtitle</label>
+          <input type="text" 
+                 name="tagline" 
+                 value="{{ settings.tagline }}" 
+                 placeholder="e.g. Fine Teak Craftsmanship" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+      </div>
     </div>
-    <div>
-      <label class="block text-xs font-bold text-gray-700 mb-1">Central Workshop Address</label>
-      <textarea readonly class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-medium bg-gray-50">{{ studio_address }}</textarea>
+
+    <!-- 2. Contact Information -->
+    <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-5 sm:p-6 space-y-4">
+      <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+        <span class="text-lg">📞</span>
+        <div>
+          <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Contact Information</h2>
+          <p class="text-[11px] text-gray-500">Official contact numbers, emails, and address for customer inquiries and footer.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Primary Email</label>
+          <input type="email" 
+                 name="primary_email" 
+                 value="{{ settings.primary_email }}" 
+                 placeholder="support@gloryfurniture.com" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Secondary Email <span class="text-gray-400 font-normal">(Optional)</span></label>
+          <input type="email" 
+                 name="secondary_email" 
+                 value="{{ settings.secondary_email }}" 
+                 placeholder="sales@gloryfurniture.com" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Phone Number</label>
+          <input type="text" 
+                 name="phone" 
+                 value="{{ settings.phone }}" 
+                 placeholder="Leave empty if not configured" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+          <p class="text-[10px] text-gray-400 mt-1">Leave empty if no phone is configured. Never use unauthorized test numbers.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">WhatsApp Number</label>
+          <input type="text" 
+                 name="whatsapp_number" 
+                 value="{{ settings.whatsapp_number }}" 
+                 placeholder="e.g. +91 9XXXXXXXXX" 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-gray-700 mb-1.5">Studio / Workshop Address</label>
+        <textarea name="address" 
+                  rows="2" 
+                  placeholder="Leave empty if not configured" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]">{{ settings.address }}</textarea>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div>
+          <label class="block text-[11px] font-bold text-gray-700 mb-1">City</label>
+          <input type="text" 
+                 name="city" 
+                 value="{{ settings.city }}" 
+                 placeholder="e.g. Hyderabad" 
+                 class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-700 mb-1">State</label>
+          <input type="text" 
+                 name="state" 
+                 value="{{ settings.state }}" 
+                 placeholder="e.g. Telangana" 
+                 class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-700 mb-1">Pincode</label>
+          <input type="text" 
+                 name="pincode" 
+                 value="{{ settings.pincode }}" 
+                 placeholder="e.g. 500033" 
+                 class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-700 mb-1">Country</label>
+          <input type="text" 
+                 name="country" 
+                 value="{{ settings.country|default:'India' }}" 
+                 placeholder="India" 
+                 class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- 3. Social Media Links -->
+    <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-5 sm:p-6 space-y-4">
+      <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+        <span class="text-lg">🌐</span>
+        <div>
+          <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Social Media Links</h2>
+          <p class="text-[11px] text-gray-500">Only channels with configured links will appear in the customer footer.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Instagram URL</label>
+          <input type="url" 
+                 name="instagram_url" 
+                 value="{{ settings.instagram_url }}" 
+                 placeholder="https://instagram.com/..." 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Facebook URL</label>
+          <input type="url" 
+                 name="facebook_url" 
+                 value="{{ settings.facebook_url }}" 
+                 placeholder="https://facebook.com/..." 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">YouTube URL</label>
+          <input type="url" 
+                 name="youtube_url" 
+                 value="{{ settings.youtube_url }}" 
+                 placeholder="https://youtube.com/..." 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">LinkedIn URL</label>
+          <input type="url" 
+                 name="linkedin_url" 
+                 value="{{ settings.linkedin_url }}" 
+                 placeholder="https://linkedin.com/company/..." 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-gray-700 mb-1.5">Twitter / X URL</label>
+          <input type="url" 
+                 name="twitter_url" 
+                 value="{{ settings.twitter_url }}" 
+                 placeholder="https://x.com/..." 
+                 class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Footer & CMS -->
+    <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-5 sm:p-6 space-y-4">
+      <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+        <span class="text-lg">📝</span>
+        <div>
+          <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Footer &amp; Legal Content</h2>
+          <p class="text-[11px] text-gray-500">Craftsmanship statement and copyright notice displayed at the bottom of customer pages.</p>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-gray-700 mb-1.5">Footer Brand Description</label>
+        <textarea name="footer_description" 
+                  rows="3" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]">{{ settings.footer_description }}</textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-gray-700 mb-1.5">Copyright Text</label>
+        <input type="text" 
+               name="copyright_text" 
+               value="{{ settings.copyright_text }}" 
+               class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] focus:border-[#5C3D2E]" />
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <button type="submit" 
+              class="px-8 py-3 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2">
+        <span>💾</span>
+        <span>Save Settings</span>
+      </button>
+    </div>
+
+  </form>
+
 </div>
 {% endblock %}

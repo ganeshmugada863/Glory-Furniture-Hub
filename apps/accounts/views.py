@@ -99,7 +99,7 @@ def customer_login_view(request):
                         request.session['glory_role'] = 'admin'
                         request.session['glory_user_email'] = user.email or 'admin@gloryfurniture.com'
                         request.session['glory_user_name'] = 'Master Studio Admin'
-                        request.session['glory_user_phone'] = profile.phone or '+91 98765 43210'
+                        request.session['glory_user_phone'] = profile.phone or ''
                         profile.role = 'admin'
                         profile.save()
 
@@ -161,7 +161,7 @@ def customer_register_view(request):
             # Create permanent UserProfile record
             profile, _ = UserProfile.objects.get_or_create(user=user)
             profile.full_name = name
-            profile.phone = phone or '+91 98765 43210'
+            profile.phone = phone or ''
             profile.role = 'customer'
             profile.auth_provider = 'email'
             profile.save()
@@ -248,7 +248,7 @@ def google_auth_view(request):
             profile = UserProfile.objects.create(
                 user=user,
                 full_name=name or email.split('@')[0].title(),
-                phone='+91 98765 43210',
+                phone='',
                 role='customer',
                 auth_provider='google',
                 google_id=google_id,
@@ -504,19 +504,30 @@ def edit_profile_view(request):
     if request.method == 'POST':
         new_name = request.POST.get('name', '').strip()
         new_phone = request.POST.get('phone', '').strip()
+        new_address = request.POST.get('address', '').strip()
+        update_fields = []
         if new_name:
             request.session['glory_user_name'] = new_name
             if profile:
                 profile.full_name = new_name
+                update_fields.append('full_name')
         if new_phone:
             request.session['glory_user_phone'] = new_phone
             if profile:
                 profile.phone = new_phone
-        if profile:
-            profile.save(update_fields=['full_name', 'phone'])
+                update_fields.append('phone')
+        if new_address is not None:
+            request.session['glory_user_address'] = new_address
+            if profile:
+                profile.address = new_address
+                update_fields.append('address')
+        if profile and update_fields:
+            profile.save(update_fields=list(set(update_fields)))
         messages.success(request, 'Profile updated successfully!')
         return redirect('customer_profile')
-    return render(request, 'accounts/edit_profile.html')
+    
+    user_address = profile.address if profile else request.session.get('glory_user_address', '')
+    return render(request, 'accounts/edit_profile.html', {'user_address': user_address})
 
 
 def address_view(request):
@@ -1317,16 +1328,100 @@ def admin_reports_view(request):
 
 
 def admin_settings_view(request):
-    """Studio configuration settings."""
+    """
+    Dedicated Admin Website Settings & Footer CMS Management:
+    Allows studio administrators to edit website identity, emails, phone,
+    WhatsApp, address, social media links, and footer copyright permanently.
+    Strictly restricted to authorized Administrators.
+    """
+    # 1. Strict Admin Authorization Check
+    is_admin = request.session.get('glory_role') == 'admin' or (
+        request.user.is_authenticated and (
+            request.user.is_staff or 
+            request.user.is_superuser or 
+            getattr(getattr(request.user, 'profile', None), 'role', '') == 'admin'
+        )
+    )
+    if not is_admin:
+        messages.error(request, "Access Denied: Administrator privileges required to access Website Settings.")
+        return redirect('admin_login')
+
+    from apps.core.models import WebsiteSettings
+    from django.core.validators import validate_email
+    from django.core.exceptions import ValidationError
+
+    settings_obj = WebsiteSettings.get_settings()
+
     if request.method == 'POST':
-        messages.success(request, "Studio settings updated successfully.")
+        website_name = request.POST.get('website_name', '').strip() or 'Glory Furniture Hub'
+        tagline = request.POST.get('tagline', '').strip()
+        primary_email = request.POST.get('primary_email', '').strip()
+        secondary_email = request.POST.get('secondary_email', '').strip()
+        raw_phone = request.POST.get('phone', '').strip()
+        raw_whatsapp = request.POST.get('whatsapp_number', '').strip()
+        address = request.POST.get('address', '').strip()
+        city = request.POST.get('city', '').strip()
+        state = request.POST.get('state', '').strip()
+        pincode = request.POST.get('pincode', '').strip()
+        country = request.POST.get('country', '').strip() or 'India'
+        footer_description = request.POST.get('footer_description', '').strip()
+        copyright_text = request.POST.get('copyright_text', '').strip()
+        facebook_url = request.POST.get('facebook_url', '').strip()
+        instagram_url = request.POST.get('instagram_url', '').strip()
+        youtube_url = request.POST.get('youtube_url', '').strip()
+        twitter_url = request.POST.get('twitter_url', '').strip()
+        linkedin_url = request.POST.get('linkedin_url', '').strip()
+
+        # Validate emails
+        if primary_email:
+            try:
+                validate_email(primary_email)
+            except ValidationError:
+                messages.error(request, "Invalid Primary Email address format.")
+                return redirect('admin_settings')
+
+        if secondary_email:
+            try:
+                validate_email(secondary_email)
+            except ValidationError:
+                messages.error(request, "Invalid Secondary Email address format.")
+                return redirect('admin_settings')
+
+        # Strictly check & reject prohibited phone numbers
+        digits_phone = ''.join(c for c in raw_phone if c.isdigit())
+        if '9876543210' in digits_phone:
+            raw_phone = ''
+        digits_wa = ''.join(c for c in raw_whatsapp if c.isdigit())
+        if '9876543210' in digits_wa:
+            raw_whatsapp = ''
+
+        # Update and save settings to production database
+        settings_obj.website_name = website_name
+        settings_obj.tagline = tagline
+        settings_obj.primary_email = primary_email
+        settings_obj.secondary_email = secondary_email
+        settings_obj.phone = raw_phone
+        settings_obj.whatsapp_number = raw_whatsapp
+        settings_obj.address = address
+        settings_obj.city = city
+        settings_obj.state = state
+        settings_obj.pincode = pincode
+        settings_obj.country = country
+        settings_obj.footer_description = footer_description
+        settings_obj.copyright_text = copyright_text
+        settings_obj.facebook_url = facebook_url
+        settings_obj.instagram_url = instagram_url
+        settings_obj.youtube_url = youtube_url
+        settings_obj.twitter_url = twitter_url
+        settings_obj.linkedin_url = linkedin_url
+        settings_obj.save()
+
+        messages.success(request, "Website Settings and Footer CMS updated successfully!")
         return redirect('admin_settings')
 
     context = {
-        'page_title': 'Studio Settings',
+        'page_title': 'Website Settings & Footer CMS',
         'active_nav': 'settings',
-        'upi_vpa': 'gloryfurniture@okaxis',
-        'studio_phone': '+91 98765 43210',
-        'studio_address': 'Plot 42, Road No. 10, Jubilee Hills, Hyderabad, Telangana 500033',
+        'settings': settings_obj,
     }
     return render(request, 'admin_portal/admin_settings.html', context)

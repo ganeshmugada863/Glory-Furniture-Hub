@@ -161,7 +161,7 @@ class Order(models.Model):
                 return self.user.profile.address.strip()
         except Exception:
             pass
-        return "Plot 42, Jubilee Hills Road No. 36, Hyderabad, Telangana 500033"
+        return ""
 
     def get_flipkart_timeline(self):
         """

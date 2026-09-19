@@ -33,8 +33,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('full_name', models.CharField(default='Ganesh M.', max_length=150)),
-                ('phone', models.CharField(default='+91 98765 43210', max_length=25)),
-                ('address', models.TextField(default='Plot 42, Road No. 10, Jubilee Hills, Hyderabad, Telangana 500033')),
+                ('phone', models.CharField(default='', max_length=25)),
+                ('address', models.TextField(default='')),
                 ('role', models.CharField(choices=[('customer', 'Customer'), ('admin', 'Studio Admin')], default='customer', max_length=20)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('user', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
