@@ -325,7 +325,7 @@ def customer_home_view(request):
         if customer_email:
             query |= Q(email__iexact=customer_email)
         orders = Order.objects.filter(query).distinct().prefetch_related('transactions').order_by('-created_at')
-        bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at') if customer_email else Booking.objects.none()
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at') if customer_email else Booking.objects.none()
     else:
         orders = Order.objects.none()
         bookings = Booking.objects.none()
@@ -345,8 +345,8 @@ def customer_home_view(request):
         'customer_phone': customer_phone,
         'orders': orders[:4] if orders.exists() else Order.objects.all()[:4],
         'total_orders': orders.count() if orders.exists() else Order.objects.count(),
-        'bookings': bookings[:3] if bookings.exists() else Booking.objects.exclude(consultation_type='Product Order & In-Home Delivery')[:3],
-        'total_bookings': bookings.count() if bookings.exists() else Booking.objects.exclude(consultation_type='Product Order & In-Home Delivery').count(),
+        'bookings': bookings[:3] if bookings.exists() else Booking.objects.all()[:3],
+        'total_bookings': bookings.count() if bookings.exists() else Booking.objects.count(),
         'latest_order': latest_order,
         'featured_products': featured_products,
         'total_spent': f"₹{int(total_spent):,}",
@@ -416,7 +416,7 @@ def customer_bookings_view(request):
     user = request.user if request.user.is_authenticated else None
     customer_email = (user.email if user else None) or request.session.get('glory_user_email')
     if customer_email:
-        bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
     else:
         bookings = Booking.objects.none()
 
@@ -475,7 +475,7 @@ def customer_profile_view(request):
         if customer_email:
             query |= Q(email__iexact=customer_email)
         orders = Order.objects.filter(query).distinct().select_related('product').order_by('-created_at')
-        bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')[:5] if customer_email else []
+        bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')[:5] if customer_email else []
         custom_requests = CustomRequest.objects.filter(email__iexact=customer_email).order_by('-created_at')[:3] if customer_email else []
     else:
         orders = Order.objects.none()
@@ -819,7 +819,7 @@ def admin_customer_detail_view(request, customer_id=None):
             customer_email = order.email
             
     orders = Order.objects.filter(email__iexact=customer_email).prefetch_related('transactions', 'payments', 'installments').order_by('-created_at')
-    bookings = Booking.objects.filter(email__iexact=customer_email).exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')
+    bookings = Booking.objects.filter(email__iexact=customer_email).order_by('-created_at')
     transactions = PaymentTransaction.objects.filter(order__email__iexact=customer_email).order_by('-paid_at')
     
     name = orders.first().customer_name if orders.exists() else (bookings.first().customer_name if bookings.exists() else customer_email)
@@ -1035,7 +1035,7 @@ def admin_bookings_view(request):
             messages.success(request, f"Booking status updated to {new_status}!")
             return redirect('admin_bookings')
 
-    bookings = Booking.objects.exclude(consultation_type='Product Order & In-Home Delivery').order_by('-created_at')
+    bookings = Booking.objects.all().order_by('-created_at')
     context = {
         'page_title': 'Consultations & Measurements',
         'active_nav': 'bookings',
