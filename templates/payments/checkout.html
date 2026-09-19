@@ -127,7 +127,12 @@
             <span>📍 White-Glove Delivery Destination</span>
           </div>
           <p><span class="font-semibold text-gray-800">Patron:</span> {{ order.customer_name }}</p>
-          <p><span class="font-semibold text-gray-800">Phone:</span> {{ order.phone }}</p>
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <p><span class="font-semibold text-gray-800">Phone:</span> <span id="display-order-phone" class="{% if not order.phone %}text-amber-800 font-bold{% endif %}">{{ order.phone|default:'Not provided (Required for Delivery)' }}</span></p>
+            <button type="button" onclick="openPhoneModal()" class="text-[11px] font-bold text-[#8B0000] hover:underline cursor-pointer">
+              {% if order.phone %}✏️ Edit Phone{% else %}📱 Add Phone{% endif %}
+            </button>
+          </div>
           <p><span class="font-semibold text-gray-800">Email:</span> {{ order.email }}</p>
           {% if order.shipping_address %}
             <p class="leading-relaxed"><span class="font-semibold text-gray-800">Address:</span> {{ order.shipping_address }}</p>
@@ -464,6 +469,35 @@
   </div>
 </div>
 
+<!-- Mobile Number Input Modal -->
+<div id="phone-input-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+  <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full border border-gray-200 shadow-2xl space-y-4">
+    <div class="flex items-center gap-2.5 pb-2 border-b border-gray-100">
+      <span class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-base">📱</span>
+      <div>
+        <h3 class="font-black text-sm text-gray-950">Mobile Number Required</h3>
+        <p class="text-[11px] text-gray-500">Required by Cashfree payment gateway &amp; dispatch tracking</p>
+      </div>
+    </div>
+    <div>
+      <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1.5">Your 10-Digit Mobile Number</label>
+      <div class="flex items-center rounded-xl border border-gray-300 overflow-hidden focus-within:border-[#8B0000] focus-within:ring-1 focus-within:ring-[#8B0000]">
+        <span class="px-3 py-2.5 bg-gray-100 text-gray-600 text-xs font-bold border-r border-gray-300">+91</span>
+        <input type="tel" id="modal-phone-input" maxlength="10" placeholder="Enter 10-digit mobile number" value="{{ order.phone }}" class="w-full px-3 py-2.5 text-xs font-bold text-gray-900 focus:outline-none" />
+      </div>
+      <p id="phone-modal-err" class="hidden text-xs text-red-600 font-bold mt-1.5"></p>
+    </div>
+    <div class="flex gap-2.5 pt-1">
+      <button type="button" onclick="closePhoneModal()" class="flex-1 py-2.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" onclick="saveModalPhoneAndPay()" class="flex-1 py-2.5 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer">
+        Save &amp; Proceed →
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
   let currentOrderNumber = "{{ order.order_number }}";
   let totalOrderAmount = parseFloat("{{ order.total_amount }}");
@@ -471,6 +505,43 @@
   let remainingInstallmentBalance = totalOrderAmount - firstInstallmentAmount;
   let currentPlanSlug = "full-payment";
   let currentSimulatedOrderId = "";
+  let orderPhone = "{{ order.phone|default:'' }}";
+
+  function openPhoneModal() {
+    const modal = document.getElementById('phone-input-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      const inp = document.getElementById('modal-phone-input');
+      if (inp) inp.focus();
+    }
+  }
+
+  function closePhoneModal() {
+    const modal = document.getElementById('phone-input-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function saveModalPhoneAndPay() {
+    const inp = document.getElementById('modal-phone-input');
+    const val = (inp ? inp.value : '').replace(/\D/g, '');
+    const errP = document.getElementById('phone-modal-err');
+    if (!val || val.length !== 10 || val === '9876543210') {
+      if (errP) {
+        errP.textContent = 'Please enter a valid 10-digit Indian mobile number.';
+        errP.classList.remove('hidden');
+      }
+      return;
+    }
+    if (errP) errP.classList.add('hidden');
+    orderPhone = val;
+    const disp = document.getElementById('display-order-phone');
+    if (disp) {
+      disp.textContent = '+91 ' + val;
+      disp.classList.remove('text-amber-800', 'font-bold');
+    }
+    closePhoneModal();
+    triggerCashfreeCheckout();
+  }
 
   // 1. Payment Mode Switching (Full vs 3 Equal Installments)
   function selectPaymentMode(mode) {
@@ -537,6 +608,12 @@
 
   // 3. Initiate Cashfree Checkout Session
   async function triggerCashfreeCheckout() {
+    const cleanDigits = (orderPhone || '').replace(/\D/g, '');
+    if (!cleanDigits || cleanDigits.length !== 10 || cleanDigits === '9876543210') {
+      openPhoneModal();
+      return;
+    }
+
     const btn = document.getElementById('pay-now-btn');
     const spinner = document.getElementById('btn-spinner');
     const planSlug = document.getElementById('selected-plan-input').value;
@@ -556,13 +633,18 @@
           order_number: currentOrderNumber,
           plan_slug: planSlug,
           installment_id: installmentId || null,
+          customer_phone: cleanDigits,
         })
       });
 
       const data = await response.json();
 
       if (!response.ok || data.status !== 'success') {
-        alert(data.message || 'Payment initiation failed. Please try again.');
+        if (data.need_phone) {
+          openPhoneModal();
+        } else {
+          alert(data.message || 'Payment initiation failed. Please try again.');
+        }
         btn.disabled = false;
         spinner.classList.add('hidden');
         return;

@@ -90,6 +90,9 @@ class CashfreeService:
         if not customer_phone and getattr(order, 'user', None) and getattr(order.user, 'profile', None):
             customer_phone = cls.sanitize_phone(order.user.profile.phone)
 
+        if not customer_phone or len(customer_phone) < 10:
+            raise ValueError("A valid 10-digit customer phone number is required to initiate a Cashfree payment session.")
+
         # URLs
         if not return_url:
             return_url = f"https://glory-furniture-hub.onrender.com/payments/return/?order_id={cf_order_id}"
@@ -100,9 +103,8 @@ class CashfreeService:
             "customer_id": customer_id,
             "customer_name": customer_name,
             "customer_email": customer_email,
+            "customer_phone": customer_phone,
         }
-        if customer_phone:
-            cust_details["customer_phone"] = customer_phone
 
         payload = {
             "order_id": cf_order_id,

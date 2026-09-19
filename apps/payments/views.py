@@ -61,6 +61,18 @@ def checkout_payment_view(request, order_number):
     if not _check_order_access(request, order):
         return HttpResponseForbidden("Access Denied: You do not have permission to view this order payment.")
 
+    # Cleanse any contaminated legacy strings from this order if present
+    order_updated = False
+    if order.phone and '98765' in order.phone:
+        order.phone = ''
+        order_updated = True
+    if order.shipping_address and ('Plot 42' in order.shipping_address or 'Jubilee Hills' in order.shipping_address):
+        parts = [p.strip() for p in order.shipping_address.split(',') if p.strip() and 'Plot 42' not in p and 'Jubilee Hills' not in p]
+        order.shipping_address = ', '.join(parts)
+        order_updated = True
+    if order_updated:
+        order.save(update_fields=['phone', 'shipping_address'])
+
     # If already fully paid, redirect to confirmation/receipt
     if order.payment_status == 'FULLY_PAID' or (order.remaining_amount and order.remaining_amount <= Decimal('0.00')):
         last_payment = order.payments.filter(status='PAID').order_by('-paid_at').first()
@@ -155,6 +167,32 @@ def initiate_payment_session_api(request):
     host = request.get_host()
     return_url = f"{scheme}://{host}/payments/return/?order_id={{order_id}}"
     notify_url = f"{scheme}://{host}/payments/webhook/cashfree/"
+
+    # Extract and update phone if provided
+    incoming_phone = data.get('customer_phone') or data.get('phone')
+    if incoming_phone:
+        sanitized = CashfreeService.sanitize_phone(incoming_phone)
+        if sanitized and len(sanitized) == 10:
+            order.phone = sanitized
+            order.save(update_fields=['phone'])
+            if request.user.is_authenticated and hasattr(request.user, 'profile') and not request.user.profile.phone:
+                request.user.profile.phone = sanitized
+                request.user.profile.save(update_fields=['phone'])
+
+    # Ensure a valid 10-digit phone is attached before contacting Cashfree
+    valid_phone = CashfreeService.sanitize_phone(order.phone)
+    if (not valid_phone or len(valid_phone) < 10) and getattr(order, 'user', None) and getattr(order.user, 'profile', None):
+        valid_phone = CashfreeService.sanitize_phone(order.user.profile.phone)
+        if valid_phone and len(valid_phone) == 10:
+            order.phone = valid_phone
+            order.save(update_fields=['phone'])
+
+    if not valid_phone or len(valid_phone) < 10:
+        return JsonResponse({
+            'status': 'error',
+            'need_phone': True,
+            'message': 'Please enter a valid 10-digit mobile number to proceed with payment.'
+        }, status=400)
 
     try:
         cf_order_data = CashfreeService.create_order(

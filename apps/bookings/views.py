@@ -87,58 +87,88 @@ def booking_summary_view(request):
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
 
-    addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses')
-    if not addresses:
-        default_address = {
-            'id': 1,
-            'tag': 'Home (Default)',
-            'is_default': True,
-            'name': profile.full_name if (profile and profile.full_name) else (user.get_full_name() if user else 'Valued Patron'),
-            'phone': profile.phone if (profile and profile.phone) else '',
-            'email': user.email if user else '',
-            'flat': profile.address if (profile and profile.address) else '',
-            'street': '',
-            'landmark': '',
-            'city': '',
-            'state': '',
-            'pincode': '',
-        }
-        if profile and profile.address:
-            addresses = [default_address]
-            profile.saved_addresses = addresses
-            profile.save(update_fields=['saved_addresses'])
-            request.session['glory_addresses'] = addresses
-        else:
-            addresses = []
+    # Sanitize session phone if it holds unwanted dummy number
+    if '98765' in request.session.get('glory_user_phone', ''):
+        request.session['glory_user_phone'] = ''
+    if profile and '98765' in (profile.phone or ''):
+        profile.phone = ''
+        profile.save(update_fields=['phone'])
+    if profile and ('Plot 42' in (profile.address or '') or 'Jubilee Hills' in (profile.address or '')):
+        profile.address = ''
+        profile.save(update_fields=['address'])
+
+    raw_addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+    # Strictly filter out any old contaminated address entries
+    valid_addresses = []
+    for a in raw_addresses:
+        a_str = str(a)
+        if '98765' in a_str or 'Plot 42' in a_str or 'Jubilee Hills' in a_str:
+            continue
+        valid_addresses.append(a)
+
+    if valid_addresses:
+        default_address = next((a for a in valid_addresses if a.get('is_default')), valid_addresses[0])
+        has_saved_address = bool(default_address.get('flat') or default_address.get('street'))
     else:
-        default_address = next((a for a in addresses if a.get('is_default')), addresses[0])
+        default_address = None
+        has_saved_address = False
 
     if request.method == 'POST':
-        # Strictly guarantee email & user association to prevent cross-account pollution
-        entered_phone = request.POST.get('phone', '').strip()
+        # Extract and strictly sanitize phone number
+        raw_phone = request.POST.get('phone', '').strip()
+        clean_phone = re.sub(r'\D', '', str(raw_phone))
+        if len(clean_phone) == 12 and clean_phone.startswith('91'):
+            clean_phone = clean_phone[2:]
+        if len(clean_phone) > 10:
+            clean_phone = clean_phone[-10:]
+        if clean_phone in ['9876543210', '09876543210'] or len(clean_phone) < 10:
+            clean_phone = ''
+
+        post_name = request.POST.get('customer_name', '').strip()
         if user:
             email = user.email
-            customer_name = (profile.full_name if profile and profile.full_name else user.get_full_name()) or request.POST.get('customer_name', '').strip() or user.username
-            phone = entered_phone or (profile.phone if profile and profile.phone else '')
-            if entered_phone and profile and not profile.phone:
-                profile.phone = entered_phone
+            customer_name = post_name or (profile.full_name if profile and profile.full_name else user.get_full_name()) or user.username
+            phone = clean_phone or (profile.phone if profile and profile.phone and '98765' not in profile.phone else '')
+            if clean_phone and profile and profile.phone != clean_phone:
+                profile.phone = clean_phone
                 profile.save(update_fields=['phone'])
         else:
-            email = request.POST.get('email', '').strip().lower() or default_address.get('email', '')
-            customer_name = request.POST.get('customer_name', '').strip() or default_address.get('name', 'Valued Patron')
-            phone = entered_phone or default_address.get('phone', '')
+            email = request.POST.get('email', '').strip().lower() or (default_address.get('email', '') if default_address else '')
+            customer_name = post_name or (default_address.get('name', 'Valued Patron') if default_address else 'Valued Patron')
+            phone = clean_phone or (default_address.get('phone', '') if default_address else '')
 
-        flat = request.POST.get('flat', '').strip() or default_address.get('flat', '')
-        street = request.POST.get('street', '').strip() or default_address.get('street', '')
-        landmark = request.POST.get('landmark', '').strip() or default_address.get('landmark', '')
-        city = request.POST.get('city', '').strip() or default_address.get('city', '')
-        state = request.POST.get('state', '').strip() or default_address.get('state', '')
-        pincode = request.POST.get('pincode', '').strip() or default_address.get('pincode', '')
+        flat = request.POST.get('flat', '').strip() or (default_address.get('flat', '') if default_address else '')
+        street = request.POST.get('street', '').strip() or (default_address.get('street', '') if default_address else '')
+        landmark = request.POST.get('landmark', '').strip() or (default_address.get('landmark', '') if default_address else '')
+        city = request.POST.get('city', '').strip() or (default_address.get('city', '') if default_address else '')
+        state = request.POST.get('state', '').strip() or (default_address.get('state', '') if default_address else '')
+        pincode = request.POST.get('pincode', '').strip() or (default_address.get('pincode', '') if default_address else '')
 
-        addr_parts = [p for p in [flat, street, landmark, city, state] if p]
+        # Strictly sanitize against any old fake address strings
+        addr_parts = [p for p in [flat, street, landmark, city, state] if p and 'Plot 42' not in p and 'Jubilee Hills' not in p]
         full_address = ", ".join(addr_parts)
         if pincode:
             full_address = f"{full_address} - {pincode}".strip(' -')
+
+        # Auto-save address into user profile for future orders if valid
+        if user and profile and (flat or street):
+            new_saved_addr = {
+                'id': 1,
+                'tag': 'Home (Default)',
+                'is_default': True,
+                'name': customer_name,
+                'phone': phone,
+                'email': email,
+                'flat': flat,
+                'street': street,
+                'landmark': landmark,
+                'city': city,
+                'state': state,
+                'pincode': pincode,
+            }
+            profile.saved_addresses = [new_saved_addr]
+            profile.save(update_fields=['saved_addresses'])
+
         delivery_preference = request.POST.get('delivery_preference', 'Immediate Dispatch (5-7 Days)')
         payment_plan = 'FULL_PAYMENT'
 
@@ -242,9 +272,10 @@ def booking_summary_view(request):
         'formatted_gst': f"₹{int(gst_included):,}",
         'default_delivery_date': default_delivery_date,
         'saved_address': default_address,
-        'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or default_address.get('name') or 'Valued Patron',
-        'user_email': (user.email if user else None) or default_address.get('email') or '',
-        'user_phone': (profile.phone if profile and profile.phone else None) or default_address.get('phone') or '',
+        'has_saved_address': has_saved_address,
+        'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address else '') or 'Valued Patron',
+        'user_email': (user.email if user else None) or (default_address.get('email') if default_address else '') or '',
+        'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address else '') or '',
     }
     return render(request, 'bookings/checkout_summary.html', context)
 

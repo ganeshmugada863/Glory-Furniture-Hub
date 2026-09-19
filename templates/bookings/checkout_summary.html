@@ -63,12 +63,12 @@
       <input type="hidden" name="customer_name" value="{{ saved_address.name|default:user_name }}" />
       <input type="hidden" name="phone" value="{{ saved_address.phone|default:user_phone }}" />
       <input type="hidden" name="email" value="{{ saved_address.email|default:user_email }}" />
-      <input type="hidden" name="flat" value="{{ saved_address.flat }}" />
-      <input type="hidden" name="street" value="{{ saved_address.street }}" />
-      <input type="hidden" name="landmark" value="{{ saved_address.landmark }}" />
-      <input type="hidden" name="city" value="{{ saved_address.city|default:'Hyderabad' }}" />
-      <input type="hidden" name="state" value="{{ saved_address.state|default:'Telangana' }}" />
-      <input type="hidden" name="pincode" value="{{ saved_address.pincode|default:'500034' }}" />
+      <input type="hidden" name="flat" value="{{ saved_address.flat|default:'' }}" />
+      <input type="hidden" name="street" value="{{ saved_address.street|default:'' }}" />
+      <input type="hidden" name="landmark" value="{{ saved_address.landmark|default:'' }}" />
+      <input type="hidden" name="city" value="{% if has_saved_address %}{{ saved_address.city|default:'Hyderabad' }}{% else %}Hyderabad{% endif %}" />
+      <input type="hidden" name="state" value="{% if has_saved_address %}{{ saved_address.state|default:'Telangana' }}{% else %}Telangana{% endif %}" />
+      <input type="hidden" name="pincode" value="{% if has_saved_address %}{{ saved_address.pincode|default:'' }}{% else %}{% endif %}" />
 
       <!-- ========================================================= -->
       <!-- LEFT COLUMN: SAVED DELIVERY ADDRESS CARD (7 Cols)         -->
@@ -83,8 +83,8 @@
                 📍
               </span>
               <div>
-                <h2 class="font-black text-base text-gray-950">Address 📍 Current / Selected Address</h2>
-                <p class="text-[11px] text-gray-500">Review, customize or auto-detect delivery coordinates</p>
+                <h2 class="font-black text-base text-gray-950">Address 📍 Delivery &amp; Contact Details</h2>
+                <p class="text-[11px] text-gray-500">Auto-detect via GPS or enter delivery address directly</p>
               </div>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
@@ -100,20 +100,21 @@
                       onclick="toggleInlineAddressEdit()"
                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-gray-300 hover:border-gray-900 text-xs font-bold text-gray-800 transition-all cursor-pointer shadow-2xs active-tap">
                 <span>✏️</span>
-                <span id="inline-edit-btn-text">Edit Inline</span>
+                <span id="inline-edit-btn-text">{% if has_saved_address %}Edit Address{% else %}Hide Form{% endif %}</span>
               </button>
             </div>
           </div>
 
           <div id="chk-gps-badge" class="hidden text-xs font-bold p-2.5 rounded-xl"></div>
 
+          {% if has_saved_address %}
           <!-- Recipient & Address Details Display Card -->
           <div id="address-display-box" class="p-5 rounded-2xl bg-amber-50/40 border border-amber-200/60 space-y-3">
             <div class="flex items-center justify-between flex-wrap gap-2">
               <div class="flex items-center gap-2 flex-wrap">
                 <span id="chk-display-name" class="font-black text-sm sm:text-base text-gray-950">{{ saved_address.name|default:user_name }}</span>
                 <span class="text-gray-300">•</span>
-                <span id="chk-display-phone" class="text-xs font-bold text-[#5C3D2E]">{{ saved_address.phone|default:user_phone }}</span>
+                <span id="chk-display-phone" class="text-xs font-bold text-[#5C3D2E]">+91 {{ saved_address.phone|default:user_phone }}</span>
                 {% if saved_address.email or user_email %}
                 <span class="text-gray-300">•</span>
                 <span class="text-xs text-gray-500">{{ saved_address.email|default:user_email }}</span>
@@ -127,54 +128,65 @@
             <p id="chk-address-text" class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
               {{ saved_address.flat }}{% if saved_address.street %}, {{ saved_address.street }}{% endif %}
               {% if saved_address.landmark %}, Landmark: {{ saved_address.landmark }}{% endif %}, 
-              {{ saved_address.city|default:"Hyderabad" }}, {{ saved_address.state|default:"Telangana" }} - {{ saved_address.pincode|default:"500034" }}
+              {{ saved_address.city|default:"Hyderabad" }}, {{ saved_address.state|default:"Telangana" }}{% if saved_address.pincode %} - {{ saved_address.pincode }}{% endif %}
             </p>
           </div>
+          {% else %}
+          <div id="no-address-banner" class="p-4 rounded-2xl bg-amber-50/70 border border-dashed border-amber-300 flex items-start gap-3">
+            <span class="text-lg">📍</span>
+            <div>
+              <p class="text-xs font-bold text-gray-950">Enter Delivery Address</p>
+              <p class="text-[11px] text-gray-600 mt-0.5">Please fill in your delivery address and contact details below, or click <strong>Use Current Location</strong> to auto-fill.</p>
+            </div>
+          </div>
+          {% endif %}
 
           <!-- Inline Edit Address Form (Direct Inline Customization) -->
-          <div id="inline-address-form" class="hidden p-5 rounded-2xl bg-white border border-amber-300 shadow-sm space-y-4">
+          <div id="inline-address-form" class="{% if has_saved_address %}hidden {% endif %}p-5 rounded-2xl bg-white border border-amber-300 shadow-sm space-y-4">
             <div class="flex items-center justify-between pb-2 border-b border-gray-100">
               <div class="flex items-center gap-1.5">
                 <span class="text-sm">📝</span>
-                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-900">Edit Delivery Address Directly</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-900">{% if has_saved_address %}Edit Delivery Address Directly{% else %}Delivery Address Details{% endif %}</h3>
               </div>
+              {% if has_saved_address %}
               <button type="button" onclick="toggleInlineAddressEdit()" class="px-3 py-1 bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold rounded-lg transition-colors cursor-pointer">
                 Save &amp; Close
               </button>
+              {% endif %}
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Contact Name</label>
-                <input type="text" id="inline-edit-name" value="{{ saved_address.name|default:user_name }}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">Contact Name <span class="text-red-500">*</span></label>
+                <input type="text" id="inline-edit-name" value="{{ saved_address.name|default:user_name }}" oninput="syncInlineToForm()" placeholder="Full Name" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Phone Number</label>
-                <input type="text" id="inline-edit-phone" value="{{ saved_address.phone|default:user_phone }}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">10-Digit Phone Number <span class="text-red-500">*</span></label>
+                <input type="tel" id="inline-edit-phone" value="{{ saved_address.phone|default:user_phone }}" maxlength="10" oninput="syncInlineToForm()" placeholder="10-digit mobile number" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
               <div class="sm:col-span-2">
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">House / Flat / Building No.</label>
-                <input type="text" id="inline-edit-flat" value="{{ saved_address.flat }}" oninput="syncInlineToForm()" placeholder="e.g., Flat 301, Teak Residency / H.No 4-50" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">House / Flat / Building No. <span class="text-red-500">*</span></label>
+                <input type="text" id="inline-edit-flat" value="{{ saved_address.flat|default:'' }}" oninput="syncInlineToForm()" placeholder="e.g., Flat 301, Teak Residency / H.No 4-50" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
               <div class="sm:col-span-2">
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Street / Road / Village / Mandal</label>
-                <input type="text" id="inline-edit-street" value="{{ saved_address.street }}" oninput="syncInlineToForm()" placeholder="e.g., Main Bazaar Road, Near Gram Panchayat" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">Street / Road / Village / Mandal <span class="text-red-500">*</span></label>
+                <input type="text" id="inline-edit-street" value="{{ saved_address.street|default:'' }}" oninput="syncInlineToForm()" placeholder="e.g., Main Bazaar Road, Near Gram Panchayat" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Landmark</label>
-                <input type="text" id="inline-edit-landmark" value="{{ saved_address.landmark }}" oninput="syncInlineToForm()" placeholder="e.g., Near Shiva Temple" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">Landmark (Optional)</label>
+                <input type="text" id="inline-edit-landmark" value="{{ saved_address.landmark|default:'' }}" oninput="syncInlineToForm()" placeholder="e.g., Near Shiva Temple" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">City / Town / District</label>
-                <input type="text" id="inline-edit-city" value="{{ saved_address.city|default:'Hyderabad' }}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">City / Town / District <span class="text-red-500">*</span></label>
+                <input type="text" id="inline-edit-city" value="{% if has_saved_address %}{{ saved_address.city|default:'Hyderabad' }}{% else %}Hyderabad{% endif %}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">State</label>
-                <input type="text" id="inline-edit-state" value="{{ saved_address.state|default:'Telangana' }}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
+                <input type="text" id="inline-edit-state" value="{% if has_saved_address %}{{ saved_address.state|default:'Telangana' }}{% else %}Telangana{% endif %}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
               <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">PIN Code</label>
-                <input type="text" id="inline-edit-pincode" value="{{ saved_address.pincode|default:'500034' }}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
+                <label class="block text-[11px] font-bold text-gray-700 mb-1">PIN Code <span class="text-red-500">*</span></label>
+                <input type="text" id="inline-edit-pincode" value="{% if has_saved_address %}{{ saved_address.pincode|default:'' }}{% else %}{% endif %}" oninput="syncInlineToForm()" placeholder="e.g., 500068" maxlength="6" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
               </div>
             </div>
           </div>
@@ -333,26 +345,36 @@
     const displayBox = document.getElementById('address-display-box');
     const btnText = document.getElementById('inline-edit-btn-text');
     
+    if (!formPanel) return;
+
     if (formPanel.classList.contains('hidden')) {
       formPanel.classList.remove('hidden');
-      displayBox.classList.add('opacity-75');
-      if (btnText) btnText.innerText = 'Close Form';
+      if (displayBox) displayBox.classList.add('opacity-75');
+      if (btnText) btnText.innerText = 'Hide Form';
     } else {
       formPanel.classList.add('hidden');
-      displayBox.classList.remove('opacity-75');
-      if (btnText) btnText.innerText = 'Edit Inline';
+      if (displayBox) displayBox.classList.remove('opacity-75');
+      if (btnText) btnText.innerText = 'Edit Address';
     }
   }
 
   function syncInlineToForm() {
-    const nameVal = document.getElementById('inline-edit-name')?.value || '';
-    const phoneVal = document.getElementById('inline-edit-phone')?.value || '';
-    const flatVal = document.getElementById('inline-edit-flat')?.value || '';
-    const streetVal = document.getElementById('inline-edit-street')?.value || '';
-    const landmarkVal = document.getElementById('inline-edit-landmark')?.value || '';
-    const cityVal = document.getElementById('inline-edit-city')?.value || 'Hyderabad';
-    const stateVal = document.getElementById('inline-edit-state')?.value || 'Telangana';
-    const pincodeVal = document.getElementById('inline-edit-pincode')?.value || '500034';
+    const nameVal = (document.getElementById('inline-edit-name')?.value || '').trim();
+    let phoneVal = (document.getElementById('inline-edit-phone')?.value || '').trim();
+    const flatVal = (document.getElementById('inline-edit-flat')?.value || '').trim();
+    const streetVal = (document.getElementById('inline-edit-street')?.value || '').trim();
+    const landmarkVal = (document.getElementById('inline-edit-landmark')?.value || '').trim();
+    const cityVal = (document.getElementById('inline-edit-city')?.value || '').trim() || 'Hyderabad';
+    const stateVal = (document.getElementById('inline-edit-state')?.value || '').trim() || 'Telangana';
+    const pincodeVal = (document.getElementById('inline-edit-pincode')?.value || '').trim();
+
+    // Clean phone of non-digits
+    const cleanPhoneDigits = phoneVal.replace(/\D/g, '');
+    if (cleanPhoneDigits.length === 12 && cleanPhoneDigits.startsWith('91')) {
+      phoneVal = cleanPhoneDigits.substring(2);
+    } else if (cleanPhoneDigits.length > 10) {
+      phoneVal = cleanPhoneDigits.slice(-10);
+    }
 
     // Update hidden inputs submitted with order
     const form = document.getElementById('checkout-booking-form');
@@ -367,11 +389,11 @@
       if (form.querySelector('[name=pincode]')) form.querySelector('[name=pincode]').value = pincodeVal;
     }
 
-    // Update display card
+    // Update display card if present
     const nameDisp = document.getElementById('chk-display-name');
     if (nameDisp) nameDisp.innerText = nameVal || 'Valued Patron';
     const phoneDisp = document.getElementById('chk-display-phone');
-    if (phoneDisp) phoneDisp.innerText = phoneVal || '+91';
+    if (phoneDisp) phoneDisp.innerText = phoneVal ? ('+91 ' + phoneVal) : '';
 
     const addrP = document.getElementById('chk-address-text');
     if (addrP) {
@@ -379,9 +401,10 @@
       if (flatVal) parts.push(flatVal);
       if (streetVal) parts.push(streetVal);
       if (landmarkVal) parts.push('Landmark: ' + landmarkVal);
-      parts.push(cityVal);
-      parts.push(stateVal + ' - ' + pincodeVal);
-      addrP.innerText = parts.join(', ');
+      if (cityVal) parts.push(cityVal);
+      if (stateVal && pincodeVal) parts.push(stateVal + ' - ' + pincodeVal);
+      else if (stateVal) parts.push(stateVal);
+      addrP.innerText = parts.join(', ') || '';
     }
   }
 
@@ -389,24 +412,25 @@
   async function detectCheckoutLocation() {
     const btn = document.getElementById('btn-chk-gps');
     const badge = document.getElementById('chk-gps-badge');
-    const addrP = document.getElementById('chk-address-text');
+    const formPanel = document.getElementById('inline-address-form');
     const form = document.getElementById('checkout-booking-form');
 
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      alert('Geolocation is not supported by your browser. Please enter your address manually below.');
+      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
       return;
     }
 
     btn.disabled = true;
     document.getElementById('chk-gps-text').innerText = 'Detecting GPS...';
-    badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 block mt-2';
+    badge.className = 'text-xs font-bold p-3 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 block mt-2';
     badge.textContent = '📡 Requesting browser location permission... Please tap "Allow".';
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
-        badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
+        badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
         badge.textContent = `📍 Coordinates obtained. Resolving street address...`;
 
         try {
@@ -414,35 +438,61 @@
           const json = await res.json();
           if (json.status === 'success' || json.status === 'partial') {
             const d = json.data;
+
+            // Ensure address form is visible so customer can see detected values and add flat/door number
+            if (formPanel && formPanel.classList.contains('hidden')) {
+              formPanel.classList.remove('hidden');
+              const editBtnText = document.getElementById('inline-edit-btn-text');
+              if (editBtnText) editBtnText.innerText = 'Hide Form';
+            }
+
+            // Explicitly set flat - never preserve old dirty values!
+            const flatVal = d.flat || '';
+            const streetVal = d.street || '';
+            const cityVal = d.city || 'Hyderabad';
+            const stateVal = d.state || 'Telangana';
+            const pincodeVal = d.pincode || '';
+            const landmarkVal = d.suburb ? 'Near ' + d.suburb : (d.mandal ? 'Mandal: ' + d.mandal : '');
+
+            // Update hidden form inputs
             if (form) {
-              if (d.flat) form.querySelector('[name=flat]').value = d.flat;
-              if (d.street) form.querySelector('[name=street]').value = d.street;
-              if (d.city) form.querySelector('[name=city]').value = d.city;
-              if (d.state) form.querySelector('[name=state]').value = d.state;
-              if (d.pincode) form.querySelector('[name=pincode]').value = d.pincode;
-              if (d.suburb) form.querySelector('[name=landmark]').value = 'Near ' + d.suburb;
+              form.querySelector('[name=flat]').value = flatVal;
+              form.querySelector('[name=street]').value = streetVal;
+              form.querySelector('[name=city]').value = cityVal;
+              form.querySelector('[name=state]').value = stateVal;
+              form.querySelector('[name=pincode]').value = pincodeVal;
+              form.querySelector('[name=landmark]').value = landmarkVal;
             }
 
-            // Sync to inline edit inputs if open
-            if (document.getElementById('inline-edit-flat')) document.getElementById('inline-edit-flat').value = d.flat || '';
-            if (document.getElementById('inline-edit-street')) document.getElementById('inline-edit-street').value = d.street || '';
-            if (document.getElementById('inline-edit-city')) document.getElementById('inline-edit-city').value = d.city || 'Hyderabad';
-            if (document.getElementById('inline-edit-state')) document.getElementById('inline-edit-state').value = d.state || 'Telangana';
-            if (document.getElementById('inline-edit-pincode')) document.getElementById('inline-edit-pincode').value = d.pincode || '500034';
-            if (document.getElementById('inline-edit-landmark')) document.getElementById('inline-edit-landmark').value = d.suburb ? 'Near ' + d.suburb : '';
+            // Sync to inline edit inputs
+            if (document.getElementById('inline-edit-flat')) document.getElementById('inline-edit-flat').value = flatVal;
+            if (document.getElementById('inline-edit-street')) document.getElementById('inline-edit-street').value = streetVal;
+            if (document.getElementById('inline-edit-city')) document.getElementById('inline-edit-city').value = cityVal;
+            if (document.getElementById('inline-edit-state')) document.getElementById('inline-edit-state').value = stateVal;
+            if (document.getElementById('inline-edit-pincode')) document.getElementById('inline-edit-pincode').value = pincodeVal;
+            if (document.getElementById('inline-edit-landmark')) document.getElementById('inline-edit-landmark').value = landmarkVal;
 
-            const formatted = `${d.flat ? d.flat + ', ' : ''}${d.street || 'Current Location'}, ${d.suburb ? 'Near ' + d.suburb + ', ' : ''}${d.city || 'Hyderabad'}, ${d.state || 'Telangana'} - ${d.pincode || '500034'}`;
-            if (addrP) {
-              addrP.innerHTML = `<span class="text-emerald-800 font-bold">📍 Address:</span> ${formatted}`;
+            syncInlineToForm();
+
+            // Prompt user if house / flat number is required
+            if (!flatVal) {
+              badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 block mt-2';
+              badge.innerHTML = `📍 <strong>Area Detected:</strong> ${streetVal || cityVal}. Please enter your <u>House / Flat / Door number</u> below to complete delivery details.`;
+              const flatInput = document.getElementById('inline-edit-flat');
+              if (flatInput) {
+                flatInput.focus();
+                flatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            } else {
+              badge.className = 'text-xs font-bold p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block mt-2';
+              badge.textContent = `📍 Address detected: ${d.display_name || (streetVal + ', ' + cityVal)}`;
             }
-
-            badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block mt-2';
-            badge.textContent = `Address: ${d.display_name || formatted || d.city || 'Hyderabad'}`;
           }
         } catch (err) {
           console.error('Checkout geocode error:', err);
-          badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
-          badge.textContent = '📍 GPS received. Delivery address updated.';
+          badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
+          badge.textContent = '📍 GPS received. Please check and complete your address fields below.';
+          if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
         } finally {
           btn.disabled = false;
           document.getElementById('chk-gps-text').innerText = 'Location Updated';
@@ -451,15 +501,79 @@
       (err) => {
         btn.disabled = false;
         document.getElementById('chk-gps-text').innerText = 'Use Current Location';
-        badge.className = 'text-xs font-bold p-2.5 rounded-xl bg-red-50 text-red-800 border border-red-200 block mt-2';
+        badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 block mt-2';
+        
+        // When permissions are denied, unhide the inline form immediately and focus input
+        if (formPanel && formPanel.classList.contains('hidden')) {
+          formPanel.classList.remove('hidden');
+          const editBtnText = document.getElementById('inline-edit-btn-text');
+          if (editBtnText) editBtnText.innerText = 'Hide Form';
+        }
+
         if (err.code === 1) {
-          badge.innerHTML = '⚠️ <strong>Location permission denied.</strong> You can customize the address above or edit saved settings.';
+          badge.innerHTML = '⚠️ <strong>Location permission not granted.</strong> Please enter your delivery address in the fields below.';
         } else {
-          badge.textContent = '⚠️ Location unavailable. Using saved address.';
+          badge.innerHTML = '⚠️ <strong>Location detection unavailable.</strong> Please enter your delivery address in the fields below.';
+        }
+
+        const flatInput = document.getElementById('inline-edit-flat') || document.getElementById('inline-edit-street');
+        if (flatInput) {
+          flatInput.focus();
+          flatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
     );
   }
+
+  // Pre-submission validation
+  document.getElementById('checkout-booking-form')?.addEventListener('submit', function(e) {
+    syncInlineToForm();
+
+    const form = this;
+    const phone = (form.querySelector('[name=phone]')?.value || '').replace(/\D/g, '');
+    const flat = (form.querySelector('[name=flat]')?.value || '').trim();
+    const street = (form.querySelector('[name=street]')?.value || '').trim();
+    const name = (form.querySelector('[name=customer_name]')?.value || '').trim();
+    const formPanel = document.getElementById('inline-address-form');
+
+    // Phone validation (10 digits Indian mobile number)
+    if (!phone || phone.length < 10 || phone === '9876543210') {
+      e.preventDefault();
+      alert('Please provide a valid 10-digit mobile number for order delivery coordination.');
+      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
+      const phoneInput = document.getElementById('inline-edit-phone');
+      if (phoneInput) {
+        phoneInput.focus();
+        phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return false;
+    }
+
+    // Delivery address validation
+    if (!flat && !street) {
+      e.preventDefault();
+      alert('Please enter your delivery address (House/Flat No. and Street) before proceeding.');
+      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
+      const flatInput = document.getElementById('inline-edit-flat') || document.getElementById('inline-edit-street');
+      if (flatInput) {
+        flatInput.focus();
+        flatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return false;
+    }
+
+    if (!name) {
+      e.preventDefault();
+      alert('Please provide your contact name.');
+      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
+      const nameInput = document.getElementById('inline-edit-name');
+      if (nameInput) {
+        nameInput.focus();
+        nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return false;
+    }
+  });
 </script>
 {% endblock %}
