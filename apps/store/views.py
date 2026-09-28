@@ -218,13 +218,23 @@ def cart_add_api(request):
             product_id = data.get('product_id')
             size = data.get('size', 'Standard')
             quantity = int(data.get('quantity', 1))
+            if quantity < 1:
+                return JsonResponse({'status': 'error', 'message': 'Quantity must be at least 1'}, status=400)
+            if quantity > 50:
+                return JsonResponse({'status': 'error', 'message': 'Maximum order quantity is 50 units'}, status=400)
+
+            measurements = str(data.get('measurements') or data.get('custom_measurements') or '').strip()
             product = get_object_or_404(Product, pk=product_id)
 
             cart = request.session.get('glory_cart', [])
             # Check if item exists in cart
             existing = next((item for item in cart if item['id'] == product.id and item.get('size') == size), None)
             if existing:
+                if existing['quantity'] + quantity > 50:
+                    return JsonResponse({'status': 'error', 'message': 'Maximum 50 units allowed per item'}, status=400)
                 existing['quantity'] += quantity
+                if measurements:
+                    existing['measurements'] = measurements
             else:
                 cart.append({
                     'id': product.id,
@@ -232,6 +242,7 @@ def cart_add_api(request):
                     'price': float(product.price),
                     'quantity': quantity,
                     'size': size,
+                    'measurements': measurements,
                     'image': product.primary_image,
                     'material': product.material,
                 })

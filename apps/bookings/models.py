@@ -88,11 +88,12 @@ class Order(models.Model):
     phone = models.CharField(max_length=25)
     shipping_address = models.TextField(blank=True, default='')
 
-    # Product Details
-    product = models.ForeignKey('store.Product', on_delete=models.CASCADE, related_name='orders')
+    # Product Details (Protected with SET_NULL so deleting a catalog item never wipes historical customer receipts/orders)
+    product = models.ForeignKey('store.Product', on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     product_name = models.CharField(max_length=250)
     selected_size = models.CharField(max_length=100, default='Standard')
     selected_wood = models.CharField(max_length=120, default='Pure Grade-A Burma Teak')
+    custom_measurements = models.CharField(max_length=255, blank=True, default='', help_text="Custom product measurements provided by customer (Length x Width x Height)")
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=12, decimal_places=2)
 

@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.http import HttpResponseForbidden
 from django.contrib import messages
 from django.urls import reverse
 
@@ -35,9 +36,7 @@ class RoleBasedAccessMiddleware:
                     role = 'customer'
                     request.session['glory_role'] = 'customer'
         elif not role and user_email:
-            if user_email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com']:
-                role = 'admin'
-                request.session['glory_role'] = 'admin'
+            role = 'customer'
 
         is_authenticated_user = bool(request.user.is_authenticated or user_email or role)
         request.user_role = role
@@ -58,9 +57,7 @@ class RoleBasedAccessMiddleware:
             path.startswith('/static/') or
             path.startswith('/media/') or
             path.startswith('/api/') or
-            path.startswith('/admin-portal') or
-            path == '/favicon.ico' or
-            path == '/favicon.svg'
+            path in ['/favicon.ico', '/favicon.svg', '/robots.txt', '/sitemap.xml']
         )
 
         is_payment_path = (
@@ -80,12 +77,21 @@ class RoleBasedAccessMiddleware:
         )
 
         # 1. ADMIN ROUTE GUARD
-        is_admin_path = path.startswith('/admin/') and not path.startswith('/django-admin/')
+        is_admin_path = (path.startswith('/admin/') or path.startswith('/admin-portal')) and not path.startswith('/django-admin/')
         is_admin_auth_path = path in ['/admin/login/', '/admin/logout/']
 
         if is_admin_path and not is_admin_auth_path:
-            if role != 'admin':
-                if role == 'customer':
+            is_valid_admin = (
+                request.user.is_authenticated and (
+                    request.user.is_staff or 
+                    request.user.is_superuser or 
+                    getattr(getattr(request.user, 'profile', None), 'role', '') == 'admin'
+                )
+            )
+            if not is_valid_admin:
+                if path.startswith('/admin-portal'):
+                    return HttpResponseForbidden("Access Denied: Admin privileges required.")
+                if request.user.is_authenticated:
                     messages.error(request, 'Access Denied: Admin privileges required.')
                     return redirect('home')
                 else:

@@ -999,9 +999,10 @@
     };
 
     // Global Add to Cart & Move to Cart Handlers with CSRF Protection
-    window.addToCart = async function(productId, size, quantity) {
+    window.addToCart = async function(productId, size, quantity, measurements) {
       size = size || 'Standard';
       quantity = quantity || 1;
+      measurements = measurements || '';
       try {
         const res = await fetch('/api/cart/add/', {
           method: 'POST',
@@ -1009,7 +1010,7 @@
             'Content-Type': 'application/json',
             'X-CSRFToken': window.getCsrfToken()
           },
-          body: JSON.stringify({ product_id: productId, size: size, quantity: quantity })
+          body: JSON.stringify({ product_id: productId, size: size, quantity: quantity, measurements: measurements })
         });
         const data = await res.json();
         if (data.status === 'success') {

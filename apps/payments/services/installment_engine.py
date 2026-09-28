@@ -84,60 +84,76 @@ class InstallmentEngine:
         return schedule
 
     @classmethod
-    def apply_plan_to_order(cls, order, plan, start_date=None):
+    def apply_plan_to_order(cls, order, plan, start_date=None, total_days=None):
         """
         Atomically snapshots an InstallmentPlan onto an Order and generates
-        individual Installment records in the database.
-        
-        Guarantees:
-        - If admin later modifies global plans, this order's snapshot remains immutable.
+        individual Installment records in the database scheduled matching the product's duration days.
         """
         if start_date is None:
             start_date = timezone.now().date()
 
-        schedule = cls.calculate_schedule(
-            total_amount=order.total_amount,
-            count=plan.installment_count,
-            percentages=plan.percentages,
-            interval_days=plan.interval_days,
-            start_date=start_date
-        )
+        if total_days is None:
+            if order.product and hasattr(order.product, 'installment_days') and order.product.installment_days is not None:
+                total_days = order.product.installment_days
+            elif plan and hasattr(plan, 'interval_days') and hasattr(plan, 'installment_count'):
+                total_days = plan.interval_days * (plan.installment_count - 1) if plan.installment_count > 1 else 60
+            else:
+                total_days = 60
+
+        total_days = max(1, int(total_days))
+        day2_offset = min(total_days, max(0, int(round(total_days / 2.0))))
+        day3_offset = total_days
+
+        raw_schedule = cls.calculate_schedule(total_amount=order.total_amount, count=3)
+        amounts = [item['amount'] for item in raw_schedule]
+        dates = [
+            start_date,
+            start_date + timedelta(days=day2_offset),
+            start_date + timedelta(days=day3_offset),
+        ]
+        labels = [
+            'Payment 1 of 3 (Checkout)',
+            f'Payment 2 of 3 (Day {day2_offset})',
+            f'Payment 3 of 3 (Day {day3_offset} Completion)',
+        ]
 
         with transaction.atomic():
             # Clear any existing non-paid installments for fresh assignment
             order.installments.exclude(status='PAID').delete()
 
             snapshot_items = []
-            for item in schedule:
+            for num, (amt, due, lbl) in enumerate(zip(amounts, dates, labels), start=1):
                 inst, created = Installment.objects.get_or_create(
                     order=order,
-                    installment_number=item['number'],
+                    installment_number=num,
                     defaults={
-                        'amount': item['amount'],
-                        'due_date': item['due_date'],
+                        'amount': amt,
+                        'due_date': due,
                         'status': 'PENDING'
                     }
                 )
                 if not created and inst.status != 'PAID':
-                    inst.amount = item['amount']
-                    inst.due_date = item['due_date']
+                    inst.amount = amt
+                    inst.due_date = due
                     inst.save()
 
                 snapshot_items.append({
-                    'number': item['number'],
-                    'amount': str(item['amount']),
-                    'due_date': str(item['due_date']),
-                    'label': item['label']
+                    'number': num,
+                    'amount': str(amt),
+                    'due_date': str(due),
+                    'label': lbl
                 })
 
-            order.payment_type = 'INSTALLMENT' if plan.installment_count > 1 else 'FULL'
-            order.plan_name = plan.name
-            order.payment_plan = f"PLAN_{plan.installment_count}"
+            plan_name_text = f"3 Equal Installments ({total_days} Days)"
+            order.payment_type = 'INSTALLMENT'
+            order.plan_name = plan_name_text
+            order.payment_plan = 'PLAN_3'
             order.installment_plan_snapshot = {
-                'plan_id': plan.id,
-                'plan_name': plan.name,
-                'installment_count': plan.installment_count,
-                'interval_days': plan.interval_days,
+                'plan_id': plan.id if plan else None,
+                'plan_name': plan_name_text,
+                'installment_count': 3,
+                'total_days': total_days,
+                'duration_days': total_days,
                 'schedule': snapshot_items,
                 'snapshot_timestamp': str(timezone.now())
             }
@@ -146,7 +162,10 @@ class InstallmentEngine:
             order.next_due_date = first_unpaid.due_date if first_unpaid else None
             order.save()
 
-        return schedule
+        return [
+            {'number': num, 'amount': amt, 'due_date': due, 'label': lbl}
+            for num, (amt, due, lbl) in enumerate(zip(amounts, dates, labels), start=1)
+        ]
 
     @classmethod
     def get_three_equal_installments_plan(cls):
@@ -161,20 +180,23 @@ class InstallmentEngine:
         return plan
 
     @classmethod
-    def get_three_equal_installments_schedule(cls, total_amount, start_date=None):
+    def get_three_equal_installments_schedule(cls, total_amount, start_date=None, total_days=None):
         """
-        Generates the exact 3-equal-parts schedule matching Image 1:
+        Generates the exact 3-equal-parts schedule matching product days:
         - Installment 1: Due Today | 'Pay now to confirm your order'
-        - Installment 2: Due in 30 days | 'Pay on the scheduled date'
-        - Installment 3: Due in 60 days | 'Pay on the scheduled date'
+        - Installment 2: Due in {day2_offset} days | 'Pay on the scheduled date'
+        - Installment 3: Due in {day3_offset} days | 'Pay on the scheduled date'
         Strict Decimal precision: sum(installments) == total_amount with remainder in part 3.
         """
-        raw_schedule = cls.calculate_schedule(
-            total_amount=total_amount,
-            count=3,
-            interval_days=30,
-            start_date=start_date
-        )
+        if start_date is None:
+            start_date = timezone.now().date()
+
+        days = max(1, int(total_days)) if total_days is not None else 60
+        day2_offset = min(days, max(0, int(round(days / 2.0))))
+        day3_offset = days
+
+        raw_schedule = cls.calculate_schedule(total_amount=total_amount, count=3)
+        amounts = [item['amount'] for item in raw_schedule]
 
         milestones = [
             {
@@ -182,24 +204,27 @@ class InstallmentEngine:
                 'label': 'Installment 1',
                 'subtext': 'Pay now to confirm your order',
                 'due_text': 'Due Today',
-                'amount': raw_schedule[0]['amount'],
-                'due_date': raw_schedule[0]['due_date'],
+                'amount': amounts[0],
+                'due_date': start_date,
+                'days_offset': 0,
             },
             {
                 'number': 2,
                 'label': 'Installment 2',
                 'subtext': 'Pay on the scheduled date',
-                'due_text': 'Due in 30 days',
-                'amount': raw_schedule[1]['amount'],
-                'due_date': raw_schedule[1]['due_date'],
+                'due_text': f'Due in {day2_offset} days',
+                'amount': amounts[1],
+                'due_date': start_date + timedelta(days=day2_offset),
+                'days_offset': day2_offset,
             },
             {
                 'number': 3,
                 'label': 'Installment 3',
                 'subtext': 'Pay on the scheduled date',
-                'due_text': 'Due in 60 days',
-                'amount': raw_schedule[2]['amount'],
-                'due_date': raw_schedule[2]['due_date'],
+                'due_text': f'Due in {day3_offset} days',
+                'amount': amounts[2],
+                'due_date': start_date + timedelta(days=day3_offset),
+                'days_offset': day3_offset,
             }
         ]
         return milestones

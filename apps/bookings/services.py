@@ -107,41 +107,71 @@ class InstallmentService:
         return [inst1, inst2, inst3]
 
     @staticmethod
-    def get_schedule_dates(start_date=None, interval_days=30):
+    def get_schedule_dates(start_date=None, total_days=None, interval_days=None):
         """
-        Generates 3 sequential due dates:
-        Installment 1: Day 0 (Checkout)
-        Installment 2: Day 30
-        Installment 3: Day 60
+        Generates 3 sequential due dates matching product duration:
+        - If total_days is provided (e.g. 10 days, 30 days):
+            Installment 1: Day 0 (Checkout)
+            Installment 2: Midway (round(total_days / 2))
+            Installment 3: Day total_days
+        - If interval_days is provided (or total_days is omitted):
+            Installment 1: Day 0
+            Installment 2: Day interval_days
+            Installment 3: Day interval_days * 2
         """
         if start_date is None:
             start_date = timezone.now().date()
+
+        if total_days is not None:
+            try:
+                days = max(1, int(total_days))
+            except (ValueError, TypeError):
+                days = 30
+            day2_offset = min(days, max(0, int(round(days / 2.0))))
+            day3_offset = days
+            return [
+                start_date,
+                start_date + timedelta(days=day2_offset),
+                start_date + timedelta(days=day3_offset)
+            ]
+
+        interval = interval_days if interval_days is not None else 30
         return [
             start_date,
-            start_date + timedelta(days=interval_days),
-            start_date + timedelta(days=interval_days * 2)
+            start_date + timedelta(days=interval),
+            start_date + timedelta(days=interval * 2)
         ]
 
     @classmethod
     def create_order_with_installments(cls, order_data, start_date=None):
         """
-        Atomically creates an Order and, if payment_plan is THREE_INSTALLMENTS,
-        generates the 3 installment records.
+        Creates an Order and generates its 3-installment schedule atomically.
         """
+        if start_date is None:
+            start_date = timezone.now().date()
+
+        plan = order_data.get('payment_plan', 'FULL_PAYMENT')
+        total_amount = Decimal(str(order_data['total_amount']))
+
         with transaction.atomic():
-            plan = order_data.get('payment_plan', 'FULL_PAYMENT')
-            total_amount = Decimal(str(order_data['total_amount']))
             product = order_data.get('product')
+            if not product and order_data.get('product_id'):
+                product = Product.objects.filter(id=order_data['product_id']).first()
+
             if not product:
                 from apps.store.models import Product, Category
+                # Resilient fallback: find or create default catalog product
+                cat = Category.objects.first()
+                if not cat:
+                    cat = Category.objects.create(name='Luxury Furniture', slug='luxury-furniture')
                 product = Product.objects.first()
                 if not product:
-                    cat, _ = Category.objects.get_or_create(name='Bespoke Teak Pieces', defaults={'slug': 'bespoke-teak'})
                     product = Product.objects.create(
                         name='Handcrafted Teak Piece',
                         category=cat,
                         price=total_amount,
-                        material='Solid Burma Teak'
+                        material='Solid Burma Teak',
+                        installment_days=30
                     )
             product_name = order_data.get('product_name') or product.name
 
@@ -167,7 +197,30 @@ class InstallmentService:
 
             if plan == 'THREE_INSTALLMENTS':
                 amounts = cls.calculate_three_installments(total_amount)
-                dates = cls.get_schedule_dates(start_date)
+
+                # Connect individual product duration days to the 3-installment schedule
+                prod_days = None
+                if 'total_days' in order_data:
+                    prod_days = order_data['total_days']
+                elif product and hasattr(product, 'installment_days') and product.installment_days is not None:
+                    prod_days = product.installment_days
+
+                if 'interval_days' in order_data:
+                    dates = cls.get_schedule_dates(start_date, interval_days=order_data['interval_days'])
+                elif prod_days is not None:
+                    dates = cls.get_schedule_dates(start_date, total_days=prod_days)
+                else:
+                    dates = cls.get_schedule_dates(start_date, total_days=30)
+
+                chosen_days = prod_days if prod_days is not None else 30
+                order.installment_plan_snapshot = {
+                    'plan_name': f'3 Equal Installments ({chosen_days} Days)',
+                    'duration_days': chosen_days,
+                    'total_days': chosen_days,
+                    'installment_count': 3,
+                    'created_at': str(timezone.now())
+                }
+                order.save(update_fields=['installment_plan_snapshot'])
 
                 for num, (amt, due) in enumerate(zip(amounts, dates), start=1):
                     Installment.objects.create(

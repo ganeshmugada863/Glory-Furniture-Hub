@@ -376,6 +376,7 @@ class ArchitectureDecouplingTests(TestCase):
             'price': float(self.product.price),
             'quantity': 1,
             'size': 'Standard',
+            'measurements': '72" (L) × 36" (W) × 30" (H)',
             'wood': 'Grade-A Burma Teak'
         }]
         session.save()
@@ -385,18 +386,49 @@ class ArchitectureDecouplingTests(TestCase):
             'email': 'ganesh@example.com',
             'phone': '+91 91234 55555',
             'address': 'Madhapur, Hyderabad',
+            'custom_measurements': '72" (L) × 36" (W) × 30" (H)',
             'payment_plan': 'FULL_PAYMENT'
         }, follow=True)
 
         # No consultation bookings created
         self.assertEqual(Booking.objects.count(), initial_bookings_count)
 
-        # Order created with clean decoupled status
+        # Order created with clean decoupled status and measurements
         order = Order.objects.filter(user=self.customer).first()
         self.assertIsNotNone(order)
         self.assertIsNone(order.booking)
         self.assertEqual(order.payment_status, 'PENDING')
         self.assertEqual(order.fulfillment_status, 'CONFIRMED')
+        self.assertEqual(order.custom_measurements, '72" (L) × 36" (W) × 30" (H)')
+
+    def test_ecommerce_checkout_requires_mandatory_measurements(self):
+        """Checkout MUST require custom measurements before allowing order booking."""
+        self.client.force_login(self.customer)
+        session = self.client.session
+        session['glory_cart'] = [{
+            'id': self.product.id,
+            'name': self.product.name,
+            'price': float(self.product.price),
+            'quantity': 1,
+            'size': 'Standard',
+            'wood': 'Grade-A Burma Teak'
+        }]
+        session.save()
+
+        # Attempt checkout without measurements
+        response = self.client.post('/booking/summary/', {
+            'fullName': 'Ganesh Patron',
+            'email': 'ganesh@example.com',
+            'phone': '+91 91234 55555',
+            'address': 'Madhapur, Hyderabad',
+            'custom_measurements': '',  # Empty measurements
+            'payment_plan': 'FULL_PAYMENT'
+        }, follow=True)
+
+        # Must not create order and must display validation error
+        order = Order.objects.filter(user=self.customer, customer_name='Ganesh Patron').first()
+        self.assertIsNone(order)
+        self.assertContains(response, 'Product measurements are mandatory before booking')
 
     def test_modern_plus_legacy_calculation_no_double_counting(self):
         """

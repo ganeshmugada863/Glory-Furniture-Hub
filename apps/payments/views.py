@@ -59,9 +59,40 @@ def checkout_payment_view(request, order_number):
             return redirect('payment_receipt', payment_id=last_payment.payment_id)
         return redirect('booking_confirmation', booking_id=order.booking.booking_id if order.booking else order.order_number)
 
-    # 3 Equal Installments schedule calculation matching Image 1
-    installment_schedule = InstallmentEngine.get_three_equal_installments_schedule(order.total_amount)
-    installment_part_amount = installment_schedule[0]['amount']
+    # 3 Equal Installments schedule calculation matching Image 1 & product duration days
+    if order.installments.exists():
+        existing_insts = list(order.installments.all().order_by('installment_number'))
+        product_days = (order.installment_plan_snapshot or {}).get('duration_days') or (order.installment_plan_snapshot or {}).get('total_days') or (
+            order.product.installment_days if order.product and hasattr(order.product, 'installment_days') and order.product.installment_days else 30
+        )
+        base_date = existing_insts[0].due_date
+        installment_schedule = []
+        for inst in existing_insts:
+            offset = (inst.due_date - base_date).days
+            if inst.installment_number == 1 or offset == 0:
+                due_badge = "Due Today"
+            else:
+                due_badge = f"Due in {offset} days"
+            installment_schedule.append({
+                'number': inst.installment_number,
+                'amount': inst.amount,
+                'due_date': inst.due_date,
+                'formatted_date': inst.due_date.strftime('%d %b %Y'),
+                'due_text': due_badge,
+                'days_offset': offset,
+                'label': f"Installment {inst.installment_number}",
+                'subtext': 'Pay now to confirm your order' if inst.installment_number == 1 else 'Pay on the scheduled date',
+                'status': inst.status
+            })
+        installment_part_amount = existing_insts[0].amount
+    else:
+        product_days = (
+            (order.installment_plan_snapshot or {}).get('duration_days') or 
+            (order.installment_plan_snapshot or {}).get('total_days') or 
+            (order.product.installment_days if order.product and hasattr(order.product, 'installment_days') and order.product.installment_days else 30)
+        )
+        installment_schedule = InstallmentEngine.get_three_equal_installments_schedule(order.total_amount, total_days=product_days)
+        installment_part_amount = installment_schedule[0]['amount']
     installment_plan = InstallmentEngine.get_three_equal_installments_plan()
 
     # Check if this checkout is for a specific installment
@@ -73,6 +104,7 @@ def checkout_payment_view(request, order_number):
     context = {
         'order': order,
         'product': order.product,
+        'product_days': product_days,
         'installment_schedule': installment_schedule,
         'installment_part_amount': installment_part_amount,
         'installment_plan': installment_plan,
@@ -122,14 +154,20 @@ def initiate_payment_session_api(request):
             return JsonResponse({'status': 'error', 'message': f'Installment #{target_installment.installment_number} is not yet eligible for payment. Prior installments must be settled first.'}, status=400)
     elif plan_slug != 'full-payment':
         # Applying the 3 Equal Installments plan (Image 1)
-        plan = InstallmentPlan.objects.filter(slug=plan_slug, is_active=True).first()
-        if not plan:
-            plan = InstallmentEngine.get_three_equal_installments_plan()
-        if not plan:
-            return JsonResponse({'status': 'error', 'message': f'Installment plan {plan_slug} not found or inactive.'}, status=404)
+        if not order.installments.exists():
+            plan = InstallmentPlan.objects.filter(slug=plan_slug, is_active=True).first()
+            if not plan:
+                plan = InstallmentEngine.get_three_equal_installments_plan()
+            if not plan:
+                return JsonResponse({'status': 'error', 'message': f'Installment plan {plan_slug} not found or inactive.'}, status=404)
 
-        # Apply snapshot contract to order
-        InstallmentEngine.apply_plan_to_order(order, plan)
+            # Apply snapshot contract to order matching individual product duration days
+            product_days = (
+                (order.installment_plan_snapshot or {}).get('duration_days') or 
+                (order.installment_plan_snapshot or {}).get('total_days') or 
+                (order.product.installment_days if order.product and hasattr(order.product, 'installment_days') and order.product.installment_days else 30)
+            )
+            InstallmentEngine.apply_plan_to_order(order, plan, total_days=product_days)
         target_installment = order.installments.filter(installment_number=1).first()
     else:
         # Full payment: ensure order is marked FULL
@@ -141,8 +179,8 @@ def initiate_payment_session_api(request):
     # Determine amount
     payable_amount = target_installment.amount if target_installment else order.remaining_amount
 
-    # Host domain for redirect
-    scheme = 'https' if request.is_secure() or not settings.DEBUG else 'http'
+    # Host domain for redirect - Cashfree v2 API strictly mandates HTTPS URLs
+    scheme = 'https'
     host = request.get_host()
     return_url = f"{scheme}://{host}/payments/return/?order_id={{order_id}}"
     notify_url = f"{scheme}://{host}/payments/webhook/cashfree/"

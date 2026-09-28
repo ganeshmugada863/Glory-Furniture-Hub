@@ -95,9 +95,6 @@ def customer_login_view(request):
                 profile = getattr(user, 'profile', None)
                 if user.is_staff or user.is_superuser or (profile and profile.role == 'admin'):
                     is_admin = True
-            elif email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com'] and password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
-                is_admin = True
-                user = User.objects.filter(is_staff=True).first()
 
             if user is not None:
                 if not user.is_active:
@@ -632,7 +629,17 @@ def address_view(request):
                 pass
             return redirect('address')
 
-    return render(request, 'accounts/address.html', {'addresses': addresses})
+    default_name = (profile.full_name if profile else '') or (user.get_full_name() if user else '') or request.session.get('glory_user_name', '')
+    default_phone = (profile.phone if profile else '') or request.session.get('glory_user_phone', '')
+    default_email = (user.email if user else '') or request.session.get('glory_user_email', '')
+
+    context = {
+        'addresses': addresses,
+        'default_name': default_name,
+        'default_phone': default_phone,
+        'default_email': default_email,
+    }
+    return render(request, 'accounts/address.html', context)
 
 
 def forgot_password_view(request):
@@ -670,11 +677,8 @@ def admin_login_view(request):
                 user = authenticate(request, username=matched_user.username, password=password)
 
         is_admin = False
-        if user is not None and (user.is_staff or user.is_superuser or getattr(user.profile, 'role', '') == 'admin'):
+        if user is not None and (user.is_staff or user.is_superuser or getattr(getattr(user, 'profile', None), 'role', '') == 'admin'):
             is_admin = True
-        elif email in ['admin', 'admin@gloryfurniture.com', 'admin@gmail.com', 'master@glory.com'] and password in ['admin123', 'admin', 'glory2026', 'AdminPass123!']:
-            is_admin = True
-            user = User.objects.filter(is_staff=True).first()
 
         if is_admin and user is not None:
             auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
@@ -710,6 +714,16 @@ def admin_dashboard_view(request):
     Executive Studio Admin Dashboard.
     Contains metrics, recent orders, customer counts, and recent transactions.
     """
+    is_valid_admin = (
+        request.user.is_authenticated and (
+            request.user.is_staff or 
+            request.user.is_superuser or 
+            getattr(getattr(request.user, 'profile', None), 'role', '') == 'admin'
+        )
+    )
+    if not is_valid_admin:
+        return redirect(f'/admin/login/?next={request.path}')
+
     if request.method == 'POST':
         action = request.POST.get('action')
         if action in ['update_fulfillment_status', 'update_order_status']:
@@ -1065,14 +1079,63 @@ def admin_bookings_view(request):
 
 def _save_product_image_file(upload_file):
     """
-    Safely saves an uploaded image file to persistent Cloud Storage (Cloudinary)
-    and returns its permanent HTTPS URL.
-    Never relies on ephemeral server filesystem storage.
+    Safely and rapidly optimizes and saves an uploaded image file.
+    1. Uses Pillow (PIL.Image) to correct mobile camera rotation (EXIF transpose),
+       downscale ultra-high-res photos to max 1600px, and compress to high-efficiency JPEG (quality 85).
+       Reduces upload overhead by 90%+ in memory.
+    2. Primary: If Cloudinary is enabled, uploads with strict 5-second timeout to eliminate request hangs.
+    3. Secondary fallback: Saves directly to persistent default_storage immediately.
     """
-    import os, uuid
+    import os, uuid, io
+    import logging
     from django.conf import settings
+    from django.core.files.base import ContentFile
+    from PIL import Image, ImageOps
 
-    # 1. Primary: If Cloudinary is enabled, upload directly to Cloudinary for permanent HTTPS URL
+    logger = logging.getLogger(__name__)
+    file_name = getattr(upload_file, 'name', 'product.jpg')
+    raw_ext = os.path.splitext(file_name)[1].lower()
+    content_to_save = upload_file
+    output_ext = raw_ext if raw_ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'] else '.jpg'
+
+    # Fast in-memory Pillow optimization for raster images (skips SVG)
+    if raw_ext != '.svg':
+        try:
+            if hasattr(upload_file, 'seek'):
+                upload_file.seek(0)
+            with Image.open(upload_file) as img:
+                # 1. Correct mobile camera rotation from EXIF
+                img = ImageOps.exif_transpose(img)
+
+                # 2. Downscale if dimensions exceed 1600px
+                max_dim = 1600
+                if img.width > max_dim or img.height > max_dim:
+                    img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+
+                # 3. Convert RGBA / Palette to clean RGB JPEG
+                buf = io.BytesIO()
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    bg = Image.new('RGB', img.size, (255, 255, 255))
+                    mask = img.split()[-1] if img.mode in ('RGBA', 'LA') else None
+                    bg.paste(img, mask=mask)
+                    bg.save(buf, format='JPEG', quality=85, optimize=True)
+                else:
+                    save_format = 'JPEG' if img.mode == 'RGB' else (img.format or 'JPEG')
+                    if str(save_format).upper() in ['JPEG', 'JPG']:
+                        img.save(buf, format='JPEG', quality=85, optimize=True)
+                    else:
+                        img.save(buf, format=save_format, optimize=True)
+
+                buf.seek(0)
+                content_to_save = ContentFile(buf.getvalue(), name=f"{uuid.uuid4().hex[:10]}.jpg")
+                output_ext = '.jpg'
+        except Exception as e:
+            logger.warning(f"Pillow image optimization skipped ({e}); using raw file.")
+            if hasattr(upload_file, 'seek'):
+                upload_file.seek(0)
+            content_to_save = upload_file
+
+    # 1. Primary: If Cloudinary is enabled, upload with strict 5-second timeout
     if getattr(settings, 'USE_CLOUDINARY', False):
         try:
             import cloudinary
@@ -1086,30 +1149,28 @@ def _save_product_image_file(upload_file):
             )
 
             public_id = f"products/{uuid.uuid4().hex[:12]}"
-            if hasattr(upload_file, 'seek'):
-                upload_file.seek(0)
+            if hasattr(content_to_save, 'seek'):
+                content_to_save.seek(0)
 
             upload_result = cloudinary.uploader.upload(
-                upload_file,
+                content_to_save,
                 public_id=public_id,
                 resource_type="image",
-                overwrite=True
+                overwrite=True,
+                timeout=5  # Strict 5-second timeout to prevent admin save delays
             )
             secure_url = upload_result.get('secure_url')
             if secure_url:
                 return secure_url
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).error(f"Cloudinary upload error: {e}")
+            logger.warning(f"Cloudinary upload timed out or failed ({e}); falling back immediately to persistent storage.")
 
-    # 2. Secondary fallback: use default_storage and retrieve URL
+    # 2. Resilient Persistent Local Storage Fallback
     from django.core.files.storage import default_storage
-    raw_ext = os.path.splitext(upload_file.name)[1].lower()
-    ext = raw_ext if raw_ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'] else '.jpg'
-    filename = f"products/{uuid.uuid4().hex[:10]}{ext}"
-    if hasattr(upload_file, 'seek'):
-        upload_file.seek(0)
-    saved_path = default_storage.save(filename, upload_file)
+    filename = f"products/{uuid.uuid4().hex[:10]}{output_ext}"
+    if hasattr(content_to_save, 'seek'):
+        content_to_save.seek(0)
+    saved_path = default_storage.save(filename, content_to_save)
     try:
         url = default_storage.url(saved_path)
         if url:
@@ -1187,6 +1248,11 @@ def admin_products_view(request):
                 style = request.POST.get('style', 'Classic').strip() or 'Classic'
                 dimensions = request.POST.get('dimensions', 'Standard').strip() or 'Standard'
                 lead_time = request.POST.get('lead_time', '5 - 7 Days Delivery').strip() or '5 - 7 Days Delivery'
+                raw_installment_days = str(request.POST.get('installment_days', '')).strip()
+                if not raw_installment_days or not raw_installment_days.isdigit() or int(raw_installment_days) <= 0:
+                    messages.error(request, "Please enter a valid positive number of days.")
+                    return redirect('admin_products')
+                installment_days = int(raw_installment_days)
                 description = request.POST.get('description', '').strip()
                 in_stock = request.POST.get('in_stock') in ['1', 'on', 'true', True]
                 featured = request.POST.get('featured') in ['1', 'on', 'true', True]
@@ -1202,6 +1268,7 @@ def admin_products_view(request):
                     style=style,
                     dimensions=dimensions,
                     lead_time=lead_time,
+                    installment_days=installment_days,
                     description=description,
                     in_stock=in_stock,
                     featured=featured,
@@ -1269,6 +1336,11 @@ def admin_products_view(request):
                 product.style = request.POST.get('style', product.style).strip()
                 product.dimensions = request.POST.get('dimensions', product.dimensions).strip()
                 product.lead_time = request.POST.get('lead_time', product.lead_time).strip()
+                raw_installment_days = str(request.POST.get('installment_days', '')).strip()
+                if not raw_installment_days or not raw_installment_days.isdigit() or int(raw_installment_days) <= 0:
+                    messages.error(request, "Please enter a valid positive number of days.")
+                    return redirect('admin_products')
+                product.installment_days = int(raw_installment_days)
                 product.description = request.POST.get('description', product.description).strip()
                 product.in_stock = request.POST.get('in_stock') in ['1', 'on', 'true', True]
                 product.featured = request.POST.get('featured') in ['1', 'on', 'true', True]
@@ -1284,8 +1356,12 @@ def admin_products_view(request):
             p_id = request.POST.get('product_id')
             product = get_object_or_404(Product, id=p_id)
             name = product.name
+            linked_orders_count = product.orders.count()
             product.delete()
-            messages.success(request, f"Product '{name}' permanently removed from database.")
+            if linked_orders_count > 0:
+                messages.success(request, f"Product '{name}' removed from catalog. {linked_orders_count} associated order and payment record(s) have been permanently preserved.")
+            else:
+                messages.success(request, f"Product '{name}' permanently removed from database.")
             return redirect('admin_products')
 
     products = Product.objects.select_related('category').order_by('-id')

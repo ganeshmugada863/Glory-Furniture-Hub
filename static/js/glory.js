@@ -222,7 +222,7 @@ function initDrawers() {
   }
 
   // Live Real-time Cart Add
-  window.addToCart = async function(productId, size = 'Standard', qty = 1) {
+  window.addToCart = async function(productId, size = 'Standard', qty = 1, measurements = '') {
     try {
       const csrfToken = window.getCsrfToken ? window.getCsrfToken() : '';
       const res = await fetch('/api/cart/add/', {
@@ -231,7 +231,7 @@ function initDrawers() {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken
         },
-        body: JSON.stringify({ product_id: productId, size, quantity: qty })
+        body: JSON.stringify({ product_id: productId, size, quantity: qty, measurements })
       });
       const data = await res.json();
       if (data.status === 'success') {

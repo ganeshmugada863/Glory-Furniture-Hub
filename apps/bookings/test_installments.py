@@ -76,7 +76,8 @@ class ThreeInstallmentOrderFlowTests(TestCase):
             name='Royal Teak Bed',
             price=Decimal('75000.00'),
             category=self.category,
-            material='Solid Burma Teak Wood'
+            material='Solid Burma Teak Wood',
+            installment_days=60
         )
         self.booking = Booking.objects.create(
             customer_name='Ganesh Mugada',
@@ -113,7 +114,7 @@ class ThreeInstallmentOrderFlowTests(TestCase):
         self.assertEqual(installments[1].amount, Decimal('25000.00'))
         self.assertEqual(installments[2].amount, Decimal('25000.00'))
 
-        # Check due dates (Day 0, Day 30, Day 60)
+        # Check due dates (Day 0, Day 30, Day 60 for 60-day product)
         today = timezone.now().date()
         self.assertEqual(installments[0].due_date, today)
         self.assertEqual(installments[1].due_date, today + timedelta(days=30))
@@ -123,6 +124,67 @@ class ThreeInstallmentOrderFlowTests(TestCase):
         self.assertTrue(installments[0].is_eligible_for_payment)
         self.assertFalse(installments[1].is_eligible_for_payment)
         self.assertFalse(installments[2].is_eligible_for_payment)
+
+    def test_product_with_10_days_schedules_installments_within_10_days(self):
+        """If a product has 10 days duration, all 3 installments must be scheduled within 10 days (Day 0, Day 5, Day 10)."""
+        ten_day_product = Product.objects.create(
+            name='Handmade Diwan 10-Day Special',
+            price=Decimal('30000.00'),
+            category=self.category,
+            installment_days=10
+        )
+        order = InstallmentService.create_order_with_installments({
+            'customer_name': 'Test Patron',
+            'email': 'patron10@test.com',
+            'phone': '9876543211',
+            'product': ten_day_product,
+            'total_amount': Decimal('30000.00'),
+            'payment_plan': 'THREE_INSTALLMENTS'
+        })
+        insts = list(order.installments.all().order_by('installment_number'))
+        self.assertEqual(len(insts), 3)
+        today = timezone.now().date()
+        self.assertEqual(insts[0].due_date, today)
+        self.assertEqual(insts[1].due_date, today + timedelta(days=5))
+        self.assertEqual(insts[2].due_date, today + timedelta(days=10))
+
+    def test_product_with_30_days_schedules_installments_within_30_days(self):
+        """If a product has 30 days duration, all 3 installments must be scheduled within 30 days (Day 0, Day 15, Day 30)."""
+        thirty_day_product = Product.objects.create(
+            name='Luxury Teak Sofa 30-Day Masterpiece',
+            price=Decimal('60000.00'),
+            category=self.category,
+            installment_days=30
+        )
+        order = InstallmentService.create_order_with_installments({
+            'customer_name': 'Test Patron',
+            'email': 'patron30@test.com',
+            'phone': '9876543212',
+            'product': thirty_day_product,
+            'total_amount': Decimal('60000.00'),
+            'payment_plan': 'THREE_INSTALLMENTS'
+        })
+        insts = list(order.installments.all().order_by('installment_number'))
+        self.assertEqual(len(insts), 3)
+        today = timezone.now().date()
+        self.assertEqual(insts[0].due_date, today)
+        self.assertEqual(insts[1].due_date, today + timedelta(days=15))
+        self.assertEqual(insts[2].due_date, today + timedelta(days=30))
+
+    def test_installment_engine_dynamic_product_days(self):
+        """InstallmentEngine correctly computes dynamic due dates and labels matching product duration."""
+        from apps.payments.services.installment_engine import InstallmentEngine
+        # 10 days schedule
+        schedule_10 = InstallmentEngine.get_three_equal_installments_schedule(Decimal('30000.00'), total_days=10)
+        self.assertEqual(schedule_10[0]['due_text'], 'Due Today')
+        self.assertEqual(schedule_10[1]['due_text'], 'Due in 5 days')
+        self.assertEqual(schedule_10[2]['due_text'], 'Due in 10 days')
+
+        # 30 days schedule
+        schedule_30 = InstallmentEngine.get_three_equal_installments_schedule(Decimal('60000.00'), total_days=30)
+        self.assertEqual(schedule_30[0]['due_text'], 'Due Today')
+        self.assertEqual(schedule_30[1]['due_text'], 'Due in 15 days')
+        self.assertEqual(schedule_30[2]['due_text'], 'Due in 30 days')
 
     def test_payment_progression_across_three_installments(self):
         order = InstallmentService.create_order_with_installments({

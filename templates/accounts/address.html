@@ -225,7 +225,7 @@
           <input type="text" 
                  name="name" 
                  required 
-                 value="{{ request.user.profile.full_name|default:request.session.glory_user_name|default:'' }}"
+                 value="{{ default_name|default:request.user.profile.full_name|default:'' }}"
                  placeholder="Full Name"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
         </div>
@@ -236,7 +236,7 @@
           <input type="tel" 
                  name="phone" 
                  required 
-                 value="{{ request.user.profile.phone|default:request.session.glory_user_phone|default:'' }}"
+                 value="{{ default_phone|default:request.user.profile.phone|default:'' }}"
                  placeholder="Enter 10-digit mobile number"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
         </div>
@@ -247,7 +247,7 @@
           <input type="email" 
                  name="email" 
                  required 
-                 value="{{ request.user.email|default:request.session.glory_user_email|default:'' }}"
+                 value="{{ default_email|default:request.user.email|default:'' }}"
                  placeholder="yourname@example.com"
                  class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold text-gray-900 focus:outline-none focus:border-gray-950" />
         </div>

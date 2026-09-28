@@ -31,7 +31,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     price = models.DecimalField(max_digits=12, decimal_places=2)
     in_stock = models.BooleanField(default=True)
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=5.0)
@@ -40,6 +40,7 @@ class Product(models.Model):
     style = models.CharField(max_length=50, choices=STYLE_CHOICES, default='Classic')
     dimensions = models.CharField(max_length=250, default='Standard')
     lead_time = models.CharField(max_length=120, default='5 - 7 Days Delivery')
+    installment_days = models.PositiveIntegerField(default=60, help_text="Total days for product completion and 3-installment payment schedule.")
     description = models.TextField(blank=True)
     
     # Store JSON lists for finishes, size variants, secondary images

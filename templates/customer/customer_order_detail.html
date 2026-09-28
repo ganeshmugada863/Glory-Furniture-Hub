@@ -258,6 +258,10 @@
             <span>Wood: <strong class="text-gray-900">{{ order.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
             <span class="text-gray-400">&bull;</span>
             <span>Size: <strong class="text-gray-900">{{ order.selected_size|default:"Standard" }}</strong></span>
+            {% if order.custom_measurements %}
+            <span class="text-gray-400">&bull;</span>
+            <span>Measurements: <strong class="text-[#5C3D2E]">📐 {{ order.custom_measurements }}</strong></span>
+            {% endif %}
             {% if order.quantity > 1 %}
             <span class="text-gray-400">&bull;</span>
             <span>Qty: <strong class="text-gray-900">{{ order.quantity }}</strong></span>

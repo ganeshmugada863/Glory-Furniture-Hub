@@ -6,6 +6,7 @@ import hashlib
 from decimal import Decimal
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
@@ -113,7 +114,111 @@ def booking_summary_view(request):
         default_address = None
         has_saved_address = False
 
+    # Intelligent measurement placeholder & quick presets based on furniture category
+    category_name = ((product.category.name if product and product.category else '') or '').lower()
+    prod_name_lower = (product.name if product else '').lower()
+
+    if any(k in category_name or k in prod_name_lower for k in ['diwan', 'diwana', 'divan', 'daybed']):
+        item_type = 'diwana'
+        measurement_label = 'Diwana / Daybed Measurements'
+        measurement_placeholder = 'e.g., 72 in (L) × 36 in (W) × 18 in (H) (Standard Single Diwan)'
+        measurement_hint = 'Specify Length × Width × Seating Height from floor.'
+        quick_presets = [
+            {'label': 'Standard (6 × 3 ft)', 'val': '72" (L) × 36" (W) × 18" (H)'},
+            {'label': 'Large (6.5 × 3.5 ft)', 'val': '78" (L) × 42" (W) × 18" (H)'},
+            {'label': 'Mini Diwan (5 × 2.5 ft)', 'val': '60" (L) × 30" (W) × 16" (H)'},
+        ]
+    elif any(k in category_name or k in prod_name_lower for k in ['dining', 'table', 'teapoy', 'desk']):
+        item_type = 'dining_table'
+        measurement_label = 'Dining Table Dimensions'
+        measurement_placeholder = 'e.g., 6-Seater: 72 in (L) × 36 in (W) × 30 in (H)'
+        measurement_hint = 'Specify Tabletop Length × Width × Height (Standard table height is 30 in).'
+        quick_presets = [
+            {'label': '4-Seater (4 × 3 ft)', 'val': '48" (L) × 36" (W) × 30" (H)'},
+            {'label': '6-Seater (6 × 3 ft)', 'val': '72" (L) × 36" (W) × 30" (H)'},
+            {'label': '8-Seater (8 × 4 ft)', 'val': '96" (L) × 42" (W) × 30" (H)'},
+            {'label': 'Round (4 ft Dia)', 'val': '48" Diameter × 30" (H)'},
+        ]
+    elif any(k in category_name or k in prod_name_lower for k in ['sofa', 'couch', 'sectional']):
+        item_type = 'sofa'
+        measurement_label = 'Sofa Set Living Room Dimensions'
+        measurement_placeholder = 'e.g., 3-Seater: 84 in (W) × 36 in (D) × 34 in (H) or Living room wall: 10 ft'
+        measurement_hint = 'Specify Width × Depth × Height, or wall clearance length in feet.'
+        quick_presets = [
+            {'label': '3-Seater (7 × 3 ft)', 'val': '84" (W) × 36" (D) × 34" (H)'},
+            {'label': '3+2 Set', 'val': '84" + 58" (W) × 35" (D) × 34" (H)'},
+            {'label': 'L-Shape Sectional', 'val': '108" × 72" (L-Shape Sectional)'},
+            {'label': '2-Seater (5 × 3 ft)', 'val': '58" (W) × 34" (D) × 32" (H)'},
+        ]
+    elif any(k in category_name or k in prod_name_lower for k in ['bed', 'cot', 'mattress']):
+        item_type = 'bed'
+        measurement_label = 'Bed / Cot Mattress Space Measurements'
+        measurement_placeholder = 'e.g., 78 in (L) × 72 in (W) × 36 in (H) or King Size (6 × 6.5 ft)'
+        measurement_hint = 'Specify Length × Width for mattress fitting, and Headboard Height in inches/feet.'
+        quick_presets = [
+            {'label': 'King (6 × 6.5 ft)', 'val': '78" (L) × 72" (W) × 36" (H)'},
+            {'label': 'Queen (5 × 6.5 ft)', 'val': '78" (L) × 60" (W) × 36" (H)'},
+            {'label': 'Double (4 × 6 ft)', 'val': '72" (L) × 48" (W) × 34" (H)'},
+            {'label': 'Single (3 × 6 ft)', 'val': '72" (L) × 36" (W) × 32" (H)'},
+        ]
+    else:
+        item_type = 'general'
+        measurement_label = 'Product Dimensions & Room Sizing'
+        measurement_placeholder = 'e.g., Length × Width × Height (e.g., 48" × 24" × 32" or 4ft × 2ft)'
+        measurement_hint = 'Enter custom dimensions in feet or inches to fit your room space.'
+        quick_presets = [
+            {'label': 'Standard Dimensions', 'val': product.dimensions if product and product.dimensions != 'Standard' else '48" (L) × 24" (W) × 30" (H)'},
+            {'label': 'Large / Custom Space', 'val': '60" (L) × 30" (W) × 32" (H)'},
+        ]
+
+    initial_measurements = (request.GET.get('measurements') or (primary_item.get('measurements') if not product_id and cart else '') or '').strip()
+
     if request.method == 'POST':
+        # Mandatory product measurements verification before booking
+        custom_measurements = (
+            request.POST.get('custom_measurements') or 
+            request.POST.get('measurements') or 
+            request.GET.get('measurements') or 
+            ''
+        ).strip()
+
+        if not custom_measurements:
+            messages.error(request, f"Please provide product measurements ({measurement_label}) before booking.")
+            context = {
+                'product': product,
+                'selected_size': selected_size,
+                'selected_wood': selected_wood,
+                'quantity': quantity,
+                'unit_price': unit_price,
+                'mrp': mrp,
+                'total_mrp': total_mrp,
+                'total_savings': total_savings,
+                'item_subtotal': item_subtotal,
+                'delivery_charge': delivery_charge,
+                'gst_included': gst_included,
+                'grand_total': grand_total,
+                'formatted_grand_total': f"₹{int(grand_total):,}",
+                'formatted_unit_price': f"₹{int(unit_price):,}",
+                'formatted_mrp': f"₹{int(mrp):,}",
+                'formatted_subtotal': f"₹{int(item_subtotal):,}",
+                'formatted_savings': f"₹{int(total_savings):,}",
+                'formatted_gst': f"₹{int(gst_included):,}",
+                'default_delivery_date': str(timezone.now().date() + timedelta(days=5)),
+                'saved_address': default_address,
+                'has_saved_address': has_saved_address,
+                'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address else '') or 'Valued Patron',
+                'user_email': (user.email if user else None) or (default_address.get('email') if default_address else '') or '',
+                'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address else '') or '',
+                'item_type': item_type,
+                'measurement_label': measurement_label,
+                'measurement_placeholder': measurement_placeholder,
+                'measurement_hint': measurement_hint,
+                'quick_presets': quick_presets,
+                'default_measurements': '',
+                'measurement_error': f"Product measurements are mandatory before booking. Please enter {measurement_label}.",
+            }
+            return render(request, 'bookings/checkout_summary.html', context)
+
         # Extract and strictly sanitize phone number
         raw_phone = request.POST.get('phone', '').strip()
         clean_phone = re.sub(r'\D', '', str(raw_phone))
@@ -178,6 +283,7 @@ def booking_summary_view(request):
         prod_name = product.name if product else 'Handcrafted Teak Piece'
         order_notes = (
             f"Product: {prod_name} (ID #{product.id if product else product_id}) | "
+            f"Measurements: {custom_measurements} | "
             f"Size: {selected_size} | Finish: {selected_wood} | Qty: {quantity} | "
             f"Total: ₹{grand_total:,.0f} | Plan: Full Payment | Slot: {delivery_preference}"
         )
@@ -185,6 +291,7 @@ def booking_summary_view(request):
             order_notes += f" | Note: {customer_notes}"
 
         # Create Order directly without fake Booking
+        chosen_plan = request.POST.get('payment_plan', 'FULL_PAYMENT')
         order = Order.objects.create(
             user=user,
             booking=None,
@@ -196,16 +303,44 @@ def booking_summary_view(request):
             product_name=prod_name,
             selected_size=selected_size,
             selected_wood=selected_wood,
+            custom_measurements=custom_measurements,
             quantity=quantity,
             unit_price=Decimal(str(unit_price)),
             total_amount=Decimal(str(grand_total)),
             paid_amount=Decimal('0.00'),
             remaining_amount=Decimal(str(grand_total)),
-            payment_plan='FULL_PAYMENT',
+            payment_plan=chosen_plan,
             payment_status='PENDING',
             fulfillment_status='CONFIRMED',
             order_status='PENDING_PAYMENT'
         )
+
+        prod_days = product.installment_days if product and hasattr(product, 'installment_days') and product.installment_days else 30
+        if chosen_plan == 'THREE_INSTALLMENTS':
+            amounts = InstallmentService.calculate_three_installments(grand_total)
+            dates = InstallmentService.get_schedule_dates(timezone.now().date(), total_days=prod_days)
+            order.installment_plan_snapshot = {
+                'plan_name': f'3 Equal Installments ({prod_days} Days)',
+                'duration_days': prod_days,
+                'total_days': prod_days,
+                'installment_count': 3,
+                'created_at': str(timezone.now())
+            }
+            order.save(update_fields=['installment_plan_snapshot'])
+            for num, (amt, due) in enumerate(zip(amounts, dates), start=1):
+                Installment.objects.create(
+                    order=order,
+                    installment_number=num,
+                    amount=amt,
+                    due_date=due,
+                    status='PENDING'
+                )
+        else:
+            order.installment_plan_snapshot = {
+                'duration_days': prod_days,
+                'total_days': prod_days,
+            }
+            order.save(update_fields=['installment_plan_snapshot'])
 
         OrderStatusHistory.objects.create(
             order=order,
@@ -231,6 +366,7 @@ def booking_summary_view(request):
             'product_image': prod_img,
             'selected_size': selected_size,
             'selected_wood': selected_wood,
+            'custom_measurements': custom_measurements,
             'quantity': quantity,
             'unit_price': float(unit_price),
             'grand_total': float(grand_total),
@@ -276,6 +412,12 @@ def booking_summary_view(request):
         'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address else '') or 'Valued Patron',
         'user_email': (user.email if user else None) or (default_address.get('email') if default_address else '') or '',
         'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address else '') or '',
+        'item_type': item_type,
+        'measurement_label': measurement_label,
+        'measurement_placeholder': measurement_placeholder,
+        'measurement_hint': measurement_hint,
+        'quick_presets': quick_presets,
+        'default_measurements': initial_measurements,
     }
     return render(request, 'bookings/checkout_summary.html', context)
 

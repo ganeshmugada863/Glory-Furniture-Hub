@@ -40,6 +40,18 @@
         <span class="font-bold text-gray-950 text-right">{% if order and order.product_name %}{{ order.product_name }}{% elif product_name %}{{ product_name }}{% else %}Handcrafted Teak Furniture{% endif %}</span>
       </div>
 
+      {% if order and order.custom_measurements %}
+      <div class="flex justify-between items-center text-gray-700">
+        <span class="font-medium text-gray-500">Measurements:</span>
+        <span class="font-bold text-emerald-800 text-right">📐 {{ order.custom_measurements }}</span>
+      </div>
+      {% elif measurements %}
+      <div class="flex justify-between items-center text-gray-700">
+        <span class="font-medium text-gray-500">Measurements:</span>
+        <span class="font-bold text-emerald-800 text-right">📐 {{ measurements }}</span>
+      </div>
+      {% endif %}
+
       <div class="flex justify-between items-center text-gray-700">
         <span class="font-medium text-gray-500">Amount:</span>
         <span class="font-bold text-[#5C3D2E]">{% if formatted_total %}{{ formatted_total }}{% elif order and order.formatted_total %}{{ order.formatted_total }}{% else %}100% Paid{% endif %}</span>

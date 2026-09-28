@@ -282,9 +282,14 @@
               <!-- Inner Box (Matching Image 1: Red border, 3 milestone cards, banner) -->
               <div id="installment-details-box" class="mt-5 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-[#8B0000] bg-white space-y-4" style="display: none;">
                 <div>
-                  <h5 class="text-base sm:text-lg font-bold text-gray-900">Your Installment Plan (3 Equal Parts)</h5>
-                  <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
-                    The total amount ₹{{ order.total_amount|floatformat:0 }} will be divided into 3 equal installments of ₹{{ installment_part_amount|floatformat:2 }} each.
+                  <div class="flex items-center justify-between flex-wrap gap-2">
+                    <h5 class="text-base sm:text-lg font-bold text-gray-900">Your Installment Plan (3 Equal Parts)</h5>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                      ⏱️ Scheduled Over {{ product_days|default:30 }} Days
+                    </span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-500 mt-1">
+                    The total amount ₹{{ order.total_amount|floatformat:0 }} will be divided into 3 equal installments of ₹{{ installment_part_amount|floatformat:2 }} each across {{ product_days|default:30 }} days.
                   </p>
                 </div>
 
@@ -301,9 +306,10 @@
                         <p class="text-xs text-gray-500">{{ item.subtext }}</p>
                       </div>
                     </div>
-                    <div class="text-right">
+                    <div class="text-right shrink-0">
                       <span class="text-sm sm:text-base font-bold text-gray-900 font-mono block">₹{{ item.amount|floatformat:2 }}</span>
-                      <span class="text-xs text-gray-500">{{ item.due_text }}</span>
+                      <span class="text-xs font-bold whitespace-nowrap {% if forloop.first %}text-emerald-700{% else %}text-amber-900{% endif %} block">{{ item.due_text }}</span>
+                      <span class="text-[11px] font-medium text-gray-500 font-mono whitespace-nowrap block">{{ item.due_date|date:"d M Y" }}</span>
                     </div>
                   </div>
                   {% endfor %}
@@ -321,7 +327,7 @@
                     </svg>
                   </div>
                   <div>
-                    <h6 class="text-sm sm:text-base font-bold text-[#8B0000]">Simple &amp; Equal Payments</h6>
+                    <h6 class="text-sm sm:text-base font-bold text-[#8B0000]">Simple &amp; Equal Payments (Scheduled Over {{ product_days|default:30 }} Days)</h6>
                     <p class="text-xs text-gray-600">Three equal installments make it easier to bring your dream furniture home.</p>
                   </div>
                 </div>

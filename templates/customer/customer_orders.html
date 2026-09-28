@@ -86,6 +86,10 @@
 
             <div class="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
               <span>Size: <strong class="text-gray-900 font-semibold">{{ o.selected_size|default:"Standard" }}</strong></span>
+              {% if o.custom_measurements %}
+              <span class="text-gray-400">&bull;</span>
+              <span>Measurements: <strong class="text-[#5C3D2E] font-bold">📐 {{ o.custom_measurements }}</strong></span>
+              {% endif %}
               <span class="text-gray-400">&bull;</span>
               <span>Wood: <strong class="text-gray-900 font-semibold">{{ o.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
               {% if o.quantity > 1 %}

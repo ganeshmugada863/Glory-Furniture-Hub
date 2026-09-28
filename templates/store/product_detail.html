@@ -232,6 +232,43 @@
           </div>
         </div>
 
+        <!-- Mandatory Product Measurements Section -->
+        <div class="pt-2 space-y-2">
+          <div class="flex items-center justify-between flex-wrap gap-1">
+            <label class="block text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
+              <span>📐</span>
+              {% if 'diwan' in product.category.name|lower or 'diwana' in product.category.name|lower or 'divan' in product.name|lower or 'daybed' in product.name|lower %}
+                Diwana / Daybed Measurements <span class="text-red-500">*</span>
+              {% elif 'dining' in product.category.name|lower or 'dining' in product.name|lower or 'table' in product.category.name|lower %}
+                Dining Table Dimensions <span class="text-red-500">*</span>
+              {% elif 'sofa' in product.category.name|lower or 'sofa' in product.name|lower %}
+                Sofa Living Room Dimensions <span class="text-red-500">*</span>
+              {% elif 'bed' in product.category.name|lower or 'cot' in product.category.name|lower or 'bed' in product.name|lower %}
+                Bed / Mattress Space Measurements <span class="text-red-500">*</span>
+              {% else %}
+                Product Dimensions (Required) <span class="text-red-500">*</span>
+              {% endif %}
+            </label>
+            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">
+              Required Before Booking
+            </span>
+          </div>
+
+          <div class="relative">
+            <input type="text"
+                   id="product-measurements-input"
+                   name="product_measurements"
+                   required
+                   oninput="updateBuyNowUrl()"
+                   placeholder="{% if 'diwan' in product.category.name|lower or 'diwana' in product.category.name|lower or 'divan' in product.name|lower or 'daybed' in product.name|lower %}e.g., 72 in (L) × 36 in (W) × 18 in (H) (Standard Single Diwan){% elif 'dining' in product.category.name|lower or 'dining' in product.name|lower or 'table' in product.category.name|lower %}e.g., 6-Seater: 72 in (L) × 36 in (W) × 30 in (H){% elif 'sofa' in product.category.name|lower or 'sofa' in product.name|lower %}e.g., 3-Seater: 84 in (W) × 36 in (D) × 34 in (H) or Room wall: 10 ft{% elif 'bed' in product.category.name|lower or 'cot' in product.category.name|lower or 'bed' in product.name|lower %}e.g., 78 in (L) × 72 in (W) × 36 in (H) or King Size (6 × 6.5 ft){% else %}e.g., Length × Width × Height (e.g., 48&quot; × 24&quot; × 32&quot; or 4ft × 2ft){% endif %}"
+                   class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-300 focus:border-[#8B0000] focus:ring-2 focus:ring-amber-200 text-xs font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all shadow-2xs" />
+            <span class="absolute right-3 top-2.5 text-sm select-none pointer-events-none">📏</span>
+          </div>
+          <p class="text-[11px] text-gray-500">
+            Handcrafted to order. Enter room dimensions (in feet or inches) for custom woodworking.
+          </p>
+        </div>
+
         <!-- Quantity + Add To Cart + Buy Now Row -->
         <div class="pt-3 flex items-center gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap">
           
@@ -260,6 +297,7 @@
           <!-- Buy Now / Book Now Button (White with Crimson Border) -->
           <a href="{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price={{ product.price }}"
              id="main-buy-now-btn"
+             onclick="return handleBuyNowClick(event)"
              class="flex-1 active-tap shrink-0"
              style="min-height: 48px !important; height: 48px !important; padding: 0 22px !important; border-radius: 12px !important; background: #FFFFFF !important; border: 2px solid #8B0000 !important; color: #8B0000 !important; box-shadow: 0 2px 6px rgba(139, 0, 0, 0.08) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; text-decoration: none !important; transition: all 0.15s ease !important;">
             <span style="color: #8B0000 !important; font-weight: 800; font-size: 14px !important; letter-spacing: 0.02em; white-space: nowrap !important;">Buy Now</span>
@@ -366,6 +404,10 @@
                 <td class="py-3 px-5">Free Doorstep White-Glove Setup across Hyderabad</td>
               </tr>
               <tr class="bg-white hover:bg-gray-50/70 transition-colors">
+                <td class="py-3 px-5 font-bold text-gray-900">Product Duration</td>
+                <td class="py-3 px-5"><span class="font-bold text-[#8B0000]">{{ product.installment_days|default:30 }} Days</span> (3 Equal Installments Schedule)</td>
+              </tr>
+              <tr class="bg-[#FCFAF8] hover:bg-gray-50/70 transition-colors">
                 <td class="py-3 px-5 font-bold text-gray-900">Packaging</td>
                 <td class="py-3 px-5">Multi-layer protective foam & heavy corrugated wooden crate</td>
               </tr>
@@ -611,10 +653,32 @@
 
   function updateBuyNowUrl() {
     const buyBtn = document.getElementById('main-buy-now-btn');
+    const measInput = document.getElementById('product-measurements-input');
+    const measurements = measInput ? measInput.value.trim() : '';
     if (buyBtn) {
-      const url = "{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price=" + currentPrice + "&bedSize=" + encodeURIComponent(currentSelectedSize) + "&qty=" + currentQty;
+      let url = "{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price=" + currentPrice + "&bedSize=" + encodeURIComponent(currentSelectedSize) + "&qty=" + currentQty;
+      if (measurements) {
+        url += "&measurements=" + encodeURIComponent(measurements);
+      }
       buyBtn.href = url;
     }
+  }
+
+  function handleBuyNowClick(e) {
+    const measInput = document.getElementById('product-measurements-input');
+    const measurements = measInput ? measInput.value.trim() : '';
+    if (!measurements) {
+      if (e) e.preventDefault();
+      if (measInput) {
+        measInput.classList.add('border-red-500', 'bg-red-50');
+        measInput.focus();
+        measInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      alert('Please enter your required product measurements (Length × Width × Height) before booking.');
+      return false;
+    }
+    updateBuyNowUrl();
+    return true;
   }
 
   // Tab Switcher
@@ -642,8 +706,19 @@
 
   // Add To Cart Action
   function triggerAddToCart() {
+    const measInput = document.getElementById('product-measurements-input');
+    const measurements = measInput ? measInput.value.trim() : '';
+    if (!measurements) {
+      if (measInput) {
+        measInput.classList.add('border-red-500', 'bg-red-50');
+        measInput.focus();
+        measInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      alert('Please enter your required product measurements (Length × Width × Height) before adding to cart.');
+      return;
+    }
     if (typeof window.addToCart === 'function') {
-      window.addToCart({{ product.id }}, currentSelectedSize, currentQty);
+      window.addToCart({{ product.id }}, currentSelectedSize, currentQty, measurements);
     } else {
       alert('Added ' + currentQty + ' item(s) of {{ product.name }} (' + currentSelectedSize + ') to cart!');
     }

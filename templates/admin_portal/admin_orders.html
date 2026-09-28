@@ -56,7 +56,12 @@
             <!-- ITEM SPECS -->
             <td class="py-4 px-5">
               <div class="font-bold text-gray-900 truncate max-w-xs">{{ o.product_name }}</div>
-              <div class="text-[10px] text-gray-500">{{ o.selected_wood|default:"Natural Burma Teak" }} &bull; Qty: {{ o.quantity }}</div>
+              <div class="text-[10px] text-gray-500">
+                {{ o.selected_wood|default:"Natural Burma Teak" }} &bull; Qty: {{ o.quantity }}
+                {% if o.custom_measurements %}
+                <span class="block text-emerald-800 font-bold">📐 {{ o.custom_measurements }}</span>
+                {% endif %}
+              </div>
             </td>
 
             <!-- AMOUNT -->

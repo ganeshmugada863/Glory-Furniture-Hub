@@ -201,6 +201,67 @@
           </div>
         </div>
 
+        <!-- ========================================================= -->
+        <!-- MANDATORY PRODUCT MEASUREMENTS CARD                       -->
+        <!-- ========================================================= -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2D8CC] shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100 flex-wrap gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-full bg-amber-100 text-[#5C3D2E] flex items-center justify-center font-black text-sm">
+                📐
+              </span>
+              <div>
+                <h2 class="font-black text-base text-gray-950">{{ measurement_label|default:"Product Measurements (Required)" }} <span class="text-red-500">*</span></h2>
+                <p class="text-[11px] text-gray-500">{{ measurement_hint|default:"Our master carpenters craft to your exact space. Enter Length × Width × Height." }}</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-100 text-[#5C3D2E] border border-amber-300">
+              Required Before Booking
+            </span>
+          </div>
+
+          <div id="measurement-error-box" class="{% if not measurement_error %}hidden{% endif %} text-xs font-bold p-3 rounded-xl bg-red-50 text-red-700 border border-red-200">
+            ⚠️ {{ measurement_error|default:"Please enter your product measurements before booking." }}
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-800">
+              Enter Exact Measurements (Length × Width × Height) <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <input type="text"
+                     name="custom_measurements"
+                     id="custom-measurements-input"
+                     required
+                     value="{{ default_measurements|default:'' }}"
+                     placeholder="{{ measurement_placeholder }}"
+                     oninput="updateMeasurementDisplay(this.value)"
+                     class="w-full px-4 py-3.5 rounded-xl border-2 border-amber-300 focus:border-[#5C3D2E] focus:ring-2 focus:ring-amber-200 text-xs sm:text-sm font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all shadow-2xs" />
+              <span class="absolute right-3.5 top-3.5 text-base select-none pointer-events-none">📏</span>
+            </div>
+            <p class="text-[11px] text-gray-500">
+              💡 Examples: <span class="text-gray-700 font-medium">{{ measurement_placeholder }}</span>
+            </p>
+          </div>
+
+          {% if quick_presets %}
+          <div class="pt-2 border-t border-gray-100 space-y-2">
+            <span class="text-[11px] font-bold text-gray-600 block uppercase tracking-wider">
+              Popular Dimensions (Tap to Autofill):
+            </span>
+            <div class="flex flex-wrap gap-2">
+              {% for preset in quick_presets %}
+              <button type="button"
+                      onclick="setMeasurementPreset('{{ preset.val }}')"
+                      class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF7F4] hover:bg-amber-100 text-[#5C3D2E] border border-[#DECBB7] transition-all cursor-pointer active-tap shadow-2xs">
+                + {{ preset.label }}
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
       </div>
 
       <!-- ========================================================= -->
@@ -233,6 +294,12 @@
               <div class="text-[11px] text-gray-600 space-y-0.5">
                 <p><strong class="text-gray-900">Finish:</strong> <span id="summary-wood-display">{{ selected_wood }}</span></p>
                 <p><strong class="text-gray-900">Size:</strong> <span id="summary-size-display">{{ selected_size }}</span></p>
+                <p id="summary-measurements-row">
+                  <strong class="text-gray-900">Measurements:</strong> 
+                  <span id="summary-measurements-display" class="font-bold text-[#5C3D2E]">
+                    {% if default_measurements %}📐 {{ default_measurements }}{% else %}<span class="text-red-500 italic">Required before booking</span>{% endif %}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
@@ -526,18 +593,59 @@
     );
   }
 
+  // Measurement Helpers
+  function setMeasurementPreset(val) {
+    const input = document.getElementById('custom-measurements-input');
+    if (input) {
+      input.value = val;
+      input.classList.remove('border-red-500', 'bg-red-50');
+      const errBox = document.getElementById('measurement-error-box');
+      if (errBox) errBox.classList.add('hidden');
+      updateMeasurementDisplay(val);
+    }
+  }
+
+  function updateMeasurementDisplay(val) {
+    const disp = document.getElementById('summary-measurements-display');
+    const input = document.getElementById('custom-measurements-input');
+    const errBox = document.getElementById('measurement-error-box');
+    if (val && val.trim()) {
+      if (disp) disp.innerHTML = `<span class="font-bold text-emerald-800">📐 ${val.trim()}</span>`;
+      if (input) input.classList.remove('border-red-500', 'bg-red-50');
+      if (errBox) errBox.classList.add('hidden');
+    } else {
+      if (disp) disp.innerHTML = `<span class="text-red-500 italic">Required before booking</span>`;
+    }
+  }
+
   // Pre-submission validation
   document.getElementById('checkout-booking-form')?.addEventListener('submit', function(e) {
     syncInlineToForm();
 
     const form = this;
+    const measInput = document.getElementById('custom-measurements-input');
+    const measurements = (measInput?.value || '').trim();
     const phone = (form.querySelector('[name=phone]')?.value || '').replace(/\D/g, '');
     const flat = (form.querySelector('[name=flat]')?.value || '').trim();
     const street = (form.querySelector('[name=street]')?.value || '').trim();
     const name = (form.querySelector('[name=customer_name]')?.value || '').trim();
     const formPanel = document.getElementById('inline-address-form');
 
-    // Phone validation (10 digits Indian mobile number)
+    // 1. Mandatory Product Measurements Validation
+    if (!measurements) {
+      e.preventDefault();
+      const errBox = document.getElementById('measurement-error-box');
+      if (errBox) errBox.classList.remove('hidden');
+      if (measInput) {
+        measInput.classList.add('border-red-500', 'bg-red-50');
+        measInput.focus();
+        measInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      alert('Please enter your required product measurements (Length × Width × Height) before booking.');
+      return false;
+    }
+
+    // 2. Phone validation (10 digits Indian mobile number)
     if (!phone || phone.length < 10 || phone === '9876543210') {
       e.preventDefault();
       alert('Please provide a valid 10-digit mobile number for order delivery coordination.');
@@ -550,7 +658,7 @@
       return false;
     }
 
-    // Delivery address validation
+    // 3. Delivery address validation
     if (!flat && !street) {
       e.preventDefault();
       alert('Please enter your delivery address (House/Flat No. and Street) before proceeding.');
