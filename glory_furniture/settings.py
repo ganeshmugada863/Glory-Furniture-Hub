@@ -117,27 +117,58 @@ WSGI_APPLICATION = 'glory_furniture.wsgi.application'
 from django.core.exceptions import ImproperlyConfigured
 
 # Database: Supabase Managed PostgreSQL in production, SQLite in local development
+def sanitize_database_url(url: str) -> str:
+    """Sanitize database URL to properly handle special characters in password and remove stray quotes."""
+    if not url:
+        return url
+    url = url.strip().strip("'\"")
+    import re
+    import urllib.parse
+    m = re.match(r'^(?P<scheme>[a-zA-Z0-9+]+)://(?P<user>[^:]+):(?P<password>.+)@(?P<rest>[^@]+)$', url)
+    if m:
+        scheme = m.group('scheme')
+        user = m.group('user')
+        password = urllib.parse.unquote(m.group('password'))
+        quoted_password = urllib.parse.quote_plus(password)
+        rest = m.group('rest')
+        return f"{scheme}://{user}:{quoted_password}@{rest}"
+    return url
+
 DATABASE_URL = os.getenv('DATABASE_URL')
-if DATABASE_URL and ('[YOUR-PASSWORD]' in DATABASE_URL or 'YOUR-PASSWORD' in DATABASE_URL or '[PASSWORD]' in DATABASE_URL):
-    print("[Warning] DATABASE_URL contains placeholder password.")
-    DATABASE_URL = None
+if DATABASE_URL:
+    DATABASE_URL = sanitize_database_url(DATABASE_URL)
+    if any(placeholder in DATABASE_URL for placeholder in ('[YOUR-PASSWORD]', 'YOUR-PASSWORD', '[PASSWORD]')):
+        print("[Warning] DATABASE_URL contains placeholder password.")
+        DATABASE_URL = None
 
 if DATABASE_URL:
-    is_postgres = DATABASE_URL.startswith(('postgres://', 'postgresql://'))
-    conn_max = 0 if os.getenv('VERCEL') else 600
-    parse_options = {
-        'conn_max_age': conn_max,
-        'conn_health_checks': True,
-    }
-    if is_postgres:
-        parse_options['ssl_require'] = True
+    try:
+        is_postgres = DATABASE_URL.startswith(('postgres://', 'postgresql://'))
+        conn_max = 0 if os.getenv('VERCEL') else 600
+        parse_options = {
+            'conn_max_age': conn_max,
+            'conn_health_checks': True,
+        }
+        if is_postgres:
+            parse_options['ssl_require'] = True
 
-    DATABASES = {
-        'default': dj_database_url.parse(
-            DATABASE_URL,
-            **parse_options
-        )
-    }
+        DATABASES = {
+            'default': dj_database_url.parse(
+                DATABASE_URL,
+                **parse_options
+            )
+        }
+    except Exception as e:
+        print(f"[Warning] Failed to parse DATABASE_URL: {e}. Falling back to SQLite.")
+        if DEBUG or os.getenv('VERCEL'):
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': BASE_DIR / 'db.sqlite3',
+                }
+            }
+        else:
+            raise
 elif DEBUG or os.getenv('VERCEL'):
     DATABASES = {
         'default': {
@@ -150,7 +181,7 @@ else:
         "DATABASE CONFIGURATION ERROR: In production mode (DEBUG=False), the DATABASE_URL environment variable "
         "must be configured with a persistent database connection (e.g. Supabase Managed PostgreSQL). "
         "Running on ephemeral SQLite in production is strictly prohibited as user accounts and order records will be lost on container restart. "
-        "Please configure DATABASE_URL in your Render Dashboard environment settings."
+        "Please configure DATABASE_URL in your deployment environment settings."
     )
 
 # Password validation

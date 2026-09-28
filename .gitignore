@@ -31,4 +31,6 @@ dist-ssr/
 .DS_Store
 .idea/
 .vscode/*
-!.vscode/extensions.json
+.vercel
+.env*
+media/
