@@ -138,7 +138,7 @@ if DATABASE_URL:
             **parse_options
         )
     }
-elif DEBUG:
+elif DEBUG or os.getenv('VERCEL'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
