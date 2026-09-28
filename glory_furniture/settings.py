@@ -118,21 +118,44 @@ from django.core.exceptions import ImproperlyConfigured
 
 # Database: Supabase Managed PostgreSQL in production, SQLite in local development
 def sanitize_database_url(url: str) -> str:
-    """Sanitize database URL to properly handle special characters in password and remove stray quotes."""
+    """Sanitize database URL to properly handle special characters in password,
+
+    remove stray quotes, and convert IPv6 Supabase direct hosts to IPv4 connection pooler.
+    """
     if not url:
         return url
     url = url.strip().strip("'\"")
     import re
     import urllib.parse
-    m = re.match(r'^(?P<scheme>[a-zA-Z0-9+]+)://(?P<user>[^:]+):(?P<password>.+)@(?P<rest>[^@]+)$', url)
-    if m:
-        scheme = m.group('scheme')
-        user = m.group('user')
-        password = urllib.parse.unquote(m.group('password'))
-        quoted_password = urllib.parse.quote_plus(password)
-        rest = m.group('rest')
-        return f"{scheme}://{user}:{quoted_password}@{rest}"
-    return url
+    m = re.match(
+        r'^(?P<scheme>[a-zA-Z0-9+]+)://(?P<user>[^:]+):(?P<password>.+)@(?P<host>[^:/]+)(?::(?P<port>\d+))?(?P<path>/[^?#]*)?(?P<query>\?.*)?$',
+        url
+    )
+    if not m:
+        return url
+    d = m.groupdict()
+    scheme = d['scheme']
+    user = d['user']
+    raw_pw = d['password']
+    pw = urllib.parse.quote_plus(urllib.parse.unquote(raw_pw))
+    host = d['host']
+    port = d['port'] or '5432'
+    path = d['path'] or '/postgres'
+    query = d['query'] or ''
+
+    # Supabase direct host (db.<ref>.supabase.co) resolves to IPv6 only,
+    # which fails on AWS Lambda / Vercel with "Cannot assign requested address".
+    # Automatically rewrite to Supabase's IPv4 connection pooler (Supavisor).
+    m_sb = re.match(r'^db\.([a-z0-9]+)\.supabase\.co$', host)
+    if m_sb:
+        ref = m_sb.group(1)
+        if not user.endswith('.' + ref):
+            user = f"{user}.{ref}"
+        region = os.getenv('SUPABASE_REGION', 'ap-south-1')
+        host = f"aws-0-{region}.pooler.supabase.com"
+        port = "6543"
+
+    return f"{scheme}://{user}:{pw}@{host}:{port}{path}{query}"
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
