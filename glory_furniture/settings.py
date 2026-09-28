@@ -28,6 +28,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.huggingface.co',
     'https://*.onrender.com',
     'https://*.koyeb.app',
+    'https://*.vercel.app',
 ]
 
 # Allow iframe sessions & CSRF across Hugging Face Space embeds on mobile & desktop
@@ -123,8 +124,9 @@ if DATABASE_URL and ('[YOUR-PASSWORD]' in DATABASE_URL or 'YOUR-PASSWORD' in DAT
 
 if DATABASE_URL:
     is_postgres = DATABASE_URL.startswith(('postgres://', 'postgresql://'))
+    conn_max = 0 if os.getenv('VERCEL') else 600
     parse_options = {
-        'conn_max_age': 600,
+        'conn_max_age': conn_max,
         'conn_health_checks': True,
     }
     if is_postgres:
