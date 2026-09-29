@@ -136,7 +136,9 @@ def sanitize_database_url(url: str) -> str:
     d = m.groupdict()
     scheme = d['scheme']
     user = d['user']
-    raw_pw = d['password']
+    raw_pw = d['password'].strip().strip("'\"")
+    if raw_pw.startswith('[') and raw_pw.endswith(']'):
+        raw_pw = raw_pw[1:-1].strip()
     pw = urllib.parse.quote_plus(urllib.parse.unquote(raw_pw))
     host = d['host']
     port = d['port'] or '5432'
@@ -153,10 +155,15 @@ def sanitize_database_url(url: str) -> str:
             user = f"{user}.{ref}"
         region = os.getenv('SUPABASE_REGION', 'ap-southeast-1')
         host = f"aws-0-{region}.pooler.supabase.com"
-        port = "6543"
+        port = os.getenv('SUPABASE_POOLER_PORT', '5432')
 
-    if 'aws-0-ap-south-1.pooler.supabase.com' in host and 'qxxrghelhlrafdkveeqo' in (user + host):
+    if 'aws-0-ap-south-1.pooler.supabase.com' in host:
         host = 'aws-0-ap-southeast-1.pooler.supabase.com'
+
+    if 'pooler.supabase.com' in host and not ('.' in user):
+        user = f"{user}.qxxrghelhlrafdkveeqo"
+
+    print(f"[DB Init] Host={host}, Port={port}, User={user}, PW_len={len(raw_pw)}")
 
     return f"{scheme}://{user}:{pw}@{host}:{port}{path}{query}"
 
