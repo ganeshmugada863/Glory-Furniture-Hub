@@ -121,7 +121,10 @@ def home_view(request):
         },
     ]
 
-    all_products = Product.objects.all()
+    try:
+        all_products = list(Product.objects.all())
+    except Exception:
+        all_products = []
 
     context = {
         'room_cards': room_cards,

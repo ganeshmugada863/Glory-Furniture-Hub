@@ -2,7 +2,7 @@ def global_furniture_context(request):
     """Provides global context to all Django templates for Glory Furniture Hub."""
     from apps.store.models import Category, Product
     try:
-        categories = Category.objects.all().order_by('order', 'name')
+        categories = list(Category.objects.all().order_by('order', 'name'))
     except Exception:
         categories = []
 
