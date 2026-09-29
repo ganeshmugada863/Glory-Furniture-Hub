@@ -137,8 +137,7 @@ def sanitize_database_url(url: str) -> str:
     scheme = d['scheme']
     user = d['user']
     raw_pw = d['password'].strip().strip("'\"")
-    if raw_pw.startswith('[') and raw_pw.endswith(']'):
-        raw_pw = raw_pw[1:-1].strip()
+    raw_pw = raw_pw.strip('<>').strip('[]').strip()
     pw = urllib.parse.quote_plus(urllib.parse.unquote(raw_pw))
     host = d['host']
     port = d['port'] or '5432'
