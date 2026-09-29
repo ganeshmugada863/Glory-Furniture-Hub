@@ -151,9 +151,12 @@ def sanitize_database_url(url: str) -> str:
         ref = m_sb.group(1)
         if not user.endswith('.' + ref):
             user = f"{user}.{ref}"
-        region = os.getenv('SUPABASE_REGION', 'ap-south-1')
+        region = os.getenv('SUPABASE_REGION', 'ap-southeast-1')
         host = f"aws-0-{region}.pooler.supabase.com"
         port = "6543"
+
+    if 'aws-0-ap-south-1.pooler.supabase.com' in host and 'qxxrghelhlrafdkveeqo' in (user + host):
+        host = 'aws-0-ap-southeast-1.pooler.supabase.com'
 
     return f"{scheme}://{user}:{pw}@{host}:{port}{path}{query}"
 
@@ -241,6 +244,7 @@ if USE_CLOUDINARY:
         'API_SECRET': CLOUDINARY_API_SECRET,
     }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
     STORAGES = {
         'default': {
             'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
