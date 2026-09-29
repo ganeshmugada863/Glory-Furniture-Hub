@@ -14,10 +14,16 @@ def home_view(request):
     if request.session.get('glory_role') == 'admin':
         return redirect('admin_dashboard')
 
-    categories = Category.objects.all().order_by('order', 'name')
-    featured_products = Product.objects.filter(featured=True)[:8]
-    if not featured_products.exists():
-        featured_products = Product.objects.all()[:8]
+    try:
+        categories = list(Category.objects.all().order_by('order', 'name'))
+        featured_products = list(Product.objects.filter(featured=True)[:8])
+        if not featured_products:
+            featured_products = list(Product.objects.all()[:8])
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("Unable to query database in home_view: %s", e)
+        categories = []
+        featured_products = []
 
     # 5 Handcrafted Category Cards: Beds, Sofa, Dining, Dressing, Diwan Cot
     room_cards = [
