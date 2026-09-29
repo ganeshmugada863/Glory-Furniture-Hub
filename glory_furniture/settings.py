@@ -62,13 +62,13 @@ USE_CLOUDINARY = bool(CLOUDINARY_URL or (CLOUDINARY_CLOUD_NAME and CLOUDINARY_AP
 
 # Application definition
 INSTALLED_APPS = [
-    *(['cloudinary_storage'] if USE_CLOUDINARY else []),
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    *(['cloudinary_storage'] if USE_CLOUDINARY else []),
     *(['cloudinary'] if USE_CLOUDINARY else []),
     
     # Custom Apps
