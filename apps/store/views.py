@@ -120,9 +120,20 @@ def catalog_view(request):
     categories = Category.objects.all().order_by('order', 'name')
     styles = ['All', 'Classic', 'Modern Minimalist', 'Rustic', 'Traditional']
 
+    try:
+        product_list = list(products)
+        cat_list = list(categories)
+        total_count = len(product_list)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("Database query error in catalog_view: %s", e)
+        product_list = []
+        cat_list = []
+        total_count = 0
+
     context = {
-        'products': products,
-        'categories': categories,
+        'products': product_list,
+        'categories': cat_list,
         'styles': styles,
         'selected_category': category_param,
         'selected_style': style_param,
@@ -130,7 +141,7 @@ def catalog_view(request):
         'sort_by': sort_by,
         'max_price': max_price_val,
         'in_stock_only': in_stock_only,
-        'total_count': products.count(),
+        'total_count': total_count,
         'page_title': 'Furniture Catalog',
     }
     return render(request, 'store/catalog.html', context)
@@ -160,11 +171,14 @@ def search_view(request):
     query = request.GET.get('q', '').strip()
     products = []
     if query:
-        products = Product.objects.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query) |
-            Q(category__name__icontains=query)
-        )
+        try:
+            products = list(Product.objects.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query) |
+                Q(category__name__icontains=query)
+            ))
+        except Exception:
+            products = []
 
     recent_searches = ['Cot / Wooden Bed', 'Dining Table', 'Sofa Set', 'Pooja Mandir']
     popular_searches = ['Teak Cot', 'Dressing Table', 'Podimes', 'Headboard']
