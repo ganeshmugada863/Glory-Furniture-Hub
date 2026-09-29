@@ -18,8 +18,14 @@ cp -rf staticfiles/js staticfiles/static/ 2>/dev/null || true
 cp -rf staticfiles/admin staticfiles/static/ 2>/dev/null || true
 cp -f staticfiles/favicon.svg staticfiles/static/ 2>/dev/null || true
 
+# Mirror media assets so /media/(.*) is served directly by Vercel CDN
+mkdir -p staticfiles/media
+cp -rf media/* staticfiles/media/ 2>/dev/null || true
+
 echo "=== Files in staticfiles/static/css ==="
 ls -la staticfiles/static/css || true
 echo "=== Files in staticfiles/static/images ==="
 ls -la staticfiles/static/images || true
+echo "=== Files in staticfiles/media/products ==="
+ls -la staticfiles/media/products 2>/dev/null | head -n 10 || true
 echo "=== Build Finished Successfully ==="

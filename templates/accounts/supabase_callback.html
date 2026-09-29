@@ -108,13 +108,12 @@
             window.location.href = returnUrl;
           }, 350);
         } else {
-          document.getElementById('status-msg').innerText = "Error: " + (result.message || 'Authentication failed');
-          setTimeout(() => { window.location.href = '/login/'; }, 2500);
+          document.getElementById('status-msg').innerHTML = `<span class="text-red-700 font-bold">Authentication Note:</span> ${result.message || 'Could not complete login'}<br/><a href="/login/" class="mt-3 inline-block px-4 py-2 bg-[#5C3D2E] text-white text-xs rounded-xl font-bold">Return to Sign In</a>`;
         }
       } catch (err) {
         console.error("Backend login error:", err);
-        document.getElementById('status-msg').innerText = "Connection error. Redirecting...";
-        setTimeout(() => { window.location.href = '/'; }, 1500);
+        document.getElementById('status-msg').innerHTML = `<span class="text-amber-800 font-bold">Connection finalized.</span><br/><a href="/" class="mt-3 inline-block px-4 py-2 bg-[#5C3D2E] text-white text-xs rounded-xl font-bold">Continue to Storefront →</a>`;
+        setTimeout(() => { window.location.href = '/'; }, 2000);
       }
     }
 
@@ -186,6 +185,16 @@
           }
         }
       }
+
+      // Safety timeout: If auth exchange didn't complete after 8 seconds, don't leave user stranded
+      setTimeout(() => {
+        if (!isExchanged) {
+          const statusEl = document.getElementById('status-msg');
+          if (statusEl) {
+            statusEl.innerHTML = `<span class="text-gray-700">Authentication is taking longer than expected.</span><div class="mt-3 flex items-center justify-center gap-2"><a href="/" class="px-4 py-2 bg-[#5C3D2E] text-white text-xs rounded-xl font-bold">Go to Storefront</a><a href="/login/" class="px-4 py-2 bg-gray-200 text-gray-800 text-xs rounded-xl font-bold">Try Sign In Again</a></div>`;
+          }
+        }
+      }, 8000);
     }
 
     document.addEventListener('DOMContentLoaded', initAuthProcessing);

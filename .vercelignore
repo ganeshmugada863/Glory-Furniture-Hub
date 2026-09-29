@@ -1,9 +1,6 @@
 .git
 .github
 node_modules
-media
-db.sqlite3
-*.sqlite3
 __pycache__
 *.pyc
 *.pyo
