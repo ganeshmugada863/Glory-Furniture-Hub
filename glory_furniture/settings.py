@@ -251,16 +251,25 @@ if USE_CLOUDINARY:
         'API_SECRET': CLOUDINARY_API_SECRET,
     }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-    WHITENOISE_MANIFEST_STRICT = False
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
     STORAGES = {
         'default': {
             'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
         },
         'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
         },
     }
+else:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+    }
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Support up to 50MB file uploads for multi-image high-res product photos
 DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
