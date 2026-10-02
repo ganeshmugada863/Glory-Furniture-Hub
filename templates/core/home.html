@@ -1,396 +1,804 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Glory Furniture Hub — Handcrafted Elegance{% endblock %}
+{% block title %}Glory Furniture Hub — Modern Interiors in Soft Forms | Solid Burma Teak{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ==========================================================================
+     LUMINA / AURA MINIMALIST LUXURY DESIGN SYSTEM
+     Soft pastel palette, generous whitespace, pill geometry & rounded cards
+     ========================================================================== */
+  :root {
+    --aura-bg: #FAF9F6;
+    --aura-dark: #1A1816;
+    --aura-muted: #847C75;
+    --aura-border: #E8E2D9;
+    --aura-sand: #F5EFE6;
+    --aura-sky: #E8F0F7;
+    --aura-lilac: #F2EBF4;
+    --aura-sage: #EAF2E8;
+  }
+
+  body {
+    background-color: var(--aura-bg) !important;
+    color: var(--aura-dark) !important;
+  }
+
+  /* Smooth pill micro-interactions */
+  .aura-pill {
+    border-radius: 9999px !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Category card hover elevation & circle icon lift */
+  .aura-cat-card {
+    border-radius: 24px !important;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .aura-cat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(35, 25, 18, 0.07);
+  }
+  .aura-cat-card:hover .aura-circle-arrow {
+    transform: translateX(3px) scale(1.05);
+    background-color: #1A1816 !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Product card hover styling */
+  .aura-product-card {
+    border-radius: 22px !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #ECE7E1 !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+  .aura-product-card:hover {
+    transform: translateY(-4px);
+    border-color: #D8CEC2 !important;
+    box-shadow: 0 14px 30px rgba(35, 25, 18, 0.08);
+  }
+
+  /* Filter chip buttons */
+  .aura-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 18px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #FFFFFF;
+    color: #554D46;
+    border: 1px solid #E2DCD3;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .aura-filter-chip:hover {
+    background-color: #F4EFE8;
+    color: #1A1816;
+    border-color: #C8BEB0;
+  }
+  .aura-filter-chip.active-chip {
+    background-color: #1A1816 !important;
+    color: #FFFFFF !important;
+    border-color: #1A1816 !important;
+    box-shadow: 0 4px 12px rgba(26, 24, 22, 0.22);
+  }
+
+  /* Subtle fade in keyframe */
+  @keyframes auraFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .aura-fade-in {
+    animation: auraFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- ========================================================= -->
-<!-- 100% FULL-WIDTH LUXURY SHOWCASE BAND (CAROUSEL + 5 CARDS)  -->
-<!-- Spans 100% width, warm luxury teak cream background, no green -->
-<!-- ========================================================= -->
-<div class="w-full glory-showcase-band" style="background-color: #1A110B !important; border-top: 1px solid #2C1B10 !important; border-bottom: 1.5px solid #2C1B10 !important; width: 100% !important;">
-  <div class="glory-container-96 py-5 sm:py-8 space-y-5 sm:space-y-7">
+<div class="w-full font-sans antialiased overflow-x-hidden">
 
-    <!-- 1. HERO CAROUSEL SECTION (100% Exact to HomeScreen.jsx)   -->
-    <section 
-      id="hero-carousel-section"
-      class="relative rounded-3xl sm:rounded-[32px] lg:rounded-[36px] overflow-hidden shadow-md w-full h-[48vh] sm:h-[55vh] lg:h-[60vh] min-h-[380px] max-h-[520px] flex items-center group select-none"
-      style="border: 2px solid #3E2719 !important;"
+  <!-- ======================================================================== -->
+  <!-- 1. HERO SECTION: "MODERN INTERIORS IN SOFT FORMS"                        -->
+  <!-- Inspired directly by Lumina / Aura Reference: Bold typography, quick     -->
+  <!-- selector pills, dual pill CTAs, and large rounded visual showcase        -->
+  <!-- ======================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-12 sm:pb-16">
+    <div 
+      class="relative rounded-[28px] sm:rounded-[36px] p-6 sm:p-10 lg:p-14 overflow-hidden border border-[#EBE4DB] shadow-xs"
+      style="background: linear-gradient(135deg, #FAF7F2 0%, #F5EFE8 50%, #ECE6F0 100%);"
     >
-      <!-- Background High-Definition Animated Slides -->
-      <div id="hero-carousel" class="absolute inset-0 w-full h-full">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
-        <!-- Slide 1: Epoxy Teak -->
-        <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 z-1 pointer-events-auto" data-index="0">
-          <img src="{% static 'images/hero_epoxy_teak.jpg' %}" alt="Glory Artisanal Teak Furniture" class="w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out scale-105" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent sm:bg-gradient-to-r sm:from-[#24140E]/95 sm:via-[#3D2318]/70 sm:to-[#5C3D2E]/25 pointer-events-none"></div>
-        </div>
-
-        <!-- Slide 2: Sofa Collections -->
-        <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 z-0 pointer-events-none" data-index="1">
-          <img src="{% static 'images/card_sofa.jpg' %}" alt="Glory Artisanal Teak Furniture" class="w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out scale-100" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent sm:bg-gradient-to-r sm:from-[#1F1008]/95 sm:via-[#3B1E12]/70 sm:to-[#6E3C22]/25 pointer-events-none"></div>
-        </div>
-
-        <!-- Slide 3: Bedroom Essentials / Beds -->
-        <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 z-0 pointer-events-none" data-index="2">
-          <img src="{% static 'images/card_bed.jpg' %}" alt="Glory Artisanal Teak Furniture" class="w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out scale-100" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent sm:bg-gradient-to-r sm:from-[#2B1810]/95 sm:via-[#4A2C1C]/70 sm:to-[#8C532B]/25 pointer-events-none"></div>
-        </div>
-
-        <!-- Slide 4: Dining Sets -->
-        <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 z-0 pointer-events-none" data-index="3">
-          <img src="{% static 'images/card_dining.jpg' %}" alt="Glory Artisanal Teak Furniture" class="w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out scale-100" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent sm:bg-gradient-to-r sm:from-[#1B110C]/95 sm:via-[#342017]/70 sm:to-[#633A24]/25 pointer-events-none"></div>
-        </div>
-
-      </div>
-
-      <!-- Left Text Content Box with Smooth Fade Transitions (Mobile-Optimized) -->
-      <div class="relative z-10 p-4 sm:p-8 md:p-12 lg:p-16 max-w-2xl space-y-2 sm:space-y-3.5 text-white flex flex-col justify-end sm:justify-center h-full pb-9 sm:pb-12">
-        <h1 id="carousel-headline" class="font-sans font-extrabold text-xl sm:text-3xl md:text-4xl lg:text-[48px] leading-[1.15] tracking-tight drop-shadow-md animate-fade-in">
-          Elevate Your Home with<br />
-          Glory's Artisanal Teak<br />
-          Furniture.
-        </h1>
-
-        <p id="carousel-desc" class="text-xs sm:text-sm md:text-base text-gray-200/95 leading-relaxed max-w-md drop-shadow-xs font-normal line-clamp-2 sm:line-clamp-none animate-fade-in">
-          Discover timeless pieces crafted with natural teak wood and vibrant epoxy resin.
-        </p>
-
-        <div class="pt-1.5 sm:pt-3">
-          <a id="carousel-cta" href="{% url 'catalog' %}" class="glory-cta-btn inline-flex items-center gap-2 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 active-tap cursor-pointer" style="background-color: #C9963F !important; color: #1A0E07 !important; border: 1.5px solid #E6B762 !important;">
-            <span id="carousel-cta-text">Explore Collection</span>
-            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Carousel Interactive Pagination Dots (Bottom Center matching reference) -->
-      <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
-        <button onclick="gotoHeroSlide(0)" class="carousel-dot transition-all duration-500 cursor-pointer w-7 sm:w-8 h-1.5 sm:h-2 rounded-full bg-white shadow-md" aria-label="Go to slide 1"></button>
-        <button onclick="gotoHeroSlide(1)" class="carousel-dot transition-all duration-500 cursor-pointer w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white/50 hover:bg-white/90" aria-label="Go to slide 2"></button>
-        <button onclick="gotoHeroSlide(2)" class="carousel-dot transition-all duration-500 cursor-pointer w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white/50 hover:bg-white/90" aria-label="Go to slide 3"></button>
-        <button onclick="gotoHeroSlide(3)" class="carousel-dot transition-all duration-500 cursor-pointer w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white/50 hover:bg-white/90" aria-label="Go to slide 4"></button>
-      </div>
-
-    </section>
-
-    <!-- 2. 5 HANDCRAFTED CATEGORY CARDS WITH CURVED BORDERS -->
-    <section>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4.5 lg:gap-5.5">
-        {% for card in room_cards %}
-        <div
-          onclick="window.location.href='{% url 'catalog' %}?category={{ card.query|urlencode }}';"
-          class="glory-curved-card p-3.5 sm:p-4 bg-white cursor-pointer group flex flex-col justify-between"
-          style="background-color: #FFFFFF !important; border: 1.8px solid #E2D2C0 !important; border-radius: 28px !important;"
-        >
-          <!-- Image Container with Curved Borders & Featured Masterpiece Badge -->
-          <div class="glory-curved-image relative w-full aspect-[4/3] bg-black/5 mb-3">
-            <img
-              src="{{ card.image }}"
-              alt="{{ card.title }}"
-              loading="lazy"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-[22px]"
-            />
-            <div class="absolute top-2 left-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wider bg-[#5C3D2E] text-white shadow-xs">
-                {{ card.tag|default:"Featured Masterpiece" }}
-              </span>
-            </div>
+        <!-- Left Content Column -->
+        <div class="lg:col-span-7 flex flex-col justify-center space-y-6 sm:space-y-7 z-10">
+          
+          <!-- Sub-eyebrow -->
+          <div class="inline-flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#1A1816]"></span>
+            <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A7168]">
+              Solid Burma Teakwood • Handcrafted in Hyderabad
+            </span>
           </div>
 
-          <!-- Card Title & Subtitle with Arrow Icon -->
-          <div class="flex items-center justify-between gap-1 pt-0.5 px-0.5">
-            <div class="min-w-0 flex-1">
-              <h3 class="font-sans font-black text-xs sm:text-[13.5px] text-gray-950 uppercase tracking-wide group-hover:text-[#5C3D2E] transition-colors truncate">
-                {{ card.title }}
-              </h3>
-              <p class="font-sans text-[10px] sm:text-[11px] text-gray-600 font-normal truncate mt-0.5">
-                {{ card.subtitle }}
-              </p>
-            </div>
+          <!-- Main Hero Headline -->
+          <h1 class="font-sans font-black text-3xl sm:text-5xl lg:text-[56px] tracking-tight text-[#1A1816] uppercase leading-[1.06]">
+            MODERN INTERIORS<br />
+            IN SOFT FORMS
+          </h1>
 
-            <div class="w-7 h-7 rounded-full flex items-center justify-center text-[#5C3D2E] group-hover:translate-x-1 transition-transform flex-shrink-0">
+          <!-- Subtitle / Copy -->
+          <p class="text-xs sm:text-sm md:text-[15px] text-[#696159] leading-relaxed max-w-xl font-normal">
+            Carefully curated solid Burma teak collection handcrafted by generational carpenters for modern interiors and everyday comfort.
+          </p>
+
+          <!-- Dual Pill Action Buttons -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <a 
+              href="{% url 'catalog' %}" 
+              class="aura-pill inline-flex items-center gap-2.5 px-7 py-3 bg-[#1A1816] hover:bg-black text-white text-xs sm:text-sm font-semibold shadow-sm transition-all duration-300 active-tap cursor-pointer"
+            >
+              <span>Go to catalog</span>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+
+            <a 
+              href="{% url 'custom_request' %}" 
+              class="aura-pill inline-flex items-center gap-2 px-7 py-3 bg-white hover:bg-gray-50 text-[#1A1816] text-xs sm:text-sm font-semibold border border-[#DED7CE] shadow-2xs transition-all duration-300 active-tap cursor-pointer"
+            >
+              <span>Custom studio</span>
+              <svg class="w-4 h-4 text-[#8C827A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <!-- 3 Quick Feature Pills (Directly Matching Reference Image) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-3">
+            
+            <!-- Quick Pill 1: Royal Cots -->
+            <a 
+              href="{% url 'catalog' %}?category=Cot%20%2F%20Wooden%20Bed" 
+              class="group flex items-center justify-between p-3.5 bg-white/80 hover:bg-white backdrop-blur-xs rounded-[18px] border border-[#E6DFD5] shadow-2xs hover:shadow-xs transition-all duration-300"
+            >
+              <div class="min-w-0">
+                <span class="block text-[11.5px] font-bold text-[#1A1816] truncate">Royal Cots</span>
+                <span class="block text-[10px] text-[#7A7168] truncate mt-0.5">Premium Comfort</span>
+              </div>
+              <div class="w-6 h-6 rounded-full bg-[#FAF7F2] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center text-[#1A1816] transition-colors shrink-0 ml-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </a>
+
+            <!-- Quick Pill 2: Living Sofas -->
+            <a 
+              href="{% url 'catalog' %}?category=Sofa%20Set" 
+              class="group flex items-center justify-between p-3.5 bg-white/80 hover:bg-white backdrop-blur-xs rounded-[18px] border border-[#E6DFD5] shadow-2xs hover:shadow-xs transition-all duration-300"
+            >
+              <div class="min-w-0">
+                <span class="block text-[11.5px] font-bold text-[#1A1816] truncate">Living Sofas</span>
+                <span class="block text-[10px] text-[#7A7168] truncate mt-0.5">Editorial Style</span>
+              </div>
+              <div class="w-6 h-6 rounded-full bg-[#FAF7F2] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center text-[#1A1816] transition-colors shrink-0 ml-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </a>
+
+            <!-- Quick Pill 3: Dining Suites -->
+            <a 
+              href="{% url 'catalog' %}?category=Dining%20Table" 
+              class="group flex items-center justify-between p-3.5 bg-white/80 hover:bg-white backdrop-blur-xs rounded-[18px] border border-[#E6DFD5] shadow-2xs hover:shadow-xs transition-all duration-300"
+            >
+              <div class="min-w-0">
+                <span class="block text-[11.5px] font-bold text-[#1A1816] truncate">Dining Suites</span>
+                <span class="block text-[10px] text-[#7A7168] truncate mt-0.5">Generational Grain</span>
+              </div>
+              <div class="w-6 h-6 rounded-full bg-[#FAF7F2] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center text-[#1A1816] transition-colors shrink-0 ml-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </a>
+
+          </div>
+
+        </div>
+
+        <!-- Right Visual Showcase Area: Large Rounded Furniture Showcase Container -->
+        <div class="lg:col-span-5 flex justify-center z-10">
+          <div 
+            class="relative w-full aspect-[4/3] sm:aspect-[1/1] max-w-[460px] rounded-[26px] sm:rounded-[32px] overflow-hidden p-6 sm:p-8 flex items-center justify-center shadow-xs border border-[#E2DBD0] group"
+            style="background: linear-gradient(145deg, #EDE7DF 0%, #E3DCD2 100%);"
+          >
+            <!-- Animated Slides Container -->
+            <div id="aura-hero-showcase" class="w-full h-full relative flex items-center justify-center">
+              
+              <!-- Slide 1: Epoxy Teak Showcase -->
+              <div class="aura-hero-slide absolute inset-0 flex items-center justify-center transition-opacity duration-700 opacity-100" data-hero-slide="0">
+                <img 
+                  src="{% static 'images/hero_epoxy_teak.jpg' %}" 
+                  alt="Glory Artisanal Teak Furniture" 
+                  class="w-full h-full object-cover object-center rounded-[20px] shadow-sm group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              </div>
+
+              <!-- Slide 2: Living Sofa -->
+              <div class="aura-hero-slide absolute inset-0 flex items-center justify-center transition-opacity duration-700 opacity-0 pointer-events-none" data-hero-slide="1">
+                <img 
+                  src="{% static 'images/card_sofa.jpg' %}" 
+                  alt="Chesterfield & Living Sofas" 
+                  class="w-full h-full object-cover object-center rounded-[20px] shadow-sm group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              </div>
+
+              <!-- Slide 3: Bedroom Cots -->
+              <div class="aura-hero-slide absolute inset-0 flex items-center justify-center transition-opacity duration-700 opacity-0 pointer-events-none" data-hero-slide="2">
+                <img 
+                  src="{% static 'images/card_bed.jpg' %}" 
+                  alt="Royal Burma Teak Bed" 
+                  class="w-full h-full object-cover object-center rounded-[20px] shadow-sm group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              </div>
+
+              <!-- Slide 4: Dining Suite -->
+              <div class="aura-hero-slide absolute inset-0 flex items-center justify-center transition-opacity duration-700 opacity-0 pointer-events-none" data-hero-slide="3">
+                <img 
+                  src="{% static 'images/card_dining.jpg' %}" 
+                  alt="Artisanal Teak Dining Table" 
+                  class="w-full h-full object-cover object-center rounded-[20px] shadow-sm group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              </div>
+
             </div>
+
+            <!-- Slide Pagination Dots -->
+            <div class="absolute bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full">
+              <button onclick="switchAuraSlide(0)" class="aura-slide-dot w-6 h-1.5 rounded-full bg-white transition-all duration-300" aria-label="Slide 1"></button>
+              <button onclick="switchAuraSlide(1)" class="aura-slide-dot w-1.5 h-1.5 rounded-full bg-white/60 hover:bg-white transition-all duration-300" aria-label="Slide 2"></button>
+              <button onclick="switchAuraSlide(2)" class="aura-slide-dot w-1.5 h-1.5 rounded-full bg-white/60 hover:bg-white transition-all duration-300" aria-label="Slide 3"></button>
+              <button onclick="switchAuraSlide(3)" class="aura-slide-dot w-1.5 h-1.5 rounded-full bg-white/60 hover:bg-white transition-all duration-300" aria-label="Slide 4"></button>
+            </div>
+
           </div>
         </div>
-        {% endfor %}
+
       </div>
-    </section>
+    </div>
+  </section>
 
-  </div>
-</div>
-<!-- End of 100% Full-Width Luxury Showcase Band -->
 
-<!-- Main Page Container for Featured Masterpieces & Catalog -->
-<div class="glory-container-96 space-y-6 sm:space-y-8 pt-6 sm:pt-8 pb-12">
-  <!-- ========================================================= -->
-  <!-- 3. FEATURED MASTERPIECES CATALOG (All Pieces, Beds, Sofa, Dining, Dressing, Diwan Cot, Teapoy) -->
-  <!-- ========================================================= -->
-  <section class="space-y-4 pt-4 sm:pt-6">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3.5">
+  <!-- ======================================================================== -->
+  <!-- 2. FEATURED CATEGORIES: 4 SOFT PASTEL CARDS                              -->
+  <!-- Directly matching Lumina / Aura: Beige, Sky Blue, Lilac, and Pale Sage    -->
+  <!-- ======================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    
+    <!-- Section Header Row -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 sm:mb-8">
       <div>
-        <h2 class="font-sans font-extrabold text-xl sm:text-2xl text-gray-950 tracking-tight">
-          Featured Masterpieces
+        <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8C827A] block mb-1">
+          Categories
+        </span>
+        <h2 class="font-sans font-black text-2xl sm:text-3xl text-[#1A1816] tracking-tight">
+          Featured categories
         </h2>
       </div>
 
-      <!-- Filter Pills (Beds, Sofa, Dining, Dressing, Diwan Cot, Teapoy) -->
-      <div class="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto no-scrollbar py-0.5">
-        <button onclick="filterHomePageProducts('all', this)" class="home-filter-tab active-filter" data-filter="all">
+      <p class="text-xs sm:text-sm text-[#736B63] max-w-sm sm:text-right leading-relaxed">
+        Discover carefully selected solid teakwood pieces designed to bring calmness and sophistication into everyday living.
+      </p>
+    </div>
+
+    <!-- 4 Pastel Category Cards Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      
+      <!-- Card 1: Sofas (Soft Warm Sand / Beige) -->
+      <a 
+        href="{% url 'catalog' %}?category=Sofa%20Set" 
+        class="aura-cat-card p-4 sm:p-5 flex flex-col justify-between group cursor-pointer border border-[#E9DFD2]"
+        style="background-color: #F5EFE6;"
+      >
+        <div class="w-full aspect-[4/3] rounded-[18px] overflow-hidden bg-white/50 mb-4 p-2 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_sofa.jpg' %}" 
+            alt="Sofas & Living Seating" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="flex items-center justify-between pt-1">
+          <div>
+            <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Sofas</h3>
+            <p class="text-[11px] sm:text-xs text-[#7A7168] mt-0.5">Minimal comfort</p>
+          </div>
+          <div class="aura-circle-arrow w-8 h-8 rounded-full bg-white text-[#1A1816] flex items-center justify-center shadow-2xs transition-all duration-300 shrink-0 ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2: Chairs & Seating (Soft Powder Sky Blue) -->
+      <a 
+        href="{% url 'catalog' %}?category=Cot%20%2F%20Wooden%20Bed" 
+        class="aura-cat-card p-4 sm:p-5 flex flex-col justify-between group cursor-pointer border border-[#D5E4F0]"
+        style="background-color: #E8F0F7;"
+      >
+        <div class="w-full aspect-[4/3] rounded-[18px] overflow-hidden bg-white/50 mb-4 p-2 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_office.jpg' %}" 
+            alt="Chairs & Artisanal Seating" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="flex items-center justify-between pt-1">
+          <div>
+            <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Chairs</h3>
+            <p class="text-[11px] sm:text-xs text-[#7A7168] mt-0.5">Designer seating</p>
+          </div>
+          <div class="aura-circle-arrow w-8 h-8 rounded-full bg-white text-[#1A1816] flex items-center justify-center shadow-2xs transition-all duration-300 shrink-0 ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3: Poufs & Beds (Soft Pastel Blush Lilac) -->
+      <a 
+        href="{% url 'catalog' %}?category=Podimes" 
+        class="aura-cat-card p-4 sm:p-5 flex flex-col justify-between group cursor-pointer border border-[#E6D9E9]"
+        style="background-color: #F2EBF4;"
+      >
+        <div class="w-full aspect-[4/3] rounded-[18px] overflow-hidden bg-white/50 mb-4 p-2 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_bed.jpg' %}" 
+            alt="Poufs & Royal Cots" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="flex items-center justify-between pt-1">
+          <div>
+            <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Poufs</h3>
+            <p class="text-[11px] sm:text-xs text-[#7A7168] mt-0.5">Soft textures</p>
+          </div>
+          <div class="aura-circle-arrow w-8 h-8 rounded-full bg-white text-[#1A1816] flex items-center justify-center shadow-2xs transition-all duration-300 shrink-0 ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 4: Decor & Dining (Soft Pale Sage Mint) -->
+      <a 
+        href="{% url 'catalog' %}?category=Dining%20Table" 
+        class="aura-cat-card p-4 sm:p-5 flex flex-col justify-between group cursor-pointer border border-[#DAE8D8]"
+        style="background-color: #EAF2E8;"
+      >
+        <div class="w-full aspect-[4/3] rounded-[18px] overflow-hidden bg-white/50 mb-4 p-2 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_decor.jpg' %}" 
+            alt="Decor & Architectural Furniture" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="flex items-center justify-between pt-1">
+          <div>
+            <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Decor</h3>
+            <p class="text-[11px] sm:text-xs text-[#7A7168] mt-0.5">Lifestyle details</p>
+          </div>
+          <div class="aura-circle-arrow w-8 h-8 rounded-full bg-white text-[#1A1816] flex items-center justify-center shadow-2xs transition-all duration-300 shrink-0 ml-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ======================================================================== -->
+  <!-- 3. DUAL PROMOTIONAL / OFFER BANNERS                                      -->
+  <!-- Inspired by reference image: Left peach blush banner, right sage sky banner-->
+  <!-- ======================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+      
+      <!-- Banner 1: Limited Offer -15% Discount (Soft Pastel Peach / Blush) -->
+      <div 
+        class="rounded-[24px] sm:rounded-[28px] p-6 sm:p-8 flex items-center justify-between overflow-hidden relative border border-[#F2D7CE] shadow-2xs group"
+        style="background: linear-gradient(135deg, #FDECE7 0%, #F5E1F0 100%);"
+      >
+        <div class="z-10 max-w-[240px] sm:max-w-[270px] space-y-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#A06155] block">
+            Limited Offer
+          </span>
+          <h3 class="font-sans font-black text-2xl sm:text-3xl text-[#231713] tracking-tight leading-none">
+            -15% discount
+          </h3>
+          <p class="text-xs text-[#6F5750] leading-relaxed pt-1">
+            Discover soft seating collections designed for warm modern interiors.
+          </p>
+          <div class="pt-3">
+            <a 
+              href="{% url 'catalog' %}" 
+              class="aura-pill inline-flex items-center px-6 py-2.5 bg-[#1A1816] hover:bg-black text-white text-xs font-semibold shadow-xs transition-all active-tap"
+            >
+              Shop now
+            </a>
+          </div>
+        </div>
+
+        <!-- Furniture Visual -->
+        <div class="w-36 sm:w-44 lg:w-48 aspect-[1/1] shrink-0 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_sofa.jpg' %}" 
+            alt="Discounted Teak Sofa" 
+            class="w-full h-full object-cover rounded-[18px] group-hover:scale-105 transition-transform duration-500 shadow-sm"
+          />
+        </div>
+      </div>
+
+      <!-- Banner 2: For Returning Clients -10% Discount (Soft Pastel Sky / Sand) -->
+      <div 
+        class="rounded-[24px] sm:rounded-[28px] p-6 sm:p-8 flex items-center justify-between overflow-hidden relative border border-[#D5E3EC] shadow-2xs group"
+        style="background: linear-gradient(135deg, #E6F0F6 0%, #F1EFE6 100%);"
+      >
+        <div class="z-10 max-w-[240px] sm:max-w-[270px] space-y-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#52778A] block">
+            For Returning Clients
+          </span>
+          <h3 class="font-sans font-black text-2xl sm:text-3xl text-[#17242C] tracking-tight leading-none">
+            -10% discount
+          </h3>
+          <p class="text-xs text-[#526470] leading-relaxed pt-1">
+            Exclusive interior collections with premium minimalist aesthetics.
+          </p>
+          <div class="pt-3">
+            <a 
+              href="{% url 'custom_request' %}" 
+              class="aura-pill inline-flex items-center px-6 py-2.5 bg-[#1A1816] hover:bg-black text-white text-xs font-semibold shadow-xs transition-all active-tap"
+            >
+              Discover more
+            </a>
+          </div>
+        </div>
+
+        <!-- Furniture Visual -->
+        <div class="w-36 sm:w-44 lg:w-48 aspect-[1/1] shrink-0 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_office.jpg' %}" 
+            alt="Curated Seating" 
+            class="w-full h-full object-cover rounded-[18px] group-hover:scale-105 transition-transform duration-500 shadow-sm"
+          />
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ======================================================================== -->
+  <!-- 4. BESTSELLERS OF THE SEASON (FEATURED PRODUCTS)                         -->
+  <!-- Clean product cards with soft square image container, heart toggle,       -->
+  <!-- price, and instant category filter chips                                 -->
+  <!-- ======================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    
+    <!-- Section Header Row -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pb-2 border-b border-gray-100">
+      <div>
+        <span class="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8C827A] block mb-1">
+          Popular Products
+        </span>
+        <h2 class="font-sans font-black text-2xl sm:text-3xl text-[#1A1816] tracking-tight">
+          Bestsellers of the season
+        </h2>
+      </div>
+
+      <!-- Filter Chip Pills -->
+      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1">
+        <button onclick="filterAuraProducts('all', this)" class="aura-filter-chip active-chip" data-filter="all">
           All Pieces
         </button>
-        <button onclick="filterHomePageProducts('bed', this)" class="home-filter-tab" data-filter="bed">
+        <button onclick="filterAuraProducts('bed', this)" class="aura-filter-chip" data-filter="bed">
           Beds
         </button>
-        <button onclick="filterHomePageProducts('sofa', this)" class="home-filter-tab" data-filter="sofa">
+        <button onclick="filterAuraProducts('sofa', this)" class="aura-filter-chip" data-filter="sofa">
           Sofa
         </button>
-        <button onclick="filterHomePageProducts('dining', this)" class="home-filter-tab" data-filter="dining">
+        <button onclick="filterAuraProducts('dining', this)" class="aura-filter-chip" data-filter="dining">
           Dining
         </button>
-        <button onclick="filterHomePageProducts('dressing', this)" class="home-filter-tab" data-filter="dressing">
+        <button onclick="filterAuraProducts('dressing', this)" class="aura-filter-chip" data-filter="dressing">
           Dressing
         </button>
-        <button onclick="filterHomePageProducts('diwancut', this)" class="home-filter-tab" data-filter="diwancut">
+        <button onclick="filterAuraProducts('diwancut', this)" class="aura-filter-chip" data-filter="diwancut">
           Diwan Cot
         </button>
-        <button onclick="filterHomePageProducts('teapoy', this)" class="home-filter-tab" data-filter="teapoy">
+        <button onclick="filterAuraProducts('teapoy', this)" class="aura-filter-chip" data-filter="teapoy">
           Teapoy
         </button>
       </div>
     </div>
 
-    <!-- Product Grid (Exact to React ProductCard styling) -->
-    <div id="home-product-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5.5 lg:gap-6">
+    <!-- Product Grid: Styled directly matching the reference cards -->
+    <div id="aura-product-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
       {% for product in all_products %}
-      <div
+      <div 
         onclick="window.location.href='{% url 'product_detail' pk=product.pk %}';"
-        class="home-product-card glory-curved-card bg-[#FAF6F0] p-3.5 sm:p-4 cursor-pointer group flex flex-col justify-between"
+        class="aura-product-card p-3 sm:p-4 cursor-pointer group flex flex-col justify-between"
         data-category="{{ product.category.name|lower }}"
         data-name="{{ product.name|lower }}"
-        style="border-radius: 28px !important; border: 2px solid #DECBB7 !important; box-shadow: 0 4px 14px rgba(92, 61, 46, 0.08) !important;"
       >
         <div>
-          <!-- Compact Card Image Container with Auto-Fit & Centering -->
-          <div class="glory-curved-image relative aspect-[4/3] bg-[#FAF6F0] mb-3 shadow-2xs product-image-container flex items-center justify-center p-2 overflow-hidden">
-            <img
-              src="{{ product.primary_image }}"
-              alt="{{ product.name }}"
+          <!-- Square Soft Image Container (Aspect 1/1 Matching Reference) -->
+          <div class="relative aspect-[1/1] w-full rounded-[18px] bg-[#F1ECE5] p-3 flex items-center justify-center overflow-hidden mb-3">
+            <img 
+              src="{{ product.primary_image }}" 
+              alt="{{ product.name }}" 
               loading="lazy"
-              class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 rounded-[18px]"
+              class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 rounded-[14px]"
             />
-            <!-- Wishlist Heart Button -->
-            <button
+
+            <!-- Wishlist Heart Toggle Button (Minimal Outline Heart) -->
+            <button 
+              type="button"
               data-wishlist-id="{{ product.id }}"
               onclick="event.stopPropagation(); toggleWishlist({{ product.id }});"
-              class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#2E1E17] shadow-sm active-tap hover:bg-white transition-all cursor-pointer"
+              class="absolute top-2.5 right-2.5 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-gray-700 hover:text-red-600 shadow-xs hover:bg-white transition-all active-tap cursor-pointer"
               title="Save to Wishlist"
             >
-              <svg class="w-4 h-4 {% if product.id in WISHLIST_IDS %}fill-red-600 text-red-600{% else %}fill-none text-gray-700{% endif %} stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+              <svg class="w-4 h-4 {% if product.id in WISHLIST_IDS %}fill-red-600 text-red-600{% else %}fill-none text-gray-700{% endif %} stroke-[1.8]" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             </button>
           </div>
 
-          <h4 class="font-sans font-bold text-xs sm:text-[15px] text-[#1E140F] line-clamp-1 group-hover:text-[#C9963F] transition-colors px-0.5">
+          <!-- Product Title -->
+          <h4 class="font-sans font-bold text-xs sm:text-[14.5px] text-[#1A1816] line-clamp-1 group-hover:text-[#8C6D58] transition-colors">
             {{ product.name }}
           </h4>
-          <p class="text-[11px] sm:text-xs text-[#6B6B6B] line-clamp-1 mt-0.5 px-0.5">{{ product.material }}</p>
 
-          <div class="flex items-center justify-between mt-1.5 mb-3 px-0.5">
-            <span class="font-sans font-extrabold text-sm sm:text-base" style="color: #8B0000 !important; font-weight: 900 !important;">{{ product.formatted_price }}</span>
-            <div class="flex items-center gap-1 text-[11px] text-[#3D281E] font-semibold">
-              <svg class="w-3.5 h-3.5 fill-[#C9963F] text-[#C9963F]" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-              <span>{{ product.rating }}</span>
+          <!-- Material / Subtext -->
+          <p class="text-[11px] text-[#847C75] line-clamp-1 mt-0.5">
+            {{ product.material|default:"Solid Burma Teakwood" }}
+          </p>
+
+          <!-- Price & Swatch / Rating Row -->
+          <div class="flex items-center justify-between mt-2 mb-3">
+            <span class="font-sans font-black text-sm sm:text-base text-[#1A1816]">
+              {{ product.formatted_price }}
+            </span>
+
+            <!-- Subtle Rating Score & Swatch Dots (Matching Reference) -->
+            <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-0.5 text-[11px] font-semibold text-[#665D55]">
+                <svg class="w-3 h-3 text-[#C9963F] fill-[#C9963F]" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span>{{ product.rating }}</span>
+              </div>
+              <div class="hidden sm:flex items-center gap-1 pl-1">
+                <span class="w-2 h-2 rounded-full bg-[#E2D5C3]"></span>
+                <span class="w-2 h-2 rounded-full bg-[#D1DDD2]"></span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Action Button: Book Now (High-Contrast Solid Action Button) -->
-        <button
-          type="button"
-          onclick="event.stopPropagation(); window.location.href='{% url 'booking_summary' %}?product={{ product.id }}';"
-          class="w-full py-2.5 bg-[#1E140F] hover:bg-black text-white text-xs sm:text-[13px] font-black rounded-full active-tap flex items-center justify-center gap-2 shadow-sm transition-all border border-[#1E140F] cursor-pointer"
-          style="background-color: #1E140F !important; color: #FFFFFF !important;"
-        >
-          <svg class="w-3.5 h-3.5 text-[#E0B058]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          <span style="color: #FFFFFF !important; font-weight: 800;">Book Now</span>
-        </button>
+        <!-- Sleek Action Buttons: Add to Bag + Book Now -->
+        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+          <button 
+            type="button"
+            onclick="event.stopPropagation(); addToCart({{ product.id }});"
+            class="py-2 px-2 rounded-full bg-[#FAF7F2] hover:bg-[#1A1816] text-[#1A1816] hover:text-white text-[11px] font-bold border border-[#E5DFD6] hover:border-[#1A1816] transition-colors active-tap flex items-center justify-center gap-1 cursor-pointer"
+            title="Add to Bag"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span>+ Bag</span>
+          </button>
+
+          <button 
+            type="button"
+            onclick="event.stopPropagation(); window.location.href='{% url 'booking_summary' %}?product={{ product.id }}';"
+            class="py-2 px-2 rounded-full bg-[#1A1816] hover:bg-black text-white text-[11px] font-bold transition-colors active-tap flex items-center justify-center gap-1 cursor-pointer"
+            title="Book Now"
+          >
+            <span>Book Now</span>
+          </button>
+        </div>
+
       </div>
       {% empty %}
-      <div class="col-span-full py-16 px-4 text-center space-y-4 bg-[#FAF6F0] rounded-[32px] border border-[#E2D2C0]">
-        <div class="w-16 h-16 rounded-full bg-amber-100/80 text-[#5C3D2E] flex items-center justify-center mx-auto text-3xl shadow-2xs">
-          🪵
-        </div>
-        <div class="space-y-1">
-          <h3 class="font-sans font-black text-base sm:text-lg text-[#1E140F]">New Artisanal Collections Coming Soon</h3>
-          <p class="text-xs text-gray-500 max-w-md mx-auto">
-            Our master craftsmen in Hyderabad are handcrafting new solid Burma teak collections. Check back shortly or request a custom bespoke piece.
-          </p>
-        </div>
-        <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
-          <a href="{% url 'custom_request' %}" class="px-6 py-2.5 rounded-full bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold transition-all shadow-xs" style="background-color: #5C3D2E !important;">
-            Request Custom Furniture Quote →
-          </a>
-          <a href="{% url 'contact' %}" class="px-5 py-2.5 rounded-full bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 transition-all">
-            Contact Workshop
-          </a>
-        </div>
+      <div class="col-span-full py-14 px-4 text-center space-y-3 bg-white rounded-[24px] border border-[#E2DBD0]">
+        <h3 class="font-sans font-bold text-base text-[#1A1816]">Artisanal Pieces Coming Soon</h3>
+        <p class="text-xs text-[#847C75] max-w-sm mx-auto">
+          Our master craftsmen in Hyderabad are currently handcrafting fresh collections.
+        </p>
+        <a href="{% url 'custom_request' %}" class="inline-flex items-center px-6 py-2.5 rounded-full bg-[#1A1816] text-white text-xs font-semibold">
+          Request Custom Furniture →
+        </a>
       </div>
       {% endfor %}
     </div>
 
-    <!-- Explore Complete Catalog Button -->
-    <div class="pt-3 text-center">
-      <button
-        onclick="window.location.href='{% url 'catalog' %}';"
-        class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-white hover:bg-gray-950 text-gray-900 hover:text-white font-bold text-xs sm:text-sm border border-gray-200 shadow-2xs transition-all duration-300 group"
+    <!-- Explore Complete Catalog Pill Button -->
+    <div class="pt-10 text-center">
+      <a 
+        href="{% url 'catalog' %}" 
+        class="aura-pill inline-flex items-center gap-2 px-8 py-3.5 bg-white hover:bg-[#1A1816] text-[#1A1816] hover:text-white font-bold text-xs sm:text-sm border border-[#DED7CE] shadow-2xs hover:shadow-sm transition-all duration-300 group cursor-pointer"
       >
         <span>Explore Complete Catalog</span>
-        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      </button>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
     </div>
 
   </section>
 
+
+  <!-- ======================================================================== -->
+  <!-- 5. LARGE EDITORIAL / LIFESTYLE SECTION                                   -->
+  <!-- Exactly matching the reference image: Large rounded full-width card with  -->
+  <!-- warm lifestyle interior and 3 frosted white overlay story cards          -->
+  <!-- ======================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+    <div 
+      class="relative rounded-[28px] sm:rounded-[36px] overflow-hidden min-h-[460px] sm:min-h-[560px] lg:min-h-[640px] flex items-center justify-center shadow-md border border-[#E0D7CC] group"
+    >
+      <!-- Background High-Definition Lifestyle Interior Image -->
+      <img 
+        src="{% static 'images/card_sofa.jpg' %}" 
+        alt="Artisanal Lifestyle Living Room" 
+        class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-1000 ease-out"
+      />
+
+      <!-- Subtle Soft Ambient Gradient for Perfect Text Legibility -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none"></div>
+
+      <!-- Overlaid Frosted White Story Card 1 (Bottom Left: "Comfort through minimalism") -->
+      <div 
+        class="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 max-w-[260px] sm:max-w-[310px] p-4 sm:p-5 rounded-[20px] bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#1A1816]"
+      >
+        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#8A7D73] block mb-1">
+          Minimal Living
+        </span>
+        <h4 class="text-xs sm:text-sm font-extrabold text-[#1A1816] mb-1">
+          Comfort through minimalism
+        </h4>
+        <p class="text-[11px] sm:text-xs text-[#5C534B] leading-relaxed">
+          Furniture designed to feel soft, functional, and deeply grounded in natural seasoned timber.
+        </p>
+      </div>
+
+      <!-- Overlaid Frosted White Story Card 2 (Top Right: "How design affects your mood") -->
+      <div 
+        class="absolute top-5 right-5 sm:top-8 sm:right-8 max-w-[260px] sm:max-w-[310px] p-4 sm:p-5 rounded-[20px] bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#1A1816]"
+      >
+        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#8A7D73] block mb-1">
+          Editorial Story
+        </span>
+        <h4 class="text-xs sm:text-sm font-extrabold text-[#1A1816] mb-1">
+          How design affects your mood
+        </h4>
+        <p class="text-[11px] sm:text-xs text-[#5C534B] leading-relaxed">
+          Thoughtful interiors create calmness, focus, and emotional comfort in everyday life.
+        </p>
+      </div>
+
+      <!-- Overlaid Frosted White Story Card 3 (Bottom Right: "Interiors that breathe") -->
+      <div 
+        class="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 max-w-[260px] sm:max-w-[310px] p-4 sm:p-5 rounded-[20px] bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#1A1816] hidden sm:block"
+      >
+        <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#8A7D73] block mb-1">
+          Psychology of Space
+        </span>
+        <h4 class="text-xs sm:text-sm font-extrabold text-[#1A1816] mb-1">
+          Interiors that breathe
+        </h4>
+        <p class="text-[11px] sm:text-xs text-[#5C534B] leading-relaxed">
+          Spacious compositions and tactile materials handcrafted by master artisans.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ======================================================================== -->
+  <!-- 6. TRUST & CRAFTSMANSHIP GUARANTEE BADGES                                 -->
+  <!-- Minimalist pill badges reinforcing timber authenticity & customer trust   -->
+  <!-- ======================================================================== -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 sm:pb-20">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      
+      <div class="p-4 rounded-[20px] bg-white border border-[#E9E3DA] text-center space-y-1 shadow-2xs">
+        <span class="text-lg">🪵</span>
+        <h5 class="text-xs font-bold text-[#1A1816]">100% Solid Burma Teak</h5>
+        <p class="text-[10px] text-[#7A7168]">Kiln-dried heartwood, zero MDF</p>
+      </div>
+
+      <div class="p-4 rounded-[20px] bg-white border border-[#E9E3DA] text-center space-y-1 shadow-2xs">
+        <span class="text-lg">🛡️</span>
+        <h5 class="text-xs font-bold text-[#1A1816]">10-Year Studio Warranty</h5>
+        <p class="text-[10px] text-[#7A7168]">Anti-termite & structural integrity</p>
+      </div>
+
+      <div class="p-4 rounded-[20px] bg-white border border-[#E9E3DA] text-center space-y-1 shadow-2xs">
+        <span class="text-lg">⚖️</span>
+        <h5 class="text-xs font-bold text-[#1A1816]">Direct Studio Pricing</h5>
+        <p class="text-[10px] text-[#7A7168]">Zero showroom broker markups</p>
+      </div>
+
+      <div class="p-4 rounded-[20px] bg-white border border-[#E9E3DA] text-center space-y-1 shadow-2xs">
+        <span class="text-lg">🚚</span>
+        <h5 class="text-xs font-bold text-[#1A1816]">White-Glove Delivery</h5>
+        <p class="text-[10px] text-[#7A7168]">Doorstep placement across Hyderabad</p>
+      </div>
+
+    </div>
+  </section>
+
 </div>
 
+<!-- ========================================================================== -->
+<!-- HOMEPAGE SCRIPT CONTROLLER                                                 -->
+<!-- Handles Hero Showcase carousel switching, client-side category filtering, -->
+<!-- and integration with global cart/wishlist handlers                         -->
+<!-- ========================================================================== -->
 <script>
-  // 1. Hero Carousel Data & Slide Controller
-  const heroSlideData = [
-    {
-      headline: "Elevate Your Home with<br />Glory's Artisanal Teak<br />Furniture.",
-      desc: "Discover timeless pieces crafted with natural teak wood and vibrant epoxy resin.",
-      ctaText: "Explore Collection",
-      ctaLink: "{% url 'catalog' %}"
-    },
-    {
-      headline: "Handcrafted Luxury<br />Solid Teak Wood<br />Sofa Sets.",
-      desc: "Pure Grade-A teak framing with premium high-density linen velvet cushions.",
-      ctaText: "View Sofa Sets",
-      ctaLink: "{% url 'catalog' %}?category=Sofa%20Set"
-    },
-    {
-      headline: "Royal Teak Wood<br />Cots & Beds Built<br />For Generations.",
-      desc: "Masterfully carved posture-slat cots and canopy beds for royal comfort.",
-      ctaText: "Explore Beds",
-      ctaLink: "{% url 'catalog' %}?category=Cot%20%2F%20Wooden%20Bed"
-    },
-    {
-      headline: "Artisanal 6-Seater<br />Teak Dining Tables &<br />Crafted Chairs.",
-      desc: "Traditional mortise-and-tenon craftsmanship with water-resistant natural finish.",
-      ctaText: "View Dining Sets",
-      ctaLink: "{% url 'catalog' %}?category=Dining%20Table"
-    }
-  ];
+  let currentAuraSlide = 0;
+  let auraSlideTimer = null;
+  const totalAuraSlides = 4;
 
-  let currentHeroSlideIndex = 0;
-  let heroAutoplayTimer = null;
-  let isHeroPaused = false;
+  function switchAuraSlide(index) {
+    currentAuraSlide = (index + totalAuraSlides) % totalAuraSlides;
+    const slides = document.querySelectorAll('.aura-hero-slide');
+    const dots = document.querySelectorAll('.aura-slide-dot');
 
-  function gotoHeroSlide(idx) {
-    currentHeroSlideIndex = (idx + heroSlideData.length) % heroSlideData.length;
-    
-    // Update slide images
-    const slides = document.querySelectorAll('.hero-slide');
-    slides.forEach((slide, i) => {
-      const img = slide.querySelector('img');
-      if (i === currentHeroSlideIndex) {
-        slide.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
-        slide.classList.add('opacity-100', 'pointer-events-auto', 'z-1');
-        if (img) img.classList.add('scale-105');
+    slides.forEach((slide, idx) => {
+      if (idx === currentAuraSlide) {
+        slide.classList.remove('opacity-0', 'pointer-events-none');
+        slide.classList.add('opacity-100');
       } else {
-        slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
-        slide.classList.remove('opacity-100', 'pointer-events-auto', 'z-1');
-        if (img) img.classList.remove('scale-105');
+        slide.classList.remove('opacity-100');
+        slide.classList.add('opacity-0', 'pointer-events-none');
       }
     });
 
-    // Update dots
-    const dots = document.querySelectorAll('.carousel-dot');
-    dots.forEach((dot, i) => {
-      if (i === currentHeroSlideIndex) {
-        dot.className = 'carousel-dot transition-all duration-500 cursor-pointer w-7 sm:w-8 h-1.5 sm:h-2 rounded-full bg-white shadow-md';
+    dots.forEach((dot, idx) => {
+      if (idx === currentAuraSlide) {
+        dot.className = 'aura-slide-dot w-6 h-1.5 rounded-full bg-white transition-all duration-300';
       } else {
-        dot.className = 'carousel-dot transition-all duration-500 cursor-pointer w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-white/50 hover:bg-white/90';
+        dot.className = 'aura-slide-dot w-1.5 h-1.5 rounded-full bg-white/60 hover:bg-white transition-all duration-300';
       }
     });
-
-    // Update text content with animation
-    const data = heroSlideData[currentHeroSlideIndex];
-    const headlineEl = document.getElementById('carousel-headline');
-    const descEl = document.getElementById('carousel-desc');
-    const ctaEl = document.getElementById('carousel-cta');
-    const ctaTextEl = document.getElementById('carousel-cta-text');
-
-    if (headlineEl && descEl && ctaEl) {
-      headlineEl.classList.remove('animate-fade-in');
-      descEl.classList.remove('animate-fade-in');
-      void headlineEl.offsetWidth; // trigger reflow
-      void descEl.offsetWidth;
-      headlineEl.innerHTML = data.headline;
-      descEl.textContent = data.desc;
-      ctaEl.href = data.ctaLink;
-      if (ctaTextEl) ctaTextEl.textContent = data.ctaText;
-      headlineEl.classList.add('animate-fade-in');
-      descEl.classList.add('animate-fade-in');
-    }
   }
 
-  function startHeroTimer() {
-    stopHeroTimer();
-    heroAutoplayTimer = setInterval(() => {
-      if (!isHeroPaused) {
-        gotoHeroSlide(currentHeroSlideIndex + 1);
-      }
+  function startAuraSlideshow() {
+    stopAuraSlideshow();
+    auraSlideTimer = setInterval(() => {
+      switchAuraSlide(currentAuraSlide + 1);
     }, 4500);
   }
 
-  function stopHeroTimer() {
-    if (heroAutoplayTimer) {
-      clearInterval(heroAutoplayTimer);
-      heroAutoplayTimer = null;
+  function stopAuraSlideshow() {
+    if (auraSlideTimer) {
+      clearInterval(auraSlideTimer);
+      auraSlideTimer = null;
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const section = document.getElementById('hero-carousel-section');
-    if (section) {
-      section.addEventListener('mouseenter', () => { isHeroPaused = true; });
-      section.addEventListener('mouseleave', () => { isHeroPaused = false; });
-      
-      let startX = null;
-      section.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
-      section.addEventListener('touchend', (e) => {
-        if (startX === null) return;
-        const diff = startX - e.changedTouches[0].clientX;
-        if (diff > 45) {
-          gotoHeroSlide(currentHeroSlideIndex + 1);
-          startHeroTimer();
-        } else if (diff < -45) {
-          gotoHeroSlide(currentHeroSlideIndex - 1);
-          startHeroTimer();
-        }
-        startX = null;
-      });
-    }
-    startHeroTimer();
-    // Default limit home to 10 items initially
-    filterHomePageProducts('all');
-  });
-
-  // 2. Instant Client-Side Category Filter (Beds, Sofa, Dining, Dressing, Diwan Cot, Teapoy)
-  function filterHomePageProducts(filterType, clickedBtn = null) {
+  // Instant Client-Side Category Filtering
+  function filterAuraProducts(filterType, clickedBtn = null) {
     if (clickedBtn) {
-      document.querySelectorAll('.home-filter-tab').forEach(b => {
-        b.classList.remove('active-filter');
+      document.querySelectorAll('.aura-filter-chip').forEach(b => {
+        b.classList.remove('active-chip');
       });
-      clickedBtn.classList.add('active-filter');
+      clickedBtn.classList.add('active-chip');
     }
 
-    const cards = document.querySelectorAll('.home-product-card');
-    let shownCount = 0;
+    const cards = document.querySelectorAll('.aura-product-card');
+    let count = 0;
 
     cards.forEach(card => {
       const cat = (card.getAttribute('data-category') || '').toLowerCase();
@@ -413,13 +821,25 @@
         match = cat.includes('teapoy') || cat.includes('tea') || name.includes('teapoy') || name.includes('coffee');
       }
 
-      if (match && shownCount < 12) {
+      if (match && count < 16) {
         card.style.display = 'flex';
-        shownCount++;
+        count++;
       } else {
         card.style.display = 'none';
       }
     });
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    startAuraSlideshow();
+    filterAuraProducts('all');
+
+    // Pause on hover
+    const showcase = document.getElementById('aura-hero-showcase');
+    if (showcase) {
+      showcase.addEventListener('mouseenter', stopAuraSlideshow);
+      showcase.addEventListener('mouseleave', startAuraSlideshow);
+    }
+  });
 </script>
 {% endblock %}

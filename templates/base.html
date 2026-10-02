@@ -85,6 +85,7 @@
     }
 
     /* Bulletproof Solid Navbar: 100% Solid, Zero Glass Effect, Guaranteed Visibility */
+    /* Bulletproof Solid Navbar: 100% Solid, Zero Glass Effect, Guaranteed Visibility */
     .glory-navbar {
       background-color: #382115 !important;
       border-bottom: 1.5px solid #4E2E1D !important;
@@ -96,6 +97,14 @@
       -webkit-backdrop-filter: none !important;
       opacity: 1 !important;
       box-shadow: 0 4px 16px rgba(25, 13, 7, 0.18) !important;
+    }
+    .glory-navbar.glory-navbar-home {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border-bottom: 1px solid #ECE7E1 !important;
+      color: #1A1816 !important;
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.03) !important;
     }
     .glory-search-input {
       background-color: #26140B !important;
@@ -201,52 +210,80 @@
 <body class="bg-[#FDFDFD] text-gray-900 antialiased selection:bg-gray-900 selection:text-white flex flex-col min-h-screen overflow-x-hidden font-sans">
 
   <!-- ========================================================= -->
-  <!-- 1. HEADER (100% IDENTICAL TO REACT COMPONENT)              -->
+  <!-- 1. HEADER (Adaptive: Minimalist Light for Home, Deep Teak for Subpages) -->
   <!-- ========================================================= -->
-  <header class="glory-navbar w-full font-sans" style="background-color: #382115 !important; border-bottom: 1.5px solid #4E2E1D !important;">
+  <header class="glory-navbar w-full font-sans {% if is_home_page %}glory-navbar-home{% endif %}" {% if not is_home_page %}style="background-color: #382115 !important; border-bottom: 1.5px solid #4E2E1D !important;"{% endif %}>
     <div class="glory-container-90 px-2 sm:px-0">
       <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
         
         <!-- Brand Logo (Left) -->
         <div class="flex items-center gap-2 sm:gap-3">
           <a href="{% url 'home' %}" class="flex items-center gap-2.5 cursor-pointer select-none group">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 border border-[#7A533E] group-hover:opacity-95 transition-opacity">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 border {% if is_home_page %}border-gray-200{% else %}border-[#7A533E]{% endif %} group-hover:opacity-95 transition-opacity">
               <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture" class="w-full h-full object-cover" />
             </div>
             <div class="flex flex-col">
-              <span class="font-sans font-black text-lg sm:text-xl text-white tracking-wider leading-none">
+              <span class="font-sans font-black text-lg sm:text-xl {% if is_home_page %}text-gray-950{% else %}text-white{% endif %} tracking-wider leading-none">
                 GLORY
               </span>
-              <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-[#F3D19C] uppercase mt-0.5 leading-tight">
+              <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] {% if is_home_page %}text-[#8C6D58]{% else %}text-[#F3D19C]{% endif %} uppercase mt-0.5 leading-tight">
                 FURNITURE HUB
               </span>
             </div>
           </a>
         </div>
 
+        {% if is_home_page %}
+        <!-- Center Navigation Links: Clean Minimalist Style Inspired by Reference Image -->
+        <nav class="hidden md:flex items-center justify-center gap-6 lg:gap-8 flex-1">
+          <a href="{% url 'catalog' %}" class="text-xs lg:text-[13px] font-semibold text-gray-700 hover:text-black transition-colors">Catalog</a>
+          <a href="{% url 'catalog' %}?category=Cot%20%2F%20Wooden%20Bed" class="text-xs lg:text-[13px] font-semibold text-gray-700 hover:text-black transition-colors">Beds &amp; Cots</a>
+          <a href="{% url 'catalog' %}?category=Sofa%20Set" class="text-xs lg:text-[13px] font-semibold text-gray-700 hover:text-black transition-colors">Sofa Sets</a>
+          <a href="{% url 'catalog' %}?category=Dining%20Table" class="text-xs lg:text-[13px] font-semibold text-gray-700 hover:text-black transition-colors">Dining Suites</a>
+          <a href="{% url 'custom_request' %}" class="text-xs lg:text-[13px] font-semibold text-gray-700 hover:text-black transition-colors">Custom Studio</a>
+        </nav>
+        {% else %}
         <!-- Center: Empty per user request -->
         <div class="flex-1"></div>
+        {% endif %}
 
         <!-- Right Utilities (Search Bar & Profile/Wishlist/Cart Icons) -->
-        <div class="flex items-center gap-2.5 sm:gap-4 flex-shrink-0">
+        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           
           <!-- Pill Search Input -->
-          <form action="{% url 'catalog' %}" method="GET" class="hidden sm:flex items-center rounded-full pl-4 pr-1.5 py-1 glory-search-input transition-all w-52 md:w-60 lg:w-68">
+          <form action="{% url 'catalog' %}" method="GET" class="hidden sm:flex items-center rounded-full pl-4 pr-1.5 py-1 {% if is_home_page %}bg-[#F5F2ED] border border-[#E2DBD1] text-gray-900{% else %}glory-search-input{% endif %} transition-all w-48 md:w-56 lg:w-64">
             <input
               type="text"
               name="search"
-              placeholder="Search for luxury furniture..."
+              placeholder="Search furniture..."
               value="{{ search_query|default:'' }}"
-              class="w-full text-xs text-white placeholder:text-amber-100/70 focus:outline-none bg-transparent"
+              class="w-full text-xs {% if is_home_page %}text-gray-900 placeholder:text-gray-500{% else %}text-white placeholder:text-amber-100/70{% endif %} focus:outline-none bg-transparent"
             />
-            <button type="submit" class="w-7 h-7 rounded-full bg-[#C9963F] hover:bg-[#D4A556] text-gray-950 font-bold flex items-center justify-center transition-colors flex-shrink-0 ml-1 active-tap cursor-pointer" style="background-color: #C9963F !important;" title="Search">
+            <button type="submit" class="w-7 h-7 rounded-full {% if is_home_page %}bg-[#1A1816] hover:bg-black text-white{% else %}bg-[#C9963F] hover:bg-[#D4A556] text-gray-950{% endif %} font-bold flex items-center justify-center transition-colors flex-shrink-0 ml-1 active-tap cursor-pointer" title="Search">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
           </form>
 
+          {% if is_home_page %}
+          <!-- Direct Wishlist Icon Button with Badge (Matching reference heart 12) -->
+          <a href="{% url 'wishlist' %}" class="p-2 rounded-full hover:bg-gray-100 text-gray-800 transition-colors active-tap cursor-pointer relative flex items-center justify-center" title="Wishlist" aria-label="Open wishlist">
+            <svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            {% if WISHLIST_COUNT > 0 %}
+            <span class="absolute -top-0.5 -right-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-red-600 text-white min-w-[16px] text-center shadow-xs">{{ WISHLIST_COUNT }}</span>
+            {% endif %}
+          </a>
+
+          <!-- Direct Cart Icon Button with Badge (Matching reference cart 2) -->
+          <a href="{% url 'cart' %}" class="p-2 rounded-full hover:bg-gray-100 text-gray-800 transition-colors active-tap cursor-pointer relative flex items-center justify-center" title="Cart" aria-label="Open cart">
+            <svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            {% if CART_COUNT > 0 %}
+            <span class="absolute -top-0.5 -right-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#1A1816] text-white min-w-[16px] text-center shadow-xs">{{ CART_COUNT }}</span>
+            {% endif %}
+          </a>
+          {% endif %}
 
           <!-- User Profile Icon -> Direct Link to Customer Profile Page -->
-          <a href="{% url 'profile' %}" class="p-2 rounded-full hover:bg-black/15 text-white transition-colors active-tap cursor-pointer" title="Account Profile" aria-label="Open profile page">
+          <a href="{% url 'profile' %}" class="p-2 rounded-full {% if is_home_page %}hover:bg-gray-100 text-gray-800{% else %}hover:bg-black/15 text-white{% endif %} transition-colors active-tap cursor-pointer" title="Account Profile" aria-label="Open profile page">
             <svg class="w-5 h-5 stroke-[1.75]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           </a>
 
@@ -256,7 +293,7 @@
               id="settings-menu-btn" 
               type="button"
               onclick="toggleSettingsDropdown(event)" 
-              class="p-2 rounded-full hover:bg-black/15 text-white transition-colors active-tap cursor-pointer relative flex items-center justify-center" 
+              class="p-2 rounded-full {% if is_home_page %}hover:bg-gray-100 text-gray-800{% else %}hover:bg-black/15 text-white{% endif %} transition-colors active-tap cursor-pointer relative flex items-center justify-center" 
               title="Settings" 
               aria-label="Open settings menu"
               aria-expanded="false"

@@ -69,7 +69,7 @@ class RoleBasedAccessMiddleware:
 
         # Public storefront pages that visitors can freely browse
         is_public_storefront = (
-            path == '/' or
+            path in ['/', '/home/', '/home'] or
             path.startswith('/catalog') or
             path.startswith('/product/') or
             path.startswith('/search') or
@@ -105,16 +105,12 @@ class RoleBasedAccessMiddleware:
         if not is_authenticated_user and not is_auth_path and not is_static_or_api and not is_public_storefront and not is_payment_path:
             return redirect(f'/register/?next={path}')
 
-        # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO MAIN PAGES
+        # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO HOME (UNLESS EXPLICIT NEXT)
         if path in ['/login/', '/register/']:
-            if role == 'admin':
-                return redirect('admin_dashboard')
-            elif is_authenticated_user:
-                return redirect('home')
-
-        # 4. IF ADMIN VISITS MAIN STOREFRONT ROOT, REDIRECT TO ADMIN CONSOLE
-        if path == '/' and role == 'admin':
-            return redirect('admin_dashboard')
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect('home')
 
         response = self.get_response(request)
         return response

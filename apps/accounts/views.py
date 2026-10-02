@@ -111,11 +111,11 @@ def customer_login_view(request):
                         profile.role = 'admin'
                         profile.save()
 
-                        messages.success(request, "Welcome to the Studio Admin Console!")
+                        messages.success(request, "Welcome back, Master Studio Admin!")
                         next_url = request.GET.get('next')
-                        if next_url and next_url.startswith('/admin/'):
+                        if next_url:
                             return redirect(next_url)
-                        return redirect('admin_dashboard')
+                        return redirect('home')
                     else:
                         sync_user_session(request, user)
                         user_display_name = profile.full_name or user.get_full_name() or user.username

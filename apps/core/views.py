@@ -10,10 +10,6 @@ from apps.bookings.models import Order
 from apps.bookings.services import OrderAccessControl
 
 def home_view(request):
-    # If session role is admin and they navigate to home, redirect to admin dashboard
-    if request.session.get('glory_role') == 'admin':
-        return redirect('admin_dashboard')
-
     try:
         categories = list(Category.objects.all().order_by('order', 'name'))
         featured_products = list(Product.objects.filter(featured=True)[:8])
