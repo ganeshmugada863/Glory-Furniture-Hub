@@ -4,39 +4,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Welcome to Glory Furniture Hub — Modern Interiors</title>
+  <title>Welcome to Glory Furniture Hub</title>
 
-  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <!-- Compiled Tailwind CSS for Glory Furniture Hub -->
   <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}" />
 
   <style>
-    :root {
-      --bg-cream: #FAF7F2;
-      --brand-brown: #9E4B1E;
-      --brand-brown-dark: #833D16;
-      --brand-dark: #1F1A17;
-      --brand-taupe: #8C7A6B;
-      --card-bg: #F4EDE4;
-      --card-border: #E8DEC0;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      background-color: #FAF7F2;
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-cream);
-      color: var(--brand-dark);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
     }
 
-    .font-serif-luxury {
-      font-family: 'Playfair Display', Georgia, serif;
+    /* Full-screen viewport container: fits screen perfectly without scrollbars on desktop */
+    .welcome-viewport {
+      width: 100vw;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #FAF7F2;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Fixed Aspect Ratio Stage: guarantees pixel-perfect hotspot alignment on any resolution */
+    .welcome-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: calc(100vh * (1024 / 682));
+      max-height: calc(100vw * (682 / 1024));
+      aspect-ratio: 1024 / 682;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .welcome-viewport {
+        justify-content: flex-start;
+        padding-top: 12px;
+      }
+      .welcome-stage {
+        max-width: 100vw;
+        max-height: calc(100vw * (682 / 1024));
+      }
     }
 
     .active-tap:active {
@@ -44,321 +75,170 @@
       transition: transform 0.1s ease;
     }
 
-    @keyframes heroFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
     }
 
-    .animate-hero-fade {
-      animation: heroFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .animate-hero-delay-1 {
-      animation: heroFadeIn 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .animate-hero-delay-2 {
-      animation: heroFadeIn 0.7s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .glass-pill {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+    .animate-stage-fade {
+      animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
-<body class="min-h-screen min-h-[100dvh] flex flex-col justify-between selection:bg-[#9E4B1E] selection:text-white">
+<body class="selection:bg-[#9E4B1E] selection:text-white">
 
   <!-- ===================================================================== -->
-  <!-- 1. HEADER (Minimalist Brand Logo + English Language Selector)        -->
+  <!-- FULL SCREEN WELCOME PAGE WITH EXACT REFERENCE IMAGE                   -->
   <!-- ===================================================================== -->
-  <header class="w-full z-20 pt-4 sm:pt-6 pb-2">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
-      
-      <!-- Brand Logo Crest matching Reference Design -->
-      <a href="{% url 'welcome' %}" class="flex items-center gap-2.5 sm:gap-3 group select-none cursor-pointer" aria-label="Glory Furniture Hub">
-        <!-- Minimal House Roof + Armchair Outline Icon -->
-        <div class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center text-[#9E4B1E] group-hover:scale-105 transition-transform duration-300">
-          <svg class="w-8 h-8 sm:w-9 sm:h-9" viewBox="0 0 40 40" fill="none" stroke="currentColor">
-            <!-- Roof peak outline -->
-            <path d="M6 16.5L20 5.5L34 16.5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- House frame side/bottom lines -->
-            <path d="M9 16V31.5C9 32.6 9.9 33.5 11 33.5H29C30.1 33.5 31 32.6 31 31.5V16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Armchair inside the house -->
-            <path d="M14 26.5V20C14 18.9 14.9 18 16 18H24C25.1 18 26 18.9 26 20V26.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Armchair seat cushion -->
-            <path d="M12.5 24.5H27.5C28.3 24.5 29 25.2 29 26V27.5C29 28.3 28.3 29 27.5 29H12.5C11.7 29 11 28.3 11 27.5V26C11 25.2 11.7 24.5 12.5 24.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Chair front legs -->
-            <path d="M15 29V31M25 29V31" stroke-width="2.2" stroke-linecap="round" />
+  <main class="welcome-viewport">
+    
+    <!-- Flash Messages Toast Notification (e.g. Logout, Status) -->
+    {% if messages %}
+    <div class="absolute top-3 z-50 max-w-md px-4 w-full">
+      {% for message in messages %}
+      <div class="p-3 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-lg {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% else %}bg-[#F5EFE6] text-[#7A3E1D] border border-[#E8DEC0]{% endif %} animate-stage-fade">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 shrink-0 text-[#9E4B1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
+          <span>{{ message }}</span>
         </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-700 ml-2">&times;</button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
 
-        <!-- Typography -->
-        <div class="flex flex-col">
-          <span class="font-sans font-black text-lg sm:text-xl text-[#1F1A17] tracking-wider leading-none">
-            GLORY
-          </span>
-          <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.25em] text-[#8C7A6B] uppercase mt-0.5 leading-tight">
-            FURNITURE HUB
-          </span>
-        </div>
+    <!-- Exact Stage Container -->
+    <div class="welcome-stage animate-stage-fade">
+      
+      <!-- 1. The Exact High-Resolution Image -->
+      <img 
+        src="{% static 'images/welcome_exact_hero.jpg' %}" 
+        alt="Welcome to Glory Furniture Hub" 
+        class="w-full h-full object-contain pointer-events-none select-none shadow-2xs"
+        loading="eager"
+      />
+
+      <!-- 2. Interactive Clickable Hotspot over "Get Started →" Button -->
+      <!-- Exact coordinates in 1024x682: left: 5.76%, top: 53.23%, width: 34.47%, height: 8.65% -->
+      <a 
+        href="{% url 'register' %}" 
+        id="welcome-get-started-btn"
+        title="Get Started — Create Account"
+        aria-label="Get Started"
+        style="position: absolute; left: 5.76%; top: 53.23%; width: 34.47%; height: 8.65%; border-radius: 9999px; cursor: pointer; z-index: 30;"
+        class="group active-tap focus:outline-none focus:ring-4 focus:ring-[#9E4B1E]/40 transition-all duration-200"
+      >
+        <!-- Subtle interactive hover glow -->
+        <span class="block w-full h-full rounded-full opacity-0 group-hover:opacity-10 bg-white transition-opacity duration-200"></span>
+        <span class="sr-only">Get Started</span>
       </a>
 
-      <!-- Right Header Actions: English Pill Selector + Quick Login -->
-      <div class="flex items-center gap-2.5 sm:gap-3">
-        
-        <!-- Subtle Direct Sign In Link for Existing Users -->
-        <a 
-          href="{% url 'login' %}" 
-          class="hidden sm:inline-flex items-center px-4 py-2 rounded-full text-xs font-bold text-[#7A3E1D] hover:text-[#9E4B1E] hover:bg-white/80 transition-all duration-200"
+      <!-- 3. Interactive Clickable Hotspot over "English ⌵" Language Pill -->
+      <!-- Exact coordinates in 1024x682: left: 84.77%, top: 3.52%, width: 10.84%, height: 5.43% -->
+      <div 
+        style="position: absolute; left: 84.77%; top: 3.52%; width: 10.84%; height: 5.43%; z-index: 30;" 
+        id="lang-dropdown-wrapper"
+      >
+        <button 
+          type="button" 
+          onclick="toggleLanguageMenu(event)"
+          id="welcome-lang-btn"
+          title="Select Language"
+          aria-label="Language Selector"
+          aria-expanded="false"
+          aria-haspopup="true"
+          class="w-full h-full rounded-full cursor-pointer hover:bg-black/5 active-tap focus:outline-none focus:ring-2 focus:ring-[#9E4B1E]/40 transition-colors"
         >
-          Sign In
-        </a>
+          <span class="sr-only">Language: English</span>
+        </button>
 
-        <!-- English Language Dropdown Pill (Exact to Reference Mockup) -->
-        <div class="relative" id="lang-dropdown-wrapper">
-          <button 
-            type="button" 
-            onclick="toggleLanguageMenu()"
-            class="glass-pill flex items-center gap-2 px-3.5 py-1.5 sm:py-2 rounded-full border border-[#E8DEC0] shadow-2xs hover:shadow-xs hover:border-[#9E4B1E]/40 text-xs font-semibold text-[#2A231E] transition-all cursor-pointer active-tap"
-            id="lang-btn"
-            aria-expanded="false"
-            aria-haspopup="true"
-          >
-            <!-- Globe Icon -->
-            <svg class="w-3.5 h-3.5 text-[#2A231E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-            </svg>
-            <span id="current-lang-text">English</span>
-            <!-- Down Chevron -->
-            <svg class="w-3 h-3 text-[#2A231E] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
+        <!-- Dropdown Menu -->
+        <div 
+          id="lang-menu" 
+          class="hidden absolute right-0 mt-2 w-36 bg-white rounded-2xl shadow-xl border border-[#E8DEC0] py-1.5 z-50 text-xs font-medium font-sans"
+        >
+          <button type="button" onclick="selectLanguage('English')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#1F1A17] font-bold flex items-center justify-between">
+            <span>English</span>
+            <span class="text-[#9E4B1E] font-bold">&check;</span>
           </button>
-
-          <!-- Language Dropdown Menu -->
-          <div 
-            id="lang-menu" 
-            class="hidden absolute right-0 mt-2 w-36 bg-white rounded-2xl shadow-xl border border-[#E8DEC0] py-1.5 z-50 text-xs font-medium font-sans"
-          >
-            <button type="button" onclick="selectLanguage('English')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#1F1A17] font-bold flex items-center justify-between">
-              <span>English</span>
-              <span class="text-[#9E4B1E]">&check;</span>
-            </button>
-            <button type="button" onclick="selectLanguage('Telugu (తెలుగు)')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#2A231E]">
-              <span>తెలుగు</span>
-            </button>
-            <button type="button" onclick="selectLanguage('Hindi (हिंदी)')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#2A231E]">
-              <span>हिंदी</span>
-            </button>
-          </div>
+          <button type="button" onclick="selectLanguage('Telugu')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#2A231E]">
+            <span>తెలుగు</span>
+          </button>
+          <button type="button" onclick="selectLanguage('Hindi')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#2A231E]">
+            <span>हिंदी</span>
+          </button>
         </div>
-
       </div>
 
+      <!-- 4. Interactive Clickable Hotspot over Top-Left Logo to Refresh/Home -->
+      <a 
+        href="{% url 'welcome' %}" 
+        style="position: absolute; left: 4%; top: 3%; width: 22%; height: 10%; border-radius: 12px; cursor: pointer; z-index: 25;"
+        title="Glory Furniture Hub"
+        aria-label="Glory Furniture Hub"
+      >
+        <span class="sr-only">Glory Furniture Hub</span>
+      </a>
+
     </div>
-  </header>
 
+    <!-- Mobile-Optimized Action Bar (Visible on mobile screens for effortless tapping) -->
+    <div class="sm:hidden w-full px-6 pt-3 pb-6 flex flex-col items-center gap-2.5 z-30">
+      <a 
+        href="{% url 'register' %}" 
+        class="w-full max-w-sm py-3.5 px-6 rounded-2xl bg-[#9E4B1E] hover:bg-[#833D16] text-white font-bold text-base shadow-md active-tap flex items-center justify-center gap-2.5 text-center transition-all duration-200"
+      >
+        <span>Get Started</span>
+        <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
 
-  <!-- ===================================================================== -->
-  <!-- 2. SYSTEM MESSAGES / ALERTS (Logout, Registration Status)              -->
-  <!-- ===================================================================== -->
-  {% if messages %}
-  <div class="max-w-xl mx-auto px-5 pt-2 z-20 w-full">
-    {% for message in messages %}
-    <div class="p-3.5 rounded-2xl text-xs font-semibold flex items-center gap-2.5 shadow-sm {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% else %}bg-[#F5EFE6] text-[#7A3E1D] border border-[#E8DEC0]{% endif %} animate-hero-fade">
-      <svg class="w-4 h-4 shrink-0 text-[#9E4B1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>{{ message }}</span>
+      <p class="text-xs text-[#8C7A6B] font-medium text-center">
+        Already registered? 
+        <a href="{% url 'login' %}" class="font-bold text-[#9E4B1E] hover:underline ml-1">
+          Log in &rarr;
+        </a>
+      </p>
     </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 
-
-  <!-- ===================================================================== -->
-  <!-- 3. HERO CONTENT: SPLIT DESKTOP / STACKED MOBILE                       -->
-  <!-- ===================================================================== -->
-  <main class="w-full flex-1 flex flex-col justify-center py-4 sm:py-8 lg:py-10 z-10">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-        
-        <!-- ================================================================ -->
-        <!-- MOBILE ORDER 2 / DESKTOP ORDER 1: TEXT CONTENT & GET STARTED CTA -->
-        <!-- ================================================================ -->
-        <div class="order-2 lg:order-1 lg:col-span-6 flex flex-col justify-center space-y-4 sm:space-y-6 animate-hero-delay-1">
-          
-          <!-- Category / Pre-heading -->
-          <div>
-            <span class="text-xs sm:text-[13px] font-bold tracking-[0.25em] text-[#8C7A6B] uppercase block">
-              WELCOME TO
-            </span>
-
-            <!-- Main Luxury Display Headline -->
-            <h1 class="font-serif-luxury text-4xl sm:text-5xl lg:text-[56px] xl:text-[62px] leading-[1.08] tracking-tight mt-1.5 sm:mt-2">
-              <span class="text-[#1F1A17] font-bold block">Glory</span>
-              <span class="text-[#9E4B1E] font-bold block mt-1">Furniture Hub</span>
-            </h1>
-
-            <!-- Accent Dash & Dot Indicator matching Reference -->
-            <div class="flex items-center gap-2 mt-3 sm:mt-4 mb-2">
-              <span class="w-10 sm:w-12 h-1.5 rounded-full bg-[#9E4B1E]"></span>
-              <span class="w-2 sm:w-2.5 h-1.5 rounded-full bg-[#9E4B1E]/40"></span>
-            </div>
-          </div>
-
-          <!-- Primary CTA Button: Get Started → Directly to Register Page -->
-          <div class="pt-2 sm:pt-3">
-            <a 
-              href="{% url 'register' %}" 
-              id="welcome-get-started-btn"
-              class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 rounded-[18px] sm:rounded-2xl bg-[#9E4B1E] hover:bg-[#833D16] text-white font-bold text-base sm:text-lg shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active-tap transition-all duration-300 group cursor-pointer"
-              aria-label="Get Started with Glory Furniture Hub registration"
-            >
-              <span>Get Started</span>
-              <svg class="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-              </svg>
-            </a>
-
-            <!-- Subtle secondary log in option for returning customers -->
-            <p class="text-xs text-[#8C7A6B] mt-3 font-normal">
-              Already have an account? 
-              <a href="{% url 'login' %}" class="font-bold text-[#9E4B1E] hover:text-[#833D16] hover:underline transition-colors ml-0.5">
-                Log in &rarr;
-              </a>
-            </p>
-          </div>
-
-          <!-- 3 Minimalist Supporting Feature Highlights -->
-          <div class="grid grid-cols-3 gap-3 sm:gap-6 pt-5 sm:pt-7 max-w-md">
-            
-            <!-- Highlight 1: Modern Designs -->
-            <div class="flex flex-col items-center sm:items-start text-center sm:text-left group">
-              <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#F4EDE4] border border-[#E8DEC0]/80 flex items-center justify-center text-[#7A3E1D] shadow-2xs group-hover:scale-105 group-hover:border-[#9E4B1E]/40 transition-all duration-300">
-                <!-- Armchair Line Icon -->
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 19v2m12-2v2M4 11V7a3 3 0 013-3h10a3 3 0 013 3v4M4 11h16m-16 0v5a2 2 0 002 2h12a2 2 0 002-2v-5M7 11V8a1 1 0 011-1h8a1 1 0 011 1v3" />
-                </svg>
-              </div>
-              <span class="text-xs sm:text-[13px] font-bold text-[#2A231E] mt-2.5 leading-snug">
-                Modern Designs
-              </span>
-            </div>
-
-            <!-- Highlight 2: Trusted Quality -->
-            <div class="flex flex-col items-center sm:items-start text-center sm:text-left group">
-              <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#F4EDE4] border border-[#E8DEC0]/80 flex items-center justify-center text-[#7A3E1D] shadow-2xs group-hover:scale-105 group-hover:border-[#9E4B1E]/40 transition-all duration-300">
-                <!-- Shield Check Line Icon -->
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <span class="text-xs sm:text-[13px] font-bold text-[#2A231E] mt-2.5 leading-snug">
-                Trusted Quality
-              </span>
-            </div>
-
-            <!-- Highlight 3: Safe Delivery -->
-            <div class="flex flex-col items-center sm:items-start text-center sm:text-left group">
-              <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#F4EDE4] border border-[#E8DEC0]/80 flex items-center justify-center text-[#7A3E1D] shadow-2xs group-hover:scale-105 group-hover:border-[#9E4B1E]/40 transition-all duration-300">
-                <!-- Delivery Truck Line Icon -->
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a2 2 0 11-4 0m4 0a2 2 0 104 0m-4 0h5m0 0a2 2 0 104 0m-4 0v-4m0 0h3.5a1.5 1.5 0 001.2-.6l2.1-2.8A1.5 1.5 0 0021 7.6V7a1 1 0 00-1-1h-4" />
-                </svg>
-              </div>
-              <span class="text-xs sm:text-[13px] font-bold text-[#2A231E] mt-2.5 leading-snug">
-                Safe Delivery
-              </span>
-            </div>
-
-          </div>
-
-        </div>
-
-        <!-- ================================================================ -->
-        <!-- MOBILE ORDER 1 / DESKTOP ORDER 2: LARGE FURNITURE HERO VISUAL   -->
-        <!-- ================================================================ -->
-        <div class="order-1 lg:order-2 lg:col-span-6 relative flex justify-center animate-hero-delay-2">
-          
-          <!-- Outer Shadow & Ambient Glow Frame -->
-          <div class="relative w-full max-w-xl rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-xl border border-[#E8DEC0] bg-white group">
-            
-            <!-- Sunlit Living Room Visual matching Mockup exactly -->
-            <img 
-              src="{% static 'images/welcome_living_room.jpg' %}" 
-              alt="Glory Furniture Hub Modern Luxury Living Room" 
-              class="w-full h-auto aspect-[4/3] sm:aspect-[1.12/1] object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
-              loading="eager"
-            />
-
-            <!-- Subtle left gradient overlay on desktop for organic blending -->
-            <div class="absolute inset-0 bg-gradient-to-r from-[#FAF7F2]/30 via-transparent to-transparent pointer-events-none hidden lg:block"></div>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
   </main>
 
-
-  <!-- ===================================================================== -->
-  <!-- 4. BOTTOM CAROUSEL DOTS & SUBTLE ORGANIC WAVE DECORATION              -->
-  <!-- ===================================================================== -->
-  <footer class="w-full z-10 pt-2 pb-5 sm:pb-8 flex flex-col items-center">
-    
-    <!-- Carousel Dots matching Reference Design (Active Elongated Brown Pill + Inactive Dots) -->
-    <div class="flex items-center justify-center gap-2 mb-2 select-none" aria-hidden="true">
-      <span class="w-5 sm:w-6 h-1.5 rounded-full bg-[#9E4B1E] shadow-2xs"></span>
-      <span class="w-1.5 h-1.5 rounded-full bg-[#D4C3B3]"></span>
-      <span class="w-1.5 h-1.5 rounded-full bg-[#D4C3B3]"></span>
-    </div>
-
-    <!-- Small Copyright & Trust Stamp -->
-    <p class="text-[10.5px] sm:text-xs text-[#8C7A6B]/80 font-medium">
-      &copy; 2026 Glory Furniture Hub. Handcrafted Solid Wood Collections.
-    </p>
-  </footer>
-
-  <!-- ===================================================================== -->
-  <!-- 5. INTERACTIVE CLIENT SCRIPTS (Language toggle & smooth transitions)  -->
-  <!-- ===================================================================== -->
+  <!-- Interactive Scripts -->
   <script>
-    function toggleLanguageMenu() {
+    function toggleLanguageMenu(e) {
+      if (e) e.stopPropagation();
       const menu = document.getElementById('lang-menu');
-      const btn = document.getElementById('lang-btn');
-      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      const btn = document.getElementById('welcome-lang-btn');
       if (menu) {
+        const isHidden = menu.classList.contains('hidden');
         menu.classList.toggle('hidden');
-        btn.setAttribute('aria-expanded', !isExpanded);
+        if (btn) btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
       }
     }
 
     function selectLanguage(lang) {
-      const label = document.getElementById('current-lang-text');
-      if (label) {
-        label.innerText = lang.split(' ')[0];
-      }
-      toggleLanguageMenu();
+      const menu = document.getElementById('lang-menu');
+      if (menu) menu.classList.add('hidden');
+      const btn = document.getElementById('welcome-lang-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
     }
 
-    // Close language dropdown if clicked outside
+    // Close language menu on outside click
     document.addEventListener('click', function(e) {
       const wrapper = document.getElementById('lang-dropdown-wrapper');
       const menu = document.getElementById('lang-menu');
       if (wrapper && !wrapper.contains(e.target) && menu && !menu.classList.contains('hidden')) {
         menu.classList.add('hidden');
-        const btn = document.getElementById('lang-btn');
+        const btn = document.getElementById('welcome-lang-btn');
         if (btn) btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Keyboard support: Enter / Space triggers Get Started
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'welcome-get-started-btn') {
+        window.location.href = "{% url 'register' %}";
       }
     });
   </script>
