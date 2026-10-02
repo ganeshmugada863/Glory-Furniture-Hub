@@ -47,6 +47,8 @@ class RoleBasedAccessMiddleware:
         is_auth_path = path in [
             '/register/',
             '/login/',
+            '/accounts/login/',
+            '/accounts/register/',
             '/accounts/google-auth/',
             '/accounts/supabase-callback/',
             '/forgot-password/',

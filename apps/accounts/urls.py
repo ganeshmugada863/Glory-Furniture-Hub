@@ -5,6 +5,8 @@ urlpatterns = [
     # Customer Authentication
     path('login/', views.customer_login_view, name='login'),
     path('register/', views.customer_register_view, name='register'),
+    path('accounts/login/', views.customer_login_view, name='accounts_login'),
+    path('accounts/register/', views.customer_register_view, name='accounts_register'),
     path('accounts/google-auth/', views.google_auth_view, name='google_auth'),
     path('accounts/supabase-callback/', views.supabase_callback_view, name='supabase_callback'),
     path('logout/', views.customer_logout_view, name='logout'),
@@ -46,6 +48,7 @@ urlpatterns = [
     path('admin-portal/payments/', views.admin_payments_view, name='admin_portal_payments'),
     path('admin/reports/', views.admin_reports_view, name='admin_reports'),
     path('admin/settings/', views.admin_settings_view, name='admin_settings'),
+    path('admin/page-cms/', views.admin_page_cms_view, name='admin_page_cms'),
     
     # Admin Alias for Backward Compatibility
     path('admin-portal/', views.admin_dashboard_view, name='admin_portal'),

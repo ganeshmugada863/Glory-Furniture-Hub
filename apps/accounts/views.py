@@ -133,7 +133,9 @@ def customer_login_view(request):
                 else:
                     error = "Invalid email or password. Please verify your credentials or create a new account."
 
-    return render(request, 'accounts/login.html', {'error': error})
+    from apps.core.models import PageCMSContent
+    cms_obj = PageCMSContent.get_cms()
+    return render(request, 'accounts/login.html', {'error': error, 'cms': cms_obj})
 
 
 def customer_register_view(request):
@@ -180,7 +182,10 @@ def customer_register_view(request):
             messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
             return redirect('home')
 
-    return render(request, 'accounts/register.html', {'error': error})
+    from apps.core.models import PageCMSContent
+    cms_obj = PageCMSContent.get_cms()
+    return render(request, 'accounts/register.html', {'error': error, 'cms': cms_obj})
+
 
 
 @csrf_exempt
@@ -1508,3 +1513,96 @@ def admin_settings_view(request):
         'settings': settings_obj,
     }
     return render(request, 'admin_portal/admin_settings.html', context)
+
+
+def admin_page_cms_view(request):
+    """
+    Dedicated Page CMS Management in Admin Sidebar:
+    Allows studio administrators to edit lyrics/text, titles, subtitles,
+    badges, and change/upload hero images for:
+    1. Welcome Page
+    2. Sign In / Login Page
+    3. Create Customer Account / Register Page
+    """
+    is_admin = request.session.get('glory_role') == 'admin' or (
+        request.user.is_authenticated and (
+            request.user.is_staff or 
+            request.user.is_superuser or 
+            getattr(getattr(request.user, 'profile', None), 'role', '') == 'admin'
+        )
+    )
+    if not is_admin:
+        messages.error(request, "Access Denied: Administrator privileges required to access Page CMS.")
+        return redirect('admin_login')
+
+    from apps.core.models import PageCMSContent
+    cms_obj = PageCMSContent.get_cms()
+
+    if request.method == 'POST':
+        # --- Welcome Page Fields ---
+        cms_obj.welcome_eyebrow = request.POST.get('welcome_eyebrow', cms_obj.welcome_eyebrow).strip()
+        cms_obj.welcome_title_main = request.POST.get('welcome_title_main', cms_obj.welcome_title_main).strip()
+        cms_obj.welcome_title_highlight = request.POST.get('welcome_title_highlight', cms_obj.welcome_title_highlight).strip()
+        cms_obj.welcome_cta_text = request.POST.get('welcome_cta_text', cms_obj.welcome_cta_text).strip()
+        cms_obj.welcome_badge1_title = request.POST.get('welcome_badge1_title', cms_obj.welcome_badge1_title).strip()
+        cms_obj.welcome_badge2_title = request.POST.get('welcome_badge2_title', cms_obj.welcome_badge2_title).strip()
+        cms_obj.welcome_badge3_title = request.POST.get('welcome_badge3_title', cms_obj.welcome_badge3_title).strip()
+        if request.POST.get('welcome_bg_image_url') is not None:
+            cms_obj.welcome_bg_image_url = request.POST.get('welcome_bg_image_url', '').strip()
+        if 'welcome_bg_image' in request.FILES:
+            cms_obj.welcome_bg_image = request.FILES['welcome_bg_image']
+
+        # --- Login Page Fields ---
+        cms_obj.login_hero_title = request.POST.get('login_hero_title', cms_obj.login_hero_title).strip()
+        cms_obj.login_hero_highlight = request.POST.get('login_hero_highlight', cms_obj.login_hero_highlight).strip()
+        cms_obj.login_card_subtitle = request.POST.get('login_card_subtitle', cms_obj.login_card_subtitle).strip()
+        cms_obj.login_card_title = request.POST.get('login_card_title', cms_obj.login_card_title).strip()
+        cms_obj.login_card_description = request.POST.get('login_card_description', cms_obj.login_card_description).strip()
+        cms_obj.login_badge1_title = request.POST.get('login_badge1_title', cms_obj.login_badge1_title).strip()
+        cms_obj.login_badge1_desc = request.POST.get('login_badge1_desc', cms_obj.login_badge1_desc).strip()
+        cms_obj.login_badge2_title = request.POST.get('login_badge2_title', cms_obj.login_badge2_title).strip()
+        cms_obj.login_badge2_desc = request.POST.get('login_badge2_desc', cms_obj.login_badge2_desc).strip()
+        cms_obj.login_badge3_title = request.POST.get('login_badge3_title', cms_obj.login_badge3_title).strip()
+        cms_obj.login_badge3_desc = request.POST.get('login_badge3_desc', cms_obj.login_badge3_desc).strip()
+        if request.POST.get('login_slide1_image_url') is not None:
+            cms_obj.login_slide1_image_url = request.POST.get('login_slide1_image_url', '').strip()
+        if request.POST.get('login_slide2_image_url') is not None:
+            cms_obj.login_slide2_image_url = request.POST.get('login_slide2_image_url', '').strip()
+        if request.POST.get('login_slide3_image_url') is not None:
+            cms_obj.login_slide3_image_url = request.POST.get('login_slide3_image_url', '').strip()
+        if 'login_slide1_image' in request.FILES:
+            cms_obj.login_slide1_image = request.FILES['login_slide1_image']
+
+        # --- Register Page Fields ---
+        cms_obj.register_hero_badge = request.POST.get('register_hero_badge', cms_obj.register_hero_badge).strip()
+        cms_obj.register_hero_title = request.POST.get('register_hero_title', cms_obj.register_hero_title).strip()
+        cms_obj.register_hero_desc = request.POST.get('register_hero_desc', cms_obj.register_hero_desc).strip()
+        cms_obj.register_card_subtitle = request.POST.get('register_card_subtitle', cms_obj.register_card_subtitle).strip()
+        cms_obj.register_card_title = request.POST.get('register_card_title', cms_obj.register_card_title).strip()
+        cms_obj.register_card_description = request.POST.get('register_card_description', cms_obj.register_card_description).strip()
+        cms_obj.register_badge1_title = request.POST.get('register_badge1_title', cms_obj.register_badge1_title).strip()
+        cms_obj.register_badge1_desc = request.POST.get('register_badge1_desc', cms_obj.register_badge1_desc).strip()
+        cms_obj.register_badge2_title = request.POST.get('register_badge2_title', cms_obj.register_badge2_title).strip()
+        cms_obj.register_badge2_desc = request.POST.get('register_badge2_desc', cms_obj.register_badge2_desc).strip()
+        cms_obj.register_badge3_title = request.POST.get('register_badge3_title', cms_obj.register_badge3_title).strip()
+        cms_obj.register_badge3_desc = request.POST.get('register_badge3_desc', cms_obj.register_badge3_desc).strip()
+        if request.POST.get('register_slide1_image_url') is not None:
+            cms_obj.register_slide1_image_url = request.POST.get('register_slide1_image_url', '').strip()
+        if request.POST.get('register_slide2_image_url') is not None:
+            cms_obj.register_slide2_image_url = request.POST.get('register_slide2_image_url', '').strip()
+        if request.POST.get('register_slide3_image_url') is not None:
+            cms_obj.register_slide3_image_url = request.POST.get('register_slide3_image_url', '').strip()
+        if 'register_slide1_image' in request.FILES:
+            cms_obj.register_slide1_image = request.FILES['register_slide1_image']
+
+        cms_obj.save()
+        messages.success(request, "Page CMS content updated successfully! Changes are live across Welcome, Login, and Register pages.")
+        return redirect('admin_page_cms')
+
+    context = {
+        'page_title': 'Page Content CMS (Auth & Welcome)',
+        'active_nav': 'page_cms',
+        'cms': cms_obj,
+    }
+    return render(request, 'admin_portal/admin_page_cms.html', context)
+

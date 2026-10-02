@@ -1,0 +1,388 @@
+{% extends 'admin_portal/admin_base.html' %}
+{% load static %}
+
+{% block title %}Page Content CMS (Auth & Welcome) — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-5xl">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-gray-200">
+    <div>
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Auth &amp; Welcome Pages CMS</h1>
+      <p class="text-xs text-gray-500 mt-0.5">Edit texts, titles, descriptions, and hero images across the Welcome, Sign In, and Register pages.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'welcome' %}" target="_blank" class="px-3 py-1.5 rounded-xl bg-white border border-gray-200 hover:border-gray-300 text-gray-700 text-xs font-bold transition-all shadow-2xs">
+        👁️ Preview Welcome
+      </a>
+      <a href="{% url 'login' %}" target="_blank" class="px-3 py-1.5 rounded-xl bg-white border border-gray-200 hover:border-gray-300 text-gray-700 text-xs font-bold transition-all shadow-2xs">
+        👁️ Preview Sign In
+      </a>
+      <a href="{% url 'register' %}" target="_blank" class="px-3 py-1.5 rounded-xl bg-white border border-gray-200 hover:border-gray-300 text-gray-700 text-xs font-bold transition-all shadow-2xs">
+        👁️ Preview Register
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages Alert -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% else %}bg-green-50 border border-green-200 text-green-800{% endif %} rounded-xl text-xs flex items-center justify-between shadow-2xs">
+    <div class="flex items-center gap-2">
+      <span class="text-base">{% if message.tags == 'error' %}⚠️{% else %}✅{% endif %}</span>
+      <span class="font-semibold">{{ message }}</span>
+    </div>
+    <button type="button" onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-700 font-bold">&times;</button>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Tab Selector -->
+  <div class="flex items-center gap-2 border-b border-gray-200 pb-2">
+    <button type="button" onclick="switchCmsTab('welcome')" id="tab-btn-welcome" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#5C3D2E] text-white shadow-xs">
+      🌟 Welcome Screen
+    </button>
+    <button type="button" onclick="switchCmsTab('login')" id="tab-btn-login" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700">
+      🔑 Sign In / Login Page
+    </button>
+    <button type="button" onclick="switchCmsTab('register')" id="tab-btn-register" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700">
+      📝 Register Customer Page
+    </button>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- ============================================================= -->
+    <!-- 1. WELCOME PAGE SECTION                                       -->
+    <!-- ============================================================= -->
+    <div id="section-welcome" class="cms-section space-y-5">
+      
+      <!-- Welcome Hero Image -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+          <span class="text-lg">🖼️</span>
+          <div>
+            <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Welcome Page Background Image</h2>
+            <p class="text-[11px] text-gray-500">The high-resolution living room hero image on the entrance screen.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Upload New Image File</label>
+            <input type="file" name="welcome_bg_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            
+            <div class="mt-3">
+              <label class="block text-xs font-bold text-gray-700 mb-1.5">OR Image URL Fallback</label>
+              <input type="text" name="welcome_bg_image_url" value="{{ cms.welcome_bg_image_url }}" placeholder="https://... or /static/images/..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Current Active Image</span>
+            <img src="{{ cms.welcome_image }}" alt="Welcome Preview" class="h-28 w-auto rounded-lg object-cover shadow-sm" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Welcome Page Lyrics / Copy -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+          <span class="text-lg">✍️</span>
+          <div>
+            <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Welcome Page Text &amp; Headline</h2>
+            <p class="text-[11px] text-gray-500">Eyebrow banner, main title, and call to action.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Eyebrow Subtitle</label>
+            <input type="text" name="welcome_eyebrow" value="{{ cms.welcome_eyebrow }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">CTA Button Text</label>
+            <input type="text" name="welcome_cta_text" value="{{ cms.welcome_cta_text }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Main Headline (Line 1)</label>
+            <input type="text" name="welcome_title_main" value="{{ cms.welcome_title_main }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Headline Highlight (Line 2 - Terracotta)</label>
+            <input type="text" name="welcome_title_highlight" value="{{ cms.welcome_title_highlight }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+        </div>
+
+        <!-- 3 Feature Badges -->
+        <div class="pt-3 border-t border-gray-100">
+          <label class="block text-xs font-black uppercase text-gray-800 tracking-wider mb-2">3 Trust Highlight Badges</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Badge 1 (Armchair)</label>
+              <input type="text" name="welcome_badge1_title" value="{{ cms.welcome_badge1_title }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Badge 2 (Quality Shield)</label>
+              <input type="text" name="welcome_badge2_title" value="{{ cms.welcome_badge2_title }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">Badge 3 (Safe Delivery)</label>
+              <input type="text" name="welcome_badge3_title" value="{{ cms.welcome_badge3_title }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 2. SIGN IN / LOGIN PAGE SECTION                               -->
+    <!-- ============================================================= -->
+    <div id="section-login" class="cms-section hidden space-y-5">
+      
+      <!-- Login Left Hero Images & Carousel -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+          <span class="text-lg">🛋️</span>
+          <div>
+            <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Sign In Showcase Images (Carousel)</h2>
+            <p class="text-[11px] text-gray-500">Images displayed on the left architectural showcase panel.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Upload Slide 1 Image</label>
+            <input type="file" name="login_slide1_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            
+            <div class="mt-3">
+              <label class="block text-xs font-bold text-gray-700 mb-1.5">Slide 1 Image URL</label>
+              <input type="text" name="login_slide1_image_url" value="{{ cms.login_slide1_image_url }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+            </div>
+          </div>
+          <div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Current Slide 1 Preview</span>
+            <img src="{{ cms.login_image1 }}" alt="Login Slide 1" class="h-28 w-auto rounded-lg object-cover shadow-sm" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Slide 2 Image URL (Dining Table)</label>
+            <input type="text" name="login_slide2_image_url" value="{{ cms.login_slide2_image_url }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Slide 3 Image URL (Daybed Lounger)</label>
+            <input type="text" name="login_slide3_image_url" value="{{ cms.login_slide3_image_url }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Texts & Lyrics -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+          <span class="text-lg">✍️</span>
+          <div>
+            <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Sign In Texts &amp; Lyrics</h2>
+            <p class="text-[11px] text-gray-500">Titles, headings, and descriptions on the login screen.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Left Hero Headline</label>
+            <input type="text" name="login_hero_title" value="{{ cms.login_hero_title }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Left Hero Headline Highlight (Italic)</label>
+            <input type="text" name="login_hero_highlight" value="{{ cms.login_hero_highlight }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Form Card Subtitle</label>
+            <input type="text" name="login_card_subtitle" value="{{ cms.login_card_subtitle }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Form Card Title</label>
+            <input type="text" name="login_card_title" value="{{ cms.login_card_title }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Form Card Description</label>
+            <textarea name="login_card_description" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold">{{ cms.login_card_description }}</textarea>
+          </div>
+        </div>
+
+        <!-- 3 Milestone Cards -->
+        <div class="pt-3 border-t border-gray-100">
+          <label class="block text-xs font-black uppercase text-gray-800 tracking-wider mb-2">3 Showcase Cards (Left Column)</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3 bg-gray-50 rounded-xl space-y-2">
+              <label class="block text-[11px] font-bold text-gray-700">Card 1 Title</label>
+              <input type="text" name="login_badge1_title" value="{{ cms.login_badge1_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              <label class="block text-[10px] text-gray-500">Card 1 Description</label>
+              <textarea name="login_badge1_desc" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs">{{ cms.login_badge1_desc }}</textarea>
+            </div>
+            <div class="p-3 bg-gray-50 rounded-xl space-y-2">
+              <label class="block text-[11px] font-bold text-gray-700">Card 2 Title</label>
+              <input type="text" name="login_badge2_title" value="{{ cms.login_badge2_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              <label class="block text-[10px] text-gray-500">Card 2 Description</label>
+              <textarea name="login_badge2_desc" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs">{{ cms.login_badge2_desc }}</textarea>
+            </div>
+            <div class="p-3 bg-gray-50 rounded-xl space-y-2">
+              <label class="block text-[11px] font-bold text-gray-700">Card 3 Title</label>
+              <input type="text" name="login_badge3_title" value="{{ cms.login_badge3_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              <label class="block text-[10px] text-gray-500">Card 3 Description</label>
+              <textarea name="login_badge3_desc" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs">{{ cms.login_badge3_desc }}</textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 3. REGISTER PAGE SECTION                                      -->
+    <!-- ============================================================= -->
+    <div id="section-register" class="cms-section hidden space-y-5">
+      
+      <!-- Register Left Hero Images & Carousel -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+          <span class="text-lg">🛏️</span>
+          <div>
+            <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Register Showcase Images (Carousel)</h2>
+            <p class="text-[11px] text-gray-500">Images displayed on the left architectural showcase panel of the Register screen.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Upload Slide 1 Image</label>
+            <input type="file" name="register_slide1_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            
+            <div class="mt-3">
+              <label class="block text-xs font-bold text-gray-700 mb-1.5">Slide 1 Image URL</label>
+              <input type="text" name="register_slide1_image_url" value="{{ cms.register_slide1_image_url }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+            </div>
+          </div>
+          <div class="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Current Slide 1 Preview</span>
+            <img src="{{ cms.register_image1 }}" alt="Register Slide 1" class="h-28 w-auto rounded-lg object-cover shadow-sm" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Slide 2 Image URL (Dining Table)</label>
+            <input type="text" name="register_slide2_image_url" value="{{ cms.register_slide2_image_url }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Slide 3 Image URL (Daybed Lounger)</label>
+            <input type="text" name="register_slide3_image_url" value="{{ cms.register_slide3_image_url }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Register Texts & Lyrics -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-gray-100">
+          <span class="text-lg">✍️</span>
+          <div>
+            <h2 class="text-xs font-black uppercase text-gray-900 tracking-wider">Register Texts &amp; Lyrics</h2>
+            <p class="text-[11px] text-gray-500">Headlines, taglines, and descriptions on the registration screen.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Left Hero Badge</label>
+            <input type="text" name="register_hero_badge" value="{{ cms.register_hero_badge }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Left Hero Title</label>
+            <input type="text" name="register_hero_title" value="{{ cms.register_hero_title }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Left Hero Description</label>
+            <textarea name="register_hero_desc" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold">{{ cms.register_hero_desc }}</textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Form Card Subtitle</label>
+            <input type="text" name="register_card_subtitle" value="{{ cms.register_card_subtitle }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Form Card Title</label>
+            <input type="text" name="register_card_title" value="{{ cms.register_card_title }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Form Card Description</label>
+            <textarea name="register_card_description" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold">{{ cms.register_card_description }}</textarea>
+          </div>
+        </div>
+
+        <!-- 3 Step Cards -->
+        <div class="pt-3 border-t border-gray-100">
+          <label class="block text-xs font-black uppercase text-gray-800 tracking-wider mb-2">3 Step Cards (Left Column)</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3 bg-gray-50 rounded-xl space-y-2">
+              <label class="block text-[11px] font-bold text-gray-700">Step 1 Title</label>
+              <input type="text" name="register_badge1_title" value="{{ cms.register_badge1_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              <label class="block text-[10px] text-gray-500">Step 1 Description</label>
+              <textarea name="register_badge1_desc" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs">{{ cms.register_badge1_desc }}</textarea>
+            </div>
+            <div class="p-3 bg-gray-50 rounded-xl space-y-2">
+              <label class="block text-[11px] font-bold text-gray-700">Step 2 Title</label>
+              <input type="text" name="register_badge2_title" value="{{ cms.register_badge2_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              <label class="block text-[10px] text-gray-500">Step 2 Description</label>
+              <textarea name="register_badge2_desc" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs">{{ cms.register_badge2_desc }}</textarea>
+            </div>
+            <div class="p-3 bg-gray-50 rounded-xl space-y-2">
+              <label class="block text-[11px] font-bold text-gray-700">Step 3 Title</label>
+              <input type="text" name="register_badge3_title" value="{{ cms.register_badge3_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              <label class="block text-[10px] text-gray-500">Step 3 Description</label>
+              <textarea name="register_badge3_desc" rows="2" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs">{{ cms.register_badge3_desc }}</textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Save Button Bar -->
+    <div class="sticky bottom-4 z-30 bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/90 shadow-lg flex items-center justify-between">
+      <div class="flex items-center gap-2 text-xs text-gray-500">
+        <span>💾</span>
+        <span>Changes will immediately update the live public pages.</span>
+      </div>
+      <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-[#432A1E] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer">
+        Save CMS Changes
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+  function switchCmsTab(tab) {
+    document.querySelectorAll('.cms-section').forEach(sec => sec.classList.add('hidden'));
+    document.getElementById('section-' + tab).classList.remove('hidden');
+
+    ['welcome', 'login', 'register'].forEach(t => {
+      const btn = document.getElementById('tab-btn-' + t);
+      if (t === tab) {
+        btn.classList.add('bg-[#5C3D2E]', 'text-white', 'shadow-xs');
+        btn.classList.remove('bg-gray-100', 'text-gray-700');
+      } else {
+        btn.classList.remove('bg-[#5C3D2E]', 'text-white', 'shadow-xs');
+        btn.classList.add('bg-gray-100', 'text-gray-700');
+      }
+    });
+  }
+</script>
+{% endblock %}

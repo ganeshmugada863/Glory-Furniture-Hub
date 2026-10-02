@@ -158,7 +158,9 @@ def welcome_view(request):
     if request.user.is_authenticated or user_email or role:
         return redirect('home')
 
-    return render(request, 'core/welcome.html')
+    from apps.core.models import PageCMSContent
+    cms_obj = PageCMSContent.get_cms()
+    return render(request, 'core/welcome.html', {'cms': cms_obj})
 
 
 def splash_view(request):

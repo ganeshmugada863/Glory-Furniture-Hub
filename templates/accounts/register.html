@@ -1,212 +1,465 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Create Customer Account — Glory Furniture Hub</title>
 
-  <!-- Google Fonts: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 
-  <!-- Compiled Tailwind CSS for Glory Furniture Hub -->
-  <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
-  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}" />
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-tint": "#ffb77d",
+            "primary": "#ffb77d",
+            "primary-container": "#d97707",
+            "on-primary": "#4d2600",
+            "on-primary-container": "#432100",
+            "secondary": "#ffb68f",
+            "secondary-container": "#703b1b",
+            "tertiary": "#f5bc7e",
+            "surface": "#131313",
+            "surface-dim": "#131313",
+            "surface-bright": "#393939",
+            "surface-container-lowest": "#0e0e0e",
+            "surface-container-low": "#1c1b1b",
+            "surface-container": "#201f1f",
+            "surface-container-high": "#2a2a2a",
+            "surface-container-highest": "#353534",
+            "on-surface": "#e5e2e1",
+            "on-surface-variant": "#dbc2b0",
+            "outline": "#a38c7c",
+            "outline-variant": "#554336"
+          },
+          fontFamily: {
+            headline: ['"EB Garamond"', 'serif'],
+            body: ['"Manrope"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
 
-  <!-- Supabase Official JS SDK Client -->
+  <!-- Supabase Official JS SDK Client for Google OAuth -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body {
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #FAF7F2;
-      color: #1E1E1E;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      background-color: #0e0e0e;
+      color: #e5e2e1;
+      font-family: 'Manrope', sans-serif;
     }
-    .active-tap:active { transform: scale(0.97); transition: transform 0.1s ease; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in {
-      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-center items-center px-4 py-8 sm:py-12 bg-gradient-to-b from-[#FAF7F2] via-[#F5EFE6] to-[#FAF7F2]">
+<body class="bg-surface-container-lowest text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col justify-between">
 
-  <!-- Dedicated Distraction-Free Registration Container -->
-  <div class="w-full max-w-md mx-auto animate-fade-in">
-    
-    <!-- Brand Crest Header -->
-    <div class="text-center mb-5">
-      <a href="{% url 'home' %}" class="inline-flex flex-col items-center group cursor-pointer">
-        <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-md border-2 border-[#7A533E] group-hover:scale-105 transition-transform bg-white mb-2.5">
-          <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture" class="w-full h-full object-cover" />
+  <!-- TOP HEADER / BRAND BAR -->
+  <header class="w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-b border-surface-container-highest/50">
+    <div class="h-18 max-w-[1440px] mx-auto px-4 sm:px-8 flex items-center justify-between py-3">
+      <a href="{% url 'welcome' %}" class="flex flex-col group">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[22px] group-hover:scale-105 transition-transform">chair</span>
+          <span class="font-headline text-lg sm:text-xl text-primary font-bold tracking-wide">GLORY FURNITURE HUB</span>
         </div>
-        <span class="font-black text-xl text-[#382115] tracking-wider leading-none">
-          GLORY FURNITURE HUB
-        </span>
-        <span class="text-[9px] font-bold tracking-[0.25em] text-[#C9963F] uppercase mt-1 leading-tight">
-          Handcrafted Solid Burma Teak
-        </span>
+        <span class="text-[10px] uppercase text-on-surface-variant tracking-wider mt-0.5">Bespoke Handcrafted Solid Burma Teak</span>
       </a>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'login' %}" class="text-xs font-semibold text-primary hover:text-tertiary transition-colors">
+          Already registered? Sign In &rarr;
+        </a>
+      </div>
     </div>
+  </header>
 
-    <!-- Main Registration Card -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/70 shadow-warm space-y-6">
+  <!-- MAIN DUAL-PANE COMPOSITION -->
+  <main class="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 flex flex-col justify-center">
+    
+    <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
       
-      <!-- Card Title & Subtitle -->
-      <div class="text-center space-y-1">
-        <h1 class="text-xl sm:text-2xl font-black text-gray-950 tracking-tight">Create Customer Account</h1>
-        <p class="text-xs text-gray-500">Access exclusive handcrafted solid teak collections & custom orders</p>
-      </div>
-
-      <!-- Error Alert Message -->
-      {% if error %}
-      <div class="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-start gap-2 animate-fade-in">
-        <svg class="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
-        <span>{{ error }}</span>
-      </div>
-      {% endif %}
-
-      <!-- Success & Status Messages -->
-      {% if messages %}
-      {% for message in messages %}
-      <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% else %}bg-green-50 border border-green-200 text-green-800{% endif %} rounded-xl text-xs flex items-start gap-2 animate-fade-in">
-        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span>{{ message }}</span>
-      </div>
-      {% endfor %}
-      {% endif %}
-
-      <!-- Google Authentication Section (Powered by Supabase Google OAuth) -->
-      <div class="space-y-3">
-        <button 
-          type="button" 
-          id="google-signin-btn"
-          onclick="signInWithGoogleViaSupabase()"
-          class="w-full py-3.5 px-4 rounded-xl border border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-3 active-tap cursor-pointer"
-        >
-          <!-- Google Icon SVG -->
-          <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span id="google-btn-text">Sign up with Google</span>
-          <div id="google-btn-spinner" class="hidden w-4 h-4 border-2 border-gray-400 border-t-[#5C3D2E] rounded-full animate-spin"></div>
-        </button>
-      </div>
-
-      <!-- Divider -->
-      <div class="relative flex items-center justify-center">
-        <div class="border-t border-gray-200 w-full"></div>
-        <span class="bg-white px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400 absolute">
-          or register with email
-        </span>
-      </div>
-
-      <!-- Registration Form -->
-      <form method="POST" action="{% url 'register' %}" class="space-y-4">
-        {% csrf_token %}
+      <!-- LEFT PANEL: Architectural Teak Showcase & Carousel -->
+      <section class="lg:col-span-7 relative flex flex-col justify-between overflow-hidden rounded-2xl bg-surface-container-low shadow-2xl min-h-[560px] lg:min-h-[760px] border border-surface-container-highest/40">
         
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Full Name *</label>
-          <input 
-            type="text" 
-            name="name" 
-            placeholder="e.g. Ganesh Mugada" 
-            required 
-            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-          />
+        <!-- Multi-Slide Background Image Carousel -->
+        <div class="absolute inset-0 z-0 overflow-hidden" id="carousel-container">
+          <!-- Slide 0 -->
+          <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-100" id="slide-0">
+            <img alt="Burma Teak Furniture" class="w-full h-full object-cover object-center" src="{{ cms.register_image1 }}" />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-surface-container-lowest/20"></div>
+          </div>
+          <!-- Slide 1 -->
+          <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none" id="slide-1">
+            <img alt="Solid Teak Dining Table Set" class="w-full h-full object-cover object-center" src="{{ cms.register_slide2_image_url }}" />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-surface-container-lowest/20"></div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none" id="slide-2">
+            <img alt="Handcrafted Diwan Daybed Lounger" class="w-full h-full object-cover object-center" src="{{ cms.register_slide3_image_url }}" />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-surface-container-lowest/20"></div>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Email Address *</label>
-          <input 
-            type="email" 
-            name="email" 
-            placeholder="your.email@example.com" 
-            required 
-            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Phone / WhatsApp Number</label>
-          <input 
-            type="tel" 
-            name="phone" 
-            placeholder="Enter 10-digit mobile number" 
-            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Password *</label>
-          <input 
-            type="password" 
-            name="password" 
-            placeholder="Minimum 6 characters" 
-            required 
-            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-          />
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">Confirm Password *</label>
-          <input 
-            type="password" 
-            name="confirm_password" 
-            placeholder="Re-enter password" 
-            required 
-            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs text-gray-900 focus:outline-none focus:border-[#5C3D2E] focus:ring-1 focus:ring-[#5C3D2E]" 
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          class="w-full py-3.5 px-4 rounded-xl text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active-tap cursor-pointer hover:opacity-95" 
-          style="background-color: #382115 !important;"
-        >
-          Create Customer Account &rarr;
+        <!-- Floating Carousel Navigation Arrows -->
+        <button aria-label="Previous Slide" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-surface-container-lowest/70 hover:bg-surface-container-high/90 text-on-surface flex items-center justify-center transition-all duration-200 shadow-lg border border-outline-variant/30 hover:scale-105 active:scale-95 cursor-pointer" id="carousel-prev" type="button">
+          <span class="material-symbols-outlined text-[22px]">chevron_left</span>
         </button>
-      </form>
+        <button aria-label="Next Slide" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-surface-container-lowest/70 hover:bg-surface-container-high/90 text-on-surface flex items-center justify-center transition-all duration-200 shadow-lg border border-outline-variant/30 hover:scale-105 active:scale-95 cursor-pointer" id="carousel-next" type="button">
+          <span class="material-symbols-outlined text-[22px]">chevron_right</span>
+        </button>
 
-      <!-- Existing Account / Sign In Link -->
-      <div class="pt-4 border-t border-gray-100 text-center space-y-3">
-        <p class="text-xs text-gray-600">
-          Already have an account? 
-          <a href="{% url 'login' %}" class="font-bold text-[#5C3D2E] hover:underline">
-            Sign In here
-          </a>
-        </p>
-        <div>
-          <a href="{% url 'home' %}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">
-            <span>&larr; Return to Storefront</span>
-          </a>
+        <!-- Top Showcase Header -->
+        <div class="relative z-10 p-6 sm:p-10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-lowest/80 border border-outline-variant/30 text-[10px] uppercase font-bold text-primary tracking-wider">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              <span>{{ cms.register_hero_badge|default:"BURMA TEAK MINIMALIST BED" }}</span>
+            </div>
+
+            <!-- Carousel Dots Pagination -->
+            <div class="flex items-center gap-1.5 bg-surface-container-lowest/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-outline-variant/30">
+              <button aria-label="Slide 1" class="w-2 h-2 rounded-full transition-all duration-300 bg-primary cursor-pointer" id="dot-0" type="button"></button>
+              <button aria-label="Slide 2" class="w-2 h-2 rounded-full transition-all duration-300 bg-surface-container-highest cursor-pointer" id="dot-1" type="button"></button>
+              <button aria-label="Slide 3" class="w-2 h-2 rounded-full transition-all duration-300 bg-surface-container-highest cursor-pointer" id="dot-2" type="button"></button>
+            </div>
+          </div>
+
+          <div class="mt-2 max-w-xl">
+            <h1 class="font-headline text-3xl sm:text-4xl lg:text-5xl text-on-surface font-semibold tracking-tight drop-shadow-sm">
+              {{ cms.register_hero_title|default:"Glory Furniture Hub" }}
+            </h1>
+            <p class="text-xs sm:text-sm text-on-surface-variant mt-2 leading-relaxed max-w-lg">
+              {{ cms.register_hero_desc|default:"Experience timeless Burma teak mastery shaped with precision joinery and sustainable heritage craft" }}
+            </p>
+          </div>
         </div>
-      </div>
+
+        <!-- Lower Showcase Step Milestone Highlights -->
+        <div class="relative z-10 p-6 sm:p-10 flex flex-col gap-6 mt-auto">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+            <!-- Step 1 -->
+            <div class="group relative rounded-xl p-4 bg-surface-container-lowest/85 backdrop-blur-sm transition-all duration-300 hover:bg-surface-container-high/90 shadow-md border border-outline-variant/20">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-xs font-bold">1</span>
+                <span class="material-symbols-outlined text-primary text-[18px]">person_add</span>
+              </div>
+              <h2 class="text-sm font-semibold text-on-surface line-clamp-1">{{ cms.register_badge1_title|default:"Sign up account" }}</h2>
+              <p class="text-xs text-on-surface-variant mt-1 leading-snug">{{ cms.register_badge1_desc|default:"Basic credentials & authentication." }}</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="group relative rounded-xl p-4 bg-surface-container-lowest/85 backdrop-blur-sm transition-all duration-300 hover:bg-surface-container-high/90 shadow-md border border-outline-variant/20">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center text-xs font-bold">2</span>
+                <span class="material-symbols-outlined text-tertiary text-[18px]">tune</span>
+              </div>
+              <h2 class="text-sm font-semibold text-on-surface line-clamp-1">{{ cms.register_badge2_title|default:"Bespoke preferences" }}</h2>
+              <p class="text-xs text-on-surface-variant mt-1 leading-snug">{{ cms.register_badge2_desc|default:"Wood grains, finish & dimensions." }}</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="group relative rounded-xl p-4 bg-surface-container-lowest/85 backdrop-blur-sm transition-all duration-300 hover:bg-surface-container-high/90 shadow-md border border-outline-variant/20">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="w-6 h-6 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center text-xs font-bold">3</span>
+                <span class="material-symbols-outlined text-secondary text-[18px]">workspace_premium</span>
+              </div>
+              <h2 class="text-sm font-semibold text-on-surface line-clamp-1">{{ cms.register_badge3_title|default:"VIP catalog access" }}</h2>
+              <p class="text-xs text-on-surface-variant mt-1 leading-snug">{{ cms.register_badge3_desc|default:"Private studio consults & pricing." }}</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT PANEL: Register Account Form Card -->
+      <section class="lg:col-span-5 flex flex-col justify-center">
+        <div class="w-full max-w-[480px] mx-auto rounded-2xl bg-surface-container p-6 sm:p-8 md:p-10 shadow-2xl border border-surface-container-highest/40 flex flex-col justify-center">
+          
+          <!-- Header -->
+          <div class="flex flex-col text-center items-center mb-5">
+            <span class="text-[11px] uppercase tracking-[0.2em] text-primary font-bold mb-1">
+              {{ cms.register_card_subtitle|default:"HANDCRAFTED SOLID BURMA TEAK" }}
+            </span>
+            <h2 class="font-headline text-2xl sm:text-3xl text-on-surface font-semibold tracking-tight">
+              {{ cms.register_card_title|default:"Create Customer Account" }}
+            </h2>
+            <p class="text-xs text-on-surface-variant mt-1 max-w-xs leading-relaxed">
+              {{ cms.register_card_description|default:"Access exclusive handcrafted solid teak collections & custom orders" }}
+            </p>
+          </div>
+
+          <!-- Error Alert Banner -->
+          {% if error %}
+          <div class="mb-4 p-3 bg-red-950/70 border border-red-800/80 rounded-xl text-xs text-red-300 flex items-start gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">error</span>
+            <span>{{ error }}</span>
+          </div>
+          {% endif %}
+
+          <!-- OAuth Button: Continue with Google -->
+          <div class="w-full mb-4">
+            <button 
+              type="button" 
+              id="register-google-btn"
+              onclick="signUpWithGoogleViaSupabase()"
+              class="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-all duration-200 active:scale-[0.99] border border-outline-variant/30 shadow-sm cursor-pointer"
+            >
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span id="register-google-btn-text">Sign up with Google</span>
+              <div id="register-google-spinner" class="hidden w-4 h-4 border-2 border-gray-400 border-t-[#d97707] rounded-full animate-spin"></div>
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="relative w-full flex items-center justify-center my-3">
+            <div class="w-full h-px bg-surface-container-highest"></div>
+            <span class="absolute px-3 bg-surface-container text-[10px] uppercase tracking-wider text-on-surface-variant font-bold select-none">
+              OR REGISTER WITH EMAIL
+            </span>
+          </div>
+
+          <!-- Registration Form -->
+          <form method="POST" action="{% url 'register' %}" class="flex flex-col gap-3" id="register-form">
+            {% csrf_token %}
+
+            <!-- Full Name -->
+            <div class="flex flex-col gap-1 text-left">
+              <label class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold" for="full-name">
+                FULL NAME *
+              </label>
+              <div class="relative flex items-center">
+                <input 
+                  class="w-full px-4 py-2.5 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low border border-surface-container-highest focus:border-primary shadow-inner" 
+                  id="full-name" 
+                  name="name" 
+                  placeholder="e.g. Ganesh Mugada" 
+                  required 
+                  type="text"
+                />
+                <span class="material-symbols-outlined absolute right-3 text-[18px] text-on-surface-variant/60 pointer-events-none">person</span>
+              </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="flex flex-col gap-1 text-left">
+              <label class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold" for="email-address">
+                EMAIL ADDRESS *
+              </label>
+              <div class="relative flex items-center">
+                <input 
+                  class="w-full px-4 py-2.5 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low border border-surface-container-highest focus:border-primary shadow-inner" 
+                  id="email-address" 
+                  name="email" 
+                  placeholder="your.email@example.com" 
+                  required 
+                  type="email"
+                />
+                <span class="material-symbols-outlined absolute right-3 text-[18px] text-on-surface-variant/60 pointer-events-none">mail</span>
+              </div>
+            </div>
+
+            <!-- Phone / WhatsApp Number -->
+            <div class="flex flex-col gap-1 text-left">
+              <label class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold" for="phone-number">
+                PHONE / WHATSAPP NUMBER
+              </label>
+              <div class="flex items-center gap-2">
+                <div class="bg-surface-container-lowest px-3 py-2.5 rounded-xl border border-surface-container-highest flex items-center gap-1 text-xs select-none shrink-0 shadow-inner">
+                  <span class="font-medium text-tertiary">IN +91</span>
+                </div>
+                <div class="relative flex items-center w-full">
+                  <input 
+                    class="w-full px-4 py-2.5 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low border border-surface-container-highest focus:border-primary shadow-inner" 
+                    id="phone-number" 
+                    name="phone" 
+                    pattern="[0-9]{10}" 
+                    placeholder="Enter 10-digit mobile number" 
+                    type="tel"
+                  />
+                  <span class="material-symbols-outlined absolute right-3 text-[18px] text-on-surface-variant/60 pointer-events-none">call</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="flex flex-col gap-1 text-left">
+              <label class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold" for="password">
+                PASSWORD *
+              </label>
+              <div class="relative flex items-center">
+                <input 
+                  class="w-full px-4 py-2.5 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low pr-11 border border-surface-container-highest focus:border-primary shadow-inner" 
+                  id="password" 
+                  minlength="6" 
+                  name="password" 
+                  placeholder="Minimum 6 characters" 
+                  required 
+                  type="password"
+                />
+                <button aria-label="Toggle password visibility" class="absolute right-3 p-1 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center focus:outline-none cursor-pointer" onclick="togglePasswordVisibility('password', 'pwd-toggle-icon')" type="button">
+                  <span class="material-symbols-outlined text-[18px]" id="pwd-toggle-icon">visibility</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="flex flex-col gap-1 text-left">
+              <label class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold" for="confirm-password">
+                CONFIRM PASSWORD *
+              </label>
+              <div class="relative flex items-center">
+                <input 
+                  class="w-full px-4 py-2.5 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low pr-11 border border-surface-container-highest focus:border-primary shadow-inner" 
+                  id="confirm-password" 
+                  name="confirm_password" 
+                  placeholder="Re-enter password" 
+                  required 
+                  type="password"
+                />
+                <button aria-label="Toggle confirm password visibility" class="absolute right-3 p-1 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center focus:outline-none cursor-pointer" onclick="togglePasswordVisibility('confirm-password', 'confirm-toggle-icon')" type="button">
+                  <span class="material-symbols-outlined text-[18px]" id="confirm-toggle-icon">visibility</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Terms Checkbox -->
+            <div class="flex items-start gap-2 pt-1">
+              <input class="mt-1 w-4 h-4 rounded bg-surface-container-lowest text-primary-container accent-primary-container focus:ring-0 cursor-pointer" id="terms" required type="checkbox">
+              <label class="text-xs text-on-surface-variant leading-snug select-none" for="terms">
+                I agree to the <a class="text-primary hover:underline" href="#terms">Terms of Patronage</a> and verify my interest in certified solid Burma teak bespoke creations.
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+              type="submit" 
+              class="w-full mt-2 py-3 px-6 rounded-xl text-xs font-bold text-on-primary tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 shadow-lg bg-gradient-to-r from-primary-container to-secondary-container hover:from-primary-container hover:to-primary hover:text-on-primary-container active:scale-[0.99] cursor-pointer"
+            >
+              <span>CREATE CUSTOMER ACCOUNT</span>
+              <span class="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+            </button>
+          </form>
+
+          <!-- Sign In Switcher -->
+          <div class="mt-4 pt-3 flex items-center justify-center gap-1.5 text-center bg-surface-container-low/60 py-2.5 rounded-xl border border-surface-container-highest/30">
+            <span class="text-xs text-on-surface-variant">Already have an account?</span>
+            <a class="text-xs font-bold text-primary hover:text-tertiary transition-colors underline-offset-2 hover:underline" href="{% url 'login' %}">
+              Sign In
+            </a>
+          </div>
+
+          <!-- Atelier Assurance Trust Badges -->
+          <div class="mt-4 flex items-center justify-center gap-4 text-on-surface-variant/70 text-center text-xs">
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-tertiary">check_circle</span>
+              Master Artisan Guarantee
+            </span>
+            <span class="text-surface-container-highest">•</span>
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-primary">spa</span>
+              Sustainably Sourced Teak
+            </span>
+          </div>
+
+        </div>
+      </section>
 
     </div>
+  </main>
 
-    <!-- Security & Assurance Badge -->
-    <div class="mt-6 text-center text-[11px] text-gray-500 flex items-center justify-center gap-2">
-      <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      <span>256-Bit SSL Encrypted &bull; Direct Google Supabase OAuth</span>
-    </div>
+  <footer class="w-full bg-surface-container-lowest/90 py-3 text-center text-xs text-on-surface-variant/50 border-t border-surface-container-highest/30">
+    <span>&copy; 2026 Glory Furniture Hub. All rights reserved.</span>
+  </footer>
 
-  </div>
-
-  <!-- Supabase Google Authentication Script -->
+  <!-- Scripts: Password Visibility, Carousel, and Google OAuth -->
   <script>
+    function togglePasswordVisibility(fieldId, iconId) {
+      const field = document.getElementById(fieldId);
+      const icon = document.getElementById(iconId);
+      if (!field || !icon) return;
+
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        field.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    // Carousel Autoplay & Controls
+    let currentSlide = 0;
+    const totalSlides = 3;
+    let autoplayTimer;
+
+    function showSlide(index) {
+      currentSlide = (index + totalSlides) % totalSlides;
+      for (let i = 0; i < totalSlides; i++) {
+        const slide = document.getElementById(`slide-${i}`);
+        const dot = document.getElementById(`dot-${i}`);
+        if (slide && dot) {
+          if (i === currentSlide) {
+            slide.classList.remove('opacity-0', 'pointer-events-none');
+            slide.classList.add('opacity-100');
+            dot.classList.remove('bg-surface-container-highest');
+            dot.classList.add('bg-primary');
+          } else {
+            slide.classList.remove('opacity-100');
+            slide.classList.add('opacity-0', 'pointer-events-none');
+            dot.classList.remove('bg-primary');
+            dot.classList.add('bg-surface-container-highest');
+          }
+        }
+      }
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = setInterval(nextSlide, 5000);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) clearInterval(autoplayTimer);
+    }
+
+    document.getElementById('carousel-next')?.addEventListener('click', () => {
+      nextSlide();
+      startAutoplay();
+    });
+
+    document.getElementById('carousel-prev')?.addEventListener('click', () => {
+      prevSlide();
+      startAutoplay();
+    });
+
+    for (let i = 0; i < totalSlides; i++) {
+      document.getElementById(`dot-${i}`)?.addEventListener('click', () => {
+        showSlide(i);
+        startAutoplay();
+      });
+    }
+
+    startAutoplay();
+
+    // Supabase Google OAuth Handler
     const SUPABASE_URL = 'https://qxxrghelhlrafdkveeqo.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eHJnaGVsaGxyYWZka3ZlZXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDMwNTEsImV4cCI6MjEwNDAxOTA1MX0.mc-5c84wqAaD5_ybaHS_vHZSYgczA2bIjWC2KwIPfZA';
 
@@ -217,109 +470,53 @@
       console.error("Supabase init error:", e);
     }
 
-    async function signInWithGoogleViaSupabase() {
-      const btn = document.getElementById('google-signin-btn');
-      const text = document.getElementById('google-btn-text');
-      const spinner = document.getElementById('google-btn-spinner');
+    async function signUpWithGoogleViaSupabase() {
+      const btn = document.getElementById('register-google-btn');
+      const text = document.getElementById('register-google-btn-text');
+      const spinner = document.getElementById('register-google-spinner');
 
       if (!supabaseClient) {
-        alert("Authentication client loading error. Please refresh and try again.");
+        alert("Authentication service is loading. Please refresh and try again.");
         return;
       }
 
       try {
-        btn.disabled = true;
-        text.innerText = "Connecting to Google...";
-        spinner.classList.remove('hidden');
+        if (btn) btn.disabled = true;
+        if (text) text.innerText = "Connecting to Google...";
+        if (spinner) spinner.classList.remove('hidden');
 
-        // Store return URL in localStorage
         try {
           localStorage.setItem('glory_auth_return_url', window.location.origin + '/');
-        } catch (storageErr) {}
+        } catch(e) {}
 
-        // Always target supabase-callback route on current origin
         const callbackUrl = window.location.origin + '/accounts/supabase-callback/';
 
-        // Use skipBrowserRedirect: true so we can inspect and safely escape iframe if running inside Hugging Face
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
           provider: 'google',
           options: {
             redirectTo: callbackUrl,
             skipBrowserRedirect: true,
-            queryParams: {
-              prompt: 'select_account'
-            }
+            queryParams: { prompt: 'select_account' }
           }
         });
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         if (data && data.url) {
-          // If embedded inside an iframe (e.g. Hugging Face Space), escape iframe so Google doesn't block with X-Frame-Options
           if (window.top !== window.self) {
-            try {
-              window.top.location.href = data.url;
-            } catch (frameErr) {
-              window.location.href = data.url;
-            }
+            try { window.top.location.href = data.url; } catch(frameErr) { window.location.href = data.url; }
           } else {
             window.location.href = data.url;
           }
-        } else {
-          // Fallback direct redirect
-          await supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-              redirectTo: callbackUrl
-            }
-          });
         }
       } catch (err) {
         console.error("Google Auth error:", err);
-        btn.disabled = false;
-        text.innerText = "Sign up with Google";
-        spinner.classList.add('hidden');
+        if (btn) btn.disabled = false;
+        if (text) text.innerText = "Sign up with Google";
+        if (spinner) spinner.classList.add('hidden');
         alert("Google Authentication error: " + (err.message || err));
       }
     }
-
-    // Failsafe: In case Supabase redirects back to /register/ directly with access_token hash
-    document.addEventListener('DOMContentLoaded', async function() {
-      const hash = window.location.hash.substring(1);
-      if (hash && hash.includes('access_token')) {
-        const btn = document.getElementById('google-signin-btn');
-        const text = document.getElementById('google-btn-text');
-        const spinner = document.getElementById('google-btn-spinner');
-        if (btn) btn.disabled = true;
-        if (text) text.innerText = "Verifying Google Account...";
-        if (spinner) spinner.classList.remove('hidden');
-
-        if (supabaseClient) {
-          const { data: { session } } = await supabaseClient.auth.getSession();
-          if (session && session.user) {
-            const user = session.user;
-            const meta = user.user_metadata || {};
-            const res = await fetch('/accounts/google-auth/', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                email: user.email,
-                name: meta.full_name || meta.name || user.email.split('@')[0],
-                google_id: user.id,
-                avatar_url: meta.avatar_url || meta.picture || '',
-                access_token: session.access_token || ''
-              })
-            });
-            const result = await res.json();
-            if (result.status === 'success') {
-              window.location.href = result.redirect_url || '/';
-            }
-          }
-        }
-      }
-    });
   </script>
 </body>
 </html>

@@ -314,6 +314,11 @@
           <span>Website Settings</span>
         </a>
 
+        <a href="{% url 'admin_page_cms' %}" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors {% if active_nav == 'page_cms' %}active{% endif %}">
+          <span class="text-base">🎨</span>
+          <span>Auth &amp; Welcome CMS</span>
+        </a>
+
         <div class="pt-4 mt-4 border-t border-gray-100 space-y-1">
           <a href="{% url 'home' %}" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors">
             <span class="text-base">🏪</span>

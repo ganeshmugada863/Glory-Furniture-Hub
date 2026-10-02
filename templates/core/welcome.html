@@ -119,7 +119,7 @@
       <img 
         alt="Glory Furniture Hub Luxury Living Room" 
         class="w-full h-full object-cover object-[center_right] sm:object-center transform scale-[1.01]" 
-        src="{% static 'images/welcome_bg_stitch.jpg' %}"
+        src="{% if cms.welcome_image %}{{ cms.welcome_image }}{% else %}{% static 'images/welcome_bg_stitch.jpg' %}{% endif %}"
         loading="eager"
       />
       <!-- Left-side soft creamy-warm gradient mask -->
@@ -224,14 +224,14 @@
         <!-- Eyebrow Subtitle -->
         <div class="mb-2 sm:mb-3">
           <span class="text-[10px] sm:text-xs font-semibold text-[#873F14] uppercase tracking-[0.28em]">
-            WELCOME TO
+            {{ cms.welcome_eyebrow|default:"WELCOME TO" }}
           </span>
         </div>
 
         <!-- Main Headline: Glory Furniture Hub -->
         <h1 class="font-serif text-[38px] sm:text-6xl lg:text-[70px] font-bold leading-[1.06] text-[#2E1B10] tracking-tight mb-3 sm:mb-4 drop-shadow-sm">
-          Glory<br>
-          <span class="text-[#6E3314]">Furniture Hub</span>
+          {{ cms.welcome_title_main|default:"Glory" }}<br>
+          <span class="text-[#6E3314]">{{ cms.welcome_title_highlight|default:"Furniture Hub" }}</span>
         </h1>
 
         <!-- Accent Bar with Dot -->
@@ -247,7 +247,7 @@
             id="cta-get-started"
             class="group relative inline-flex items-center justify-center gap-3 px-7 sm:px-9 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#9E4E1D] via-[#A6511F] to-[#873F14] text-white text-base sm:text-lg font-semibold tracking-wide shadow-[0_10px_24px_-4px_rgba(158,78,29,0.45)] hover:shadow-[0_16px_32px_-6px_rgba(158,78,29,0.55)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#9E4E1D]/30 border border-amber-200/20 active-tap"
           >
-            <span class="relative z-10">Get Started</span>
+            <span class="relative z-10">{{ cms.welcome_cta_text|default:"Get Started" }}</span>
             <!-- Sleek Right Arrow with Animated Shift -->
             <svg class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5 stroke-[2.2] text-[#FDEBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -271,7 +271,7 @@
               </svg>
             </div>
             <span class="text-[10px] sm:text-sm font-semibold text-stone-800 leading-tight">
-              Modern<br class="hidden sm:inline"> Designs
+              {{ cms.welcome_badge1_title|default:"Modern Designs"|linebreaksbr }}
             </span>
           </div>
 
@@ -285,7 +285,7 @@
               </svg>
             </div>
             <span class="text-[10px] sm:text-sm font-semibold text-stone-800 leading-tight">
-              Trusted<br class="hidden sm:inline"> Quality
+              {{ cms.welcome_badge2_title|default:"Trusted Quality"|linebreaksbr }}
             </span>
           </div>
 
@@ -301,11 +301,12 @@
               </svg>
             </div>
             <span class="text-[10px] sm:text-sm font-semibold text-stone-800 leading-tight">
-              Safe<br class="hidden sm:inline"> Delivery
+              {{ cms.welcome_badge3_title|default:"Safe Delivery"|linebreaksbr }}
             </span>
           </div>
 
         </div>
+
 
         <!-- Mobile Sign-In link -->
         <div class="sm:hidden mt-3.5 pt-0.5">
