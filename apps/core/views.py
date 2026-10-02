@@ -136,10 +136,15 @@ def root_view(request):
     """
     Intelligent Root Router (/):
     - New / Logged-out visitors: Displays the modern, minimal Welcome / Get Started page.
-    - Existing Authenticated Users (Customers & Admins): Directly routed to the existing storefront Home.
+    - Admins: Directly routed to /admin/dashboard/.
+    - Existing Authenticated Customers: Directly routed to the existing storefront Home.
     """
     role = request.session.get('glory_role')
     user_email = request.session.get('glory_user_email')
+
+    if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
+        return redirect('admin_dashboard')
+
     is_authenticated = bool(request.user.is_authenticated or user_email or role)
 
     if is_authenticated:
@@ -150,11 +155,14 @@ def root_view(request):
 def welcome_view(request):
     """
     Dedicated Modern, Minimal & Premium Welcome / Get Started entrance page.
+    - Admins: Directly routed to /admin/dashboard/.
     - If user is already authenticated, intelligently routes them to existing Home flow.
     - Otherwise renders the dedicated Welcome / Get Started entrance screen.
     """
     role = request.session.get('glory_role')
     user_email = request.session.get('glory_user_email')
+    if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
+        return redirect('admin_dashboard')
     if request.user.is_authenticated or user_email or role:
         return redirect('home')
 
