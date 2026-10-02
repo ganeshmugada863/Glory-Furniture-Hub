@@ -155,8 +155,11 @@ class PageCMSContent(models.Model):
     @classmethod
     def get_cms(cls):
         """Singleton accessor: returns the active PageCMSContent instance (ID=1)."""
-        cms, _ = cls.objects.get_or_create(id=1)
-        return cms
+        try:
+            cms, _ = cls.objects.get_or_create(id=1)
+            return cms
+        except Exception:
+            return cls(id=1)
 
     @property
     def welcome_image(self):

@@ -4,6 +4,9 @@ mkdir -p staticfiles
 
 python3 -m pip install -r requirements.txt --break-system-packages || pip install -r requirements.txt --break-system-packages || true
 
+# Run database migrations
+python3 manage.py migrate --noinput || python manage.py migrate --noinput || true
+
 # Run standard Django collectstatic
 python3 manage.py collectstatic --noinput --clear || python manage.py collectstatic --noinput --clear
 
