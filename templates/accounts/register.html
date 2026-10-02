@@ -3,13 +3,13 @@
 <html class="dark" lang="en">
 <head>
   <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
   <title>Create Customer Account — Glory Furniture Hub</title>
 
   <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 
@@ -21,7 +21,6 @@
       theme: {
         extend: {
           colors: {
-            "surface-tint": "#ffb77d",
             "primary": "#ffb77d",
             "primary-container": "#d97707",
             "on-primary": "#4d2600",
@@ -29,18 +28,11 @@
             "secondary": "#ffb68f",
             "secondary-container": "#703b1b",
             "tertiary": "#f5bc7e",
-            "surface": "#131313",
-            "surface-dim": "#131313",
-            "surface-bright": "#393939",
-            "surface-container-lowest": "#0e0e0e",
-            "surface-container-low": "#1c1b1b",
-            "surface-container": "#201f1f",
-            "surface-container-high": "#2a2a2a",
-            "surface-container-highest": "#353534",
-            "on-surface": "#e5e2e1",
-            "on-surface-variant": "#dbc2b0",
-            "outline": "#a38c7c",
-            "outline-variant": "#554336"
+            "surface-lowest": "#0a0a0a",
+            "surface-card": "#161616",
+            "on-surface": "#f3f0ec",
+            "on-surface-variant": "#bfaea0",
+            "outline-dim": "#3a332c",
           },
           fontFamily: {
             headline: ['"EB Garamond"', 'serif'],
@@ -56,350 +48,303 @@
 
   <style>
     body {
-      background-color: #0e0e0e;
-      color: #e5e2e1;
+      background-color: #0a0a0a;
+      color: #f3f0ec;
       font-family: 'Manrope', sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
-    @media (min-width: 1024px) {
-      html, body {
-        height: 100vh;
-        max-height: 100vh;
-        overflow: hidden;
-      }
+    .active-tap:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
     }
   </style>
 </head>
-<body class="bg-surface-container-lowest text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden flex flex-col justify-between">
+<body class="min-h-screen bg-surface-lowest text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container relative flex flex-col justify-between overflow-x-hidden">
 
-  <!-- TOP HEADER / BRAND BAR (Sleek & Compact) -->
-  <header class="shrink-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-b border-surface-container-highest/40">
-    <div class="h-14 sm:h-16 max-w-[1560px] mx-auto px-4 sm:px-8 flex items-center justify-between">
-      <a href="{% url 'welcome' %}" class="flex items-center gap-3 group">
-        <div class="w-8 h-8 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-          <span class="material-symbols-outlined text-[20px]">chair</span>
-        </div>
-        <div class="flex flex-col">
-          <span class="font-headline text-base sm:text-lg text-primary font-bold tracking-wide leading-tight">GLORY FURNITURE HUB</span>
-          <span class="text-[9px] uppercase text-on-surface-variant tracking-wider leading-none mt-0.5">Bespoke Handcrafted Solid Burma Teak</span>
-        </div>
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="{% url 'login' %}" class="text-xs font-semibold text-primary hover:text-tertiary transition-colors flex items-center gap-1">
-          <span>Already registered? Sign In</span>
-          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-        </a>
-      </div>
+  <!-- ======================================================== -->
+  <!-- 1. FULLSCREEN CAROUSEL BACKGROUND (Sharp, Responsive)   -->
+  <!-- ======================================================== -->
+  <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" id="carousel-container">
+    <!-- Slide 0 -->
+    <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100" id="slide-0">
+      <img alt="Glory Teak Furniture Craftsmanship" class="w-full h-full object-cover object-center scale-[1.03]" src="{{ cms.register_image1 }}" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/90 via-[#0a0a0a]/75 to-[#0a0a0a]/95"></div>
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
     </div>
+    <!-- Slide 1 -->
+    <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" id="slide-1">
+      <img alt="Solid Teak Dining Table" class="w-full h-full object-cover object-center scale-[1.03]" src="{{ cms.register_slide2_image_url }}" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/90 via-[#0a0a0a]/75 to-[#0a0a0a]/95"></div>
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+    </div>
+    <!-- Slide 2 -->
+    <div class="carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0" id="slide-2">
+      <img alt="Handcrafted Diwan Daybed" class="w-full h-full object-cover object-center scale-[1.03]" src="{{ cms.register_slide3_image_url }}" />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/90 via-[#0a0a0a]/75 to-[#0a0a0a]/95"></div>
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+    </div>
+  </div>
+
+  <!-- Background Carousel Floating Navigation Arrows (Desktop / Tablet) -->
+  <button aria-label="Previous Slide" class="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/60 hover:bg-black/85 text-white/90 items-center justify-center transition-all duration-200 shadow-xl border border-white/10 hover:scale-105 active-tap cursor-pointer" id="carousel-prev" type="button">
+    <span class="material-symbols-outlined text-[24px]">chevron_left</span>
+  </button>
+  <button aria-label="Next Slide" class="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/60 hover:bg-black/85 text-white/90 items-center justify-center transition-all duration-200 shadow-xl border border-white/10 hover:scale-105 active-tap cursor-pointer" id="carousel-next" type="button">
+    <span class="material-symbols-outlined text-[24px]">chevron_right</span>
+  </button>
+
+  <!-- ======================================================== -->
+  <!-- 2. TOP CENTER BRANDING HEADER (Android & Desktop)        -->
+  <!-- ======================================================== -->
+  <header class="relative z-20 w-full pt-3 sm:pt-6 pb-2 px-3 sm:px-4 flex flex-col items-center text-center">
+    <a href="{% url 'welcome' %}" class="inline-flex flex-col items-center group cursor-pointer max-w-full">
+      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#2E1B10] to-[#120B05] border border-[#ffb77d]/30 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform mb-1.5">
+        <span class="material-symbols-outlined text-[#ffb77d] text-[22px] sm:text-[24px]">chair</span>
+      </div>
+      <span class="font-headline text-lg sm:text-2xl font-bold tracking-[0.10em] sm:tracking-[0.14em] text-white uppercase leading-tight drop-shadow-sm text-center">
+        GLORY FURNITURE HUB
+      </span>
+      <span class="text-[8.5px] sm:text-[10px] tracking-[0.20em] sm:tracking-[0.25em] font-bold text-[#ffb77d] uppercase mt-0.5 leading-tight">
+        Bespoke Handcrafted Solid Burma Teak
+      </span>
+    </a>
   </header>
 
-  <!-- MAIN DUAL-PANE COMPOSITION (Full Viewport Fit, Zero Scroll on Desktop) -->
-  <main class="flex-1 min-h-0 w-full max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4 flex flex-col justify-center">
+  <!-- ======================================================== -->
+  <!-- 3. MAIN REGISTER FORM (Replaces Removed Cards Directly)  -->
+  <!-- ======================================================== -->
+  <main class="relative z-20 flex-1 w-full max-w-[450px] mx-auto px-3 sm:px-4 py-2 sm:py-5 flex flex-col justify-center">
     
-    <div class="w-full h-full min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-stretch">
+    <!-- Luxury Frosted Card Container -->
+    <div class="w-full bg-[#141414]/90 sm:bg-[#181818]/90 backdrop-blur-2xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.8)] space-y-2.5 sm:space-y-3.5">
       
-      <!-- LEFT PANEL: Architectural Teak Showcase & Carousel -->
-      <section class="lg:col-span-7 h-full min-h-[460px] lg:min-h-0 relative flex flex-col justify-between overflow-hidden rounded-2xl bg-surface-container-low shadow-2xl border border-surface-container-highest/40">
-        
-        <!-- Multi-Slide Background Image Carousel (Zoom-in & Responsive Cover) -->
-        <div class="absolute inset-0 z-0 overflow-hidden" id="carousel-container">
-          <!-- Slide 0 -->
-          <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-100" id="slide-0">
-            <img alt="Burma Teak Furniture" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.register_image1 }}" />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-surface-container-lowest/20"></div>
-          </div>
-          <!-- Slide 1 -->
-          <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none" id="slide-1">
-            <img alt="Solid Teak Dining Table Set" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.register_slide2_image_url }}" />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-surface-container-lowest/20"></div>
-          </div>
-          <!-- Slide 2 -->
-          <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none" id="slide-2">
-            <img alt="Handcrafted Diwan Daybed Lounger" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.register_slide3_image_url }}" />
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/40 to-surface-container-lowest/20"></div>
-          </div>
-        </div>
+      <!-- Card Title & Description -->
+      <div class="text-center space-y-0.5 sm:space-y-1">
+        <span class="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#ffb77d] uppercase block">
+          {{ cms.register_card_subtitle|default:"CLIENT REGISTRATION" }}
+        </span>
+        <h1 class="font-headline text-2xl sm:text-[28px] font-semibold text-white tracking-tight leading-tight">
+          {{ cms.register_card_title|default:"Create Customer Account" }}
+        </h1>
+        <p class="text-[11px] sm:text-xs text-on-surface-variant max-w-sm mx-auto leading-relaxed">
+          {{ cms.register_card_description|default:"Access exclusive handcrafted solid teak collections & custom orders" }}
+        </p>
+      </div>
 
-        <!-- Floating Carousel Navigation Arrows -->
-        <button aria-label="Previous Slide" class="absolute left-3.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-surface-container-lowest/70 hover:bg-surface-container-high/90 text-on-surface flex items-center justify-center transition-all duration-200 shadow-lg border border-outline-variant/30 hover:scale-105 active:scale-95 cursor-pointer" id="carousel-prev" type="button">
-          <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+      <!-- Error Alert Message -->
+      {% if error %}
+      <div class="p-2.5 bg-red-950/80 border border-red-800/80 rounded-2xl text-xs text-red-200 flex items-start gap-2.5">
+        <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">error</span>
+        <span>{{ error }}</span>
+      </div>
+      {% endif %}
+
+      <!-- Success & Status Messages -->
+      {% if messages %}
+      {% for message in messages %}
+      <div class="p-2.5 {% if message.tags == 'error' %}bg-red-950/80 border-red-800/80 text-red-200{% else %}bg-emerald-950/80 border-emerald-800/80 text-emerald-200{% endif %} border rounded-2xl text-xs flex items-start gap-2.5">
+        <span class="material-symbols-outlined text-[18px] shrink-0">{% if message.tags == 'error' %}error{% else %}check_circle{% endif %}</span>
+        <span>{{ message }}</span>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- Continue with Google (Supabase OAuth) -->
+      <div>
+        <button 
+          type="button" 
+          id="register-google-btn"
+          onclick="signUpWithGoogleViaSupabase()"
+          class="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-all duration-200 active-tap border border-white/15 shadow-sm cursor-pointer"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span id="register-google-btn-text">Sign up with Google</span>
+          <div id="register-google-spinner" class="hidden w-3.5 h-3.5 border-2 border-gray-400 border-t-[#ffb77d] rounded-full animate-spin"></div>
         </button>
-        <button aria-label="Next Slide" class="absolute right-3.5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-surface-container-lowest/70 hover:bg-surface-container-high/90 text-on-surface flex items-center justify-center transition-all duration-200 shadow-lg border border-outline-variant/30 hover:scale-105 active:scale-95 cursor-pointer" id="carousel-next" type="button">
-          <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-        </button>
+      </div>
 
-        <!-- Top Showcase Header -->
-        <div class="relative z-10 p-5 sm:p-8 lg:p-10 flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-surface-container-lowest/80 border border-outline-variant/30 text-[10px] uppercase font-bold text-primary tracking-wider">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-              <span>{{ cms.register_hero_badge|default:"BURMA TEAK MINIMALIST BED" }}</span>
-            </div>
+      <!-- Divider -->
+      <div class="relative flex items-center justify-center my-2">
+        <div class="border-t border-white/10 w-full"></div>
+        <span class="bg-[#181818] px-3 text-[10px] font-bold uppercase tracking-wider text-on-surface-variant absolute">
+          or register with email
+        </span>
+      </div>
 
-            <!-- Carousel Dots Pagination -->
-            <div class="flex items-center gap-1.5 bg-surface-container-lowest/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-outline-variant/30">
-              <button aria-label="Slide 1" class="w-2 h-2 rounded-full transition-all duration-300 bg-primary cursor-pointer" id="dot-0" type="button"></button>
-              <button aria-label="Slide 2" class="w-2 h-2 rounded-full transition-all duration-300 bg-surface-container-highest cursor-pointer" id="dot-1" type="button"></button>
-              <button aria-label="Slide 3" class="w-2 h-2 rounded-full transition-all duration-300 bg-surface-container-highest cursor-pointer" id="dot-2" type="button"></button>
-            </div>
-          </div>
+      <!-- Registration Credentials Form (Optimized for Android & Desktop) -->
+      <form method="POST" action="{% url 'register' %}" class="space-y-2.5" id="registerForm">
+        {% csrf_token %}
 
-          <div class="mt-1 max-w-xl">
-            <h1 class="font-headline text-3xl sm:text-4xl lg:text-[44px] text-on-surface font-semibold tracking-tight drop-shadow-sm leading-tight">
-              {{ cms.register_hero_title|default:"Glory Furniture Hub" }}
-            </h1>
-            <p class="text-[11px] sm:text-xs text-on-surface-variant mt-1.5 leading-relaxed max-w-lg">
-              {{ cms.register_hero_desc|default:"Experience timeless Burma teak mastery shaped with precision joinery and sustainable heritage craft" }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Lower Showcase Step Milestone Highlights -->
-        <div class="relative z-10 p-5 sm:p-8 lg:p-10 flex flex-col gap-4 mt-auto">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full">
-            <!-- Step 1 -->
-            <div class="group relative rounded-xl p-3.5 bg-surface-container-lowest/85 backdrop-blur-sm transition-all duration-300 hover:bg-surface-container-high/90 shadow-md border border-outline-variant/20">
-              <div class="flex items-center justify-between mb-2">
-                <span class="w-5 h-5 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-[11px] font-bold">1</span>
-                <span class="material-symbols-outlined text-primary text-[16px]">person_add</span>
-              </div>
-              <h2 class="text-xs sm:text-sm font-semibold text-on-surface line-clamp-1">{{ cms.register_badge1_title|default:"Sign up account" }}</h2>
-              <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug line-clamp-2">{{ cms.register_badge1_desc|default:"Basic credentials & authentication." }}</p>
-            </div>
-            <!-- Step 2 -->
-            <div class="group relative rounded-xl p-3.5 bg-surface-container-lowest/85 backdrop-blur-sm transition-all duration-300 hover:bg-surface-container-high/90 shadow-md border border-outline-variant/20">
-              <div class="flex items-center justify-between mb-2">
-                <span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center text-[11px] font-bold">2</span>
-                <span class="material-symbols-outlined text-tertiary text-[16px]">tune</span>
-              </div>
-              <h2 class="text-xs sm:text-sm font-semibold text-on-surface line-clamp-1">{{ cms.register_badge2_title|default:"Bespoke preferences" }}</h2>
-              <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug line-clamp-2">{{ cms.register_badge2_desc|default:"Wood grains, finish & dimensions." }}</p>
-            </div>
-            <!-- Step 3 -->
-            <div class="group relative rounded-xl p-3.5 bg-surface-container-lowest/85 backdrop-blur-sm transition-all duration-300 hover:bg-surface-container-high/90 shadow-md border border-outline-variant/20">
-              <div class="flex items-center justify-between mb-2">
-                <span class="w-5 h-5 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center text-[11px] font-bold">3</span>
-                <span class="material-symbols-outlined text-secondary text-[16px]">workspace_premium</span>
-              </div>
-              <h2 class="text-xs sm:text-sm font-semibold text-on-surface line-clamp-1">{{ cms.register_badge3_title|default:"VIP catalog access" }}</h2>
-              <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug line-clamp-2">{{ cms.register_badge3_desc|default:"Private studio consults & pricing." }}</p>
+        <!-- Row 1: Full Name & Phone Number -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+          <!-- Full Name -->
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant" for="fullNameInput">
+              Full Name *
+            </label>
+            <div class="relative flex items-center">
+              <input 
+                type="text" 
+                name="name" 
+                id="fullNameInput"
+                placeholder="e.g. Ganesh Mugada" 
+                required 
+                class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#ffb77d] focus:ring-1 focus:ring-[#ffb77d] transition-all"
+              />
+              <span class="material-symbols-outlined absolute right-2.5 text-[17px] text-neutral-400 pointer-events-none">person</span>
             </div>
           </div>
-        </div>
 
-      </section>
-
-      <!-- RIGHT PANEL: Register Account Form Card (Compact Dual-Column Fields, Zero Scroll) -->
-      <section class="lg:col-span-5 h-full min-h-0 flex flex-col justify-center items-center">
-        <div class="w-full max-w-[500px] rounded-2xl bg-surface-container p-5 sm:p-6 shadow-2xl border border-surface-container-highest/40 flex flex-col justify-center">
-          
-          <!-- Header -->
-          <div class="flex flex-col text-center items-center mb-3">
-            <span class="text-[10px] uppercase tracking-[0.2em] text-primary font-bold mb-0.5">
-              {{ cms.register_card_subtitle|default:"HANDCRAFTED SOLID BURMA TEAK" }}
-            </span>
-            <h2 class="font-headline text-2xl sm:text-[26px] text-on-surface font-semibold tracking-tight">
-              {{ cms.register_card_title|default:"Create Customer Account" }}
-            </h2>
-            <p class="text-[11px] text-on-surface-variant mt-0.5 max-w-xs leading-relaxed">
-              {{ cms.register_card_description|default:"Access exclusive handcrafted solid teak collections & custom orders" }}
-            </p>
-          </div>
-
-          <!-- Error Alert Banner -->
-          {% if error %}
-          <div class="mb-3 p-2 bg-red-950/70 border border-red-800/80 rounded-xl text-xs text-red-300 flex items-start gap-2">
-            <span class="material-symbols-outlined text-[16px] text-red-400 shrink-0">error</span>
-            <span>{{ error }}</span>
-          </div>
-          {% endif %}
-
-          <!-- OAuth Button: Continue with Google -->
-          <div class="w-full mb-2.5">
-            <button 
-              type="button" 
-              id="register-google-btn"
-              onclick="signUpWithGoogleViaSupabase()"
-              class="w-full flex items-center justify-center gap-2.5 py-2 px-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-all duration-200 active:scale-[0.99] border border-outline-variant/30 shadow-sm cursor-pointer"
-            >
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-              <span id="register-google-btn-text">Sign up with Google</span>
-              <div id="register-google-spinner" class="hidden w-3.5 h-3.5 border-2 border-gray-400 border-t-[#d97707] rounded-full animate-spin"></div>
-            </button>
-          </div>
-
-          <!-- Divider -->
-          <div class="relative w-full flex items-center justify-center my-2">
-            <div class="w-full h-px bg-surface-container-highest"></div>
-            <span class="absolute px-3 bg-surface-container text-[9.5px] uppercase tracking-wider text-on-surface-variant font-bold select-none">
-              OR REGISTER WITH EMAIL
-            </span>
-          </div>
-
-          <!-- Registration Form (Dual-Column Row Optimization) -->
-          <form method="POST" action="{% url 'register' %}" class="flex flex-col gap-2.5" id="register-form">
-            {% csrf_token %}
-
-            <!-- Row 1: Full Name & Phone Number -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <!-- Full Name -->
-              <div class="flex flex-col gap-1 text-left">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="full-name">
-                  FULL NAME *
-                </label>
-                <div class="relative flex items-center">
-                  <input 
-                    class="w-full px-3 py-2 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low border border-surface-container-highest focus:border-primary shadow-inner" 
-                    id="full-name" 
-                    name="name" 
-                    placeholder="e.g. Ganesh Mugada" 
-                    required 
-                    type="text"
-                  />
-                  <span class="material-symbols-outlined absolute right-2.5 text-[15px] text-on-surface-variant/60 pointer-events-none">person</span>
-                </div>
-              </div>
-
-              <!-- Phone / WhatsApp Number -->
-              <div class="flex flex-col gap-1 text-left">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="phone-number">
-                  PHONE / WHATSAPP
-                </label>
-                <div class="flex items-center gap-1.5">
-                  <div class="bg-surface-container-lowest px-2.5 py-2 rounded-xl border border-surface-container-highest flex items-center gap-1 text-[11px] select-none shrink-0 shadow-inner">
-                    <span class="font-medium text-tertiary">IN +91</span>
-                  </div>
-                  <div class="relative flex items-center w-full">
-                    <input 
-                      class="w-full px-3 py-2 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low border border-surface-container-highest focus:border-primary shadow-inner" 
-                      id="phone-number" 
-                      name="phone" 
-                      pattern="[0-9]{10}" 
-                      placeholder="10-digit number" 
-                      type="tel"
-                    />
-                    <span class="material-symbols-outlined absolute right-2.5 text-[15px] text-on-surface-variant/60 pointer-events-none">call</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Row 2: Email Address -->
-            <div class="flex flex-col gap-1 text-left">
-              <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="email-address">
-                EMAIL ADDRESS *
-              </label>
-              <div class="relative flex items-center">
+          <!-- Phone Number -->
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant" for="phoneInput">
+              Phone / WhatsApp
+            </label>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-2 rounded-xl bg-black/60 border border-white/15 text-[11px] font-semibold text-[#ffb77d] shrink-0 select-none">
+                IN +91
+              </span>
+              <div class="relative flex items-center w-full">
                 <input 
-                  class="w-full px-3.5 py-2 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low border border-surface-container-highest focus:border-primary shadow-inner" 
-                  id="email-address" 
-                  name="email" 
-                  placeholder="your.email@example.com" 
-                  required 
-                  type="email"
+                  type="tel" 
+                  name="phone" 
+                  id="phoneInput"
+                  pattern="[0-9]{10}"
+                  placeholder="10-digit number" 
+                  class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#ffb77d] focus:ring-1 focus:ring-[#ffb77d] transition-all"
                 />
-                <span class="material-symbols-outlined absolute right-3 text-[16px] text-on-surface-variant/60 pointer-events-none">mail</span>
+                <span class="material-symbols-outlined absolute right-2.5 text-[17px] text-neutral-400 pointer-events-none">call</span>
               </div>
             </div>
-
-            <!-- Row 3: Password & Confirm Password -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <!-- Password -->
-              <div class="flex flex-col gap-1 text-left">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="password">
-                  PASSWORD *
-                </label>
-                <div class="relative flex items-center">
-                  <input 
-                    class="w-full px-3 py-2 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low pr-9 border border-surface-container-highest focus:border-primary shadow-inner" 
-                    id="password" 
-                    minlength="6" 
-                    name="password" 
-                    placeholder="Min 6 characters" 
-                    required 
-                    type="password"
-                  />
-                  <button aria-label="Toggle password visibility" class="absolute right-2.5 p-1 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center focus:outline-none cursor-pointer" onclick="togglePasswordVisibility('password', 'pwd-toggle-icon')" type="button">
-                    <span class="material-symbols-outlined text-[16px]" id="pwd-toggle-icon">visibility</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Confirm Password -->
-              <div class="flex flex-col gap-1 text-left">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="confirm-password">
-                  CONFIRM PASSWORD *
-                </label>
-                <div class="relative flex items-center">
-                  <input 
-                    class="w-full px-3 py-2 bg-surface-container-lowest text-on-surface text-xs placeholder:text-on-surface-variant/40 rounded-xl transition-all duration-200 outline-none focus:bg-surface-container-low pr-9 border border-surface-container-highest focus:border-primary shadow-inner" 
-                    id="confirm-password" 
-                    name="confirm_password" 
-                    placeholder="Re-enter password" 
-                    required 
-                    type="password"
-                  />
-                  <button aria-label="Toggle confirm password visibility" class="absolute right-2.5 p-1 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center focus:outline-none cursor-pointer" onclick="togglePasswordVisibility('confirm-password', 'confirm-toggle-icon')" type="button">
-                    <span class="material-symbols-outlined text-[16px]" id="confirm-toggle-icon">visibility</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Terms Checkbox -->
-            <div class="flex items-start gap-2 pt-0.5">
-              <input class="mt-0.5 w-3.5 h-3.5 rounded bg-surface-container-lowest text-primary-container accent-primary-container focus:ring-0 cursor-pointer" id="terms" required type="checkbox">
-              <label class="text-[10.5px] text-on-surface-variant leading-snug select-none" for="terms">
-                I agree to the <a class="text-primary hover:underline" href="#terms">Terms of Patronage</a> and verify interest in bespoke creations.
-              </label>
-            </div>
-
-            <!-- Submit Button -->
-            <button 
-              type="submit" 
-              class="w-full mt-1 py-2.5 px-5 rounded-xl text-xs font-bold text-on-primary tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 shadow-lg bg-gradient-to-r from-primary-container to-secondary-container hover:from-primary-container hover:to-primary hover:text-on-primary-container active:scale-[0.99] cursor-pointer"
-            >
-              <span>CREATE CUSTOMER ACCOUNT</span>
-              <span class="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
-            </button>
-          </form>
-
-          <!-- Sign In Switcher -->
-          <div class="mt-3 pt-2 flex items-center justify-center gap-1.5 text-center bg-surface-container-low/60 py-1.5 rounded-xl border border-surface-container-highest/30">
-            <span class="text-[11px] text-on-surface-variant">Already have an account?</span>
-            <a class="text-[11px] font-bold text-primary hover:text-tertiary transition-colors underline-offset-2 hover:underline" href="{% url 'login' %}">
-              Sign In
-            </a>
           </div>
-
-          <!-- Atelier Assurance Trust Badges -->
-          <div class="mt-2.5 flex items-center justify-center gap-4 text-on-surface-variant/70 text-center text-[10px]">
-            <span class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-[12px] text-tertiary">check_circle</span>
-              Master Artisan Guarantee
-            </span>
-            <span class="text-surface-container-highest">•</span>
-            <span class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-[12px] text-primary">spa</span>
-              Sustainably Sourced Teak
-            </span>
-          </div>
-
         </div>
-      </section>
+
+        <!-- Row 2: Email Address -->
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant" for="emailInput">
+            Email Address *
+          </label>
+          <div class="relative flex items-center">
+            <input 
+              type="email" 
+              name="email" 
+              id="emailInput"
+              placeholder="your.email@example.com" 
+              required 
+              class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#ffb77d] focus:ring-1 focus:ring-[#ffb77d] transition-all"
+            />
+            <span class="material-symbols-outlined absolute right-2.5 text-[17px] text-neutral-400 pointer-events-none">mail</span>
+          </div>
+        </div>
+
+        <!-- Row 3: Password & Confirm Password -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+          <!-- Password -->
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant" for="passwordInput">
+              Password *
+            </label>
+            <div class="relative flex items-center">
+              <input 
+                type="password" 
+                name="password" 
+                id="passwordInput"
+                placeholder="Min 6 characters" 
+                minlength="6"
+                required 
+                class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-neutral-500 pr-9 focus:outline-none focus:border-[#ffb77d] focus:ring-1 focus:ring-[#ffb77d] transition-all"
+              />
+              <button aria-label="Toggle password visibility" class="absolute right-2.5 p-0.5 text-neutral-400 hover:text-[#ffb77d] transition-colors flex items-center justify-center cursor-pointer" onclick="togglePasswordVisibility('passwordInput', 'eyeIcon1')" type="button">
+                <span class="material-symbols-outlined text-[17px]" id="eyeIcon1">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="space-y-1">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant" for="confirmPasswordInput">
+              Confirm Password *
+            </label>
+            <div class="relative flex items-center">
+              <input 
+                type="password" 
+                name="confirm_password" 
+                id="confirmPasswordInput"
+                placeholder="Re-enter password" 
+                required 
+                class="w-full px-3 py-2 rounded-xl bg-black/50 border border-white/15 text-xs text-white placeholder:text-neutral-500 pr-9 focus:outline-none focus:border-[#ffb77d] focus:ring-1 focus:ring-[#ffb77d] transition-all"
+              />
+              <button aria-label="Toggle confirm password visibility" class="absolute right-2.5 p-0.5 text-neutral-400 hover:text-[#ffb77d] transition-colors flex items-center justify-center cursor-pointer" onclick="togglePasswordVisibility('confirmPasswordInput', 'eyeIcon2')" type="button">
+                <span class="material-symbols-outlined text-[17px]" id="eyeIcon2">visibility</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms of Patronage Agreement -->
+        <div class="flex items-start gap-2 pt-0.5">
+          <input checked class="mt-0.5 w-3.5 h-3.5 rounded bg-black/50 accent-[#d97707] cursor-pointer" id="termsCheck" required type="checkbox">
+          <label class="text-[10px] sm:text-[11px] text-on-surface-variant select-none leading-tight" for="termsCheck">
+            I agree to the <span class="text-[#ffb77d]">Terms of Patronage</span> and verify interest in solid Burma teak creations.
+          </label>
+        </div>
+
+        <!-- Primary CTA Button -->
+        <button 
+          type="submit" 
+          id="submitBtn" 
+          class="w-full py-2.5 sm:py-3 px-4 rounded-xl text-xs font-bold text-black uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 shadow-lg bg-gradient-to-r from-[#ffb77d] via-[#f5bc7e] to-[#d97707] hover:brightness-110 active-tap cursor-pointer"
+        >
+          <span>CREATE CUSTOMER ACCOUNT</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </button>
+      </form>
+
+      <!-- Switcher to Login -->
+      <div class="pt-2 text-center text-xs text-on-surface-variant border-t border-white/10">
+        Already have an account? 
+        <a href="{% url 'login' %}" class="font-bold text-[#ffb77d] hover:underline ml-1">
+          Sign In &rarr;
+        </a>
+      </div>
+
+      <!-- Atelier Trust Badges -->
+      <div class="pt-0.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[10px] text-on-surface-variant/70">
+        <span class="flex items-center gap-1 shrink-0">
+          <span class="material-symbols-outlined text-[13px] text-[#ffb77d]">check_circle</span>
+          Master Artisan Guarantee
+        </span>
+        <span class="opacity-40">•</span>
+        <span class="flex items-center gap-1 shrink-0">
+          <span class="material-symbols-outlined text-[13px] text-[#ffb77d]">spa</span>
+          Sustainably Sourced Teak
+        </span>
+      </div>
 
     </div>
+
+    <!-- Carousel Dots Pagination (Mobile & Desktop) -->
+    <div class="flex items-center justify-center gap-2 pt-3">
+      <button aria-label="Slide 1" class="w-6 h-1.5 rounded-full transition-all duration-300 bg-[#ffb77d] cursor-pointer" id="dot-0" type="button"></button>
+      <button aria-label="Slide 2" class="w-2 h-1.5 rounded-full transition-all duration-300 bg-white/20 cursor-pointer" id="dot-1" type="button"></button>
+      <button aria-label="Slide 3" class="w-2 h-1.5 rounded-full transition-all duration-300 bg-white/20 cursor-pointer" id="dot-2" type="button"></button>
+    </div>
+
   </main>
 
-  <footer class="shrink-0 w-full bg-surface-container-lowest/90 py-1.5 text-center text-[10px] text-on-surface-variant/40 border-t border-surface-container-highest/20">
-    <span>&copy; 2026 Glory Furniture Hub. All rights reserved.</span>
+  <!-- ======================================================== -->
+  <!-- 4. COMPACT FOOTER                                        -->
+  <!-- ======================================================== -->
+  <footer class="relative z-20 w-full py-2 text-center text-[10px] text-on-surface-variant/40">
+    <span>&copy; 2026 Glory Furniture Hub. Handcrafted in India.</span>
   </footer>
 
   <!-- Scripts: Password Visibility, Carousel, and Google OAuth -->
@@ -418,7 +363,7 @@
       }
     }
 
-    // Carousel Autoplay & Controls
+    // Carousel Autoplay & Slide Switching
     let currentSlide = 0;
     const totalSlides = 3;
     let autoplayTimer;
@@ -430,15 +375,15 @@
         const dot = document.getElementById(`dot-${i}`);
         if (slide && dot) {
           if (i === currentSlide) {
-            slide.classList.remove('opacity-0', 'pointer-events-none');
+            slide.classList.remove('opacity-0');
             slide.classList.add('opacity-100');
-            dot.classList.remove('bg-surface-container-highest');
-            dot.classList.add('bg-primary');
+            dot.classList.remove('bg-white/20', 'w-2');
+            dot.classList.add('bg-[#ffb77d]', 'w-6');
           } else {
             slide.classList.remove('opacity-100');
-            slide.classList.add('opacity-0', 'pointer-events-none');
-            dot.classList.remove('bg-primary');
-            dot.classList.add('bg-surface-container-highest');
+            slide.classList.add('opacity-0');
+            dot.classList.remove('bg-[#ffb77d]', 'w-6');
+            dot.classList.add('bg-white/20', 'w-2');
           }
         }
       }
@@ -475,7 +420,7 @@
 
     startAutoplay();
 
-    // Supabase Google OAuth Handler
+    // Supabase Google OAuth
     const SUPABASE_URL = 'https://qxxrghelhlrafdkveeqo.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF4eHJnaGVsaGxyYWZka3ZlZXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDMwNTEsImV4cCI6MjEwNDAxOTA1MX0.mc-5c84wqAaD5_ybaHS_vHZSYgczA2bIjWC2KwIPfZA';
 
