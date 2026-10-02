@@ -69,7 +69,7 @@ class RoleBasedAccessMiddleware:
 
         # Public storefront pages that visitors can freely browse
         is_public_storefront = (
-            path in ['/', '/home/', '/home'] or
+            path in ['/', '/home/', '/home', '/welcome/', '/welcome', '/store/', '/store'] or
             path.startswith('/catalog') or
             path.startswith('/product/') or
             path.startswith('/search') or
@@ -106,7 +106,7 @@ class RoleBasedAccessMiddleware:
             return redirect(f'/register/?next={path}')
 
         # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO HOME (UNLESS EXPLICIT NEXT)
-        if path in ['/login/', '/register/']:
+        if is_authenticated_user and path in ['/login/', '/register/']:
             next_url = request.GET.get('next')
             if next_url:
                 return redirect(next_url)

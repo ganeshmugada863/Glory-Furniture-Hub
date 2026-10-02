@@ -304,7 +304,7 @@ def customer_logout_view(request):
     auth_logout(request)
     request.session.flush()
     messages.success(request, "You have been signed out successfully.")
-    return redirect('login')
+    return redirect('home')
 
 
 def customer_home_view(request):

@@ -132,6 +132,35 @@ def home_view(request):
     return render(request, 'core/home.html', context)
 
 
+def root_view(request):
+    """
+    Intelligent Root Router (/):
+    - New / Logged-out visitors: Displays the modern, minimal Welcome / Get Started page.
+    - Existing Authenticated Users (Customers & Admins): Directly routed to the existing storefront Home.
+    """
+    role = request.session.get('glory_role')
+    user_email = request.session.get('glory_user_email')
+    is_authenticated = bool(request.user.is_authenticated or user_email or role)
+
+    if is_authenticated:
+        return home_view(request)
+    return welcome_view(request)
+
+
+def welcome_view(request):
+    """
+    Dedicated Modern, Minimal & Premium Welcome / Get Started entrance page.
+    - If user is already authenticated, intelligently routes them to existing Home flow.
+    - Otherwise renders the dedicated Welcome / Get Started entrance screen.
+    """
+    role = request.session.get('glory_role')
+    user_email = request.session.get('glory_user_email')
+    if request.user.is_authenticated or user_email or role:
+        return redirect('home')
+
+    return render(request, 'core/welcome.html')
+
+
 def splash_view(request):
     return render(request, 'core/splash.html')
 
