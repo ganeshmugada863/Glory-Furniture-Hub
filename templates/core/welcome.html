@@ -2,103 +2,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Welcome to Glory Furniture Hub</title>
+  
+  <!-- Compiled Tailwind CSS & CDN support -->
+  <link rel="stylesheet" href="{% static 'css/glory.css' %}">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, Cinzel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 
-  <!-- Google Fonts: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Compiled Tailwind CSS for Glory Furniture Hub -->
-  <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
-  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            brand: ['"Cinzel"', 'serif'],
+          },
+          colors: {
+            brand: {
+              cognac: '#9E4E1D',
+              cognacDark: '#873F14',
+              espresso: '#2E1B10',
+              cream: '#FAF6F0',
+              sand: '#F2E8DC',
+            }
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
-
+    
     html, body {
       width: 100%;
       height: 100%;
-      overflow-x: hidden;
-      background-color: #FAF7F2;
+      margin: 0;
+      padding: 0;
+      background-color: #FAF6F0;
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
-    /* Full-screen viewport container: fits screen perfectly without scrollbars on desktop */
-    .welcome-viewport {
-      width: 100vw;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #FAF7F2;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Fixed Aspect Ratio Stage: guarantees pixel-perfect hotspot alignment on any resolution */
-    .welcome-stage {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      max-width: calc(100vh * (1024 / 682));
-      max-height: calc(100vw * (682 / 1024));
-      aspect-ratio: 1024 / 682;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* Soft cream gradient on left side fading seamlessly into background room */
+    .hero-gradient-overlay {
+      background: linear-gradient(
+        90deg, 
+        rgba(250, 246, 240, 0.98) 0%, 
+        rgba(250, 246, 240, 0.94) 32%, 
+        rgba(250, 246, 240, 0.75) 45%, 
+        rgba(250, 246, 240, 0.25) 60%, 
+        rgba(250, 246, 240, 0.0) 75%
+      );
     }
 
     @media (max-width: 768px) {
-      .welcome-viewport {
-        justify-content: flex-start;
-        padding-top: 12px;
+      .hero-gradient-overlay {
+        background: linear-gradient(
+          180deg, 
+          rgba(250, 246, 240, 0.97) 0%, 
+          rgba(250, 246, 240, 0.92) 65%, 
+          rgba(250, 246, 240, 0.75) 100%
+        );
       }
-      .welcome-stage {
-        max-width: 100vw;
-        max-height: calc(100vw * (682 / 1024));
+    }
+
+    .wave-container {
+      line-height: 0;
+    }
+
+    /* Seamless full-screen window ratio adaptation */
+    @media (min-height: 680px) and (min-width: 641px) {
+      .viewport-fit {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+      }
+    }
+    @media (max-height: 679px), (max-width: 640px) {
+      .viewport-fit {
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-y: auto;
       }
     }
 
     .active-tap:active {
-      transform: scale(0.97);
+      transform: scale(0.98);
       transition: transform 0.1s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.99); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .animate-stage-fade {
-      animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
-<body class="selection:bg-[#9E4B1E] selection:text-white">
+<body class="bg-[#FAF6F0] text-stone-800 antialiased selection:bg-[#9E4E1D] selection:text-white relative">
 
-  <!-- ===================================================================== -->
-  <!-- FULL SCREEN WELCOME PAGE WITH EXACT REFERENCE IMAGE                   -->
-  <!-- ===================================================================== -->
-  <main class="welcome-viewport">
-    
-    <!-- Flash Messages Toast Notification (e.g. Logout, Status) -->
+  <!-- ======================================================== -->
+  <!-- MAIN FULL VIEWPORT WRAPPER (Fits any window ratio)       -->
+  <!-- ======================================================== -->
+  <div class="viewport-fit w-full flex flex-col justify-between relative">
+
+    <!-- ========================================== -->
+    <!-- BACKGROUND PHOTOGRAPH + SOFT GRADIENT MASK -->
+    <!-- ========================================== -->
+    <div aria-hidden="true" class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      <!-- High-resolution luxury living room photograph -->
+      <img 
+        alt="Glory Furniture Hub Luxury Living Room" 
+        class="w-full h-full object-cover object-[center_right] sm:object-center transform scale-[1.01]" 
+        src="{% static 'images/welcome_bg_stitch.jpg' %}"
+        loading="eager"
+      />
+      <!-- Left-side soft creamy-warm gradient mask -->
+      <div class="hero-gradient-overlay absolute inset-0 z-[1] pointer-events-none"></div>
+    </div>
+
+    <!-- Toast Notification (Django Messages) -->
     {% if messages %}
-    <div class="absolute top-3 z-50 max-w-md px-4 w-full">
+    <div class="absolute top-2 left-1/2 -translate-x-1/2 z-50 max-w-md px-4 w-full">
       {% for message in messages %}
-      <div class="p-3 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-lg {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% else %}bg-[#F5EFE6] text-[#7A3E1D] border border-[#E8DEC0]{% endif %} animate-stage-fade">
+      <div class="p-3 rounded-2xl text-xs font-semibold flex items-center justify-between shadow-lg {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% else %}bg-[#FAF6F0] text-[#7A3E1D] border border-[#E8DEC0]{% endif %}">
         <div class="flex items-center gap-2">
-          <svg class="w-4 h-4 shrink-0 text-[#9E4B1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 shrink-0 text-[#9E4E1D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>{{ message }}</span>
@@ -109,136 +143,230 @@
     </div>
     {% endif %}
 
-    <!-- Exact Stage Container -->
-    <div class="welcome-stage animate-stage-fade">
-      
-      <!-- 1. The Exact High-Resolution Image -->
-      <img 
-        src="{% static 'images/welcome_exact_hero.jpg' %}" 
-        alt="Welcome to Glory Furniture Hub" 
-        class="w-full h-full object-contain pointer-events-none select-none shadow-2xs"
-        loading="eager"
-      />
-
-      <!-- 2. Interactive Clickable Hotspot over "Get Started →" Button -->
-      <!-- Exact coordinates in 1024x682: left: 5.76%, top: 53.23%, width: 34.47%, height: 8.65% -->
-      <a 
-        href="{% url 'register' %}" 
-        id="welcome-get-started-btn"
-        title="Get Started — Create Account"
-        aria-label="Get Started"
-        style="position: absolute; left: 5.76%; top: 53.23%; width: 34.47%; height: 8.65%; border-radius: 9999px; cursor: pointer; z-index: 30;"
-        class="group active-tap focus:outline-none focus:ring-4 focus:ring-[#9E4B1E]/40 transition-all duration-200"
-      >
-        <!-- Subtle interactive hover glow -->
-        <span class="block w-full h-full rounded-full opacity-0 group-hover:opacity-10 bg-white transition-opacity duration-200"></span>
-        <span class="sr-only">Get Started</span>
+    <!-- ========================================== -->
+    <!-- TOP HEADER / BRAND BAR                     -->
+    <!-- ========================================== -->
+    <header class="relative z-30 shrink-0 w-full max-w-[1440px] mx-auto px-5 sm:px-10 lg:px-16 pt-4 sm:pt-6 pb-2 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="{% url 'welcome' %}" class="flex items-center gap-2 sm:gap-3.5 group focus:outline-none focus:ring-2 focus:ring-[#9E4E1D]/30 rounded-xl p-0.5 transition-all duration-300" title="Glory Furniture Hub">
+        <!-- House & Armchair Icon Badge -->
+        <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#2E1B10] to-[#1E1107] text-[#F5E6D3] flex items-center justify-center shadow-md border border-amber-900/30 group-hover:scale-105 transition-transform duration-300">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 44 44">
+            <path d="M5 19L22 4L39 19V39H5V19Z" stroke-width="2.2"></path>
+            <path d="M15 23H29V32H15V23Z" stroke-width="1.7"></path>
+            <path d="M12 25C12 24 13 23 14 23H15V31H13C12.4 31 12 30.6 12 30V25Z" stroke-width="1.7"></path>
+            <path d="M29 23H30C31 23 32 24 32 25V30C32 30.6 31.6 31 31 31H29V23Z" stroke-width="1.7"></path>
+            <path d="M15 32V35" stroke-width="2"></path>
+            <path d="M29 32V35" stroke-width="2"></path>
+          </svg>
+        </div>
+        <!-- Logo Typography -->
+        <div class="flex flex-col">
+          <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.16em] text-[#2E1B10] leading-tight uppercase">GLORY</span>
+          <span class="text-[8.5px] sm:text-[9.5px] tracking-[0.28em] font-semibold text-[#9E4E1D] uppercase -mt-0.5">FURNITURE HUB</span>
+        </div>
       </a>
 
-      <!-- 3. Interactive Clickable Hotspot over "English ⌵" Language Pill -->
-      <!-- Exact coordinates in 1024x682: left: 84.77%, top: 3.52%, width: 10.84%, height: 5.43% -->
-      <div 
-        style="position: absolute; left: 84.77%; top: 3.52%; width: 10.84%; height: 5.43%; z-index: 30;" 
-        id="lang-dropdown-wrapper"
-      >
-        <button 
-          type="button" 
-          onclick="toggleLanguageMenu(event)"
-          id="welcome-lang-btn"
-          title="Select Language"
-          aria-label="Language Selector"
-          aria-expanded="false"
-          aria-haspopup="true"
-          class="w-full h-full rounded-full cursor-pointer hover:bg-black/5 active-tap focus:outline-none focus:ring-2 focus:ring-[#9E4B1E]/40 transition-colors"
-        >
-          <span class="sr-only">Language: English</span>
-        </button>
+      <!-- Right Controls: Language Selector Pill & Sign In -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Returning customer link -->
+        <a href="{% url 'login' %}" class="hidden sm:inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-[#6E3314] hover:text-[#9E4E1D] hover:bg-white/70 transition-all duration-200">
+          Sign In
+        </a>
 
-        <!-- Dropdown Menu -->
-        <div 
-          id="lang-menu" 
-          class="hidden absolute right-0 mt-2 w-36 bg-white rounded-2xl shadow-xl border border-[#E8DEC0] py-1.5 z-50 text-xs font-medium font-sans"
-        >
-          <button type="button" onclick="selectLanguage('English')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#1F1A17] font-bold flex items-center justify-between">
-            <span>English</span>
-            <span class="text-[#9E4B1E] font-bold">&check;</span>
+        <!-- Language Selector Pill -->
+        <div class="relative" id="lang-wrapper">
+          <button 
+            id="lang-btn" 
+            type="button" 
+            onclick="toggleLang()" 
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-label="Select Language"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/90 hover:bg-white text-stone-800 text-xs sm:text-sm font-medium border border-stone-200/90 shadow-sm backdrop-blur-md transition-all duration-300 hover:shadow-md hover:border-amber-300/60 focus:outline-none focus:ring-2 focus:ring-[#9E4E1D]/30 active-tap"
+          >
+            <!-- Globe Icon -->
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#9E4E1D] stroke-[1.8]" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" x2="22" y1="12" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span id="current-lang" class="font-medium text-stone-700 text-xs sm:text-sm">English</span>
+            <!-- Down Chevron -->
+            <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-stone-500 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
           </button>
-          <button type="button" onclick="selectLanguage('Telugu')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#2A231E]">
-            <span>తెలుగు</span>
-          </button>
-          <button type="button" onclick="selectLanguage('Hindi')" class="w-full text-left px-4 py-2 hover:bg-[#FAF7F2] text-[#2A231E]">
-            <span>हिंदी</span>
-          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="lang-dropdown" class="hidden absolute right-0 mt-2 w-36 bg-white rounded-2xl shadow-xl border border-stone-200 py-1.5 z-50 text-xs font-medium">
+            <button type="button" onclick="setLang('English')" class="w-full text-left px-4 py-2 hover:bg-[#FAF6F0] text-stone-900 font-bold flex items-center justify-between">
+              <span>English</span>
+              <span class="text-[#9E4E1D]">&check;</span>
+            </button>
+            <button type="button" onclick="setLang('Telugu')" class="w-full text-left px-4 py-2 hover:bg-[#FAF6F0] text-stone-700">
+              <span>తెలుగు</span>
+            </button>
+            <button type="button" onclick="setLang('Hindi')" class="w-full text-left px-4 py-2 hover:bg-[#FAF6F0] text-stone-700">
+              <span>हिंदी</span>
+            </button>
+          </div>
         </div>
       </div>
+    </header>
 
-      <!-- 4. Interactive Clickable Hotspot over Top-Left Logo to Refresh/Home -->
-      <a 
-        href="{% url 'welcome' %}" 
-        style="position: absolute; left: 4%; top: 3%; width: 22%; height: 10%; border-radius: 12px; cursor: pointer; z-index: 25;"
-        title="Glory Furniture Hub"
-        aria-label="Glory Furniture Hub"
-      >
-        <span class="sr-only">Glory Furniture Hub</span>
-      </a>
+    <!-- ========================================== -->
+    <!-- MAIN HERO CONTENT SECTION                  -->
+    <!-- ========================================== -->
+    <main class="relative z-10 flex-1 w-full max-w-[1440px] mx-auto px-5 sm:px-10 lg:px-16 flex items-center py-3 sm:py-6">
+      <div class="w-full max-w-xl lg:max-w-2xl">
+        
+        <!-- Eyebrow Subtitle -->
+        <div class="mb-2 sm:mb-3">
+          <span class="text-[10px] sm:text-xs font-semibold text-[#873F14] uppercase tracking-[0.28em]">
+            WELCOME TO
+          </span>
+        </div>
 
-    </div>
+        <!-- Main Headline: Glory Furniture Hub -->
+        <h1 class="font-serif text-[38px] sm:text-6xl lg:text-[70px] font-bold leading-[1.06] text-[#2E1B10] tracking-tight mb-3 sm:mb-4 drop-shadow-sm">
+          Glory<br>
+          <span class="text-[#6E3314]">Furniture Hub</span>
+        </h1>
 
-    <!-- Mobile-Optimized Action Bar (Visible on mobile screens for effortless tapping) -->
-    <div class="sm:hidden w-full px-6 pt-3 pb-6 flex flex-col items-center gap-2.5 z-30">
-      <a 
-        href="{% url 'register' %}" 
-        class="w-full max-w-sm py-3.5 px-6 rounded-2xl bg-[#9E4B1E] hover:bg-[#833D16] text-white font-bold text-base shadow-md active-tap flex items-center justify-center gap-2.5 text-center transition-all duration-200"
-      >
-        <span>Get Started</span>
-        <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-      </a>
+        <!-- Accent Bar with Dot -->
+        <div aria-hidden="true" class="flex items-center gap-2 mb-5 sm:mb-7 pt-0.5">
+          <span class="h-1 sm:h-1.5 w-12 sm:w-16 bg-[#9E4E1D] rounded-full shadow-[0_0_8px_rgba(158,78,29,0.3)]"></span>
+          <span class="h-1 sm:h-1.5 w-1 sm:w-1.5 bg-[#C99A75] rounded-full"></span>
+        </div>
 
-      <p class="text-xs text-[#8C7A6B] font-medium text-center">
-        Already registered? 
-        <a href="{% url 'login' %}" class="font-bold text-[#9E4B1E] hover:underline ml-1">
-          Log in &rarr;
-        </a>
-      </p>
-    </div>
+        <!-- Primary CTA Button: Get Started -->
+        <div class="mb-5 sm:mb-8">
+          <a 
+            href="{% url 'register' %}" 
+            id="cta-get-started"
+            class="group relative inline-flex items-center justify-center gap-3 px-7 sm:px-9 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#9E4E1D] via-[#A6511F] to-[#873F14] text-white text-base sm:text-lg font-semibold tracking-wide shadow-[0_10px_24px_-4px_rgba(158,78,29,0.45)] hover:shadow-[0_16px_32px_-6px_rgba(158,78,29,0.55)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#9E4E1D]/30 border border-amber-200/20 active-tap"
+          >
+            <span class="relative z-10">Get Started</span>
+            <!-- Sleek Right Arrow with Animated Shift -->
+            <svg class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1.5 stroke-[2.2] text-[#FDEBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span class="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-t from-black/10 to-white/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></span>
+          </a>
+        </div>
 
-  </main>
+        <!-- Trust Badges & Feature Highlights -->
+        <div class="grid grid-cols-3 gap-2 sm:gap-4 max-w-sm sm:max-w-lg w-full">
+          
+          <!-- Badge 1: Modern Designs -->
+          <div class="group p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-white/75 hover:bg-white/95 backdrop-blur-md border border-[#E8DEC0]/80 shadow-xs sm:shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center sm:items-start text-center sm:text-left cursor-default">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#FAF2E9] border border-amber-200/60 flex items-center justify-center mb-1.5 sm:mb-2 text-[#9E4E1D] group-hover:scale-105 transition-all duration-300">
+              <!-- Armchair Icon -->
+              <svg class="w-4 h-4 sm:w-6 sm:h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3" stroke-linecap="round"></path>
+                <path d="M3 11a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6z" stroke-linecap="round"></path>
+                <path d="M6 19v2M18 19v2" stroke-linecap="round"></path>
+                <path d="M4 13h16" stroke-linecap="round"></path>
+              </svg>
+            </div>
+            <span class="text-[10px] sm:text-sm font-semibold text-stone-800 leading-tight">
+              Modern<br class="hidden sm:inline"> Designs
+            </span>
+          </div>
 
-  <!-- Interactive Scripts -->
+          <!-- Badge 2: Trusted Quality -->
+          <div class="group p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-white/75 hover:bg-white/95 backdrop-blur-md border border-[#E8DEC0]/80 shadow-xs sm:shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center sm:items-start text-center sm:text-left cursor-default">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#FAF2E9] border border-amber-200/60 flex items-center justify-center mb-1.5 sm:mb-2 text-[#9E4E1D] group-hover:scale-105 transition-all duration-300">
+              <!-- Shield with Checkmark Icon -->
+              <svg class="w-4 h-4 sm:w-6 sm:h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </div>
+            <span class="text-[10px] sm:text-sm font-semibold text-stone-800 leading-tight">
+              Trusted<br class="hidden sm:inline"> Quality
+            </span>
+          </div>
+
+          <!-- Badge 3: Safe Delivery -->
+          <div class="group p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-white/75 hover:bg-white/95 backdrop-blur-md border border-[#E8DEC0]/80 shadow-xs sm:shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex flex-col items-center sm:items-start text-center sm:text-left cursor-default">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#FAF2E9] border border-amber-200/60 flex items-center justify-center mb-1.5 sm:mb-2 text-[#9E4E1D] group-hover:scale-105 transition-all duration-300">
+              <!-- Delivery Truck Icon -->
+              <svg class="w-4 h-4 sm:w-6 sm:h-6 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect height="11" rx="1.5" stroke-linecap="round" stroke-linejoin="round" width="13" x="1" y="4"></rect>
+                <path d="M14 8h4l3 3.5v3.5h-7V8z" stroke-linecap="round" stroke-linejoin="round"></path>
+                <circle cx="5.5" cy="18.5" r="2.2" stroke-linecap="round"></circle>
+                <circle cx="17.5" cy="18.5" r="2.2" stroke-linecap="round"></circle>
+              </svg>
+            </div>
+            <span class="text-[10px] sm:text-sm font-semibold text-stone-800 leading-tight">
+              Safe<br class="hidden sm:inline"> Delivery
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Mobile Sign-In link -->
+        <div class="sm:hidden mt-3.5 pt-0.5">
+          <p class="text-xs text-stone-600">
+            Already registered? 
+            <a href="{% url 'login' %}" class="font-bold text-[#9E4E1D] hover:underline ml-1">Sign In &rarr;</a>
+          </p>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- BOTTOM ORGANIC WAVE FOOTER & PAGINATION    -->
+    <!-- ========================================== -->
+    <footer class="relative z-20 shrink-0 w-full overflow-hidden wave-container">
+      <div class="relative w-full">
+        <!-- Organic S-Curve Wave SVG matching reference design -->
+        <svg class="w-full h-12 sm:h-16 lg:h-20 block" fill="none" preserveAspectRatio="none" viewBox="0 0 1440 90" xmlns="http://www.w3.org/2000/svg">
+          <!-- Layer 1: Soft sand wave -->
+          <path d="M0,50 C240,15 480,85 720,50 C960,15 1200,80 1440,30 L1440,90 L0,90 Z" fill="#F4ECE1" fill-opacity="0.95"></path>
+          <!-- Layer 2: Warm beige wave -->
+          <path d="M0,65 C300,30 520,85 820,58 C1100,35 1300,75 1440,55 L1440,90 L0,90 Z" fill="#EADFD0" opacity="0.75"></path>
+          <!-- Layer 3: Warm terracotta right accent corner -->
+          <path d="M1100,90 C1220,70 1340,55 1440,40 L1440,90 Z" fill="#C9906F" opacity="0.35"></path>
+        </svg>
+
+        <!-- Carousel Pagination Pill in bottom center -->
+        <div aria-label="Slide navigation" class="absolute bottom-2.5 sm:bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-stone-200/80 shadow-sm z-20">
+          <span class="w-6 h-1.5 rounded-full bg-[#9E4E1D] shadow-[0_0_6px_rgba(158,78,29,0.4)]"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-stone-300"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-stone-300"></span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Language Dropdown script & keyboard navigation -->
   <script>
-    function toggleLanguageMenu(e) {
-      if (e) e.stopPropagation();
-      const menu = document.getElementById('lang-menu');
-      const btn = document.getElementById('welcome-lang-btn');
-      if (menu) {
-        const isHidden = menu.classList.contains('hidden');
-        menu.classList.toggle('hidden');
-        if (btn) btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-      }
+    function toggleLang() {
+      const dd = document.getElementById('lang-dropdown');
+      const btn = document.getElementById('lang-btn');
+      const isHidden = dd.classList.contains('hidden');
+      dd.classList.toggle('hidden');
+      if (btn) btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
     }
-
-    function selectLanguage(lang) {
-      const menu = document.getElementById('lang-menu');
-      if (menu) menu.classList.add('hidden');
-      const btn = document.getElementById('welcome-lang-btn');
+    function setLang(lang) {
+      document.getElementById('current-lang').innerText = lang;
+      const dd = document.getElementById('lang-dropdown');
+      dd.classList.add('hidden');
+      const btn = document.getElementById('lang-btn');
       if (btn) btn.setAttribute('aria-expanded', 'false');
     }
-
-    // Close language menu on outside click
     document.addEventListener('click', function(e) {
-      const wrapper = document.getElementById('lang-dropdown-wrapper');
-      const menu = document.getElementById('lang-menu');
-      if (wrapper && !wrapper.contains(e.target) && menu && !menu.classList.contains('hidden')) {
-        menu.classList.add('hidden');
-        const btn = document.getElementById('welcome-lang-btn');
+      const wrapper = document.getElementById('lang-wrapper');
+      const dd = document.getElementById('lang-dropdown');
+      const btn = document.getElementById('lang-btn');
+      if (wrapper && !wrapper.contains(e.target) && dd && !dd.classList.contains('hidden')) {
+        dd.classList.add('hidden');
         if (btn) btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    // Keyboard support: Enter / Space triggers Get Started
-    document.addEventListener('keydown', function(e) {
-      if ((e.key === 'Enter' || e.key === ' ') && e.target.id === 'welcome-get-started-btn') {
-        window.location.href = "{% url 'register' %}";
       }
     });
   </script>
