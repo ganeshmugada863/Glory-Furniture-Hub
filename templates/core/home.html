@@ -1,682 +1,493 @@
-<!DOCTYPE html><html lang="en" class="scroll-smooth"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    screens: {
-      'xs': '480px',
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
-      '2xl': '1536px',
-      '3xl': '1920px',
-      '4k': '2560px',
-      '4k-wide': '3840px',
-    },
-    extend: {
-      colors: {
-        'primary': '#1A0E08',
-        'primary-container': '#2A170F',
-        'primary-dark': '#120804',
-        'secondary': '#C9963F',
-        'secondary-container': '#F6E4C2',
-        'secondary-dark': '#A87928',
-        'tertiary': '#8C4F20',
-        'tertiary-container': '#F4DCBA',
-        'surface': '#FAF7F2',
-        'surface-bright': '#FFFFFF',
-        'surface-container-lowest': '#FFFFFF',
-        'surface-container-low': '#F5EFE7',
-        'surface-container': '#EFE7DC',
-        'surface-container-high': '#E5DACB',
-        'surface-container-highest': '#DDD0BF',
-        'background': '#FAF7F2',
-        'on-primary': '#FFFFFF',
-        'on-secondary': '#1A0E08',
-        'on-surface': '#1A0E08',
-        'on-surface-variant': '#5A4A41',
-        'outline': '#82746C',
-        'outline-variant': '#D9CCBD',
-      },
-      fontFamily: {
-        'display': ['Playfair Display', 'serif'],
-        'headline': ['Playfair Display', 'serif'],
-        'body': ['Plus Jakarta Sans', 'sans-serif'],
-      }
-    }
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Glory Furniture Hub — Modern Interiors in Soft Forms{% endblock %}
+
+{% block extra_head %}
+<style>
+  :root {
+    --aura-bg: #F8F7F4;
+    --aura-dark: #1A1816;
+    --aura-muted: #8E867E;
+    --aura-border: #E8E2D9;
   }
-}
-</script>
-  <meta name="csrf-token" content="{{ csrf_token }}" />
-  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
-  <script>
-    (function() {
-      try {
-        var hash = window.location.hash || '';
-        var host = window.location.hostname || '';
-        if (hash.includes('access_token=')) {
-          window.location.replace('https://glory-furniture-hub.vercel.app/accounts/supabase-callback/' + hash);
-          return;
-        }
-        if (host.includes('onrender.com')) {
-          window.location.replace('https://glory-furniture-hub.vercel.app' + window.location.pathname + window.location.search + hash);
-          return;
-        }
-      } catch(e) {}
-    })();
-  </script>
 
-</head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
-<!-- Main Navigation Bar -->
-<div class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
-<div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-4 2xl:py-6 flex items-center justify-between gap-4">
-<!-- Brand Logo & Name (Left) -->
-<a class="flex items-center gap-2.5 shrink-0 group select-none" href="/">
-<div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-<img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
-</div>
-<span class="font-display-md text-[18px] tracking-widest uppercase text-[#1A0E08] font-semibold group-hover:text-secondary transition-colors">GLORY FURNITURE HUB</span>
-</a>
-<!-- Centered Clean Horizontal Navigation Links -->
-<!-- Right Minimal Action Icons -->
-<div class="flex items-center gap-space-sm sm:gap-4 shrink-0 text-on-surface">
-<button aria-label="Search" onclick="window.location.href='/catalog/'" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined text-[22px]">search</span>
-</button>
-<a aria-label="Account" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors flex items-center justify-center" data-path="profile" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}">
-<span class="material-symbols-outlined text-[22px]">person</span>
-</a>
-<a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">3</span></a><a aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors relative flex items-center justify-center" data-path="cart" href="/cart/">
-<span class="material-symbols-outlined text-[22px]">shopping_bag</span>
-<span class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">2</span>
-</a>
-</div>
-</div>
-</div></header><main class="w-full bg-surface"><div class="flex flex-col w-full">
-<!-- Dynamic Notification Toast Container -->
-<div class="fixed bottom-8 right-8 z-50 transform transition-all duration-300 pointer-events-none flex items-center gap-space-sm bg-primary text-on-primary px-space-md py-space-sm rounded-xl shadow-xl translate-y-24 opacity-0" id="interactionToast">
-<span class="material-symbols-outlined text-secondary-container" id="toastIcon">volume_up</span>
-<span class="font-label-md text-label-md" id="toastMessage">Audio unmuted</span>
-</div>
-<!-- Hero Showcase Section (Bleeds slightly under header rhythm) -->
-<section class="relative w-full overflow-hidden bg-primary-container text-surface h-[560px] lg:h-[620px] select-none" id="hero-carousel" class="relative w-full overflow-hidden bg-primary-container text-surface h-[560px] sm:h-[640px] lg:h-[720px] 2xl:h-[840px] 4k:h-[960px] select-none"><div class="relative w-full h-full"><div class="absolute inset-0 transition-opacity duration-700 ease-in-out" id="carouselSlide1"><img alt="Editorial Scandinavian architectural living room atelier" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_H_jotZws9hSpH6r8ElrdrzhJrAbFb1DY9qLGqFRZ_GTk3yO01zGDk5FXBvFyE1jXs7Twej4E5e2XD8XtYswjj7-gHaiWLZzqQAo8fHsE1Mn0RDrjrT6uJeihxtT6YtaLLpPvyVGpY81cuUToQ2xyhLj9WKMlfq2JYyLMtTSDkkSPnUMBlSWDfHg2hj6kfRlfwKzKesbgF05NWM1jFTmJNEUHQ2YARY1fT9VB4ksld9mveKUsNlQ"><div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-primary/30"></div></div><div class="relative z-10 w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 h-full flex flex-col justify-end pb-12 sm:pb-16 lg:pb-24 2xl:pb-32"><div class="max-w-2xl 2xl:max-w-4xl 4k:max-w-5xl flex flex-col gap-3 2xl:gap-5"><div class="inline-flex items-center gap-space-xs self-start bg-surface/15 backdrop-blur-md px-space-md py-1 rounded-full text-secondary-fixed font-label-sm text-label-sm uppercase tracking-wider"><span class="w-2 h-2 rounded-full bg-secondary-container"></span><span class="">Architectural Living &amp; Interiors</span></div><h1 class="font-display text-4xl sm:text-5xl lg:text-6xl 2xl:text-7xl 4k:text-8xl font-bold text-surface-bright tracking-tight leading-none">Glory Furniture Hub</h1><p class="font-body text-base sm:text-lg lg:text-xl 2xl:text-2xl 4k:text-3xl text-surface-container-highest max-w-xl 2xl:max-w-3xl leading-relaxed">Curated architectural furniture, bespoke upholstery, and enduring interior objects handcrafted for elevated spaces.</p></div></div></div></section>
-<!-- Curated Furniture Categories Quick Grid (Full Width & 4K Ready) -->
-<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-10 sm:py-16 2xl:py-24 bg-surface">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-lg"><div class="flex flex-col gap-space-xs"><h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Curated Living Spaces</h2></div><a class="inline-flex items-center gap-1 font-label-md text-label-md text-[#C4B3A3] hover:text-secondary transition-colors group" href="/catalog/"><span class="">View all categories</span><span class="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span></a></div>
-<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 xl:grid-cols-8 gap-4 sm:gap-6 2xl:gap-8 w-full"><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="beds" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Beds" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_KKg7lsr7BQHgMf7vtrQiFxz-c9tcAdJYjeYTNw2RXaYLzUtCzywtXKg3fvkKW5y-68sCZ8oGYdR102uPTS-oHNUb_PJwcksghy9fdX48V7WJiQOVY-MhumEWRKNSnEkSMHM5RubvdmVL1qBufZxH5pTNc1uEEpaH85luRlXDeTBm9rTGTkKIYfDewR3J2I3lH0CPs4shZseJsrWlYTXtFbbJA9Kxb-z5oGNdlfqbgYyFAd-LYnI"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Beds</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="sofas" href="/catalog/?category=Sofa%20Set"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Sofa Sets" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Sofa Sets</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="dining-sets" href="/catalog/?category=Dining%20Table"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Dining Set" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Dining Set</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="diwans" href="/catalog/?category=Podimes"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Diwan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Diwan</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="doors" href="/catalog/?search=door"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Doors" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcpGfqb2W2mFXgsQ7WnS8TCUjZTyxcomjvPp-r9AS-FoD5TNSEfT448L6B7JByWsZO2RXvahPCZuBJ7d7GU31JBjbO12NHnTshd4AH_DTsZvxRVlKdrxIpVZtVzjy6qumIRh5o1QGM1uu2gG3VXjuPBcNXDRFZ1c_eRQoXRp0dip7yjPAeh2amxCZpT63WqzqiYYBMQOwRCRt9cz29mxZTtosSGI4WeoaL1h-eZywvtBil0IYc5cQ"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Doors</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="podiums" href="/catalog/?category=Podimes"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Podiums" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKPYDoba6aiMMqFQ5Gn-zTn9tNsOK0PWWmbkBuQQYBL5O5sQDU6IkIH6QACEDmCULkzi2PbhMx55e0eVma2BBme9YzzaI0ahalQPYKwGIKW98dUVnkhZlGJQ_xspSntoC4eMiINJw2sSqRM-Ngg9o0za1GDPtxxYlp-NQpNCxwSgsVc2iMmPqerziPG_eKkO-1QkXB7qj92eozQB1d1c9PthQV4GeQCEgDjOSmXXIkEa7T7mig09U"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Podiums</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="coffee-tables" href="/catalog/?search=teapoy"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Teapoy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Teapoy</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="vanity-units" href="/catalog/?category=Dressing%20Table"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Dressing Units" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHDwId2cMI8A56wc9CQwL_ijx1YD5_1B7QYcL3VtmANyAIIsNYhDEqNx5BszWKQb9QcVugKth9WJlrz0b88wbwdmbWqWgBWta0q3J5aY1bnXvLa2NSlBMpXzZFh34QpF67MtfPwv45DdWZdsCrVQz55JlCUYwIW9IC4r1MLOENz2avj7J6bJWN9oMF96LdvCnJAKLCw_DWmA0b63iGfMwpKSPTjkFMH_-G4PRqJECMaWq6G1-S984"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Dressing Units</span></div></a></div>
-</section>
-<!-- Interactive Material & Craft Banner -->
-<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-6 sm:py-10 2xl:py-16 bg-surface" id="atelier-cinematic-banner">
-<div class="relative w-full rounded-2xl 2xl:rounded-3xl overflow-hidden shadow-xl bg-surface-container-high group flex items-center justify-center h-[340px] sm:h-[400px] lg:h-[480px] 2xl:h-[580px] 4k:h-[680px]"><img src="https://lh3.googleusercontent.com/aida/AEtjO1WEUt-b0SVjoNroinhDGTb-s3AP1cclzCC0WWOMy0lvE84A0w0Dfubt0J8z73gI1PPxEYnATYK19tIY1QvJelN-MMYFinsRXUNwENi9yasA-3U_DwbE0-fxqafYakw0NJ4ayeFOgUUTIK4g_jB_r0Ihuic7Ut68FXdWzS6TzL3MXMYmFwDTcGi9lHjLvG467YiBXz4ik_QbdsJLNN9FNIXyZ6xEbdfZAnvmDnutq6J8kEQrQT_fOvNJ" alt="Glory Architectural Interior Showcase" class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div><div class="relative z-10 w-full h-full p-8 md:p-10 flex flex-col justify-between"><div class="mt-auto"><h3 class="font-headline text-surface-bright text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl 4k:text-6xl tracking-wide italic font-normal drop-shadow-md">“Crafted for Solitude, Sculpted for Generations”</h3></div></div></div></section>
-<!-- Featured Bestsellers Grid -->
-<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-10 sm:py-16 2xl:py-24 bg-surface" id="featured-products">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
-<div class="flex flex-col gap-space-xs">
-<div class="inline-flex items-center gap-space-xs">
-<span class="material-symbols-outlined text-secondary text-[20px]">star</span>
-<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Atelier Standard</span>
-</div>
-<h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Featured Bestsellers</h2>
-</div>
-<!-- Category Filter Tabs -->
-<div class="flex items-center gap-space-xs overflow-x-auto pb-2 md:pb-0" id="filterTabs"><button class="category-btn active px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-primary text-on-primary shrink-0" onclick="filterCategory('all', this)">All</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('bed', this)">Bed</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('sofa', this)">Sofa</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('dining', this)">Dining</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('diwan', this)">Diwan</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('dressing-table', this)">Dressing Table</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('podium', this)">Podium</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('teapoy', this)">Teapoy</button></div>
-</div>
-<!-- Product Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 sm:gap-6 2xl:gap-8 4k:gap-10 w-full" id="productsGrid"><!-- Product Card 1: Royal Teak Wood Bed (Exact match to reference image) -->
-<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="bedroom">
-<div>
-<!-- Image Frame -->
-<div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
-<img alt="Royal Teak Wood Bed" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
-<!-- Discount Pill Tag -->
-<!-- Floating Heart Button -->
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Royal Teak Wood Bed', 28999)">
-<span class="material-symbols-outlined text-[19px]">favorite_border</span>
-</button>
-<!-- Carousel Dots Indicator -->
-<div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
-<span class="w-5 h-1.5 rounded-full bg-white shadow-sm"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-</div>
-</div>
-<!-- Content Details -->
-<div class="pt-4 px-2 pb-1">
-<div class="flex items-center justify-between gap-2">
-<h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
-          Royal Teak Wood Bed
-        </h3>
-<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
-          ₹ 28,999
-        </span>
-</div>
-<p class="text-[#70655e] text-xs leading-relaxed mt-2 line-clamp-2">
-        Premium teak wood bed with elegant design and ultimate comfort for your home.
-      </p>
-<!-- Badges -->
-</div>
-</div>
-<!-- Full-width Dark Action Button -->
-<div class="px-2 pb-1">
-<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Royal Teak Wood Bed', 28999)">
-<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
-<span class="">Add to Cart</span>
-</button>
-</div>
-</div>
-<!-- Product Card 2: Stockholm Curved Bouclé Sofa -->
-<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="seating">
-<div>
-<div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
-<img alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Stockholm Curved Bouclé Sofa', 48500)">
-<span class="material-symbols-outlined text-[19px]">favorite_border</span>
-</button>
-<div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
-<span class="w-5 h-1.5 rounded-full bg-white shadow-sm"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-</div>
-</div>
-<div class="pt-4 px-2 pb-1">
-<div class="flex items-center justify-between gap-2">
-<h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
-          Stockholm Curved Bouclé Sofa
-        </h3>
-<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
-          ₹ 48,500
-        </span>
-</div>
-<p class="text-[#70655e] text-xs leading-relaxed mt-2 line-clamp-2">
-        Sculptural low-slung sofa enveloped in high-abrasion Nordic textured cream bouclé.
-      </p>
-</div>
-</div>
-<div class="px-2 pb-1">
-<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Stockholm Curved Bouclé Sofa', 48500)">
-<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
-<span class="">Add to Cart</span>
-</button>
-</div>
-</div>
-<!-- Product Card 3: Koto Extendable Oak Table -->
-<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="tables">
-<div>
-<div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
-<img alt="Koto Extendable Oak Table" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Koto Extendable Oak Table', 34200)">
-<span class="material-symbols-outlined text-[19px]">favorite_border</span>
-</button>
-<div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
-<span class="w-5 h-1.5 rounded-full bg-white shadow-sm"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-</div>
-</div>
-<div class="pt-4 px-2 pb-1">
-<div class="flex items-center justify-between gap-2">
-<h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
-          Koto Extendable Oak Table
-        </h3>
-<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
-          ₹ 34,200
-        </span>
-</div>
-<p class="text-[#70655e] text-xs leading-relaxed mt-2 line-clamp-2">
-        Handcrafted solid oak dining table expandable from 6 to 10 guests with fluid slide mechanics.
-      </p>
-</div>
-</div>
-<div class="px-2 pb-1">
-<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Koto Extendable Oak Table', 34200)">
-<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
-<span class="">Add to Cart</span>
-</button>
-</div>
-</div>
-<!-- Product Card 4: Kyoto Walnut Platform Bed -->
-<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="bedroom">
-<div>
-<div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
-<img alt="Kyoto Walnut Platform Bed" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeaFRiwZwCm1i5AVqC30S7jF8WM72meMr7Hz2M9GdKdVfcpLM3hyUU1JAnSln2F0X0OsM5kgSJyMoMhrK0eL23b4xMY2Jf_lCPMzOBiAm8fsCrf3y4kGxk54OAsG4C5_LZ0fqyZkgMPV-E1iMcANx6aQXlU8n2LD5OH8mZ-yrV7CRHQ2A3wTgDrdP5t_L9yogvqLPWr6v7x5YGlRyoTZfk4MCGUhsD4wipuHnm-VVgaUzgDq2b7is">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Kyoto Walnut Platform Bed', 38900)">
-<span class="material-symbols-outlined text-[19px]">favorite_border</span>
-</button>
-<div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
-<span class="w-5 h-1.5 rounded-full bg-white shadow-sm"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-</div>
-</div>
-<div class="pt-4 px-2 pb-1">
-<div class="flex items-center justify-between gap-2">
-<h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
-          Kyoto Walnut Platform Bed
-        </h3>
-<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
-          ₹ 38,900
-        </span>
-</div>
-<p class="text-[#70655e] text-xs leading-relaxed mt-2 line-clamp-2">
-        Low-profile floating silhouette with integrated slatted sprung frame for superior ergonomic rest.
-      </p>
-</div>
-</div>
-<div class="px-2 pb-1">
-<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Kyoto Walnut Platform Bed', 38900)">
-<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
-<span class="">Add to Cart</span>
-</button>
-</div>
-</div>
-<!-- Product Card 5: Bespoke Atelier Reading Chair -->
-<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="seating">
-<div>
-<div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
-<img alt="Bespoke Atelier Reading Chair" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Bespoke Atelier Reading Chair', 22500)">
-<span class="material-symbols-outlined text-[19px]">favorite_border</span>
-</button>
-<div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
-<span class="w-5 h-1.5 rounded-full bg-white shadow-sm"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-</div>
-</div>
-<div class="pt-4 px-2 pb-1">
-<div class="flex items-center justify-between gap-2">
-<h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
-          Bespoke Atelier Reading Chair
-        </h3>
-<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
-          ₹ 22,500
-        </span>
-</div>
-<p class="text-[#70655e] text-xs leading-relaxed mt-2 line-clamp-2">
-        Hand-stitched full-grain Italian leather nestled on steam-bent solid European ash framework.
-      </p>
-</div>
-</div>
-<div class="px-2 pb-1">
-<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Bespoke Atelier Reading Chair', 22500)">
-<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
-<span class="">Add to Cart</span>
-</button>
-</div>
-</div>
-<!-- Product Card 6: Monolith Roman Travertine Table -->
-<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="tables">
-<div>
-<div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
-<img alt="Monolith Roman Travertine Table" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Monolith Roman Travertine Table', 24900)">
-<span class="material-symbols-outlined text-[19px]">favorite_border</span>
-</button>
-<div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
-<span class="w-5 h-1.5 rounded-full bg-white shadow-sm"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-<span class="w-1.5 h-1.5 rounded-full bg-white/60"></span>
-</div>
-</div>
-<div class="pt-4 px-2 pb-1">
-<div class="flex items-center justify-between gap-2">
-<h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
-          Monolith Roman Travertine Table
-        </h3>
-<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
-          ₹ 24,900
-        </span>
-</div>
-<p class="text-[#70655e] text-xs leading-relaxed mt-2 line-clamp-2">
-        Carved directly from Italian quarries, hand-honed with unsealed micropores celebrating geological beauty.
-      </p>
-</div>
-</div>
-<div class="px-2 pb-1">
-<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Monolith Roman Travertine Table', 24900)">
-<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
-<span class="">Add to Cart</span>
-</button>
-</div>
-</div></div>
-</section>
-<!-- 3D Coverflow Showcase Section: Immersive Curated Sanctuaries -->
-<section class="w-full py-12 sm:py-20 2xl:py-28 my-space-md overflow-hidden relative select-none" id="coverflow-section" style="background: radial-gradient(circle at 50% 20%, #FAF7F2 0%, #F2E9DC 55%, #E5D6C1 100%); border-top: 1px solid #D6C3AC; border-bottom: 1px solid #D6C3AC;">
-<div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32">
-<!-- Section Header -->
-<div class="text-center max-w-2xl mx-auto mb-10 flex flex-col gap-space-xs">
-<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">IMMERSIVE SPACES &amp; SHOWCASES</span>
-<h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Explore Curated Architectural Sanctuaries</h2>
-<p class="font-body-md text-body-md text-[#C4B3A3]">
-        Experience our handcrafted furniture collections across harmoniously styled living, dining, and suite concepts. Swipe or click cards to glide through the gallery.
-      </p>
-</div>
-<!-- 3D Coverflow Container with 1200px perspective -->
-<div class="relative w-full flex items-center justify-center" style="perspective: 1600px;" class="h-[360px] sm:h-[420px] lg:h-[480px] 2xl:h-[580px] 4k:h-[680px]">
-<!-- Prev Navigation Chevron -->
+  body {
+    background-color: var(--aura-bg) !important;
+    color: var(--aura-dark) !important;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+  }
 
-<!-- Next Navigation Chevron -->
+  .aura-pill {
+    border-radius: 9999px !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-<!-- Coverflow Track holding the 3D Cards -->
-<div class="relative w-full h-full flex items-center justify-center" id="coverflowTrack" style="transform-style: preserve-3d;">
-<!-- Card 1: Nordic Bouclé Living Suite -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
-<img alt="The Nordic Bouclé Living Suite" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
-<div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<!-- Bottom Metadata Overlay & Play/Expand Icon inspired by Image 2 -->
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
-<div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Living Room Concept</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">The Nordic Bouclé Living Suite</h3>
-</div>
+  .aura-card-hover {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .aura-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(26, 24, 22, 0.07);
+  }
+</style>
+{% endblock %}
 
-</div>
-</div>
-<!-- Card 2: Solid Teak Master Sanctuary -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
-<img alt="Solid Teak Master Sanctuary" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
-<div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
-<div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Master Bedroom</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Solid Teak Master Sanctuary</h3>
-</div>
+{% block content %}
+<div class="w-full font-sans antialiased overflow-x-hidden pb-16 sm:pb-24">
 
-</div>
-</div>
-<!-- Card 3: Artisan Teak & Oak Dining Hall (Default Active) -->
-<div class="coverflow-card active absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1); height: 300px; max-width: 280px;">
-<img alt="Artisan Teak &amp; Oak Dining Hall" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
-<div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
-<div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Dining &amp; Entertaining</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Artisan Teak &amp; Oak Dining Hall</h3>
-</div>
+  <!-- ======================================================================== -->
+  <!-- 1. HERO SECTION: "MODERN INTERIORS IN SOFT FORMS" (UI Structure from Reference) -->
+  <!-- ======================================================================== -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-8 sm:pb-12">
+    <div 
+      class="relative rounded-[28px] sm:rounded-[36px] p-6 sm:p-10 lg:p-12 overflow-hidden border border-[#ECE5DB] shadow-xs"
+      style="background: linear-gradient(135deg, #FAF7F2 0%, #F5F0E8 50%, #ECE6F2 100%);"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        
+        <!-- Left Content Column -->
+        <div class="lg:col-span-7 flex flex-col justify-center space-y-5 sm:space-y-6 z-10">
+          
+          <!-- Main Hero Headline (Exact Reference Typography) -->
+          <h1 class="font-sans font-black text-3xl sm:text-5xl lg:text-[50px] tracking-tight text-[#1A1816] uppercase leading-[1.06]">
+            MODERN INTERIORS<br />
+            IN SOFT FORMS
+          </h1>
 
-</div>
-</div>
-<!-- Card 4: Sculptural Reading & Diwan Nook -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
-<img alt="Sculptural Reading &amp; Diwan Nook" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
-<div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
-<div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Atelier Sanctuary</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Sculptural Reading &amp; Diwan Nook</h3>
-</div>
+          <!-- Subtitle Copy (Exact to Reference Image) -->
+          <p class="text-xs sm:text-sm text-[#696159] leading-relaxed max-w-md font-normal">
+            Create a comfortable living space with a modern aesthetic, thoughtful ergonomics and pleasant tactile sensations.
+          </p>
 
-</div>
-</div>
-<!-- Card 5: Bespoke Architectural Pavilion -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
-<img alt="Bespoke Architectural Pavilion" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
-<div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
-<div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Hospitality &amp; Suite</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Bespoke Architectural Pavilion</h3>
-</div>
+          <!-- Dual Pill Action Buttons (Exact Reference Styling) -->
+          <div class="flex items-center gap-3 pt-1">
+            <a 
+              href="{% url 'catalog' %}" 
+              class="aura-pill inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 bg-[#1A1816] hover:bg-black text-white text-xs sm:text-sm font-semibold shadow-xs transition-all active-tap cursor-pointer"
+            >
+              Go to catalog
+            </a>
 
-</div>
-</div>
-</div>
-</div>
-<!-- Navigation Dots & Swipe Hint Indicator -->
-<div class="mt-8 flex flex-col items-center justify-center gap-3">
-<div class="flex items-center gap-2" id="coverflowDots">
-<button aria-label="Slide 1" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-outline-variant/60 hover:bg-primary" onclick="goToCoverflowSlide(0)"></button>
-<button aria-label="Slide 2" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-outline-variant/60 hover:bg-primary" onclick="goToCoverflowSlide(1)"></button>
-<button aria-label="Slide 3" class="w-8 h-2.5 rounded-full transition-all duration-300 bg-secondary shadow-sm" onclick="goToCoverflowSlide(2)"></button>
-<button aria-label="Slide 4" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-outline-variant/60 hover:bg-primary" onclick="goToCoverflowSlide(3)"></button>
-<button aria-label="Slide 5" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-outline-variant/60 hover:bg-primary" onclick="goToCoverflowSlide(4)"></button>
-</div>
-<span class="text-[12px] font-label-sm text-outline tracking-wider uppercase">Click any card or use chevrons to navigate</span>
-</div>
-</div>
-</section>
-<!-- Client Testimonials & Trust Validation -->
-<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-10 sm:py-16 2xl:py-24 bg-surface" id="atelier-video-showcase">
-  <div class="text-center max-w-2xl mx-auto mb-space-lg flex flex-col gap-space-xs">
-    <span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">THE ATELIER EXPERIENCE</span>
-    <h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Artisan Craftsmanship &amp; Spatial Harmony</h2>
-    <p class="font-body-md text-body-md text-[#C4B3A3]">
-      Step inside our workshop and private galleries to witness the deliberate, slow-crafted creation of enduring architectural furniture.
-    </p>
-  </div>
+            <a 
+              href="{% url 'about' %}" 
+              class="aura-pill inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 bg-white hover:bg-gray-50 text-[#1A1816] text-xs sm:text-sm font-semibold border border-[#DED7CE] shadow-2xs transition-all active-tap cursor-pointer"
+            >
+              Learn more
+            </a>
+          </div>
 
-  <div class="relative w-full aspect-[16/9] md:aspect-[21/9] 2xl:aspect-[24/9] rounded-2xl 2xl:rounded-3xl overflow-hidden shadow-2xl border border-surface-container group cursor-pointer bg-primary-container">
-    <img alt="Glory Furniture Hub Atelier Cinematic Showcase" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
-    <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-black/20"></div>
+          <!-- 3 Quick Feature Pills (Exact to Reference: Clean single-line pills with arrow) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-2">
+            
+            <!-- Quick Pill 1: Soft Chairs -->
+            <a 
+              href="{% url 'catalog' %}?category=Sofa%20Set" 
+              class="group flex items-center justify-between px-4 py-2.5 bg-white/90 hover:bg-white backdrop-blur-xs rounded-full border border-[#E6DFD5] shadow-2xs hover:shadow-xs transition-all duration-300"
+            >
+              <span class="text-xs font-bold text-[#1A1816]">Soft Chairs</span>
+              <div class="w-5 h-5 rounded-full bg-[#FAF7F2] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center text-[#1A1816] transition-colors shrink-0 ml-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </a>
 
+            <!-- Quick Pill 2: Minimal Decor -->
+            <a 
+              href="{% url 'catalog' %}?category=Dining%20Table" 
+              class="group flex items-center justify-between px-4 py-2.5 bg-white/90 hover:bg-white backdrop-blur-xs rounded-full border border-[#E6DFD5] shadow-2xs hover:shadow-xs transition-all duration-300"
+            >
+              <span class="text-xs font-bold text-[#1A1816]">Minimal Decor</span>
+              <div class="w-5 h-5 rounded-full bg-[#FAF7F2] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center text-[#1A1816] transition-colors shrink-0 ml-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </a>
+
+            <!-- Quick Pill 3: New Collection -->
+            <a 
+              href="{% url 'catalog' %}" 
+              class="group flex items-center justify-between px-4 py-2.5 bg-white/90 hover:bg-white backdrop-blur-xs rounded-full border border-[#E6DFD5] shadow-2xs hover:shadow-xs transition-all duration-300"
+            >
+              <span class="text-xs font-bold text-[#1A1816]">New Collection</span>
+              <div class="w-5 h-5 rounded-full bg-[#FAF7F2] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center text-[#1A1816] transition-colors shrink-0 ml-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </a>
+
+          </div>
+
+        </div>
+
+        <!-- Right Hero Visual Showcase: Real Product in Rounded Showcase Container -->
+        <div class="lg:col-span-5 flex justify-center z-10">
+          <div 
+            class="relative w-full max-w-[430px] rounded-[24px] sm:rounded-[30px] overflow-hidden p-6 sm:p-8 flex items-center justify-center shadow-xs border border-[#E2DBD0] group"
+            style="background: linear-gradient(145deg, #EFEAE2 0%, #E5DDD3 100%);"
+          >
+            <img 
+              src="{% static 'images/hero_epoxy_teak.jpg' %}" 
+              alt="Glory Furniture Artisanal Teak" 
+              class="w-full h-auto object-cover rounded-[18px] group-hover:scale-103 transition-transform duration-500 ease-out shadow-sm"
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ======================================================================== -->
+  <!-- 2. FEATURED CATEGORIES: 4 PASTEL CARDS (Structure from Reference)        -->
+  <!-- ======================================================================== -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
     
+    <!-- Section Header Row -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5 sm:mb-6">
+      <div>
+        <span class="text-[11px] font-semibold tracking-wider text-[#8C827A] uppercase block">
+          CATEGORIES
+        </span>
+        <h2 class="font-sans font-black text-2xl sm:text-3xl text-[#1A1816] tracking-tight">
+          Featured categories
+        </h2>
+      </div>
 
-    <div class="absolute inset-x-0 bottom-0 p-4 md:p-6 bg-gradient-to-t from-primary/95 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-surface">
-      <div class="flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-secondary-container animate-pulse shrink-0"></div><div class="flex flex-col"><span class="font-label-sm text-[10px] tracking-widest uppercase text-secondary-fixed font-semibold">Glory Atelier • Archival Series</span><p class="font-headline-sm text-sm sm:text-base font-medium text-white tracking-wide truncate drop-shadow-sm">Chapter 04: The Poetry of Solid Teak &amp; Travertine</p></div></div>
-      <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
+      <p class="text-xs sm:text-sm text-[#736B63] max-w-sm sm:text-right leading-relaxed font-normal">
+        Our collection reflects current design trends and high ergonomics
+      </p>
+    </div>
+
+    <!-- 4 Pastel Category Cards Grid with Real Product Images -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      
+      <!-- Card 1: Sofas (Sand Beige #F5EFE6) -->
+      <a 
+        href="{% url 'catalog' %}?category=Sofa%20Set" 
+        class="aura-card-hover rounded-[22px] p-3.5 sm:p-4 flex flex-col justify-between group cursor-pointer border border-[#EBE2D5] bg-[#F5EFE6]"
+      >
+        <div class="w-full aspect-[4/3] rounded-[16px] overflow-hidden flex items-center justify-center mb-3 bg-white/50 p-2">
+          <img 
+            src="{% static 'images/card_sofa.jpg' %}" 
+            alt="Sofas" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
         
+        <div class="flex items-center justify-between pt-1">
+          <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Sofas</h3>
+          <div class="w-7 h-7 rounded-full bg-white text-[#1A1816] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center shadow-2xs transition-colors shrink-0 ml-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2: Chairs (Sky Blue #E8F0F7) -->
+      <a 
+        href="{% url 'catalog' %}?category=Cot%20%2F%20Wooden%20Bed" 
+        class="aura-card-hover rounded-[22px] p-3.5 sm:p-4 flex flex-col justify-between group cursor-pointer border border-[#D8E6F0] bg-[#E8F0F7]"
+      >
+        <div class="w-full aspect-[4/3] rounded-[16px] overflow-hidden flex items-center justify-center mb-3 bg-white/50 p-2">
+          <img 
+            src="{% static 'images/card_office.jpg' %}" 
+            alt="Chairs" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
         
-        <button aria-label="Mute audio" class="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors" onclick="event.stopPropagation(); showToast('Audio unmuted', 'volume_up')">
-          <span class="material-symbols-outlined text-[20px]">volume_up</span>
+        <div class="flex items-center justify-between pt-1">
+          <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Chairs</h3>
+          <div class="w-7 h-7 rounded-full bg-white text-[#1A1816] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center shadow-2xs transition-colors shrink-0 ml-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3: Poufs (Blush Lilac #F2EBF4) -->
+      <a 
+        href="{% url 'catalog' %}?category=Podimes" 
+        class="aura-card-hover rounded-[22px] p-3.5 sm:p-4 flex flex-col justify-between group cursor-pointer border border-[#E9DFEC] bg-[#F2EBF4]"
+      >
+        <div class="w-full aspect-[4/3] rounded-[16px] overflow-hidden flex items-center justify-center mb-3 bg-white/50 p-2">
+          <img 
+            src="{% static 'images/card_bed.jpg' %}" 
+            alt="Poufs" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="flex items-center justify-between pt-1">
+          <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Poufs</h3>
+          <div class="w-7 h-7 rounded-full bg-white text-[#1A1816] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center shadow-2xs transition-colors shrink-0 ml-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 4: Decor (Pale Sage #EAF2E8) -->
+      <a 
+        href="{% url 'catalog' %}?category=Dining%20Table" 
+        class="aura-card-hover rounded-[22px] p-3.5 sm:p-4 flex flex-col justify-between group cursor-pointer border border-[#DCE8DB] bg-[#EAF2E8]"
+      >
+        <div class="w-full aspect-[4/3] rounded-[16px] overflow-hidden flex items-center justify-center mb-3 bg-white/50 p-2">
+          <img 
+            src="{% static 'images/card_decor.jpg' %}" 
+            alt="Decor" 
+            class="w-full h-full object-cover rounded-[14px] group-hover:scale-105 transition-transform duration-500" 
+            loading="lazy"
+          />
+        </div>
+        
+        <div class="flex items-center justify-between pt-1">
+          <h3 class="font-sans font-black text-sm sm:text-base text-[#1A1816]">Decor</h3>
+          <div class="w-7 h-7 rounded-full bg-white text-[#1A1816] group-hover:bg-[#1A1816] group-hover:text-white flex items-center justify-center shadow-2xs transition-colors shrink-0 ml-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ======================================================================== -->
+  <!-- 3. DUAL PROMOTIONAL BANNERS: -15% & -10% DISCOUNT (Structure from Ref)    -->
+  <!-- ======================================================================== -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+      
+      <!-- Banner 1: -15% discount (Soft Pastel Peach / Blush) -->
+      <div 
+        class="aura-card-hover rounded-[24px] sm:rounded-[28px] p-6 sm:p-7 flex items-center justify-between overflow-hidden relative shadow-2xs border border-[#F2D7CE] group"
+        style="background: linear-gradient(135deg, #FDECE7 0%, #F5E1F0 100%);"
+      >
+        <div class="z-10 max-w-[230px] sm:max-w-[260px] space-y-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#A06155] block">
+            PROMOTION
+          </span>
+          <h3 class="font-sans font-black text-2xl sm:text-3xl text-[#231713] tracking-tight leading-none">
+            -15% discount
+          </h3>
+          <p class="text-xs text-[#6F5750] leading-relaxed pt-1">
+            on the entire collection of soft chairs in delicate shades
+          </p>
+          <div class="pt-2">
+            <a 
+              href="{% url 'catalog' %}" 
+              class="aura-pill inline-flex items-center px-6 py-2 bg-[#1A1816] hover:bg-black text-white text-xs font-semibold shadow-xs transition-all active-tap"
+            >
+              To details
+            </a>
+          </div>
+        </div>
+
+        <div class="w-32 sm:w-40 aspect-[1/1] shrink-0 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_sofa.jpg' %}" 
+            alt="Promotion Sofa" 
+            class="w-full h-full object-cover rounded-[16px] group-hover:scale-105 transition-transform duration-500 shadow-sm"
+          />
+        </div>
+      </div>
+
+      <!-- Banner 2: -10% discount (Soft Pastel Sky / Sand) -->
+      <div 
+        class="aura-card-hover rounded-[24px] sm:rounded-[28px] p-6 sm:p-7 flex items-center justify-between overflow-hidden relative shadow-2xs border border-[#D5E3EC] group"
+        style="background: linear-gradient(135deg, #E6F0F6 0%, #F1EFE6 100%);"
+      >
+        <div class="z-10 max-w-[230px] sm:max-w-[260px] space-y-2">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[#52778A] block">
+            SEASONAL SALE
+          </span>
+          <h3 class="font-sans font-black text-2xl sm:text-3xl text-[#17242C] tracking-tight leading-none">
+            -10% discount
+          </h3>
+          <p class="text-xs text-[#526470] leading-relaxed pt-1">
+            when ordering a sofa and two armchairs from one collection
+          </p>
+          <div class="pt-2">
+            <a 
+              href="{% url 'catalog' %}" 
+              class="aura-pill inline-flex items-center px-6 py-2 bg-[#1A1816] hover:bg-black text-white text-xs font-semibold shadow-xs transition-all active-tap"
+            >
+              To details
+            </a>
+          </div>
+        </div>
+
+        <div class="w-32 sm:w-40 aspect-[1/1] shrink-0 flex items-center justify-center">
+          <img 
+            src="{% static 'images/card_office.jpg' %}" 
+            alt="Seasonal Sale Furniture" 
+            class="w-full h-full object-cover rounded-[16px] group-hover:scale-105 transition-transform duration-500 shadow-sm"
+          />
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ======================================================================== -->
+  <!-- 4. POPULAR PRODUCTS: BESTSELLERS OF THE SEASON (Real Products in Ref UI) -->
+  <!-- ======================================================================== -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    
+    <!-- Section Header Row with Carousel Arrows -->
+    <div class="flex items-center justify-between mb-5 sm:mb-6">
+      <div>
+        <span class="text-[11px] font-semibold tracking-wider text-[#8C827A] uppercase block">
+          BESTSELLERS
+        </span>
+        <h2 class="font-sans font-black text-2xl sm:text-3xl text-[#1A1816] tracking-tight">
+          Bestsellers of the season
+        </h2>
+      </div>
+
+      <!-- Carousel Arrow Buttons -->
+      <div class="flex items-center gap-1.5">
+        <button class="w-7 h-7 rounded-full bg-white border border-[#E2DBD1] flex items-center justify-center text-gray-700 hover:text-black hover:border-black transition-colors" aria-label="Previous">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
         </button>
-        <button aria-label="Fullscreen" class="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors" onclick="event.stopPropagation(); showToast('Fullscreen mode', 'fullscreen')">
-          <span class="material-symbols-outlined text-[20px]">fullscreen</span>
+        <button class="w-7 h-7 rounded-full bg-white border border-[#E2DBD1] flex items-center justify-center text-gray-700 hover:text-black hover:border-black transition-colors" aria-label="Next">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
         </button>
       </div>
     </div>
-  </div>
-</section>
-<!-- Interactive Client Care & Modal Trigger Scripts -->
-<script>
-    // State management for Header Cart and Wishlist syncing
-    let currentCartCount = 2;
-    let currentCartTotal = 2480;
-    let currentFavCount = 3;
 
-    function showToast(message, icon = 'check_circle') {
-      const toast = document.getElementById('interactionToast');
-      const msg = document.getElementById('toastMessage');
-      const icn = document.getElementById('toastIcon');
-      
-      if (!toast || !msg || !icn) return;
-      
-      msg.textContent = message;
-      icn.textContent = icon;
-      toast.classList.remove('translate-y-24', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      
-      clearTimeout(window._toastTimeout);
-      window._toastTimeout = setTimeout(() => {
-        toast.classList.remove('translate-y-0', 'opacity-100');
-        toast.classList.add('translate-y-24', 'opacity-0');
-      }, 3200);
-    }
+    <!-- Product Cards Grid with Real Glory Furniture Hub Products (4 Cards matching Reference) -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+      {% for product in all_products|slice:":4" %}
+      <div 
+        onclick="window.location.href='{% url 'product_detail' pk=product.pk %}';"
+        class="aura-card-hover p-3 rounded-[20px] bg-white border border-[#EAE4DC] cursor-pointer group flex flex-col justify-between"
+      >
+        <div class="w-full aspect-[1/1] rounded-[16px] overflow-hidden bg-[#F6F4F0] mb-3 flex items-center justify-center p-3 relative">
+          <img 
+            src="{{ product.primary_image }}" 
+            alt="{{ product.name }}" 
+            class="w-full h-full object-contain rounded-[12px] group-hover:scale-104 transition-transform duration-500" 
+            loading="lazy"
+          />
 
-    function addToCart(title, price) {
-      currentCartCount += 1;
-      currentCartTotal += price;
+          <!-- Wishlist Heart Button -->
+          <button 
+            type="button"
+            data-wishlist-id="{{ product.id }}"
+            onclick="event.stopPropagation(); toggleWishlist({{ product.id }});"
+            class="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-gray-600 hover:text-red-600 shadow-2xs hover:bg-white transition-all active-tap cursor-pointer"
+            title="Save to Wishlist"
+          >
+            <svg class="w-3.5 h-3.5 {% if product.id in WISHLIST_IDS %}fill-red-600 text-red-600{% else %}fill-none text-gray-600{% endif %} stroke-[1.8]" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </button>
+        </div>
 
-      // Update Cart in global header if available
-      const cartLink = document.querySelector('header a[data-path="cart"]');
-      if (cartLink) {
-        const desktopCountTitle = cartLink.querySelector('span.font-label-md');
-        const desktopPrice = cartLink.querySelector('span.font-label-sm');
-        const mobileBadge = cartLink.querySelector('.xl\\:hidden');
+        <div>
+          <span class="text-[11px] text-[#8C827A] block truncate font-medium">
+            {{ product.category.name|default:"Armchair" }}
+          </span>
+          <h4 class="font-sans font-bold text-xs sm:text-[13.5px] text-[#1A1816] truncate mt-0.5">
+            {{ product.name }}
+          </h4>
 
-        if (desktopCountTitle) desktopCountTitle.textContent = `Cart (${currentCartCount})`;
-        if (desktopPrice) desktopPrice.textContent = `$${currentCartTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        if (mobileBadge) mobileBadge.textContent = currentCartCount;
-      }
+          <div class="flex items-center justify-between mt-2 pt-1 border-t border-gray-100">
+            <span class="font-sans font-black text-xs sm:text-sm text-[#1A1816]">{{ product.formatted_price }}</span>
+            <div class="flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-[#E5DBCF]"></span>
+              <span class="w-2 h-2 rounded-full bg-[#CFD7DD]"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-span-full py-12 text-center text-gray-500">
+        Artisanal pieces coming soon.
+      </div>
+      {% endfor %}
+    </div>
 
-      showToast(`"${title}" added to your shopping cart`);
-    }
+    <!-- Explore Catalog Button -->
+    <div class="pt-8 text-center">
+      <a 
+        href="{% url 'catalog' %}" 
+        class="aura-pill inline-flex items-center gap-2 px-8 py-3 bg-white hover:bg-[#1A1816] text-[#1A1816] hover:text-white font-bold text-xs sm:text-sm border border-[#DED7CE] shadow-2xs hover:shadow-xs transition-all duration-300 group cursor-pointer"
+      >
+        <span>Explore Complete Catalog</span>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+    </div>
 
-    function toggleFavorite(btn, title, price) {
-      const icon = btn.querySelector('.material-symbols-outlined');
-      const isFavorited = icon.style.fontVariationSettings && icon.style.fontVariationSettings.includes("'FILL' 1");
-      
-      const favLink = document.querySelector('header a[data-path="favorites"]');
-      const favBadge = favLink ? favLink.querySelector('.rounded-full') : null;
-
-      if (isFavorited) {
-        icon.style.fontVariationSettings = "'FILL' 0";
-        icon.classList.remove('text-error');
-        currentFavCount = Math.max(0, currentFavCount - 1);
-        if (favBadge) favBadge.textContent = currentFavCount;
-        showToast(`Removed "${title}" from favorites`, 'heart_broken');
-      } else {
-        icon.style.fontVariationSettings = "'FILL' 1";
-        icon.classList.add('text-error');
-        currentFavCount += 1;
-        if (favBadge) favBadge.textContent = currentFavCount;
-        showToast(`Added "${title}" to saved favorites`, 'favorite');
-      }
-    }
-
-    function filterCategory(category, button) {
-      const buttons = document.querySelectorAll('#filterTabs .category-btn');
-      buttons.forEach(btn => {
-        btn.classList.remove('bg-primary', 'text-on-primary');
-        btn.classList.add('bg-surface-container', 'text-[#C4B3A3]');
-      });
-
-      button.classList.add('bg-primary', 'text-on-primary');
-      button.classList.remove('bg-surface-container', 'text-[#C4B3A3]');
-
-      const items = document.querySelectorAll('.product-item');
-      items.forEach(item => {
-        if (category === 'all' || item.getAttribute('data-category') === category) {
-          item.style.display = 'flex';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    }
-
-    function handleConsultationModal() {
-      showToast('Opening Design Atelier Calendar...', 'calendar_month');
-    }
-
-    function handleSampleKitOrder() {
-      currentCartCount += 1;
-      currentCartTotal += 25;
-      
-      const cartLink = document.querySelector('header a[data-path="cart"]');
-      if (cartLink) {
-        const desktopCountTitle = cartLink.querySelector('span.font-label-md');
-        const desktopPrice = cartLink.querySelector('span.font-label-sm');
-        const mobileBadge = cartLink.querySelector('.xl\\:hidden');
-
-        if (desktopCountTitle) desktopCountTitle.textContent = `Cart (${currentCartCount})`;
-        if (desktopPrice) desktopPrice.textContent = `$${currentCartTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        if (mobileBadge) mobileBadge.textContent = currentCartCount;
-      }
-      showToast('Tactile Swatch Kit ($25) added to cart', 'palette');
-    }
-
-    // 3D Coverflow Carousel Implementation
-    let activeCoverflowIndex = 2; // Card 3 (index 2) is active by default
-    const totalCoverflowCards = 5;
-
-    function renderCoverflow() {
-      const cards = document.querySelectorAll('.coverflow-card');
-      const dots = document.querySelectorAll('#coverflowDots button');
-
-      cards.forEach((card, idx) => {
-        const offset = idx - activeCoverflowIndex;
-        let transform = '';
-        let zIndex = 10;
-        let opacity = 1;
-        let filter = 'none';
-
-        if (offset === 0) {
-          // Center active card: upright, full scale, front layer
-          transform = 'translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08)';
-          zIndex = 30;
-          opacity = 1;
-          filter = 'brightness(1)';
-        } else if (offset === -1) {
-          // Left adjacent card
-          transform = 'translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9)';
-          zIndex = 20;
-          opacity = 0.88;
-          filter = 'brightness(0.85)';
-        } else if (offset === 1) {
-          // Right adjacent card
-          transform = 'translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9)';
-          zIndex = 20;
-          opacity = 0.88;
-          filter = 'brightness(0.85)';
-        } else if (offset <= -2) {
-          // Far left cards
-          transform = 'translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78)';
-          zIndex = 10;
-          opacity = offset === -2 ? 0.65 : 0;
-          filter = 'brightness(0.7)';
-        } else if (offset >= 2) {
-          // Far right cards
-          transform = 'translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78)';
-          zIndex = 10;
-          opacity = offset === 2 ? 0.65 : 0;
-          filter = 'brightness(0.7)';
-        }
-
-        card.style.transform = transform;
-        card.style.zIndex = zIndex;
-        card.style.opacity = opacity;
-        card.style.filter = filter;
-      });
-
-      // Update indicators
-      dots.forEach((dot, dotIdx) => {
-        if (dotIdx === activeCoverflowIndex) {
-          dot.className = 'w-8 h-2.5 rounded-full transition-all duration-300 bg-secondary shadow-sm';
-        } else {
-          dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-outline-variant/60 hover:bg-primary';
-        }
-      });
-    }
-
-    function goToCoverflowSlide(index) {
-      activeCoverflowIndex = Math.max(0, Math.min(totalCoverflowCards - 1, index));
-      renderCoverflow();
-    }
-
-    function nextCoverflowSlide() {
-      activeCoverflowIndex = (activeCoverflowIndex + 1) % totalCoverflowCards;
-      renderCoverflow();
-    }
-
-    function prevCoverflowSlide() {
-      activeCoverflowIndex = (activeCoverflowIndex - 1 + totalCoverflowCards) % totalCoverflowCards;
-      renderCoverflow();
-    }
-
-    // Initialize 3D positions on load
-    document.addEventListener('DOMContentLoaded', () => {
-      renderCoverflow();
-    });
-    // Call immediately in case DOM is already ready
-    renderCoverflow();
-  </script>
-</div></main><footer class="w-full bg-[#180E08] text-[#D8C7B8] border-t border-[#351E12] mt-space-xl py-12 sm:py-16 2xl:py-24">
-<div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32"><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-8 sm:gap-12 2xl:gap-16 mb-12 2xl:mb-16"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g"><span class="font-headline-sm text-headline-sm font-semibold text-[#1A0E08]">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-[#C4B3A3]">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-[#1A0E08] mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-[#1A0E08] mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-[#1A0E08]">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-[#C4B3A3]">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-[#C4B3A3] font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div></div></footer>
+  </section>
 
 
+  <!-- ======================================================================== -->
+  <!-- 5. EDITORIAL / LIFESTYLE SECTION (Structure from Reference Image)        -->
+  <!-- ======================================================================== -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <div 
+      class="aura-card-hover relative rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-sm border border-[#E0D7CC] min-h-[440px] sm:min-h-[520px] flex items-center justify-center group"
+    >
+      <!-- Warm Lifestyle Interior Photo -->
+      <img 
+        src="{% static 'images/card_sofa.jpg' %}" 
+        alt="Lifestyle Living Room" 
+        class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-700 ease-out"
+      />
 
+      <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none"></div>
 
-</body></html>
+      <!-- Overlaid Frosted White Story Card 1 (Top Right: "How to choose a sofa for small spaces") -->
+      <div 
+        class="absolute top-5 right-5 sm:top-7 sm:right-7 max-w-[250px] sm:max-w-[290px] p-4 sm:p-5 rounded-[18px] bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#1A1816]"
+      >
+        <h4 class="text-xs sm:text-sm font-extrabold text-[#1A1816] mb-1">
+          How to choose a sofa for small spaces
+        </h4>
+        <p class="text-[11px] text-[#5C534B] leading-relaxed mb-2">
+          Tips from our stylists on optimal furniture placement.
+        </p>
+        <a href="{% url 'guide' %}" class="text-[11px] font-bold text-[#1A1816] hover:underline inline-flex items-center gap-1">
+          Read more
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Overlaid Frosted White Story Card 2 (Bottom Left: "Materials that last for years") -->
+      <div 
+        class="absolute bottom-5 left-5 sm:bottom-7 sm:left-7 max-w-[250px] sm:max-w-[290px] p-4 sm:p-5 rounded-[18px] bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#1A1816]"
+      >
+        <h4 class="text-xs sm:text-sm font-extrabold text-[#1A1816] mb-1">
+          Materials that last for years
+        </h4>
+        <p class="text-[11px] text-[#5C534B] leading-relaxed mb-2">
+          Natural fabrics and durable frames for your comfort.
+        </p>
+        <a href="{% url 'about' %}" class="text-[11px] font-bold text-[#1A1816] hover:underline inline-flex items-center gap-1">
+          Read more
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Overlaid Frosted White Story Card 3 (Bottom Right: "Interior in soft colors") -->
+      <div 
+        class="absolute bottom-5 right-5 sm:bottom-7 sm:right-7 max-w-[250px] sm:max-w-[290px] p-4 sm:p-5 rounded-[18px] bg-white/90 backdrop-blur-md border border-white/60 shadow-lg text-[#1A1816] hidden sm:block"
+      >
+        <h4 class="text-xs sm:text-sm font-extrabold text-[#1A1816] mb-1">
+          Interior in soft colors
+        </h4>
+        <p class="text-[11px] text-[#5C534B] leading-relaxed mb-2">
+          How to combine textures and shades in modern homes.
+        </p>
+        <a href="{% url 'catalog' %}" class="text-[11px] font-bold text-[#1A1816] hover:underline inline-flex items-center gap-1">
+          Read more
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+{% endblock %}
