@@ -1,5 +1,53 @@
 <!DOCTYPE html><html lang="en" class="scroll-smooth"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"error-container":"#ffdad6","surface-container-high":"#eae8e5","on-primary-fixed":"#271812","surface":"#fbf9f6","background":"#fbf9f6","primary-container":"#2d1e18","on-tertiary-fixed-variant":"#6d3a00","surface-container-low":"#f5f3f0","on-surface-variant":"#4f4541","inverse-primary":"#dbc1b7","error":"#ba1a1a","tertiary":"#160700","on-error":"#ffffff","primary":"#140804","on-tertiary-fixed":"#2e1500","tertiary-fixed-dim":"#ffb77a","secondary-fixed":"#ffdcc6","surface-bright":"#fbf9f6","on-secondary-fixed-variant":"#6f3809","on-secondary-fixed":"#311400","on-background":"#1b1c1a","on-surface":"#1b1c1a","surface-container":"#efeeeb","surface-tint":"#6e5a52","tertiary-container":"#371a00","on-secondary":"#ffffff","surface-container-lowest":"#ffffff","on-primary-container":"#9b847b","outline-variant":"#d2c3be","on-secondary-container":"#773e0f","surface-dim":"#dbdad7","on-primary":"#ffffff","tertiary-fixed":"#ffdcc2","primary-fixed":"#f8ddd3","outline":"#817470","on-tertiary":"#ffffff","on-tertiary-container":"#c8741d","inverse-surface":"#30312f","on-error-container":"#93000a","primary-fixed-dim":"#dbc1b7","secondary-fixed-dim":"#ffb786","surface-container-highest":"#e4e2df","surface-variant":"#e4e2df","secondary-container":"#fcac74","inverse-on-surface":"#f2f0ed","on-primary-fixed-variant":"#55433c","secondary":"#8c4f20"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xl":"2.5rem","gutter":"1.5rem","margin-mobile":"1.25rem","gutter-mobile":"1rem","margin":"3rem","space-xs":"0.25rem","space-lg":"1.5rem","space-sm":"0.5rem","space-md":"1rem"},"fontFamily":{"label-lg":["Plus Jakarta Sans"],"display-md-mobile":["Playfair Display"],"headline-lg":["Playfair Display"],"display-lg":["Playfair Display"],"title-md":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-sm":["Playfair Display"],"label-md":["Plus Jakarta Sans"],"display-lg-mobile":["Playfair Display"],"label-sm":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-md":["Playfair Display"],"title-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"display-md":["Playfair Display"]},"fontSize":{"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.03em","fontWeight":"600"}],"display-md-mobile":["32px",{"lineHeight":"40px","letterSpacing":"0em","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"40px","fontWeight":"600"}],"display-lg":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"500"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.05em","fontWeight":"600"}],"display-lg-mobile":["38px",{"lineHeight":"46px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"headline-md":["26px",{"lineHeight":"34px","fontWeight":"500"}],"title-lg":["18px",{"lineHeight":"26px","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"display-md":["44px",{"lineHeight":"52px","letterSpacing":"-0.01em","fontWeight":"500"}]}}}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    screens: {
+      'xs': '480px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+      '3xl': '1920px',
+      '4k': '2560px',
+      '4k-wide': '3840px',
+    },
+    extend: {
+      colors: {
+        'primary': '#1A0E08',
+        'primary-container': '#2A170F',
+        'primary-dark': '#120804',
+        'secondary': '#C9963F',
+        'secondary-container': '#F6E4C2',
+        'secondary-dark': '#A87928',
+        'tertiary': '#8C4F20',
+        'tertiary-container': '#F4DCBA',
+        'surface': '#FAF7F2',
+        'surface-bright': '#FFFFFF',
+        'surface-container-lowest': '#FFFFFF',
+        'surface-container-low': '#F5EFE7',
+        'surface-container': '#EFE7DC',
+        'surface-container-high': '#E5DACB',
+        'surface-container-highest': '#DDD0BF',
+        'background': '#FAF7F2',
+        'on-primary': '#FFFFFF',
+        'on-secondary': '#1A0E08',
+        'on-surface': '#1A0E08',
+        'on-surface-variant': '#5A4A41',
+        'outline': '#82746C',
+        'outline-variant': '#D9CCBD',
+      },
+      fontFamily: {
+        'display': ['Playfair Display', 'serif'],
+        'headline': ['Playfair Display', 'serif'],
+        'body': ['Plus Jakarta Sans', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
   <meta name="csrf-token" content="{{ csrf_token }}" />
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
   <script>
@@ -22,24 +70,24 @@
 </head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
 <!-- Main Navigation Bar -->
 <div class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
-<div class="max-w-7xl mx-auto px-margin py-4 flex items-center justify-between gap-space-md">
+<div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-4 2xl:py-6 flex items-center justify-between gap-4">
 <!-- Brand Logo & Name (Left) -->
 <a class="flex items-center gap-2.5 shrink-0 group select-none" href="/">
 <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
 <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
 </div>
-<span class="font-display-md text-[18px] tracking-widest uppercase text-primary font-semibold group-hover:text-secondary transition-colors">GLORY FURNITURE HUB</span>
+<span class="font-display-md text-[18px] tracking-widest uppercase text-[#1A0E08] font-semibold group-hover:text-secondary transition-colors">GLORY FURNITURE HUB</span>
 </a>
 <!-- Centered Clean Horizontal Navigation Links -->
 <!-- Right Minimal Action Icons -->
 <div class="flex items-center gap-space-sm sm:gap-4 shrink-0 text-on-surface">
-<button aria-label="Search" onclick="window.location.href='/catalog/'" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+<button aria-label="Search" onclick="window.location.href='/catalog/'" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors flex items-center justify-center">
 <span class="material-symbols-outlined text-[22px]">search</span>
 </button>
-<a aria-label="Account" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" data-path="profile" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}">
+<a aria-label="Account" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors flex items-center justify-center" data-path="profile" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}">
 <span class="material-symbols-outlined text-[22px]">person</span>
 </a>
-<a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">3</span></a><a aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="cart" href="/cart/">
+<a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">3</span></a><a aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-[#C4B3A3] hover:text-[#1A0E08] transition-colors relative flex items-center justify-center" data-path="cart" href="/cart/">
 <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
 <span class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">2</span>
 </a>
@@ -52,44 +100,45 @@
 <span class="font-label-md text-label-md" id="toastMessage">Audio unmuted</span>
 </div>
 <!-- Hero Showcase Section (Bleeds slightly under header rhythm) -->
-<section class="relative w-full overflow-hidden bg-primary-container text-surface h-[560px] lg:h-[620px] select-none" id="hero-carousel"><div class="relative w-full h-full"><div class="absolute inset-0 transition-opacity duration-700 ease-in-out" id="carouselSlide1"><img alt="Editorial Scandinavian architectural living room atelier" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_H_jotZws9hSpH6r8ElrdrzhJrAbFb1DY9qLGqFRZ_GTk3yO01zGDk5FXBvFyE1jXs7Twej4E5e2XD8XtYswjj7-gHaiWLZzqQAo8fHsE1Mn0RDrjrT6uJeihxtT6YtaLLpPvyVGpY81cuUToQ2xyhLj9WKMlfq2JYyLMtTSDkkSPnUMBlSWDfHg2hj6kfRlfwKzKesbgF05NWM1jFTmJNEUHQ2YARY1fT9VB4ksld9mveKUsNlQ"><div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-primary/30"></div></div><div class="relative z-10 max-w-7xl mx-auto px-margin h-full flex flex-col justify-end pb-space-xl lg:pb-24"><div class="max-w-2xl flex flex-col gap-space-sm"><div class="inline-flex items-center gap-space-xs self-start bg-surface/15 backdrop-blur-md px-space-md py-1 rounded-full text-secondary-fixed font-label-sm text-label-sm uppercase tracking-wider"><span class="w-2 h-2 rounded-full bg-secondary-container"></span><span class="">Architectural Living &amp; Interiors</span></div><h1 class="font-display-lg text-display-lg text-surface-bright tracking-tight leading-none">Glory Furniture Hub</h1><p class="font-body-lg text-body-lg text-surface-container-highest max-w-xl">Curated architectural furniture, bespoke upholstery, and enduring interior objects handcrafted for elevated spaces.</p></div></div></div></section>
-<!-- Curated Furniture Categories Quick Grid -->
-<section class="max-w-7xl mx-auto px-margin py-space-xl w-full">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-lg"><div class="flex flex-col gap-space-xs"><h2 class="font-headline-lg text-headline-lg text-primary">Curated Living Spaces</h2></div><a class="inline-flex items-center gap-1 font-label-md text-label-md text-on-surface-variant hover:text-secondary transition-colors group" href="/catalog/"><span class="">View all categories</span><span class="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span></a></div>
-<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 gap-space-md w-full"><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="beds" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Beds" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_KKg7lsr7BQHgMf7vtrQiFxz-c9tcAdJYjeYTNw2RXaYLzUtCzywtXKg3fvkKW5y-68sCZ8oGYdR102uPTS-oHNUb_PJwcksghy9fdX48V7WJiQOVY-MhumEWRKNSnEkSMHM5RubvdmVL1qBufZxH5pTNc1uEEpaH85luRlXDeTBm9rTGTkKIYfDewR3J2I3lH0CPs4shZseJsrWlYTXtFbbJA9Kxb-z5oGNdlfqbgYyFAd-LYnI"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Beds</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="sofas" href="/catalog/?category=Sofa%20Set"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Sofa Sets" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Sofa Sets</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="dining-sets" href="/catalog/?category=Dining%20Table"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Dining Set" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Dining Set</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="diwans" href="/catalog/?category=Podimes"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Diwan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Diwan</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="doors" href="/catalog/?search=door"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Doors" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcpGfqb2W2mFXgsQ7WnS8TCUjZTyxcomjvPp-r9AS-FoD5TNSEfT448L6B7JByWsZO2RXvahPCZuBJ7d7GU31JBjbO12NHnTshd4AH_DTsZvxRVlKdrxIpVZtVzjy6qumIRh5o1QGM1uu2gG3VXjuPBcNXDRFZ1c_eRQoXRp0dip7yjPAeh2amxCZpT63WqzqiYYBMQOwRCRt9cz29mxZTtosSGI4WeoaL1h-eZywvtBil0IYc5cQ"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Doors</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="podiums" href="/catalog/?category=Podimes"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Podiums" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKPYDoba6aiMMqFQ5Gn-zTn9tNsOK0PWWmbkBuQQYBL5O5sQDU6IkIH6QACEDmCULkzi2PbhMx55e0eVma2BBme9YzzaI0ahalQPYKwGIKW98dUVnkhZlGJQ_xspSntoC4eMiINJw2sSqRM-Ngg9o0za1GDPtxxYlp-NQpNCxwSgsVc2iMmPqerziPG_eKkO-1QkXB7qj92eozQB1d1c9PthQV4GeQCEgDjOSmXXIkEa7T7mig09U"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Podiums</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="coffee-tables" href="/catalog/?search=teapoy"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Teapoy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Teapoy</span></div></a><a class="group flex flex-col bg-surface-container-low rounded-2xl overflow-hidden p-2 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 text-center" data-path="vanity-units" href="/catalog/?category=Dressing%20Table"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Dressing Units" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHDwId2cMI8A56wc9CQwL_ijx1YD5_1B7QYcL3VtmANyAIIsNYhDEqNx5BszWKQb9QcVugKth9WJlrz0b88wbwdmbWqWgBWta0q3J5aY1bnXvLa2NSlBMpXzZFh34QpF67MtfPwv45DdWZdsCrVQz55JlCUYwIW9IC4r1MLOENz2avj7J6bJWN9oMF96LdvCnJAKLCw_DWmA0b63iGfMwpKSPTjkFMH_-G4PRqJECMaWq6G1-S984"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-primary group-hover:text-secondary transition-colors">Dressing Units</span></div></a></div>
+<section class="relative w-full overflow-hidden bg-primary-container text-surface h-[560px] lg:h-[620px] select-none" id="hero-carousel" class="relative w-full overflow-hidden bg-primary-container text-surface h-[560px] sm:h-[640px] lg:h-[720px] 2xl:h-[840px] 4k:h-[960px] select-none"><div class="relative w-full h-full"><div class="absolute inset-0 transition-opacity duration-700 ease-in-out" id="carouselSlide1"><img alt="Editorial Scandinavian architectural living room atelier" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_H_jotZws9hSpH6r8ElrdrzhJrAbFb1DY9qLGqFRZ_GTk3yO01zGDk5FXBvFyE1jXs7Twej4E5e2XD8XtYswjj7-gHaiWLZzqQAo8fHsE1Mn0RDrjrT6uJeihxtT6YtaLLpPvyVGpY81cuUToQ2xyhLj9WKMlfq2JYyLMtTSDkkSPnUMBlSWDfHg2hj6kfRlfwKzKesbgF05NWM1jFTmJNEUHQ2YARY1fT9VB4ksld9mveKUsNlQ"><div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-primary/30"></div></div><div class="relative z-10 w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 h-full flex flex-col justify-end pb-12 sm:pb-16 lg:pb-24 2xl:pb-32"><div class="max-w-2xl 2xl:max-w-4xl 4k:max-w-5xl flex flex-col gap-3 2xl:gap-5"><div class="inline-flex items-center gap-space-xs self-start bg-surface/15 backdrop-blur-md px-space-md py-1 rounded-full text-secondary-fixed font-label-sm text-label-sm uppercase tracking-wider"><span class="w-2 h-2 rounded-full bg-secondary-container"></span><span class="">Architectural Living &amp; Interiors</span></div><h1 class="font-display text-4xl sm:text-5xl lg:text-6xl 2xl:text-7xl 4k:text-8xl font-bold text-surface-bright tracking-tight leading-none">Glory Furniture Hub</h1><p class="font-body text-base sm:text-lg lg:text-xl 2xl:text-2xl 4k:text-3xl text-surface-container-highest max-w-xl 2xl:max-w-3xl leading-relaxed">Curated architectural furniture, bespoke upholstery, and enduring interior objects handcrafted for elevated spaces.</p></div></div></div></section>
+<!-- Curated Furniture Categories Quick Grid (Full Width & 4K Ready) -->
+<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-10 sm:py-16 2xl:py-24 bg-surface">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-sm mb-space-lg"><div class="flex flex-col gap-space-xs"><h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Curated Living Spaces</h2></div><a class="inline-flex items-center gap-1 font-label-md text-label-md text-[#C4B3A3] hover:text-secondary transition-colors group" href="/catalog/"><span class="">View all categories</span><span class="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span></a></div>
+<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 xl:grid-cols-8 gap-4 sm:gap-6 2xl:gap-8 w-full"><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="beds" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Beds" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_KKg7lsr7BQHgMf7vtrQiFxz-c9tcAdJYjeYTNw2RXaYLzUtCzywtXKg3fvkKW5y-68sCZ8oGYdR102uPTS-oHNUb_PJwcksghy9fdX48V7WJiQOVY-MhumEWRKNSnEkSMHM5RubvdmVL1qBufZxH5pTNc1uEEpaH85luRlXDeTBm9rTGTkKIYfDewR3J2I3lH0CPs4shZseJsrWlYTXtFbbJA9Kxb-z5oGNdlfqbgYyFAd-LYnI"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Beds</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="sofas" href="/catalog/?category=Sofa%20Set"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Sofa Sets" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Sofa Sets</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="dining-sets" href="/catalog/?category=Dining%20Table"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Dining Set" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Dining Set</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="diwans" href="/catalog/?category=Podimes"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Diwan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Diwan</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="doors" href="/catalog/?search=door"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Doors" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcpGfqb2W2mFXgsQ7WnS8TCUjZTyxcomjvPp-r9AS-FoD5TNSEfT448L6B7JByWsZO2RXvahPCZuBJ7d7GU31JBjbO12NHnTshd4AH_DTsZvxRVlKdrxIpVZtVzjy6qumIRh5o1QGM1uu2gG3VXjuPBcNXDRFZ1c_eRQoXRp0dip7yjPAeh2amxCZpT63WqzqiYYBMQOwRCRt9cz29mxZTtosSGI4WeoaL1h-eZywvtBil0IYc5cQ"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Doors</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="podiums" href="/catalog/?category=Podimes"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Podiums" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKPYDoba6aiMMqFQ5Gn-zTn9tNsOK0PWWmbkBuQQYBL5O5sQDU6IkIH6QACEDmCULkzi2PbhMx55e0eVma2BBme9YzzaI0ahalQPYKwGIKW98dUVnkhZlGJQ_xspSntoC4eMiINJw2sSqRM-Ngg9o0za1GDPtxxYlp-NQpNCxwSgsVc2iMmPqerziPG_eKkO-1QkXB7qj92eozQB1d1c9PthQV4GeQCEgDjOSmXXIkEa7T7mig09U"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Podiums</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="coffee-tables" href="/catalog/?search=teapoy"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Teapoy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Teapoy</span></div></a><a class="group flex flex-col bg-[#F7F1E8] hover:bg-white rounded-2xl 2xl:rounded-3xl overflow-hidden p-2.5 2xl:p-3 shadow-xs hover:shadow-xl border border-[#E8DEC8]/80 hover:border-[#C9963F] transition-all duration-300 hover:-translate-y-1.5 text-center" data-path="vanity-units" href="/catalog/?category=Dressing%20Table"><div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-surface-container mb-2"><img alt="Dressing Units" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHDwId2cMI8A56wc9CQwL_ijx1YD5_1B7QYcL3VtmANyAIIsNYhDEqNx5BszWKQb9QcVugKth9WJlrz0b88wbwdmbWqWgBWta0q3J5aY1bnXvLa2NSlBMpXzZFh34QpF67MtfPwv45DdWZdsCrVQz55JlCUYwIW9IC4r1MLOENz2avj7J6bJWN9oMF96LdvCnJAKLCw_DWmA0b63iGfMwpKSPTjkFMH_-G4PRqJECMaWq6G1-S984"></div><div class="py-1.5 px-1"><span class="font-headline-sm text-[16px] font-medium text-[#1A0E08] group-hover:text-secondary transition-colors">Dressing Units</span></div></a></div>
 </section>
 <!-- Interactive Material & Craft Banner -->
-<section class="max-w-7xl mx-auto px-margin py-space-md w-full" id="atelier-cinematic-banner"><div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-surface-container-high group flex items-center justify-center" style="height: 320px;"><img src="https://lh3.googleusercontent.com/aida/AEtjO1WEUt-b0SVjoNroinhDGTb-s3AP1cclzCC0WWOMy0lvE84A0w0Dfubt0J8z73gI1PPxEYnATYK19tIY1QvJelN-MMYFinsRXUNwENi9yasA-3U_DwbE0-fxqafYakw0NJ4ayeFOgUUTIK4g_jB_r0Ihuic7Ut68FXdWzS6TzL3MXMYmFwDTcGi9lHjLvG467YiBXz4ik_QbdsJLNN9FNIXyZ6xEbdfZAnvmDnutq6J8kEQrQT_fOvNJ" alt="Glory Architectural Interior Showcase" class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div><div class="relative z-10 w-full h-full p-8 md:p-10 flex flex-col justify-between"><div class="mt-auto"><h3 class="font-headline-lg text-surface-bright text-[22px] md:text-[30px] tracking-wide italic font-normal drop-shadow-md">“Crafted for Solitude, Sculpted for Generations”</h3></div></div></div></section>
+<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-6 sm:py-10 2xl:py-16 bg-surface" id="atelier-cinematic-banner">
+<div class="relative w-full rounded-2xl 2xl:rounded-3xl overflow-hidden shadow-xl bg-surface-container-high group flex items-center justify-center h-[340px] sm:h-[400px] lg:h-[480px] 2xl:h-[580px] 4k:h-[680px]"><img src="https://lh3.googleusercontent.com/aida/AEtjO1WEUt-b0SVjoNroinhDGTb-s3AP1cclzCC0WWOMy0lvE84A0w0Dfubt0J8z73gI1PPxEYnATYK19tIY1QvJelN-MMYFinsRXUNwENi9yasA-3U_DwbE0-fxqafYakw0NJ4ayeFOgUUTIK4g_jB_r0Ihuic7Ut68FXdWzS6TzL3MXMYmFwDTcGi9lHjLvG467YiBXz4ik_QbdsJLNN9FNIXyZ6xEbdfZAnvmDnutq6J8kEQrQT_fOvNJ" alt="Glory Architectural Interior Showcase" class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div><div class="relative z-10 w-full h-full p-8 md:p-10 flex flex-col justify-between"><div class="mt-auto"><h3 class="font-headline text-surface-bright text-2xl sm:text-3xl md:text-4xl 2xl:text-5xl 4k:text-6xl tracking-wide italic font-normal drop-shadow-md">“Crafted for Solitude, Sculpted for Generations”</h3></div></div></div></section>
 <!-- Featured Bestsellers Grid -->
-<section class="max-w-7xl mx-auto px-margin py-space-xl w-full" id="featured-products">
+<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-10 sm:py-16 2xl:py-24 bg-surface" id="featured-products">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
 <div class="flex flex-col gap-space-xs">
 <div class="inline-flex items-center gap-space-xs">
 <span class="material-symbols-outlined text-secondary text-[20px]">star</span>
 <span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Atelier Standard</span>
 </div>
-<h2 class="font-headline-lg text-headline-lg text-primary">Featured Bestsellers</h2>
+<h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Featured Bestsellers</h2>
 </div>
 <!-- Category Filter Tabs -->
 <div class="flex items-center gap-space-xs overflow-x-auto pb-2 md:pb-0" id="filterTabs"><button class="category-btn active px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-primary text-on-primary shrink-0" onclick="filterCategory('all', this)">All</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('bed', this)">Bed</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('sofa', this)">Sofa</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('dining', this)">Dining</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('diwan', this)">Diwan</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('dressing-table', this)">Dressing Table</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('podium', this)">Podium</button>
-<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('teapoy', this)">Teapoy</button></div>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('bed', this)">Bed</button>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('sofa', this)">Sofa</button>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('dining', this)">Dining</button>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('diwan', this)">Diwan</button>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('dressing-table', this)">Dressing Table</button>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('podium', this)">Podium</button>
+<button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-[#C4B3A3] hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('teapoy', this)">Teapoy</button></div>
 </div>
 <!-- Product Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg" id="productsGrid"><!-- Product Card 1: Royal Teak Wood Bed (Exact match to reference image) -->
-<div class="product-item group bg-white rounded-[28px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="bedroom">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 sm:gap-6 2xl:gap-8 4k:gap-10 w-full" id="productsGrid"><!-- Product Card 1: Royal Teak Wood Bed (Exact match to reference image) -->
+<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="bedroom">
 <div>
 <!-- Image Frame -->
 <div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
 <img alt="Royal Teak Wood Bed" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
 <!-- Discount Pill Tag -->
 <!-- Floating Heart Button -->
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" onclick="toggleFavorite(this, 'Royal Teak Wood Bed', 28999)">
+<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Royal Teak Wood Bed', 28999)">
 <span class="material-symbols-outlined text-[19px]">favorite_border</span>
 </button>
 <!-- Carousel Dots Indicator -->
@@ -106,7 +155,7 @@
 <h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
           Royal Teak Wood Bed
         </h3>
-<span class="bg-[#fae8d4] text-[#1C1411] font-bold text-sm px-3.5 py-1.5 rounded-full shrink-0 shadow-sm">
+<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
           ₹ 28,999
         </span>
 </div>
@@ -118,18 +167,18 @@
 </div>
 <!-- Full-width Dark Action Button -->
 <div class="px-2 pb-1">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-sm py-3 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-[0.98]" onclick="addToCart('Royal Teak Wood Bed', 28999)">
-<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Royal Teak Wood Bed', 28999)">
+<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
 <span class="">Add to Cart</span>
 </button>
 </div>
 </div>
 <!-- Product Card 2: Stockholm Curved Bouclé Sofa -->
-<div class="product-item group bg-white rounded-[28px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="seating">
+<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="seating">
 <div>
 <div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
 <img alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" onclick="toggleFavorite(this, 'Stockholm Curved Bouclé Sofa', 48500)">
+<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Stockholm Curved Bouclé Sofa', 48500)">
 <span class="material-symbols-outlined text-[19px]">favorite_border</span>
 </button>
 <div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
@@ -144,7 +193,7 @@
 <h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
           Stockholm Curved Bouclé Sofa
         </h3>
-<span class="bg-[#fae8d4] text-[#1C1411] font-bold text-sm px-3.5 py-1.5 rounded-full shrink-0 shadow-sm">
+<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
           ₹ 48,500
         </span>
 </div>
@@ -154,18 +203,18 @@
 </div>
 </div>
 <div class="px-2 pb-1">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-sm py-3 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-[0.98]" onclick="addToCart('Stockholm Curved Bouclé Sofa', 48500)">
-<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Stockholm Curved Bouclé Sofa', 48500)">
+<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
 <span class="">Add to Cart</span>
 </button>
 </div>
 </div>
 <!-- Product Card 3: Koto Extendable Oak Table -->
-<div class="product-item group bg-white rounded-[28px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="tables">
+<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="tables">
 <div>
 <div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
 <img alt="Koto Extendable Oak Table" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" onclick="toggleFavorite(this, 'Koto Extendable Oak Table', 34200)">
+<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Koto Extendable Oak Table', 34200)">
 <span class="material-symbols-outlined text-[19px]">favorite_border</span>
 </button>
 <div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
@@ -180,7 +229,7 @@
 <h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
           Koto Extendable Oak Table
         </h3>
-<span class="bg-[#fae8d4] text-[#1C1411] font-bold text-sm px-3.5 py-1.5 rounded-full shrink-0 shadow-sm">
+<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
           ₹ 34,200
         </span>
 </div>
@@ -190,18 +239,18 @@
 </div>
 </div>
 <div class="px-2 pb-1">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-sm py-3 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-[0.98]" onclick="addToCart('Koto Extendable Oak Table', 34200)">
-<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Koto Extendable Oak Table', 34200)">
+<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
 <span class="">Add to Cart</span>
 </button>
 </div>
 </div>
 <!-- Product Card 4: Kyoto Walnut Platform Bed -->
-<div class="product-item group bg-white rounded-[28px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="bedroom">
+<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="bedroom">
 <div>
 <div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
 <img alt="Kyoto Walnut Platform Bed" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeaFRiwZwCm1i5AVqC30S7jF8WM72meMr7Hz2M9GdKdVfcpLM3hyUU1JAnSln2F0X0OsM5kgSJyMoMhrK0eL23b4xMY2Jf_lCPMzOBiAm8fsCrf3y4kGxk54OAsG4C5_LZ0fqyZkgMPV-E1iMcANx6aQXlU8n2LD5OH8mZ-yrV7CRHQ2A3wTgDrdP5t_L9yogvqLPWr6v7x5YGlRyoTZfk4MCGUhsD4wipuHnm-VVgaUzgDq2b7is">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" onclick="toggleFavorite(this, 'Kyoto Walnut Platform Bed', 38900)">
+<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Kyoto Walnut Platform Bed', 38900)">
 <span class="material-symbols-outlined text-[19px]">favorite_border</span>
 </button>
 <div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
@@ -216,7 +265,7 @@
 <h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
           Kyoto Walnut Platform Bed
         </h3>
-<span class="bg-[#fae8d4] text-[#1C1411] font-bold text-sm px-3.5 py-1.5 rounded-full shrink-0 shadow-sm">
+<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
           ₹ 38,900
         </span>
 </div>
@@ -226,18 +275,18 @@
 </div>
 </div>
 <div class="px-2 pb-1">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-sm py-3 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-[0.98]" onclick="addToCart('Kyoto Walnut Platform Bed', 38900)">
-<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Kyoto Walnut Platform Bed', 38900)">
+<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
 <span class="">Add to Cart</span>
 </button>
 </div>
 </div>
 <!-- Product Card 5: Bespoke Atelier Reading Chair -->
-<div class="product-item group bg-white rounded-[28px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="seating">
+<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="seating">
 <div>
 <div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
 <img alt="Bespoke Atelier Reading Chair" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" onclick="toggleFavorite(this, 'Bespoke Atelier Reading Chair', 22500)">
+<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Bespoke Atelier Reading Chair', 22500)">
 <span class="material-symbols-outlined text-[19px]">favorite_border</span>
 </button>
 <div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
@@ -252,7 +301,7 @@
 <h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
           Bespoke Atelier Reading Chair
         </h3>
-<span class="bg-[#fae8d4] text-[#1C1411] font-bold text-sm px-3.5 py-1.5 rounded-full shrink-0 shadow-sm">
+<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
           ₹ 22,500
         </span>
 </div>
@@ -262,18 +311,18 @@
 </div>
 </div>
 <div class="px-2 pb-1">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-sm py-3 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-[0.98]" onclick="addToCart('Bespoke Atelier Reading Chair', 22500)">
-<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Bespoke Atelier Reading Chair', 22500)">
+<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
 <span class="">Add to Cart</span>
 </button>
 </div>
 </div>
 <!-- Product Card 6: Monolith Roman Travertine Table -->
-<div class="product-item group bg-white rounded-[28px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="tables">
+<div class="product-item group bg-white rounded-[24px] 2xl:rounded-[32px] p-3.5 2xl:p-4 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between border border-[#EADBCE] hover:border-[#C9963F] hover:-translate-y-1.5" data-category="tables">
 <div>
 <div class="relative w-full aspect-[4/3] rounded-[22px] overflow-hidden bg-[#f4ece3]">
 <img alt="Monolith Roman Travertine Table" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
-<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" onclick="toggleFavorite(this, 'Monolith Roman Travertine Table', 24900)">
+<button aria-label="Wishlist" class="favorite-toggle-btn absolute top-3 right-3 w-9 h-9 2xl:w-11 2xl:h-11 rounded-full bg-white/95 hover:bg-white text-[#2C1810] hover:text-[#C9963F] flex items-center justify-center shadow-md border border-[#EADBCE]/70 transition-all active:scale-90" onclick="toggleFavorite(this, 'Monolith Roman Travertine Table', 24900)">
 <span class="material-symbols-outlined text-[19px]">favorite_border</span>
 </button>
 <div class="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 pointer-events-none">
@@ -288,7 +337,7 @@
 <h3 class="font-headline-sm text-[18px] font-bold text-[#1C1411] tracking-tight group-hover:text-secondary transition-colors truncate">
           Monolith Roman Travertine Table
         </h3>
-<span class="bg-[#fae8d4] text-[#1C1411] font-bold text-sm px-3.5 py-1.5 rounded-full shrink-0 shadow-sm">
+<span class="bg-gradient-to-r from-[#FBF3E4] to-[#F5E6CC] border border-[#E6CCA2] text-[#1A0E08] font-bold text-sm 2xl:text-base px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-full shrink-0 shadow-xs">
           ₹ 24,900
         </span>
 </div>
@@ -298,26 +347,26 @@
 </div>
 </div>
 <div class="px-2 pb-1">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-sm py-3 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md active:scale-[0.98]" onclick="addToCart('Monolith Roman Travertine Table', 24900)">
-<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<button class="w-full bg-gradient-to-r from-[#24130A] to-[#341B0E] hover:from-[#170B05] hover:to-[#24130A] text-white font-semibold text-sm 2xl:text-base py-3 px-6 2xl:py-4 2xl:px-8 rounded-full flex items-center justify-center gap-2.5 transition-all border border-[#482816] hover:border-[#C9963F] shadow-md hover:shadow-xl active:scale-[0.98]" onclick="addToCart('Monolith Roman Travertine Table', 24900)">
+<span class="material-symbols-outlined text-[18px] 2xl:text-[22px] text-[#C9963F]">shopping_cart</span>
 <span class="">Add to Cart</span>
 </button>
 </div>
 </div></div>
 </section>
 <!-- 3D Coverflow Showcase Section: Immersive Curated Sanctuaries -->
-<section class="w-full py-space-xl my-space-md overflow-hidden relative select-none" id="coverflow-section" style="background: linear-gradient(rgb(247, 243, 238) 0%, rgb(235, 227, 216) 100%); border-top: 1px solid rgba(210, 195, 190, 0.45); border-bottom: 1px solid rgba(210, 195, 190, 0.45);">
-<div class="max-w-7xl mx-auto px-margin">
+<section class="w-full py-12 sm:py-20 2xl:py-28 my-space-md overflow-hidden relative select-none" id="coverflow-section" style="background: radial-gradient(circle at 50% 20%, #FAF7F2 0%, #F2E9DC 55%, #E5D6C1 100%); border-top: 1px solid #D6C3AC; border-bottom: 1px solid #D6C3AC;">
+<div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32">
 <!-- Section Header -->
 <div class="text-center max-w-2xl mx-auto mb-10 flex flex-col gap-space-xs">
 <span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">IMMERSIVE SPACES &amp; SHOWCASES</span>
-<h2 class="font-headline-lg text-headline-lg text-primary">Explore Curated Architectural Sanctuaries</h2>
-<p class="font-body-md text-body-md text-on-surface-variant">
+<h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Explore Curated Architectural Sanctuaries</h2>
+<p class="font-body-md text-body-md text-[#C4B3A3]">
         Experience our handcrafted furniture collections across harmoniously styled living, dining, and suite concepts. Swipe or click cards to glide through the gallery.
       </p>
 </div>
 <!-- 3D Coverflow Container with 1200px perspective -->
-<div class="relative w-full flex items-center justify-center" style="perspective: 1200px; height: 340px;">
+<div class="relative w-full flex items-center justify-center" style="perspective: 1600px;" class="h-[360px] sm:h-[420px] lg:h-[480px] 2xl:h-[580px] 4k:h-[680px]">
 <!-- Prev Navigation Chevron -->
 
 <!-- Next Navigation Chevron -->
@@ -325,7 +374,7 @@
 <!-- Coverflow Track holding the 3D Cards -->
 <div class="relative w-full h-full flex items-center justify-center" id="coverflowTrack" style="transform-style: preserve-3d;">
 <!-- Card 1: Nordic Bouclé Living Suite -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
 <img alt="The Nordic Bouclé Living Suite" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <!-- Bottom Metadata Overlay & Play/Expand Icon inspired by Image 2 -->
@@ -338,7 +387,7 @@
 </div>
 </div>
 <!-- Card 2: Solid Teak Master Sanctuary -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
 <img alt="Solid Teak Master Sanctuary" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
@@ -350,7 +399,7 @@
 </div>
 </div>
 <!-- Card 3: Artisan Teak & Oak Dining Hall (Default Active) -->
-<div class="coverflow-card active absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1); height: 300px; max-width: 280px;">
+<div class="coverflow-card active absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1); height: 300px; max-width: 280px;">
 <img alt="Artisan Teak &amp; Oak Dining Hall" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
@@ -362,7 +411,7 @@
 </div>
 </div>
 <!-- Card 4: Sculptural Reading & Diwan Nook -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
 <img alt="Sculptural Reading &amp; Diwan Nook" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
@@ -374,7 +423,7 @@
 </div>
 </div>
 <!-- Card 5: Bespoke Architectural Pavilion -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 2xl:w-[500px] 4k:w-[580px] h-[320px] sm:h-[380px] lg:h-[440px] 2xl:h-[540px] 4k:h-[620px]" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
 <img alt="Bespoke Architectural Pavilion" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
@@ -401,16 +450,16 @@
 </div>
 </section>
 <!-- Client Testimonials & Trust Validation -->
-<section class="max-w-7xl mx-auto px-margin py-space-xl w-full" id="atelier-video-showcase">
+<section class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32 py-10 sm:py-16 2xl:py-24 bg-surface" id="atelier-video-showcase">
   <div class="text-center max-w-2xl mx-auto mb-space-lg flex flex-col gap-space-xs">
     <span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">THE ATELIER EXPERIENCE</span>
-    <h2 class="font-headline-lg text-headline-lg text-primary">Artisan Craftsmanship &amp; Spatial Harmony</h2>
-    <p class="font-body-md text-body-md text-on-surface-variant">
+    <h2 class="font-headline-lg text-headline-lg text-[#1A0E08]">Artisan Craftsmanship &amp; Spatial Harmony</h2>
+    <p class="font-body-md text-body-md text-[#C4B3A3]">
       Step inside our workshop and private galleries to witness the deliberate, slow-crafted creation of enduring architectural furniture.
     </p>
   </div>
 
-  <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl border border-surface-container group cursor-pointer bg-primary-container">
+  <div class="relative w-full aspect-[16/9] md:aspect-[21/9] 2xl:aspect-[24/9] rounded-2xl 2xl:rounded-3xl overflow-hidden shadow-2xl border border-surface-container group cursor-pointer bg-primary-container">
     <img alt="Glory Furniture Hub Atelier Cinematic Showcase" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
     <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-black/20"></div>
 
@@ -502,11 +551,11 @@
       const buttons = document.querySelectorAll('#filterTabs .category-btn');
       buttons.forEach(btn => {
         btn.classList.remove('bg-primary', 'text-on-primary');
-        btn.classList.add('bg-surface-container', 'text-on-surface-variant');
+        btn.classList.add('bg-surface-container', 'text-[#C4B3A3]');
       });
 
       button.classList.add('bg-primary', 'text-on-primary');
-      button.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      button.classList.remove('bg-surface-container', 'text-[#C4B3A3]');
 
       const items = document.querySelectorAll('.product-item');
       items.forEach(item => {
@@ -624,7 +673,8 @@
     // Call immediately in case DOM is already ready
     renderCoverflow();
   </script>
-</div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-xl"><div class="max-w-7xl mx-auto px-margin"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g"><span class="font-headline-sm text-headline-sm font-semibold text-primary">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div></div></footer>
+</div></main><footer class="w-full bg-[#180E08] text-[#D8C7B8] border-t border-[#351E12] mt-space-xl py-12 sm:py-16 2xl:py-24">
+<div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 2xl:px-24 4k:px-32"><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-8 sm:gap-12 2xl:gap-16 mb-12 2xl:mb-16"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g"><span class="font-headline-sm text-headline-sm font-semibold text-[#1A0E08]">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-[#C4B3A3]">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-[#1A0E08] mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-[#1A0E08] mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-[#C4B3A3] hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-[#1A0E08]">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-[#C4B3A3]">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-[#C4B3A3] font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div></div></footer>
 
 
 
