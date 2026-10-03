@@ -478,11 +478,14 @@
         if (text) text.innerText = "Connecting to Google...";
         if (spinner) spinner.classList.remove('hidden');
 
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const targetOrigin = isLocal ? window.location.origin : 'https://glory-furniture-hub.vercel.app';
+
         try {
-          localStorage.setItem('glory_auth_return_url', window.location.origin + '/');
+          localStorage.setItem('glory_auth_return_url', targetOrigin + '/');
         } catch(e) {}
 
-        const callbackUrl = window.location.origin + '/accounts/supabase-callback/';
+        const callbackUrl = targetOrigin + '/accounts/supabase-callback/';
 
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
           provider: 'google',

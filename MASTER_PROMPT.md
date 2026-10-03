@@ -381,8 +381,8 @@ The customer profile page is built around two primary, non-duplicated visual car
   - `CASHFREE_SECRET_KEY`: Cashfree production Secret Key
   - `CASHFREE_ENV`: `PROD` (or `TEST`)
   - `CLOUDINARY_URL`: `cloudinary://<api_key>:<api_secret>@<cloud_name>`
-  - `ALLOWED_HOSTS`: `glory-furniture-hub.onrender.com,localhost,127.0.0.1`
-  - `CSRF_TRUSTED_ORIGINS`: `https://glory-furniture-hub.onrender.com`
+  - `ALLOWED_HOSTS`: `glory-furniture-hub.vercel.app,localhost,127.0.0.1`
+  - `CSRF_TRUSTED_ORIGINS`: `https://glory-furniture-hub.vercel.app,https://*.vercel.app`
 
 ---
 

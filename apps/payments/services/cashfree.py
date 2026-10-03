@@ -95,9 +95,9 @@ class CashfreeService:
 
         # URLs
         if not return_url:
-            return_url = f"https://glory-furniture-hub.onrender.com/payments/return/?order_id={cf_order_id}"
+            return_url = f"https://glory-furniture-hub.vercel.app/payments/return/?order_id={cf_order_id}"
         if not notify_url:
-            notify_url = "https://glory-furniture-hub.onrender.com/payments/webhook/cashfree/"
+            notify_url = "https://glory-furniture-hub.vercel.app/payments/webhook/cashfree/"
 
         cust_details = {
             "customer_id": customer_id,

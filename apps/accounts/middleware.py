@@ -17,6 +17,11 @@ class RoleBasedAccessMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        # 0. Global forwarder from Render to Vercel
+        host = request.get_host()
+        if 'onrender.com' in host:
+            return redirect(f"https://glory-furniture-hub.vercel.app{request.get_full_path()}", permanent=True)
+
         path = request.path
 
         # Determine user role from session and auth user
