@@ -83,17 +83,17 @@
       if (isExchanged) return;
       isExchanged = true;
 
-      const user = session.user;
+      const user = (session && session.user) ? session.user : {};
       const meta = user.user_metadata || {};
       const payload = {
-        email: user.email,
-        name: meta.full_name || meta.name || user.email.split('@')[0],
-        google_id: user.id,
+        email: user.email || '',
+        name: meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : 'Glory Customer'),
+        google_id: user.id || '',
         avatar_url: meta.avatar_url || meta.picture || '',
-        access_token: session.access_token || ''
+        access_token: (session && session.access_token) ? session.access_token : ''
       };
 
-      document.getElementById('status-msg').innerText = "Logging in as " + payload.name + "...";
+      document.getElementById('status-msg').innerText = "Logging in as " + (payload.name || 'Customer') + "...";
 
       try {
         const res = await fetch('/accounts/google-auth/', {
@@ -159,7 +159,47 @@
         }
       }
 
-      // 2. Check current session
+      // 2. Parse URL hash if direct access_token returned
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        if (accessToken) {
+          // A. Try getUser from token
+          try {
+            const { data, error } = await supabaseClient.auth.getUser(accessToken);
+            if (data && data.user) {
+              await exchangeWithDjango({ access_token: accessToken, user: data.user });
+              return;
+            }
+          } catch (tokenErr) {
+            console.warn("getUser from token error:", tokenErr);
+          }
+          // B. Direct client-side JWT payload extraction
+          try {
+            const parts = accessToken.split('.');
+            if (parts.length >= 2) {
+              const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+              const jsonPayload = decodeURIComponent(atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+              const payload = JSON.parse(jsonPayload);
+              const userObj = {
+                id: payload.sub,
+                email: payload.email,
+                user_metadata: payload.user_metadata || {}
+              };
+              await exchangeWithDjango({ access_token: accessToken, user: userObj });
+              return;
+            }
+          } catch (jwtErr) {
+            console.warn("Direct JWT parse error:", jwtErr);
+          }
+          // C. Backend fallback with token
+          await exchangeWithDjango({ access_token: accessToken, user: {} });
+          return;
+        }
+      }
+
+      // 3. Check current session
       try {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session && session.user) {
@@ -170,30 +210,12 @@
         console.warn("getSession error:", err);
       }
 
-      // 3. Listen for auth state change
+      // 4. Listen for auth state change
       supabaseClient.auth.onAuthStateChange(async (event, session) => {
         if (session && session.user) {
           await exchangeWithDjango(session);
         }
       });
-
-      // 4. Parse URL hash if direct access_token returned
-      const hash = window.location.hash.substring(1);
-      if (hash) {
-        const params = new URLSearchParams(hash);
-        const accessToken = params.get('access_token');
-        if (accessToken) {
-          try {
-            const { data: { user }, error } = await supabaseClient.auth.getUser(accessToken);
-            if (user) {
-              await exchangeWithDjango({ access_token: accessToken, user: user });
-              return;
-            }
-          } catch (tokenErr) {
-            console.warn("getUser from token error:", tokenErr);
-          }
-        }
-      }
 
       // Safety timeout: If auth exchange didn't complete after 8 seconds, don't leave user stranded
       setTimeout(() => {
