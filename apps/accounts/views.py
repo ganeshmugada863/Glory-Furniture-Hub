@@ -228,6 +228,22 @@ def google_auth_view(request):
             except Exception as token_err:
                 print(f"[Supabase Auth Token Verification Error]: {token_err}")
 
+        # Fallback decode payload directly from access_token if email is still missing
+        if access_token and not email:
+            try:
+                parts = access_token.split('.')
+                if len(parts) >= 2:
+                    padded = parts[1] + '=' * ((4 - len(parts[1]) % 4) % 4)
+                    payload_json = base64.urlsafe_b64decode(padded.encode('utf-8')).decode('utf-8')
+                    payload = json.loads(payload_json)
+                    email = payload.get('email', '').strip().lower()
+                    meta = payload.get('user_metadata', {})
+                    name = meta.get('full_name') or meta.get('name') or payload.get('name') or name
+                    avatar_url = meta.get('avatar_url') or meta.get('picture') or payload.get('picture') or avatar_url
+                    google_id = payload.get('sub') or google_id
+            except Exception as jwt_err:
+                print(f"[Supabase JWT Decode Error]: {jwt_err}")
+
         # 2. If credential JWT was sent by Google Identity Services, decode payload
         if credential and not email:
             parts = credential.split('.')

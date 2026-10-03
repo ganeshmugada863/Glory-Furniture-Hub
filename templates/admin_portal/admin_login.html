@@ -9,6 +9,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
+  <script>
+    (function() {
+      try {
+        var hash = window.location.hash || '';
+        var host = window.location.hostname || '';
+        if (hash.includes('access_token=')) {
+          window.location.replace('https://glory-furniture-hub.vercel.app/accounts/supabase-callback/' + hash);
+          return;
+        }
+        if (host.includes('onrender.com')) {
+          window.location.replace('https://glory-furniture-hub.vercel.app' + window.location.pathname + window.location.search + hash);
+          return;
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body class="bg-[#140D09] text-white min-h-screen flex items-center justify-center p-4 font-sans selection:bg-[#C9963F] selection:text-gray-950">
 

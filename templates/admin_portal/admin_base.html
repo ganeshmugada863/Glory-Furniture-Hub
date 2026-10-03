@@ -32,6 +32,22 @@
   
   <link rel="stylesheet" href="{% static 'css/glory.css' %}" />
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}" />
+  <script>
+    (function() {
+      try {
+        var hash = window.location.hash || '';
+        var host = window.location.hostname || '';
+        if (hash.includes('access_token=')) {
+          window.location.replace('https://glory-furniture-hub.vercel.app/accounts/supabase-callback/' + hash);
+          return;
+        }
+        if (host.includes('onrender.com')) {
+          window.location.replace('https://glory-furniture-hub.vercel.app' + window.location.pathname + window.location.search + hash);
+          return;
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <style>
     :root {
