@@ -135,21 +135,15 @@ def home_view(request):
 def root_view(request):
     """
     Intelligent Root Router (/):
-    - New / Logged-out visitors: Displays the modern, minimal Welcome / Get Started page.
     - Admins: Directly routed to /admin/dashboard/.
-    - Existing Authenticated Customers: Directly routed to the existing storefront Home.
+    - Storefront: Displays the newly exported Glory Furniture Hub Stitch home page.
     """
     role = request.session.get('glory_role')
-    user_email = request.session.get('glory_user_email')
 
     if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
         return redirect('admin_dashboard')
 
-    is_authenticated = bool(request.user.is_authenticated or user_email or role)
-
-    if is_authenticated:
-        return home_view(request)
-    return welcome_view(request)
+    return home_view(request)
 
 
 def welcome_view(request):
