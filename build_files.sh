@@ -7,6 +7,9 @@ python3 -m pip install -r requirements.txt --break-system-packages || pip instal
 # Run database migrations
 python3 manage.py migrate --noinput || python manage.py migrate --noinput || true
 
+# Seed showcase products
+python3 sync_home_products.py || python sync_home_products.py || true
+
 # Run standard Django collectstatic
 python3 manage.py collectstatic --noinput --clear || python manage.py collectstatic --noinput --clear
 
