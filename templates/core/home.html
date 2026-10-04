@@ -20,13 +20,20 @@
   </script>
 
   <style>
-    html, body {
-      overflow-x: hidden !important;
-      max-width: 100vw !important;
-      width: 100% !important;
+    html {
+      overflow-x: clip;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    body {
+      overflow-x: clip;
+      overflow-y: visible;
+      width: 100%;
+      min-height: 100%;
+      -webkit-overflow-scrolling: touch;
     }
   </style>
-</head><body class="bg-surface font-body-md text-on-surface antialiased overflow-x-hidden"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
+</head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
 <!-- Main Navigation Bar -->
 <div class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
 <div class="max-w-7xl mx-auto px-3 sm:px-margin py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-space-md">
@@ -472,11 +479,11 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       </p>
 </div>
 <!-- 3D Coverflow Container with 1200px perspective -->
-<div class="relative w-full flex items-center justify-center overflow-hidden" style="perspective: 1200px; height: 320px; sm:height: 350px; touch-action: pan-y;">
+<div class="relative w-full flex items-center justify-center overflow-hidden h-[320px] sm:h-[350px]" style="perspective: 1200px; touch-action: pan-y;">
 <!-- Coverflow Track holding the 3D Cards -->
 <div class="relative w-full h-full flex items-center justify-center" id="coverflowTrack" style="transform-style: preserve-3d;">
 <!-- Card 1: Nordic Bouclé Living Suite -->
-<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 285px; sm:height: 300px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] h-[280px] sm:h-[300px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7);">
 <img alt="The Nordic Bouclé Living Suite" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
@@ -487,7 +494,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </div>
 </div>
 <!-- Card 2: Solid Teak Master Sanctuary -->
-<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 285px; sm:height: 300px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] h-[280px] sm:h-[300px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85);">
 <img alt="Solid Teak Master Sanctuary" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
@@ -498,7 +505,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </div>
 </div>
 <!-- Card 3: Artisan Teak & Oak Dining Hall (Default Active) -->
-<div class="coverflow-card active absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1); height: 285px; sm:height: 300px;">
+<div class="coverflow-card active absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] h-[280px] sm:h-[300px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1);">
 <img alt="Artisan Teak &amp; Oak Dining Hall" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
@@ -509,7 +516,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </div>
 </div>
 <!-- Card 4: Sculptural Reading & Diwan Nook -->
-<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 285px; sm:height: 300px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] h-[280px] sm:h-[300px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85);">
 <img alt="Sculptural Reading &amp; Diwan Nook" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
@@ -520,7 +527,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </div>
 </div>
 <!-- Card 5: Bespoke Architectural Pavilion -->
-<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 285px; sm:height: 300px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] h-[280px] sm:h-[300px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7);">
 <img alt="Bespoke Architectural Pavilion" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
