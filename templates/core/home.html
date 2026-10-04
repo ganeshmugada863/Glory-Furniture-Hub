@@ -19,29 +19,36 @@
     })();
   </script>
 
-</head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw !important;
+      width: 100% !important;
+    }
+  </style>
+</head><body class="bg-surface font-body-md text-on-surface antialiased overflow-x-hidden"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
 <!-- Main Navigation Bar -->
 <div class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
-<div class="max-w-7xl mx-auto px-margin py-4 flex items-center justify-between gap-space-md">
+<div class="max-w-7xl mx-auto px-3 sm:px-margin py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-space-md">
 <!-- Brand Logo & Name (Left) -->
-<a class="flex items-center gap-2.5 shrink-0 group select-none" href="/">
-<div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+<a class="flex items-center gap-2 sm:gap-2.5 shrink min-w-0 group select-none" href="/">
+<div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
 <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
 </div>
-<span class="font-display-md text-[18px] tracking-widest uppercase text-primary font-semibold group-hover:text-secondary transition-colors">GLORY FURNITURE HUB</span>
+<span class="font-display-md text-[13px] xs:text-[15px] sm:text-[18px] tracking-normal sm:tracking-widest uppercase text-primary font-bold group-hover:text-secondary transition-colors truncate">GLORY FURNITURE HUB</span>
 </a>
 <!-- Centered Clean Horizontal Navigation Links -->
 <!-- Right Minimal Action Icons -->
-<div class="flex items-center gap-space-sm sm:gap-4 shrink-0 text-on-surface">
-<button aria-label="Search" onclick="window.location.href='/catalog/'" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined text-[22px]">search</span>
+<div class="flex items-center gap-1 sm:gap-space-sm md:gap-4 shrink-0 text-on-surface">
+<button aria-label="Search" onclick="window.location.href='/catalog/'" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px] sm:text-[22px]">search</span>
 </button>
-<a aria-label="Account" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" data-path="profile" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}">
-<span class="material-symbols-outlined text-[22px]">person</span>
+<a aria-label="Account" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" data-path="profile" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}">
+<span class="material-symbols-outlined text-[20px] sm:text-[22px]">person</span>
 </a>
-<a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">3</span></a><a aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="cart" href="/cart/">
-<span class="material-symbols-outlined text-[22px]">shopping_bag</span>
-<span class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">2</span>
+<a aria-label="Favorites" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites"><svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="rounded-full absolute top-0.5 right-0.5 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[9px] sm:text-[10px] font-bold w-3.5 h-3.5 sm:w-4 sm:h-4 shadow-sm">3</span></a><a aria-label="Shopping Bag" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="cart" href="/cart/">
+<span class="material-symbols-outlined text-[20px] sm:text-[22px]">shopping_bag</span>
+<span class="absolute top-0.5 right-0.5 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[9px] sm:text-[10px] font-bold w-3.5 h-3.5 sm:w-4 sm:h-4 shadow-sm">2</span>
 </a>
 </div>
 </div>
@@ -81,7 +88,7 @@
 <button class="category-btn px-4 py-1.5 rounded-full font-label-md text-xs font-medium transition-all duration-200 bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface shrink-0 border border-outline-variant/40" onclick="filterCategory('teapoy', this)">Teapoy</button></div>
 </div>
 <!-- Product Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5" id="productsGrid">
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-4 lg:gap-5" id="productsGrid">
 <!-- Product Card 1: Royal Teak Wood Bed (Row 1, Card 1) -->
 <div class="product-item group bg-white rounded-[24px] lg:rounded-[26px] p-3 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-black/5" data-category="bed">
 <div>
@@ -454,83 +461,73 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </div></div>
 </section>
 <!-- 3D Coverflow Showcase Section: Immersive Curated Sanctuaries -->
-<section class="w-full py-space-xl my-space-md overflow-hidden relative select-none" id="coverflow-section" style="background: linear-gradient(rgb(247, 243, 238) 0%, rgb(235, 227, 216) 100%); border-top: 1px solid rgba(210, 195, 190, 0.45); border-bottom: 1px solid rgba(210, 195, 190, 0.45);">
-<div class="w-full px-4 sm:px-6 lg:px-10">
+<section class="w-full py-space-xl my-space-md overflow-hidden relative select-none max-w-full" id="coverflow-section" style="background: linear-gradient(rgb(247, 243, 238) 0%, rgb(235, 227, 216) 100%); border-top: 1px solid rgba(210, 195, 190, 0.45); border-bottom: 1px solid rgba(210, 195, 190, 0.45);">
+<div class="w-full px-3 sm:px-6 lg:px-10">
 <!-- Section Header -->
-<div class="text-center max-w-2xl mx-auto mb-10 flex flex-col gap-space-xs">
+<div class="text-center max-w-2xl mx-auto mb-8 sm:mb-10 flex flex-col gap-space-xs">
 <span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">IMMERSIVE SPACES &amp; SHOWCASES</span>
-<h2 class="font-headline-lg text-headline-lg text-primary">Explore Curated Architectural Sanctuaries</h2>
-<p class="font-body-md text-body-md text-on-surface-variant">
+<h2 class="font-headline-lg text-[22px] sm:text-headline-lg text-primary">Explore Curated Architectural Sanctuaries</h2>
+<p class="font-body-md text-xs sm:text-body-md text-on-surface-variant">
         Experience our handcrafted furniture collections across harmoniously styled living, dining, and suite concepts. Swipe or click cards to glide through the gallery.
       </p>
 </div>
 <!-- 3D Coverflow Container with 1200px perspective -->
-<div class="relative w-full flex items-center justify-center" style="perspective: 1200px; height: 340px;">
-<!-- Prev Navigation Chevron -->
-
-<!-- Next Navigation Chevron -->
-
+<div class="relative w-full flex items-center justify-center overflow-hidden" style="perspective: 1200px; height: 320px; sm:height: 350px; touch-action: pan-y;">
 <!-- Coverflow Track holding the 3D Cards -->
 <div class="relative w-full h-full flex items-center justify-center" id="coverflowTrack" style="transform-style: preserve-3d;">
 <!-- Card 1: Nordic Bouclé Living Suite -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="0" onclick="goToCoverflowSlide(0)" style="transform: translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 285px; sm:height: 300px;">
 <img alt="The Nordic Bouclé Living Suite" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<!-- Bottom Metadata Overlay & Play/Expand Icon inspired by Image 2 -->
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
+<div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Living Room Concept</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">The Nordic Bouclé Living Suite</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Living Room Concept</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">The Nordic Bouclé Living Suite</h3>
 </div>
-
 </div>
 </div>
 <!-- Card 2: Solid Teak Master Sanctuary -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="1" onclick="goToCoverflowSlide(1)" style="transform: translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 285px; sm:height: 300px;">
 <img alt="Solid Teak Master Sanctuary" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
+<div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Master Bedroom</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Solid Teak Master Sanctuary</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Master Bedroom</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Solid Teak Master Sanctuary</h3>
 </div>
-
 </div>
 </div>
 <!-- Card 3: Artisan Teak & Oak Dining Hall (Default Active) -->
-<div class="coverflow-card active absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1); height: 300px; max-width: 280px;">
+<div class="coverflow-card active absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="2" onclick="goToCoverflowSlide(2)" style="transform: translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08); z-index: 30; opacity: 1; filter: brightness(1); height: 285px; sm:height: 300px;">
 <img alt="Artisan Teak &amp; Oak Dining Hall" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
+<div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Dining &amp; Entertaining</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Artisan Teak &amp; Oak Dining Hall</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Dining &amp; Entertaining</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Artisan Teak &amp; Oak Dining Hall</h3>
 </div>
-
 </div>
 </div>
 <!-- Card 4: Sculptural Reading & Diwan Nook -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="3" onclick="goToCoverflowSlide(3)" style="transform: translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9); z-index: 20; opacity: 0.88; filter: brightness(0.85); height: 285px; sm:height: 300px;">
 <img alt="Sculptural Reading &amp; Diwan Nook" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
+<div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Atelier Sanctuary</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Sculptural Reading &amp; Diwan Nook</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Atelier Sanctuary</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Sculptural Reading &amp; Diwan Nook</h3>
 </div>
-
 </div>
 </div>
 <!-- Card 5: Bespoke Architectural Pavilion -->
-<div class="coverflow-card absolute w-[295px] sm:w-[325px] md:w-[340px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-500 ease-out" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 300px; max-width: 280px;">
+<div class="coverflow-card absolute w-[260px] xs:w-[285px] sm:w-[325px] md:w-[340px] max-w-[80vw] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20 transition-all duration-700 ease-out" data-index="4" onclick="goToCoverflowSlide(4)" style="transform: translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78); z-index: 10; opacity: 0.65; filter: brightness(0.7); height: 285px; sm:height: 300px;">
 <img alt="Bespoke Architectural Pavilion" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
-<div class="absolute inset-x-0 bottom-0 p-5 flex items-end justify-between gap-3 text-surface">
+<div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Hospitality &amp; Suite</span>
-<h3 class="font-headline-sm text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Bespoke Architectural Pavilion</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Hospitality &amp; Suite</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Bespoke Architectural Pavilion</h3>
 </div>
-
 </div>
 </div>
 </div>
@@ -559,20 +556,22 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
   </div>
 
   <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl border border-surface-container group cursor-pointer bg-primary-container">
-    <img alt="Glory Furniture Hub Atelier Cinematic Showcase" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
-    <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-black/20"></div>
+    <video class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+           autoplay loop muted playsinline
+           poster="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
+      <source src="/static/videos/bed_showcase.mp4" type="video/mp4">
+      <source src="https://cdn.coverr.co/videos/user-ai-generation-6S6P6mbb24ym/720p.mp4" type="video/mp4">
+      <img alt="Glory Furniture Hub Atelier Cinematic Showcase" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
+    </video>
+    <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-black/20 pointer-events-none"></div>
 
-    
-
-    <div class="absolute inset-x-0 bottom-0 p-4 md:p-6 bg-gradient-to-t from-primary/95 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-surface">
-      <div class="flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-secondary-container animate-pulse shrink-0"></div><div class="flex flex-col"><span class="font-label-sm text-[10px] tracking-widest uppercase text-secondary-fixed font-semibold">Glory Atelier • Archival Series</span><p class="font-headline-sm text-sm sm:text-base font-medium text-white tracking-wide truncate drop-shadow-sm">Chapter 04: The Poetry of Solid Teak &amp; Travertine</p></div></div>
+    <div class="absolute inset-x-0 bottom-0 p-4 md:p-6 bg-gradient-to-t from-primary/95 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-surface pointer-events-auto">
+      <div class="flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full bg-secondary-container animate-pulse shrink-0"></div><div class="flex flex-col"><span class="font-label-sm text-[10px] tracking-widest uppercase text-secondary-fixed font-semibold">Glory Atelier • Archival Series</span><p class="font-headline-sm text-sm sm:text-base font-medium text-white tracking-wide truncate drop-shadow-sm">Chapter 04: Handcrafted Royal Teak Bedroom Collection</p></div></div>
       <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
-        
-        
-        <button aria-label="Mute audio" class="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors" onclick="event.stopPropagation(); showToast('Audio unmuted', 'volume_up')">
-          <span class="material-symbols-outlined text-[20px]">volume_up</span>
+        <button id="videoMuteBtn" aria-label="Mute audio" class="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors" onclick="event.stopPropagation(); toggleVideoAudio()">
+          <span class="material-symbols-outlined text-[20px]">volume_off</span>
         </button>
-        <button aria-label="Fullscreen" class="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors" onclick="event.stopPropagation(); showToast('Fullscreen mode', 'fullscreen')">
+        <button aria-label="Fullscreen" class="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors" onclick="event.stopPropagation(); toggleVideoFullscreen()">
           <span class="material-symbols-outlined text-[20px]">fullscreen</span>
         </button>
       </div>
@@ -687,13 +686,15 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       showToast('Tactile Swatch Kit ($25) added to cart', 'palette');
     }
 
-    // 3D Coverflow Carousel Implementation
+    // 3D Coverflow Carousel Implementation with Mobile/Android Optimization & Auto-Animation
     let activeCoverflowIndex = 2; // Card 3 (index 2) is active by default
     const totalCoverflowCards = 5;
+    let coverflowAutoTimer = null;
 
     function renderCoverflow() {
       const cards = document.querySelectorAll('.coverflow-card');
       const dots = document.querySelectorAll('#coverflowDots button');
+      const isMobile = window.innerWidth < 640;
 
       cards.forEach((card, idx) => {
         const offset = idx - activeCoverflowIndex;
@@ -702,36 +703,62 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
         let opacity = 1;
         let filter = 'none';
 
-        if (offset === 0) {
-          // Center active card: upright, full scale, front layer
-          transform = 'translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08)';
-          zIndex = 30;
-          opacity = 1;
-          filter = 'brightness(1)';
-        } else if (offset === -1) {
-          // Left adjacent card
-          transform = 'translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9)';
-          zIndex = 20;
-          opacity = 0.88;
-          filter = 'brightness(0.85)';
-        } else if (offset === 1) {
-          // Right adjacent card
-          transform = 'translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9)';
-          zIndex = 20;
-          opacity = 0.88;
-          filter = 'brightness(0.85)';
-        } else if (offset <= -2) {
-          // Far left cards
-          transform = 'translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78)';
-          zIndex = 10;
-          opacity = offset === -2 ? 0.65 : 0;
-          filter = 'brightness(0.7)';
-        } else if (offset >= 2) {
-          // Far right cards
-          transform = 'translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78)';
-          zIndex = 10;
-          opacity = offset === 2 ? 0.65 : 0;
-          filter = 'brightness(0.7)';
+        if (isMobile) {
+          // Android / Mobile optimized 3D transforms: tight margins, stays perfectly within screen width
+          if (offset === 0) {
+            transform = 'translateX(0%) translateZ(60px) rotateY(0deg) scale(1.02)';
+            zIndex = 30;
+            opacity = 1;
+            filter = 'brightness(1)';
+          } else if (offset === -1) {
+            transform = 'translateX(-54%) translateZ(-20px) rotateY(20deg) scale(0.85)';
+            zIndex = 20;
+            opacity = 0.88;
+            filter = 'brightness(0.82)';
+          } else if (offset === 1) {
+            transform = 'translateX(54%) translateZ(-20px) rotateY(-20deg) scale(0.85)';
+            zIndex = 20;
+            opacity = 0.88;
+            filter = 'brightness(0.82)';
+          } else if (offset <= -2) {
+            transform = 'translateX(-90%) translateZ(-60px) rotateY(30deg) scale(0.72)';
+            zIndex = 10;
+            opacity = 0;
+            filter = 'brightness(0.65)';
+          } else if (offset >= 2) {
+            transform = 'translateX(90%) translateZ(-60px) rotateY(-30deg) scale(0.72)';
+            zIndex = 10;
+            opacity = 0;
+            filter = 'brightness(0.65)';
+          }
+        } else {
+          // Windows / Desktop transforms (exact original geometry)
+          if (offset === 0) {
+            transform = 'translateX(0%) translateZ(100px) rotateY(0deg) scale(1.08)';
+            zIndex = 30;
+            opacity = 1;
+            filter = 'brightness(1)';
+          } else if (offset === -1) {
+            transform = 'translateX(-70%) translateZ(-30px) rotateY(28deg) scale(0.9)';
+            zIndex = 20;
+            opacity = 0.88;
+            filter = 'brightness(0.85)';
+          } else if (offset === 1) {
+            transform = 'translateX(70%) translateZ(-30px) rotateY(-28deg) scale(0.9)';
+            zIndex = 20;
+            opacity = 0.88;
+            filter = 'brightness(0.85)';
+          } else if (offset <= -2) {
+            transform = 'translateX(-130%) translateZ(-120px) rotateY(42deg) scale(0.78)';
+            zIndex = 10;
+            opacity = offset === -2 ? 0.65 : 0;
+            filter = 'brightness(0.7)';
+          } else if (offset >= 2) {
+            transform = 'translateX(130%) translateZ(-120px) rotateY(-42deg) scale(0.78)';
+            zIndex = 10;
+            opacity = offset === 2 ? 0.65 : 0;
+            filter = 'brightness(0.7)';
+          }
         }
 
         card.style.transform = transform;
@@ -753,6 +780,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
     function goToCoverflowSlide(index) {
       activeCoverflowIndex = Math.max(0, Math.min(totalCoverflowCards - 1, index));
       renderCoverflow();
+      resetCoverflowAutoPlay();
     }
 
     function nextCoverflowSlide() {
@@ -765,12 +793,97 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       renderCoverflow();
     }
 
-    // Initialize 3D positions on load
+    // Auto-slide animation: glides card after card seamlessly
+    function startCoverflowAutoPlay() {
+      stopCoverflowAutoPlay();
+      coverflowAutoTimer = setInterval(() => {
+        nextCoverflowSlide();
+      }, 3500);
+    }
+
+    function stopCoverflowAutoPlay() {
+      if (coverflowAutoTimer) {
+        clearInterval(coverflowAutoTimer);
+        coverflowAutoTimer = null;
+      }
+    }
+
+    function resetCoverflowAutoPlay() {
+      stopCoverflowAutoPlay();
+      startCoverflowAutoPlay();
+    }
+
+    // Touch swipe gestures for Android & mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const coverflowTrack = document.getElementById('coverflowTrack');
+    if (coverflowTrack) {
+      coverflowTrack.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        stopCoverflowAutoPlay();
+      }, { passive: true });
+
+      coverflowTrack.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        if (Math.abs(diff) > 40) {
+          if (diff < 0) {
+            nextCoverflowSlide();
+          } else {
+            prevCoverflowSlide();
+          }
+        }
+        startCoverflowAutoPlay();
+      }, { passive: true });
+    }
+
+    // Pause on hover, resume on mouseleave
+    const coverflowElem = document.getElementById('coverflow-section');
+    if (coverflowElem) {
+      coverflowElem.addEventListener('mouseenter', stopCoverflowAutoPlay);
+      coverflowElem.addEventListener('mouseleave', startCoverflowAutoPlay);
+    }
+
+    // Video Audio and Fullscreen Controls
+    function toggleVideoAudio() {
+      const vid = document.querySelector('#atelier-video-showcase video');
+      const btn = document.getElementById('videoMuteBtn');
+      if (vid) {
+        vid.muted = !vid.muted;
+        if (btn) {
+          btn.querySelector('.material-symbols-outlined').textContent = vid.muted ? 'volume_off' : 'volume_up';
+        }
+        showToast(vid.muted ? 'Video audio muted' : 'Video audio unmuted', vid.muted ? 'volume_off' : 'volume_up');
+      }
+    }
+
+    function toggleVideoFullscreen() {
+      const vid = document.querySelector('#atelier-video-showcase video');
+      if (vid) {
+        if (!document.fullscreenElement) {
+          if (vid.requestFullscreen) {
+            vid.requestFullscreen();
+          } else if (vid.webkitRequestFullscreen) {
+            vid.webkitRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+        }
+      }
+    }
+
+    window.addEventListener('resize', renderCoverflow);
+
+    // Initialize 3D positions and auto-animation on load
     document.addEventListener('DOMContentLoaded', () => {
       renderCoverflow();
+      startCoverflowAutoPlay();
     });
-    // Call immediately in case DOM is already ready
+    // Call immediately
     renderCoverflow();
+    startCoverflowAutoPlay();
   </script>
 </div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-xl"><div class="w-full px-4 sm:px-6 lg:px-10"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g"><span class="font-headline-sm text-headline-sm font-semibold text-primary">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div></div></footer>
 
