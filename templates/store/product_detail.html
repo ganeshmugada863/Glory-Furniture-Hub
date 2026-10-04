@@ -267,89 +267,242 @@
             {{ product.description|default:"Masterfully carved from kiln-dried solid seasoned timber. Engineered with traditional joinery, resilient multi-coat natural wax polish, and handcrafted spatial elegance." }}
           </p>
 
-          <!-- Size Variant Selection -->
+          <!-- =============================================================== -->
+          <!-- Dynamic Category Customizer: Dimensions, Storage, Chairs, Planks -->
+          <!-- =============================================================== -->
+          {% if product.category_type == 'bed' or product.category_type == 'diwan' %}
+          <!-- 1. Bed / Diwan Size Matrix -->
           <div class="flex flex-col gap-2 pt-2 border-t border-surface-container">
-            <div class="text-xs font-bold text-primary">Size / Dimension Matrix: <span id="selectedSizeLabel" class="font-normal text-on-surface-variant">{{ product.dimensions|default:"Standard Suite" }}</span></div>
-            <div class="grid grid-cols-3 gap-2" id="sizeOptionsGrid">
-              <button type="button" onclick="selectSize(this, 'King Size (78\" × 72\")', 0)" class="size-opt-btn p-2.5 text-left rounded-xl border-2 border-[#2d1e18] bg-surface-container-lowest shadow-sm focus:outline-none transition-all">
+            <div class="text-xs font-bold text-primary flex items-center justify-between">
+              <span>Size &amp; Dimension Suite:</span>
+              <span id="selectedSizeLabel" class="font-bold text-secondary">King Size (78" × 72")</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="sizeOptionsGrid">
+              {% for s in product.size_config_list %}
+              <button 
+                type="button" 
+                onclick="selectSize(this, '{{ s.name|escapejs }}', {{ s.delta }}, '{{ s.dimensions|escapejs }}')" 
+                class="size-opt-btn p-2.5 text-left rounded-xl border {% if s.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
+              >
                 <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-primary">King Size</span>
+                  <span class="text-xs font-bold text-primary">{{ s.name }}</span>
+                  {% if s.is_default %}
                   <span class="material-symbols-outlined text-[15px] text-primary">check_circle</span>
+                  {% endif %}
                 </div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">78" × 72" Master</div>
-                <div class="text-xs font-bold text-primary mt-1">{{ product.formatted_price }}</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">{{ s.subtitle }}</div>
+                <div class="text-xs font-bold text-primary mt-1">₹{{ s.price|floatformat:0 }}</div>
               </button>
-
-              <button type="button" onclick="selectSize(this, 'Queen Size (78\" × 60\")', -3000)" class="size-opt-btn p-2.5 text-left rounded-xl border border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18] transition-all focus:outline-none">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-semibold text-primary">Queen Size</span>
-                </div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">78" × 60" Compact</div>
-                <div class="text-xs font-semibold text-primary mt-1">₹{{ product.price|add:"-3000"|floatformat:0 }}</div>
-              </button>
-
-              <button type="button" onclick="selectSize(this, 'Single Suite (78\" × 36\")', -8000)" class="size-opt-btn p-2.5 text-left rounded-xl border border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18] transition-all focus:outline-none">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-semibold text-primary">Single Suite</span>
-                </div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">78" × 36" Studio</div>
-                <div class="text-xs font-semibold text-primary mt-1">₹{{ product.price|add:"-8000"|floatformat:0 }}</div>
-              </button>
+              {% endfor %}
             </div>
           </div>
 
-          <!-- Storage / Finish Configuration -->
+          <!-- 2. Bed / Diwan Storage Mechanism Selector with Photo Switcher -->
           <div class="flex flex-col gap-2">
-            <div class="text-xs font-bold text-primary">Storage / Finish Type: <span id="selectedStorageLabel" class="font-normal text-on-surface-variant">Box Storage</span></div>
-            <div class="grid grid-cols-4 gap-2" id="storageOptionsGrid">
-              <button type="button" onclick="selectStorage(this, 'Box Storage', 0)" class="storage-opt-btn p-2 text-center rounded-lg border-2 border-[#8c4f20] bg-surface-container-lowest shadow-sm">
-                <div class="text-xs font-bold text-primary">Box</div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">Standard</div>
+            <div class="text-xs font-bold text-primary flex items-center justify-between">
+              <span>Storage Mechanism &amp; Timber Cavity:</span>
+              <span id="selectedStorageLabel" class="font-bold text-secondary">Box Storage</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="storageOptionsGrid">
+              {% for opt in product.storage_config_list %}
+              <button 
+                type="button" 
+                onclick="selectStorage(this, '{{ opt.name|escapejs }}', {{ opt.delta }}, '{{ opt.image|escapejs }}')" 
+                class="storage-opt-btn p-2 text-center rounded-xl border {% if opt.is_default %}border-2 border-[#8c4f20] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]{% endif %} transition-all cursor-pointer"
+              >
+                <div class="text-xs font-bold text-primary">{{ opt.name }}</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">{{ opt.delta_label }}</div>
+                <div class="text-[9px] text-secondary font-semibold mt-0.5">{{ opt.subtitle }}</div>
               </button>
-              <button type="button" onclick="selectStorage(this, 'Drawer Storage', 4000)" class="storage-opt-btn p-2 text-center rounded-lg border border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]">
-                <div class="text-xs font-medium text-primary">Drawers</div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">+₹4,000</div>
-              </button>
-              <button type="button" onclick="selectStorage(this, 'Hydraulic Storage', 9500)" class="storage-opt-btn p-2 text-center rounded-lg border border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]">
-                <div class="text-xs font-medium text-primary">Hydraulic</div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">+₹9,500</div>
-              </button>
-              <button type="button" onclick="selectStorage(this, 'Without Storage', -6000)" class="storage-opt-btn p-2 text-center rounded-lg border border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]">
-                <div class="text-xs font-medium text-primary">No Storage</div>
-                <div class="text-[10px] text-on-surface-variant mt-0.5">-₹6,000</div>
-              </button>
+              {% endfor %}
             </div>
           </div>
 
-          <!-- Delivery & Assembly Pincode Checker -->
-          <div class="flex flex-col gap-1.5 mt-1 p-3.5 rounded-xl bg-surface-container-low/70 border border-surface-container">
-            <div class="flex items-center gap-2 text-xs font-bold text-primary">
-              <span class="material-symbols-outlined text-[18px] text-secondary">local_shipping</span>
-              <span>Check Delivery &amp; White-Glove Installation:</span>
+          {% elif product.category_type == 'dining' %}
+          <!-- 1. Dining Chairs Capacity Selector -->
+          <div class="flex flex-col gap-2 pt-2 border-t border-surface-container">
+            <div class="text-xs font-bold text-primary flex items-center justify-between">
+              <span>Dining Seating Capacity:</span>
+              <span id="selectedChairsLabel" class="font-bold text-secondary">6 Chairs (Standard Dining Suite)</span>
             </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="diningChairsGrid">
+              {% for c in product.size_config_list %}
+              <button 
+                type="button" 
+                onclick="selectDiningChairs(this, '{{ c.name|escapejs }}', {{ c.delta }}, '{{ c.dimensions|escapejs }}')" 
+                class="dining-chair-btn p-2 text-center rounded-xl border {% if c.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
+              >
+                <div class="text-xs font-bold text-primary">{{ c.id|cut:"chairs_" }} Chairs</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">₹{{ c.price|floatformat:0 }}</div>
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- 2. Dining Table Top / Plank Shape Selector -->
+          <div class="flex flex-col gap-2">
+            <div class="text-xs font-bold text-primary flex items-center justify-between">
+              <span>Tabletop Plank Design &amp; Cut:</span>
+              <span id="selectedPlankLabel" class="font-bold text-secondary">Rectangular Plank</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2" id="plankShapesGrid">
+              {% for p in product.dining_plank_options %}
+              <button 
+                type="button" 
+                onclick="selectPlankShape(this, '{{ p.name|escapejs }}', '{{ p.image|escapejs }}')" 
+                class="plank-opt-btn p-2.5 text-center rounded-xl border {% if p.is_default %}border-2 border-[#8c4f20] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]{% endif %} transition-all cursor-pointer"
+              >
+                <div class="text-xs font-bold text-primary">{{ p.name }}</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">{{ p.subtitle }}</div>
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          {% else %}
+          <!-- General / Sofa / Dressing / Teapoy Suite Configuration -->
+          <div class="flex flex-col gap-2 pt-2 border-t border-surface-container">
+            <div class="text-xs font-bold text-primary flex items-center justify-between">
+              <span>Configuration / Size Suite:</span>
+              <span id="selectedSizeLabel" class="font-bold text-secondary">{{ product.dimensions|default:"Standard Dimension" }}</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="generalSizeGrid">
+              {% for s in product.size_config_list %}
+              <button 
+                type="button" 
+                onclick="selectSize(this, '{{ s.name|escapejs }}', {{ s.delta }}, '{{ s.dimensions|escapejs }}')" 
+                class="size-opt-btn p-2.5 text-left rounded-xl border {% if s.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary">{{ s.name }}</span>
+                  {% if s.is_default %}
+                  <span class="material-symbols-outlined text-[15px] text-primary">check_circle</span>
+                  {% endif %}
+                </div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">{{ s.subtitle }}</div>
+                <div class="text-xs font-bold text-primary mt-1">₹{{ s.price|floatformat:0 }}</div>
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- =============================================================== -->
+          <!-- Check Delivery & White-Glove Installation Address & GPS Box      -->
+          <!-- =============================================================== -->
+          <div class="flex flex-col gap-2 mt-1 p-4 rounded-2xl bg-surface-container-low/80 border border-surface-container shadow-xs">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 text-xs font-bold text-primary">
+                <span class="material-symbols-outlined text-[19px] text-secondary">local_shipping</span>
+                <span>Check Delivery &amp; White-Glove Installation:</span>
+              </div>
+              <button type="button" onclick="detectGPSLocation()" class="text-[11px] font-bold text-secondary hover:text-primary flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-amber-200/80 shadow-2xs transition-all active:scale-95" title="Auto-detect via GPS Coordinates">
+                <span class="material-symbols-outlined text-[14px]">my_location</span>
+                <span>Use GPS</span>
+              </button>
+            </div>
+
+            <!-- PIN Code Input and Check Button -->
             <div class="relative flex items-center mt-1">
-              <input id="pincodeInput" maxlength="6" placeholder="Enter 6-digit Pincode (e.g. 500001)" class="w-full bg-white border border-outline-variant/60 px-3.5 py-2.5 rounded-lg text-xs text-on-surface focus:outline-none focus:border-secondary transition-all pr-20" type="text">
-              <button type="button" onclick="checkDeliveryPin()" class="absolute right-3 text-xs font-bold text-secondary hover:text-primary uppercase tracking-wide">
-                CHECK
+              <input 
+                id="pincodeInput" 
+                maxlength="6" 
+                inputmode="numeric" 
+                placeholder="Enter 6-digit Pincode (e.g. 500001, 530001)" 
+                oninput="handlePincodeInput(this.value)" 
+                class="w-full bg-white border border-outline-variant/60 px-3.5 py-2.5 rounded-xl text-xs font-medium text-on-surface focus:outline-none focus:border-secondary transition-all pr-24" 
+                type="text"
+              />
+              <button 
+                type="button" 
+                onclick="analyzePincodeAndLocation()" 
+                class="absolute right-2 px-3.5 py-1.5 rounded-lg bg-[#5C3D2E] hover:bg-black text-white text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer active:scale-95"
+              >
+                Verify
               </button>
             </div>
-            <p id="pincodeResult" class="text-xs text-emerald-800 hidden mt-1 font-medium">
-              ✓ Delivery &amp; Free White-Glove Assembly available within <strong>3-5 business days</strong> to your area.
-            </p>
+
+            <!-- Coordinate and Location Analysis Display Card -->
+            <div id="locationAnalysisCard" class="hidden flex-col gap-2 p-3 rounded-xl bg-white border border-amber-200/90 text-xs text-on-surface transition-all">
+              <div class="flex items-center justify-between flex-wrap gap-1">
+                <span class="font-bold text-gray-900 flex items-center gap-1">
+                  <span class="text-secondary">📍</span>
+                  <span id="detectedRegionText">Analyzing region...</span>
+                </span>
+                <span id="gpsCoordinatesBadge" class="text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-md">
+                  GPS: Standby
+                </span>
+              </div>
+              <div class="text-[11px] text-emerald-800 font-semibold flex items-center gap-1">
+                <span>✓ White-Glove Installation Available: Delivered within 3-5 days</span>
+              </div>
+
+              <!-- Present Address Input Field with Save Button -->
+              <div class="mt-1 space-y-1">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500">Present Delivery Address / Flat / Landmark *</label>
+                <div class="flex items-center gap-2">
+                  <input 
+                    type="text" 
+                    id="presentAddressInput" 
+                    placeholder="House/Flat No., Apartment, Street, Landmark" 
+                    class="flex-1 bg-surface-container-low border border-gray-300 px-3 py-2 rounded-lg text-xs font-medium text-gray-900 focus:outline-none focus:border-secondary" 
+                  />
+                  <!-- SAVE BUTTON -->
+                  <button 
+                    type="button" 
+                    onclick="saveDeliveryAddress()" 
+                    class="px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-all active:scale-95 cursor-pointer flex items-center gap-1"
+                  >
+                    <span>💾</span>
+                    <span>Save</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Saved Confirmation Banner -->
+            <div id="addressSavedBanner" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-xs text-emerald-900 flex items-start gap-2.5">
+              <span class="text-lg leading-none">✅</span>
+              <div class="flex-1">
+                <div class="font-bold">Address Saved for Delivery &amp; Setup:</div>
+                <div id="savedAddressSummary" class="text-[11px] text-emerald-800 mt-0.5 font-medium leading-relaxed"></div>
+              </div>
+              <button type="button" onclick="editSavedAddress()" class="text-[10px] text-emerald-900 underline font-bold cursor-pointer shrink-0">Edit</button>
+            </div>
           </div>
 
-          <!-- Primary CTA Buttons -->
-          <div class="grid grid-cols-2 gap-3 mt-2">
-            <button type="button" onclick="handleAddCurrentProductToCart()" class="w-full bg-secondary hover:bg-[#723d16] text-white py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
-              <span class="material-symbols-outlined text-[19px]">shopping_bag</span>
+          <!-- =============================================================== -->
+          <!-- Primary CTA Buttons: Add to Cart (Balanced with Qty & Wishlist)  -->
+          <!-- =============================================================== -->
+          <div class="flex items-center gap-3 mt-2">
+            <!-- Add to Cart (Main prominent action) -->
+            <button 
+              type="button" 
+              onclick="handleAddCurrentProductToCart()" 
+              class="flex-1 bg-[#2C1B10] hover:bg-[#8C4F20] text-white py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
               <span>Add to Cart</span>
             </button>
 
-            <button type="button" onclick="handleBuyNowCurrentProduct()" class="w-full bg-primary hover:bg-[#2b1d18] text-white py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
-              <span class="material-symbols-outlined text-[19px]">flash_on</span>
-              <span>Buy Now</span>
+            <!-- Quantity Selector beside Add to Cart -->
+            <div class="flex items-center border border-outline-variant/60 rounded-xl bg-surface-container-low px-2 py-2 shrink-0">
+              <button type="button" onclick="changeQuantity(-1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-sm text-primary hover:bg-amber-50 cursor-pointer transition-colors">-</button>
+              <span id="productQuantityDisplay" class="w-8 text-center text-xs font-bold text-primary">1</span>
+              <button type="button" onclick="changeQuantity(1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-sm text-primary hover:bg-amber-50 cursor-pointer transition-colors">+</button>
+            </div>
+
+            <!-- Wishlist Heart Button beside Quantity -->
+            <button 
+              type="button" 
+              onclick="toggleProductWishlist(this, {{ product.id }})" 
+              class="w-12 h-12 rounded-xl border border-outline-variant/60 bg-surface-container-low hover:bg-red-50 text-stone-700 hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" 
+              title="Save to Favorites"
+            >
+              <span class="material-symbols-outlined text-[22px]">favorite_border</span>
             </button>
           </div>
+
 
           <!-- Trust Badges Strip -->
           <div class="grid grid-cols-3 gap-2 pt-3 border-t border-surface-container text-center">
@@ -519,15 +672,20 @@
     </section>
 
     <!-- =============================================================== -->
-    <!-- Sticky Mobile CTA Conversion Bar                                -->
+    <!-- Sticky Mobile CTA Conversion Bar (Balanced Price + Add to Cart) -->
     <!-- =============================================================== -->
     <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 border-t border-surface-container">
-      <div>
-        <span id="mobileStickyPrice" class="font-bold text-lg text-primary block leading-tight">{{ product.formatted_price }}</span>
-        <span class="text-[10px] text-emerald-700 font-bold uppercase">Free White-Glove Setup</span>
+      <div class="flex flex-col">
+        <span id="mobileStickyPrice" class="font-black text-lg text-primary leading-tight">{{ product.formatted_price }}</span>
+        <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wide">Free White-Glove Setup</span>
       </div>
-      <button onclick="handleAddCurrentProductToCart()" class="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all">
-        Reserve Piece
+      <button 
+        type="button" 
+        onclick="handleAddCurrentProductToCart()" 
+        class="bg-[#2C1B10] hover:bg-[#8C4F20] text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+      >
+        <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+        <span>Add to Cart</span>
       </button>
     </div>
 
@@ -545,7 +703,7 @@
               <span class="material-symbols-outlined text-primary">shopping_bag</span>
               <span class="font-headline-sm text-lg font-bold text-primary">Atelier Bag (<span id="flyoutCount">1</span>)</span>
             </div>
-            <button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary transition-colors" onclick="closeCartFlyout()">
+            <button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary transition-colors cursor-pointer" onclick="closeCartFlyout()">
               <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
           </div>
@@ -559,7 +717,7 @@
               <p id="flyoutItemConfig" class="text-xs text-on-surface-variant mt-0.5">King Size • Box Storage</p>
               <div class="flex items-center justify-between mt-2">
                 <span id="flyoutItemPrice" class="font-bold text-sm text-primary">{{ product.formatted_price }}</span>
-                <span class="text-xs text-secondary font-bold">Qty: 1</span>
+                <span id="flyoutItemQty" class="text-xs text-secondary font-bold">Qty: 1</span>
               </div>
             </div>
           </div>
@@ -577,11 +735,11 @@
             <span class="text-sm font-semibold text-primary">Total Payable</span>
             <span id="flyoutTotalDisplay" class="text-lg font-bold text-primary">{{ product.formatted_price }}</span>
           </div>
-          <a href="/checkout/" class="w-full bg-primary hover:bg-[#2b1d18] text-white h-12 rounded-xl text-xs uppercase font-bold tracking-wider flex items-center justify-center gap-2 shadow-md transition-all">
+          <a href="/checkout/" class="w-full bg-[#2C1B10] hover:bg-[#8C4F20] text-white h-12 rounded-xl text-xs uppercase font-bold tracking-wider flex items-center justify-center gap-2 shadow-md transition-all">
             <span class="material-symbols-outlined text-[18px]">lock</span>
             Proceed to Secure Checkout
           </a>
-          <button class="w-full text-center text-xs text-on-surface-variant hover:text-primary py-1" onclick="closeCartFlyout()">
+          <button class="w-full text-center text-xs text-on-surface-variant hover:text-primary py-1 cursor-pointer" onclick="closeCartFlyout()">
             Continue Browsing Atelier Pieces
           </button>
         </div>
@@ -634,7 +792,7 @@
           <p class="text-xs text-on-surface-variant">Receive exclusive previews of studio releases and architectural timber drops.</p>
           <div class="flex gap-2">
             <input class="flex-1 bg-white rounded-lg px-3 py-2 text-xs border border-outline-variant/60 outline-none" placeholder="Enter your email" type="email">
-            <button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Join</button>
+            <button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-secondary transition-colors cursor-pointer">Join</button>
           </div>
         </div>
       </div>
@@ -664,10 +822,12 @@
     let currentPrice = basePrice;
     let sizePriceAdjustment = 0;
     let storagePriceAdjustment = 0;
-    let currentSizeName = 'King Size (78" × 72")';
-    let currentStorageName = 'Box Storage';
+    let currentQuantity = 1;
+    let currentSizeName = '{{ product.dimensions|default:"Standard Suite"|escapejs }}';
+    let currentStorageName = '{% if product.category_type == "dining" %}Rectangular Plank{% elif product.category_type == "bed" or product.category_type == "diwan" %}Box Storage{% else %}Standard Finish{% endif %}';
 
     function switchPhoto(src, elem, idx) {
+      if (!src) return;
       const mainImg = document.getElementById('mainGalleryImg');
       if (mainImg) {
         mainImg.src = src;
@@ -691,7 +851,16 @@
       switchPhoto(targetSrc, thumbs[currentPhotoIndex], currentPhotoIndex);
     }
 
-    function selectSize(btn, sizeName, priceDelta) {
+    function changeQuantity(delta) {
+      currentQuantity = Math.max(1, currentQuantity + delta);
+      const qtyElem = document.getElementById('productQuantityDisplay');
+      if (qtyElem) qtyElem.textContent = currentQuantity;
+      const flyoutQty = document.getElementById('flyoutItemQty');
+      if (flyoutQty) flyoutQty.textContent = `Qty: ${currentQuantity}`;
+      updatePriceDisplay();
+    }
+
+    function selectSize(btn, sizeName, priceDelta, dimensions) {
       document.querySelectorAll('.size-opt-btn').forEach(b => {
         b.classList.remove('border-2', 'border-[#2d1e18]', 'shadow-sm');
         b.classList.add('border', 'border-outline-variant/60');
@@ -701,21 +870,22 @@
       btn.classList.add('border-2', 'border-[#2d1e18]', 'shadow-sm');
       btn.classList.remove('border', 'border-outline-variant/60');
       
-      const titleSpan = btn.querySelector('.font-bold') || btn.querySelector('span');
-      if (titleSpan && !btn.querySelector('.material-symbols-outlined')) {
+      const titleDiv = btn.querySelector('.flex');
+      if (titleDiv && !titleDiv.querySelector('.material-symbols-outlined')) {
         const check = document.createElement('span');
         check.className = 'material-symbols-outlined text-[15px] text-primary';
         check.textContent = 'check_circle';
-        btn.querySelector('.flex')?.appendChild(check);
+        titleDiv.appendChild(check);
       }
 
       currentSizeName = sizeName;
-      sizePriceAdjustment = priceDelta;
-      document.getElementById('selectedSizeLabel').textContent = sizeName;
+      sizePriceAdjustment = priceDelta || 0;
+      const label = document.getElementById('selectedSizeLabel');
+      if (label) label.textContent = sizeName;
       updatePriceDisplay();
     }
 
-    function selectStorage(btn, storageName, priceDelta) {
+    function selectStorage(btn, storageName, priceDelta, image) {
       document.querySelectorAll('.storage-opt-btn').forEach(b => {
         b.classList.remove('border-2', 'border-[#8c4f20]', 'shadow-sm');
         b.classList.add('border', 'border-outline-variant/60');
@@ -724,35 +894,239 @@
       btn.classList.remove('border', 'border-outline-variant/60');
 
       currentStorageName = storageName;
-      storagePriceAdjustment = priceDelta;
-      document.getElementById('selectedStorageLabel').textContent = storageName;
+      storagePriceAdjustment = priceDelta || 0;
+      const label = document.getElementById('selectedStorageLabel');
+      if (label) label.textContent = storageName;
+
+      // Automatically swap photo to show the storage mechanism (hydraulic, drawers, box, or open platform)
+      if (image && image.trim()) {
+        switchPhoto(image.trim(), null, 1);
+      }
+
+      updatePriceDisplay();
+    }
+
+    function selectDiningChairs(btn, chairsName, priceDelta, dimensions) {
+      document.querySelectorAll('.dining-chair-btn').forEach(b => {
+        b.classList.remove('border-2', 'border-[#2d1e18]', 'shadow-sm');
+        b.classList.add('border', 'border-outline-variant/60');
+      });
+      btn.classList.add('border-2', 'border-[#2d1e18]', 'shadow-sm');
+      btn.classList.remove('border', 'border-outline-variant/60');
+
+      currentSizeName = chairsName;
+      sizePriceAdjustment = priceDelta || 0;
+      const label = document.getElementById('selectedChairsLabel');
+      if (label) label.textContent = chairsName;
+
+      // Switch to secondary angle image if chairs count changes
+      if (allGalleryImages.length > 1) {
+        if (chairsName.includes('8') || chairsName.includes('12')) {
+          switchPhoto(allGalleryImages[1], null, 1);
+        } else if (chairsName.includes('2') || chairsName.includes('4')) {
+          switchPhoto(allGalleryImages[2] || allGalleryImages[0], null, 2);
+        } else {
+          switchPhoto(allGalleryImages[0], null, 0);
+        }
+      }
+
+      updatePriceDisplay();
+    }
+
+    function selectPlankShape(btn, plankName, image) {
+      document.querySelectorAll('.plank-opt-btn').forEach(b => {
+        b.classList.remove('border-2', 'border-[#8c4f20]', 'shadow-sm');
+        b.classList.add('border', 'border-outline-variant/60');
+      });
+      btn.classList.add('border-2', 'border-[#8c4f20]', 'shadow-sm');
+      btn.classList.remove('border', 'border-outline-variant/60');
+
+      currentStorageName = plankName;
+      const label = document.getElementById('selectedPlankLabel');
+      if (label) label.textContent = plankName;
+
+      if (image && image.trim()) {
+        switchPhoto(image.trim(), null, 2);
+      }
+
       updatePriceDisplay();
     }
 
     function updatePriceDisplay() {
-      currentPrice = Math.max(1000, basePrice + sizePriceAdjustment + storagePriceAdjustment);
-      const formatted = '₹' + currentPrice.toLocaleString('en-IN');
-      document.getElementById('activePriceDisplay').textContent = formatted;
+      const unitPrice = Math.max(1000, basePrice + sizePriceAdjustment + storagePriceAdjustment);
+      currentPrice = unitPrice * currentQuantity;
+      const formattedUnit = '₹' + unitPrice.toLocaleString('en-IN');
+      const formattedTotal = '₹' + currentPrice.toLocaleString('en-IN');
+
+      const activePriceDisplay = document.getElementById('activePriceDisplay');
+      if (activePriceDisplay) activePriceDisplay.textContent = formattedUnit;
+      
       const mobilePrice = document.getElementById('mobileStickyPrice');
-      if (mobilePrice) mobilePrice.textContent = formatted;
+      if (mobilePrice) mobilePrice.textContent = formattedUnit;
+
       const flyoutItemPrice = document.getElementById('flyoutItemPrice');
-      if (flyoutItemPrice) flyoutItemPrice.textContent = formatted;
+      if (flyoutItemPrice) flyoutItemPrice.textContent = formattedUnit;
+
       const flyoutTotal = document.getElementById('flyoutTotalDisplay');
-      if (flyoutTotal) flyoutTotal.textContent = formatted;
+      if (flyoutTotal) flyoutTotal.textContent = formattedTotal;
+
       const flyoutConfig = document.getElementById('flyoutItemConfig');
       if (flyoutConfig) flyoutConfig.textContent = `${currentSizeName} • ${currentStorageName}`;
     }
 
-    function checkDeliveryPin() {
-      const pin = document.getElementById('pincodeInput').value.trim();
-      const res = document.getElementById('pincodeResult');
-      if (pin && pin.length >= 6) {
-        res.classList.remove('hidden');
-        showToast('Pincode verified: White-glove assembly available!', 'verified');
-      } else {
-        alert('Please enter a valid 6-digit postal code.');
+    // ===============================================================
+    // GPS & Indian Postal Pincode Analyzer with Permanent Save
+    // ===============================================================
+    function handlePincodeInput(val) {
+      val = val.replace(/\D/g, '');
+      document.getElementById('pincodeInput').value = val;
+      if (val.length === 6) {
+        analyzePincodeAndLocation();
       }
     }
+
+    function getPincodeRegionInfo(pin) {
+      const p = parseInt(pin);
+      if (pin.startsWith('50')) {
+        return { city: 'Hyderabad / Secunderabad', state: 'Telangana', lat: '17.3850° N', lng: '78.4867° E' };
+      } else if (pin.startsWith('51') || pin.startsWith('52') || pin.startsWith('53')) {
+        if (pin.startsWith('530') || pin.startsWith('531')) {
+          return { city: 'Visakhapatnam', state: 'Andhra Pradesh', lat: '17.6868° N', lng: '83.2185° E' };
+        } else if (pin.startsWith('520') || pin.startsWith('521') || pin.startsWith('522')) {
+          return { city: 'Vijayawada / Guntur', state: 'Andhra Pradesh', lat: '16.5062° N', lng: '80.6480° E' };
+        } else {
+          return { city: 'Tirupati / Rayalaseema', state: 'Andhra Pradesh', lat: '13.6288° N', lng: '79.4192° E' };
+        }
+      } else if (pin.startsWith('56') || pin.startsWith('57') || pin.startsWith('58') || pin.startsWith('59')) {
+        return { city: 'Bengaluru / Mysuru', state: 'Karnataka', lat: '12.9716° N', lng: '77.5946° E' };
+      } else if (pin.startsWith('60') || pin.startsWith('61') || pin.startsWith('62') || pin.startsWith('63') || pin.startsWith('64')) {
+        return { city: 'Chennai / Coimbatore', state: 'Tamil Nadu', lat: '13.0827° N', lng: '80.2707° E' };
+      } else if (pin.startsWith('40') || pin.startsWith('41') || pin.startsWith('42') || pin.startsWith('43') || pin.startsWith('44')) {
+        return { city: 'Mumbai / Pune', state: 'Maharashtra', lat: '19.0760° N', lng: '72.8777° E' };
+      } else if (pin.startsWith('11') || pin.startsWith('12') || pin.startsWith('20')) {
+        return { city: 'New Delhi / NCR', state: 'Delhi NCR', lat: '28.6139° N', lng: '77.2090° E' };
+      }
+      return { city: 'Metro Delivery Hub', state: 'India', lat: '20.5937° N', lng: '78.9629° E' };
+    }
+
+    function analyzePincodeAndLocation() {
+      const pin = document.getElementById('pincodeInput').value.trim();
+      if (!pin || pin.length < 6) {
+        alert('Please enter a valid 6-digit postal code.');
+        return;
+      }
+      const info = getPincodeRegionInfo(pin);
+      const card = document.getElementById('locationAnalysisCard');
+      card.classList.remove('hidden');
+      card.classList.add('flex');
+
+      document.getElementById('detectedRegionText').textContent = `${info.city}, ${info.state} (PIN: ${pin})`;
+      document.getElementById('gpsCoordinatesBadge').textContent = `GPS: ${info.lat}, ${info.lng}`;
+
+      showToast(`Pincode verified: ${info.city}, ${info.state}!`, 'verified');
+    }
+
+    function detectGPSLocation() {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser.');
+        return;
+      }
+      const badge = document.getElementById('gpsCoordinatesBadge');
+      badge.textContent = 'Detecting GPS...';
+      const card = document.getElementById('locationAnalysisCard');
+      card.classList.remove('hidden');
+      card.classList.add('flex');
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const acc = Math.round(pos.coords.accuracy);
+          badge.textContent = `GPS: ${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E (±${acc}m)`;
+
+          // Reverse geocoding via OpenStreetMap or accurate regional resolver
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+              const addr = data.address || {};
+              const pin = addr.postcode || '500001';
+              const city = addr.city || addr.town || addr.county || addr.state_district || 'Regional City';
+              const state = addr.state || 'India';
+              const suburb = addr.suburb || addr.neighbourhood || addr.road || '';
+
+              document.getElementById('pincodeInput').value = pin.replace(/\D/g, '').substring(0, 6) || pin;
+              document.getElementById('detectedRegionText').textContent = `${suburb ? suburb + ', ' : ''}${city}, ${state} (PIN: ${pin})`;
+
+              const presentInput = document.getElementById('presentAddressInput');
+              if (presentInput && !presentInput.value.trim() && data.display_name) {
+                presentInput.value = data.display_name.split(',').slice(0, 3).join(', ');
+              }
+
+              showToast(`Current location verified: ${city}!`, 'my_location');
+            })
+            .catch(() => {
+              document.getElementById('detectedRegionText').textContent = `Current Location Coordinates Detected (${lat.toFixed(2)}°, ${lng.toFixed(2)}°)`;
+              showToast('GPS coordinates locked!', 'my_location');
+            });
+        },
+        (err) => {
+          console.warn('GPS error:', err);
+          analyzePincodeAndLocation();
+        },
+        { timeout: 10000, enableHighAccuracy: true }
+      );
+    }
+
+    function saveDeliveryAddress() {
+      const pin = document.getElementById('pincodeInput').value.trim();
+      const addr = document.getElementById('presentAddressInput').value.trim();
+      const regionText = document.getElementById('detectedRegionText').textContent;
+
+      if (!pin || pin.length < 6) {
+        alert('Please enter a valid 6-digit pincode.');
+        document.getElementById('pincodeInput').focus();
+        return;
+      }
+      if (!addr) {
+        alert('Please enter your house/flat number, apartment, or street address.');
+        document.getElementById('presentAddressInput').focus();
+        return;
+      }
+
+      const fullAddress = `${addr}, ${regionText}`;
+      localStorage.setItem('glory_delivery_address', fullAddress);
+      localStorage.setItem('glory_delivery_pincode', pin);
+
+      // Hide input card and reveal saved banner
+      document.getElementById('locationAnalysisCard').classList.add('hidden');
+      document.getElementById('locationAnalysisCard').classList.remove('flex');
+      
+      const banner = document.getElementById('addressSavedBanner');
+      banner.classList.remove('hidden');
+      document.getElementById('savedAddressSummary').textContent = `${fullAddress} • Free White-Glove Installation Included`;
+
+      showToast('Delivery Address saved successfully!', 'verified');
+    }
+
+    function editSavedAddress() {
+      document.getElementById('addressSavedBanner').classList.add('hidden');
+      const card = document.getElementById('locationAnalysisCard');
+      card.classList.remove('hidden');
+      card.classList.add('flex');
+    }
+
+    function loadSavedAddress() {
+      const savedAddr = localStorage.getItem('glory_delivery_address');
+      const savedPin = localStorage.getItem('glory_delivery_pincode');
+      if (savedAddr && savedPin) {
+        document.getElementById('pincodeInput').value = savedPin;
+        const banner = document.getElementById('addressSavedBanner');
+        banner.classList.remove('hidden');
+        document.getElementById('savedAddressSummary').textContent = `${savedAddr} • Free White-Glove Installation Included`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSavedAddress);
 
     function showToast(msg, icon = 'shopping_bag') {
       const toast = document.getElementById('toastNotification');
@@ -812,7 +1186,7 @@
         },
         body: JSON.stringify({
           product_id: {{ product.id }},
-          quantity: 1,
+          quantity: currentQuantity,
           size: currentSizeName,
           custom_measurements: currentStorageName
         })
@@ -827,28 +1201,6 @@
       .catch(() => {
         showToast(`"{{ product.name|escapejs }}" added to your atelier bag!`, 'shopping_bag');
         triggerCartFlyout();
-      });
-    }
-
-    function handleBuyNowCurrentProduct() {
-      fetch('/api/cart/add/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        },
-        body: JSON.stringify({
-          product_id: {{ product.id }},
-          quantity: 1,
-          size: currentSizeName,
-          custom_measurements: currentStorageName
-        })
-      })
-      .then(() => {
-        window.location.href = '/checkout/';
-      })
-      .catch(() => {
-        window.location.href = '/checkout/';
       });
     }
 

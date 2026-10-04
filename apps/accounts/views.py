@@ -1278,6 +1278,18 @@ def admin_products_view(request):
                 in_stock = request.POST.get('in_stock') in ['1', 'on', 'true', True]
                 featured = request.POST.get('featured') in ['1', 'on', 'true', True]
                 new_arrival = request.POST.get('new_arrival') in ['1', 'on', 'true', True]
+
+                # Storage & Category-Specific Variant Deltas
+                finishes = {
+                    'no_storage_delta': int(request.POST.get('storage_no_delta', -5000) or -5000),
+                    'box_storage_delta': int(request.POST.get('storage_box_delta', 0) or 0),
+                    'drawer_storage_delta': int(request.POST.get('storage_drawer_delta', 5500) or 5500),
+                    'hydraulic_storage_delta': int(request.POST.get('storage_hydraulic_delta', 11000) or 11000),
+                    'dining_chair_2_delta': int(request.POST.get('dining_chair_2_delta', -14000) or -14000),
+                    'dining_chair_4_delta': int(request.POST.get('dining_chair_4_delta', -7000) or -7000),
+                    'dining_chair_8_delta': int(request.POST.get('dining_chair_8_delta', 15000) or 15000),
+                    'dining_chair_12_delta': int(request.POST.get('dining_chair_12_delta', 35000) or 35000),
+                }
                 
                 product = Product.objects.create(
                     name=name,
@@ -1294,6 +1306,7 @@ def admin_products_view(request):
                     in_stock=in_stock,
                     featured=featured,
                     new_arrival=new_arrival,
+                    finishes=finishes,
                 )
                 img_count = 1 + len(secondary_images)
                 messages.success(request, f"Product '{product.name}' with {img_count} photo(s) saved to database successfully!")
@@ -1367,6 +1380,26 @@ def admin_products_view(request):
                 product.featured = request.POST.get('featured') in ['1', 'on', 'true', True]
                 product.new_arrival = request.POST.get('new_arrival') in ['1', 'on', 'true', True]
                 
+                # Update variant and storage price configurations
+                current_finishes = dict(product.finishes) if isinstance(product.finishes, dict) else {}
+                if 'storage_no_delta' in request.POST:
+                    try:
+                        current_finishes['no_storage_delta'] = int(request.POST.get('storage_no_delta', -5000))
+                        current_finishes['box_storage_delta'] = int(request.POST.get('storage_box_delta', 0))
+                        current_finishes['drawer_storage_delta'] = int(request.POST.get('storage_drawer_delta', 5500))
+                        current_finishes['hydraulic_storage_delta'] = int(request.POST.get('storage_hydraulic_delta', 11000))
+                    except Exception:
+                        pass
+                if 'dining_chair_2_delta' in request.POST:
+                    try:
+                        current_finishes['dining_chair_2_delta'] = int(request.POST.get('dining_chair_2_delta', -14000))
+                        current_finishes['dining_chair_4_delta'] = int(request.POST.get('dining_chair_4_delta', -7000))
+                        current_finishes['dining_chair_8_delta'] = int(request.POST.get('dining_chair_8_delta', 15000))
+                        current_finishes['dining_chair_12_delta'] = int(request.POST.get('dining_chair_12_delta', 35000))
+                    except Exception:
+                        pass
+                product.finishes = current_finishes
+
                 product.save()
                 messages.success(request, f"Product '{product.name}' updated successfully in database!")
             except Exception as e:

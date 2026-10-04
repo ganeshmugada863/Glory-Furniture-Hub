@@ -150,6 +150,15 @@
                   data-in-stock="{{ p.in_stock|yesno:'1,0' }}"
                   data-featured="{{ p.featured|yesno:'1,0' }}"
                   data-new-arrival="{{ p.new_arrival|yesno:'1,0' }}"
+                  data-category-type="{{ p.category_type }}"
+                  data-storage-no-delta="{{ p.finishes.no_storage_delta|default:'-5000' }}"
+                  data-storage-box-delta="{{ p.finishes.box_storage_delta|default:'0' }}"
+                  data-storage-drawer-delta="{{ p.finishes.drawer_storage_delta|default:'5500' }}"
+                  data-storage-hydraulic-delta="{{ p.finishes.hydraulic_storage_delta|default:'11000' }}"
+                  data-dining-chair-2="{{ p.finishes.dining_chair_2_delta|default:'-14000' }}"
+                  data-dining-chair-4="{{ p.finishes.dining_chair_4_delta|default:'-7000' }}"
+                  data-dining-chair-8="{{ p.finishes.dining_chair_8_delta|default:'15000' }}"
+                  data-dining-chair-12="{{ p.finishes.dining_chair_12_delta|default:'35000' }}"
                   class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-[#5C3D2E] text-[#5C3D2E] hover:text-white text-xs font-black transition-all border border-amber-200 shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
                   title="Edit Product Details"
                 >
@@ -217,7 +226,7 @@
       <!-- Product Name -->
       <div>
         <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Product Title *</label>
-        <input type="text" id="add_name" name="name" placeholder="e.g. Royal Carved Burma Teak Bed with Posture Slats" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+        <input type="text" id="add_name" name="name" oninput="handleCategoryChange('add')" placeholder="e.g. Royal Carved Burma Teak Bed with Posture Slats" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
         <div id="add_name_error" class="text-xs text-red-600 hidden font-bold mt-1">Please enter a product title.</div>
       </div>
 
@@ -225,7 +234,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Category *</label>
-          <select name="category_id" id="add_category" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white focus:outline-none focus:border-[#5C3D2E]">
+          <select name="category_id" id="add_category" onchange="handleCategoryChange('add')" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white focus:outline-none focus:border-[#5C3D2E]">
             {% for c in categories %}
             <option value="{{ c.id }}">{{ c.name }}</option>
             {% endfor %}
@@ -240,6 +249,147 @@
       </div>
 
       <!-- =============================================================== -->
+      <!-- CATEGORY-SPECIFIC VARIANT & STORAGE CONFIGURATOR (ADD MODAL)    -->
+      <!-- =============================================================== -->
+      <div id="add_category_options" class="p-4 rounded-2xl bg-[#F7F3EE] border border-[#E0D2C3] space-y-3">
+        <!-- Live Category Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="add_cat_icon" class="text-lg">🛏️</span>
+            <div>
+              <h4 id="add_cat_title" class="text-xs font-black uppercase tracking-wider text-gray-950">Bed & Cot Specifications & Storage Options</h4>
+              <p id="add_cat_subtitle" class="text-[11px] text-gray-500">Configure size dimensions and storage type pricing deltas for this handcrafted piece.</p>
+            </div>
+          </div>
+          <span id="add_cat_badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-200 text-amber-900 border border-amber-300">Bed / Cot</span>
+        </div>
+
+        <!-- BED / DIWAN PANEL -->
+        <div id="add_bed_panel" class="space-y-3">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+            <p class="text-[11px] font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+              <span>📏 Standard Mattress Sizes:</span>
+              <span class="text-gray-600 font-normal">King (78"×72" / 6.5ft×6ft) &bull; Queen (78"×60" / 6.5ft×5ft) &bull; Single (78"×36" / 6.5ft×3ft)</span>
+            </p>
+            <p class="text-[10px] text-gray-500">Includes engineered teak posture slats, anti-creak silent joints, and full termite-treated framework.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
+              Storage Type Price Adjustments (₹ Delta relative to base price)
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">Without Storage</span>
+                <input type="number" name="storage_no_delta" id="add_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. -5000 (Slot 1)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">Box Storage</span>
+                <input type="number" name="storage_box_delta" id="add_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. 0 (Standard)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">Drawer Storage</span>
+                <input type="number" name="storage_drawer_delta" id="add_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. +5500 (Slot 3)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border-2 border-amber-500/80 bg-amber-50/40">
+                <span class="block text-[10px] font-black text-amber-900">Hydraulic Storage</span>
+                <input type="number" name="storage_hydraulic_delta" id="add_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">e.g. +11000 (Slot 2)</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+              <span>💡</span>
+              <span><strong>Hydraulic Storage Photo Link:</strong> Upload the bed open with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, clicking "Hydraulic Storage" instantly displays Photo Slot 2!</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- DINING SET PANEL -->
+        <div id="add_dining_panel" class="space-y-3 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+            <p class="text-[11px] font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+              <span>🪵 Tabletop Plank Shapes Supported:</span>
+              <span class="text-[#5C3D2E] font-black">Rectangular Plank &bull; Circle Plank &bull; Square Plank</span>
+            </p>
+            <p class="text-[10px] text-gray-500">Handcrafted solid Burma teak planks with seamless edge joinery and heat-resistant lacquer.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
+              Chair Suite Price Adjustments (₹ Delta relative to 6-Chairs standard price)
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">2 Chairs Suite</span>
+                <input type="number" name="dining_chair_2_delta" id="add_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">36"×36" Table (-₹14,000)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">4 Chairs Suite</span>
+                <input type="number" name="dining_chair_4_delta" id="add_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">48"×36" Table (-₹7,000)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">8 Chairs Grand Suite</span>
+                <input type="number" name="dining_chair_8_delta" id="add_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">96"×42" Table (+₹15,000)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-amber-300 bg-amber-50/50">
+                <span class="block text-[10px] font-black text-amber-900">12 Chairs Royal Feast</span>
+                <input type="number" name="dining_chair_12_delta" id="add_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">132"×46" Table (+₹35,000)</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+              <span>💡</span>
+              <span><strong>Dining Photos Link:</strong> Upload 8/12 Chairs setup in <strong>Photo Slot 2</strong>, and 2/4 Chairs setup in <strong>Photo Slot 3</strong>. Customers selecting chairs will automatically preview matching photos!</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- SOFA PANEL -->
+        <div id="add_sofa_panel" class="space-y-2 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
+            <span class="font-bold text-gray-800">🛋️ Supported Configurations:</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3-Seater Sovereign:</strong> 84"W × 38"D × 34"H</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3+1+1 (5-Seater):</strong> 84"W Couch + 2 Armchairs</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>L-Shape Sectional:</strong> 104"W × 68" Chaise</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>2-Seater Loveseat:</strong> 58"W × 36"D × 34"H</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>1-Seater Lounge:</strong> 34"W × 36"D × 32"H</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DRESSING TABLE PANEL -->
+        <div id="add_dressing_panel" class="space-y-2 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
+            <span class="font-bold text-gray-800">🪞 Dressing Table Suite Sizes:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Compact Slim (36"):</strong> 36"W × 16"D × 70"H Vanity</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Standard Arched (48"):</strong> 48"W × 18"D × 72"H Console</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Grand Royal (60"):</strong> 60"W × 20"D × 78"H Full Mirror</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEAPOY / COFFEE TABLE PANEL -->
+        <div id="add_teapoy_panel" class="space-y-2 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
+            <span class="font-bold text-gray-800">☕ Teapoy / Living Table Sizes:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Square Teapoy:</strong> 24"L × 24"W × 18"H Accent Table</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Standard Rectangular:</strong> 42"L × 24"W × 18"H Coffee Table</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Grand Architectural:</strong> 48"L × 28"W × 16"H Center Table</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================================== -->
       <!-- 4 IMAGES UPLOAD SECTION (Cover + 3 Detail/Angle Views)           -->
       <!-- =============================================================== -->
       <div class="space-y-3 p-4 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE]">
@@ -249,7 +399,7 @@
               <span>🖼️ Product Gallery Photos</span>
               <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Up to 4 Images</span>
             </h3>
-            <p class="text-[11px] text-gray-500">Upload 4 distinct photos (Main Cover, Side Angle, Wood Carving Detail, Room Layout).</p>
+            <p class="text-[11px] text-gray-500">Upload 4 distinct photos matched to customer variant previews.</p>
           </div>
 
           <!-- Quick Multi-file Batch & Camera Selector -->
@@ -270,7 +420,7 @@
           <!-- SLOT 1: Primary Cover Image -->
           <div class="p-3 rounded-xl bg-white border-2 border-amber-400/80 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-800 text-white">
+              <span id="add_slot_title_1" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-800 text-white">
                 Photo 1: Cover / Primary *
               </span>
               <button type="button" onclick="clearImageSlot('add', 1)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
@@ -280,7 +430,7 @@
               <img id="add_preview_1" src="" alt="Preview 1" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_1" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
                 <span class="text-2xl mb-0.5">📸</span>
-                <span class="text-[10px] font-bold text-gray-600">Main Cover Photo</span>
+                <span id="add_slot_ph_1" class="text-[10px] font-bold text-gray-600">Main Cover Photo</span>
                 <span class="text-[9px] text-gray-400">Click upload or enter URL</span>
               </div>
             </div>
@@ -291,11 +441,11 @@
             </div>
           </div>
 
-          <!-- SLOT 2: Angle 2 / Side View -->
+          <!-- SLOT 2: Angle 2 / Hydraulic Lift / 8 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 2: Side / Angle
+              <span id="add_slot_title_2" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 2: Side / Angle / Hydraulic
               </span>
               <button type="button" onclick="clearImageSlot('add', 2)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -303,9 +453,9 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="add_preview_2" src="" alt="Preview 2" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_2" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">📐</span>
-                <span class="text-[10px] font-bold text-gray-600">Side View Angle</span>
-                <span class="text-[9px] text-gray-400">Optional photo</span>
+                <span class="text-2xl mb-0.5">⚙️</span>
+                <span id="add_slot_ph_2" class="text-[10px] font-bold text-gray-600">Hydraulic Storage Lift / Angle</span>
+                <span class="text-[9px] text-gray-400">Shows on Hydraulic select</span>
               </div>
             </div>
 
@@ -315,11 +465,11 @@
             </div>
           </div>
 
-          <!-- SLOT 3: Carving / Wood Detail -->
+          <!-- SLOT 3: Carving / Wood Detail / Drawers / 4 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 3: Carving / Grain
+              <span id="add_slot_title_3" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 3: Carving / Drawers / Setup
               </span>
               <button type="button" onclick="clearImageSlot('add', 3)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -327,9 +477,9 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="add_preview_3" src="" alt="Preview 3" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_3" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">🪵</span>
-                <span class="text-[10px] font-bold text-gray-600">Carving / Wood Texture</span>
-                <span class="text-[9px] text-gray-400">Optional photo</span>
+                <span class="text-2xl mb-0.5">🗄️</span>
+                <span id="add_slot_ph_3" class="text-[10px] font-bold text-gray-600">Drawers / Wood Texture</span>
+                <span class="text-[9px] text-gray-400">Shows on Drawer select</span>
               </div>
             </div>
 
@@ -339,11 +489,11 @@
             </div>
           </div>
 
-          <!-- SLOT 4: Room Setup / Lifestyle -->
+          <!-- SLOT 4: Room Setup / Lifestyle / Plank Grain -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 4: Room Setup
+              <span id="add_slot_title_4" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 4: Room Setup / Plank Grain
               </span>
               <button type="button" onclick="clearImageSlot('add', 4)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -352,8 +502,8 @@
               <img id="add_preview_4" src="" alt="Preview 4" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_4" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
                 <span class="text-2xl mb-0.5">🛋️</span>
-                <span class="text-[10px] font-bold text-gray-600">Room Layout / Dimensions</span>
-                <span class="text-[9px] text-gray-400">Optional photo</span>
+                <span id="add_slot_ph_4" class="text-[10px] font-bold text-gray-600">Room Layout / Planks</span>
+                <span class="text-[9px] text-gray-400">Optional lifestyle photo</span>
               </div>
             </div>
 
@@ -476,14 +626,14 @@
       <!-- Product Name -->
       <div>
         <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Product Title *</label>
-        <input type="text" name="name" id="edit_name" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+        <input type="text" name="name" id="edit_name" oninput="handleCategoryChange('edit')" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
       </div>
 
       <!-- Category & Price -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Category *</label>
-          <select name="category_id" id="edit_category" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white focus:outline-none focus:border-[#5C3D2E]">
+          <select name="category_id" id="edit_category" onchange="handleCategoryChange('edit')" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white focus:outline-none focus:border-[#5C3D2E]">
             {% for c in categories %}
             <option value="{{ c.id }}">{{ c.name }}</option>
             {% endfor %}
@@ -493,6 +643,147 @@
         <div>
           <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">Price (₹ INR) *</label>
           <input type="text" inputmode="numeric" name="price" id="edit_price" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:border-[#5C3D2E]" />
+        </div>
+      </div>
+
+      <!-- =============================================================== -->
+      <!-- CATEGORY-SPECIFIC VARIANT & STORAGE CONFIGURATOR (EDIT MODAL)   -->
+      <!-- =============================================================== -->
+      <div id="edit_category_options" class="p-4 rounded-2xl bg-[#F7F3EE] border border-[#E0D2C3] space-y-3">
+        <!-- Live Category Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="edit_cat_icon" class="text-lg">🛏️</span>
+            <div>
+              <h4 id="edit_cat_title" class="text-xs font-black uppercase tracking-wider text-gray-950">Bed & Cot Specifications & Storage Options</h4>
+              <p id="edit_cat_subtitle" class="text-[11px] text-gray-500">Configure size dimensions and storage type pricing deltas for this handcrafted piece.</p>
+            </div>
+          </div>
+          <span id="edit_cat_badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-200 text-amber-900 border border-amber-300">Bed / Cot</span>
+        </div>
+
+        <!-- BED / DIWAN PANEL -->
+        <div id="edit_bed_panel" class="space-y-3">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+            <p class="text-[11px] font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+              <span>📏 Standard Mattress Sizes:</span>
+              <span class="text-gray-600 font-normal">King (78"×72" / 6.5ft×6ft) &bull; Queen (78"×60" / 6.5ft×5ft) &bull; Single (78"×36" / 6.5ft×3ft)</span>
+            </p>
+            <p class="text-[10px] text-gray-500">Includes engineered teak posture slats, anti-creak silent joints, and full termite-treated framework.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
+              Storage Type Price Adjustments (₹ Delta relative to base price)
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">Without Storage</span>
+                <input type="number" name="storage_no_delta" id="edit_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. -5000 (Slot 1)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">Box Storage</span>
+                <input type="number" name="storage_box_delta" id="edit_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. 0 (Standard)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">Drawer Storage</span>
+                <input type="number" name="storage_drawer_delta" id="edit_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. +5500 (Slot 3)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border-2 border-amber-500/80 bg-amber-50/40">
+                <span class="block text-[10px] font-black text-amber-900">Hydraulic Storage</span>
+                <input type="number" name="storage_hydraulic_delta" id="edit_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">e.g. +11000 (Slot 2)</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+              <span>💡</span>
+              <span><strong>Hydraulic Storage Photo Link:</strong> Upload the bed open with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, clicking "Hydraulic Storage" instantly displays Photo Slot 2!</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- DINING SET PANEL -->
+        <div id="edit_dining_panel" class="space-y-3 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+            <p class="text-[11px] font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+              <span>🪵 Tabletop Plank Shapes Supported:</span>
+              <span class="text-[#5C3D2E] font-black">Rectangular Plank &bull; Circle Plank &bull; Square Plank</span>
+            </p>
+            <p class="text-[10px] text-gray-500">Handcrafted solid Burma teak planks with seamless edge joinery and heat-resistant lacquer.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
+              Chair Suite Price Adjustments (₹ Delta relative to 6-Chairs standard price)
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">2 Chairs Suite</span>
+                <input type="number" name="dining_chair_2_delta" id="edit_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">36"×36" Table (-₹14,000)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">4 Chairs Suite</span>
+                <input type="number" name="dining_chair_4_delta" id="edit_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">48"×36" Table (-₹7,000)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
+                <span class="block text-[10px] font-bold text-gray-600">8 Chairs Grand Suite</span>
+                <input type="number" name="dining_chair_8_delta" id="edit_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-gray-400 mt-0.5">96"×42" Table (+₹15,000)</span>
+              </div>
+              <div class="bg-white p-2.5 rounded-xl border border-amber-300 bg-amber-50/50">
+                <span class="block text-[10px] font-black text-amber-900">12 Chairs Royal Feast</span>
+                <input type="number" name="dining_chair_12_delta" id="edit_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">132"×46" Table (+₹35,000)</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+              <span>💡</span>
+              <span><strong>Dining Photos Link:</strong> Upload 8/12 Chairs setup in <strong>Photo Slot 2</strong>, and 2/4 Chairs setup in <strong>Photo Slot 3</strong>. Customers selecting chairs will automatically preview matching photos!</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- SOFA PANEL -->
+        <div id="edit_sofa_panel" class="space-y-2 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
+            <span class="font-bold text-gray-800">🛋️ Supported Configurations:</span>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3-Seater Sovereign:</strong> 84"W × 38"D × 34"H</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3+1+1 (5-Seater):</strong> 84"W Couch + 2 Armchairs</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>L-Shape Sectional:</strong> 104"W × 68" Chaise</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>2-Seater Loveseat:</strong> 58"W × 36"D × 34"H</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>1-Seater Lounge:</strong> 34"W × 36"D × 32"H</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DRESSING TABLE PANEL -->
+        <div id="edit_dressing_panel" class="space-y-2 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
+            <span class="font-bold text-gray-800">🪞 Dressing Table Suite Sizes:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Compact Slim (36"):</strong> 36"W × 16"D × 70"H Vanity</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Standard Arched (48"):</strong> 48"W × 18"D × 72"H Console</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Grand Royal (60"):</strong> 60"W × 20"D × 78"H Full Mirror</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEAPOY / COFFEE TABLE PANEL -->
+        <div id="edit_teapoy_panel" class="space-y-2 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
+            <span class="font-bold text-gray-800">☕ Teapoy / Living Table Sizes:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Square Teapoy:</strong> 24"L × 24"W × 18"H Accent Table</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Standard Rectangular:</strong> 42"L × 24"W × 18"H Coffee Table</div>
+              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>Grand Architectural:</strong> 48"L × 28"W × 16"H Center Table</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -516,7 +807,7 @@
           <!-- EDIT SLOT 1: Primary Cover -->
           <div class="p-3 rounded-xl bg-white border-2 border-amber-400/80 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-800 text-white">
+              <span id="edit_slot_title_1" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-800 text-white">
                 Photo 1: Cover / Primary
               </span>
               <button type="button" onclick="clearImageSlot('edit', 1)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
@@ -526,7 +817,7 @@
               <img id="edit_preview_1" src="" alt="Preview 1" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_1" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
                 <span class="text-2xl mb-0.5">📸</span>
-                <span class="text-[10px] font-bold text-gray-600">Cover Photo</span>
+                <span id="edit_slot_ph_1" class="text-[10px] font-bold text-gray-600">Cover Photo</span>
               </div>
             </div>
 
@@ -536,11 +827,11 @@
             </div>
           </div>
 
-          <!-- EDIT SLOT 2: Side View -->
+          <!-- EDIT SLOT 2: Side View / Hydraulic / 8 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 2: Side / Angle
+              <span id="edit_slot_title_2" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 2: Side / Hydraulic / Setup
               </span>
               <button type="button" onclick="clearImageSlot('edit', 2)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -548,8 +839,8 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="edit_preview_2" src="" alt="Preview 2" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_2" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">📐</span>
-                <span class="text-[10px] font-bold text-gray-600">Side View Angle</span>
+                <span class="text-2xl mb-0.5">⚙️</span>
+                <span id="edit_slot_ph_2" class="text-[10px] font-bold text-gray-600">Hydraulic / Side Angle</span>
               </div>
             </div>
 
@@ -559,11 +850,11 @@
             </div>
           </div>
 
-          <!-- EDIT SLOT 3: Carving Detail -->
+          <!-- EDIT SLOT 3: Carving Detail / Drawers / 4 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 3: Carving / Grain
+              <span id="edit_slot_title_3" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 3: Carving / Drawers / Setup
               </span>
               <button type="button" onclick="clearImageSlot('edit', 3)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -571,8 +862,8 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="edit_preview_3" src="" alt="Preview 3" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_3" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">🪵</span>
-                <span class="text-[10px] font-bold text-gray-600">Carving / Wood Detail</span>
+                <span class="text-2xl mb-0.5">🗄️</span>
+                <span id="edit_slot_ph_3" class="text-[10px] font-bold text-gray-600">Carving / Wood Detail</span>
               </div>
             </div>
 
@@ -582,11 +873,11 @@
             </div>
           </div>
 
-          <!-- EDIT SLOT 4: Room Setup -->
+          <!-- EDIT SLOT 4: Room Setup / Plank Grain -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 4: Room Setup
+              <span id="edit_slot_title_4" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 4: Room Setup / Planks
               </span>
               <button type="button" onclick="clearImageSlot('edit', 4)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -595,7 +886,7 @@
               <img id="edit_preview_4" src="" alt="Preview 4" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_4" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
                 <span class="text-2xl mb-0.5">🛋️</span>
-                <span class="text-[10px] font-bold text-gray-600">Room Layout / Dimensions</span>
+                <span id="edit_slot_ph_4" class="text-[10px] font-bold text-gray-600">Room Layout / Dimensions</span>
               </div>
             </div>
 
@@ -727,11 +1018,157 @@
 function openAddModal() {
   document.getElementById('add-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  handleCategoryChange('add');
 }
 
 function closeAddModal() {
   document.getElementById('add-modal').classList.add('hidden');
   document.body.style.overflow = '';
+}
+
+function handleCategoryChange(mode) {
+  const catSelect = document.getElementById(`${mode}_category`);
+  const nameInput = document.getElementById(`${mode}_name`);
+  const catText = catSelect && catSelect.options[catSelect.selectedIndex] ? catSelect.options[catSelect.selectedIndex].text.toLowerCase() : '';
+  const titleText = (nameInput ? nameInput.value : '').toLowerCase();
+  const combined = `${catText} ${titleText}`;
+
+  let ctype = 'general';
+  if (combined.includes('diwan') || combined.includes('divan') || combined.includes('podime')) {
+    ctype = 'diwan';
+  } else if (combined.includes('bed') || combined.includes('cot')) {
+    ctype = 'bed';
+  } else if (combined.includes('dining')) {
+    ctype = 'dining';
+  } else if (combined.includes('sofa') || combined.includes('couch') || combined.includes('armchair')) {
+    ctype = 'sofa';
+  } else if (combined.includes('dressing') || combined.includes('vanity')) {
+    ctype = 'dressing';
+  } else if (combined.includes('teapoy') || combined.includes('coffee table')) {
+    ctype = 'teapoy';
+  }
+
+  // Update category panels
+  const bedPanel = document.getElementById(`${mode}_bed_panel`);
+  const diningPanel = document.getElementById(`${mode}_dining_panel`);
+  const sofaPanel = document.getElementById(`${mode}_sofa_panel`);
+  const dressingPanel = document.getElementById(`${mode}_dressing_panel`);
+  const teapoyPanel = document.getElementById(`${mode}_teapoy_panel`);
+
+  if (bedPanel) bedPanel.classList.toggle('hidden', !(ctype === 'bed' || ctype === 'diwan'));
+  if (diningPanel) diningPanel.classList.toggle('hidden', ctype !== 'dining');
+  if (sofaPanel) sofaPanel.classList.toggle('hidden', ctype !== 'sofa');
+  if (dressingPanel) dressingPanel.classList.toggle('hidden', ctype !== 'dressing');
+  if (teapoyPanel) teapoyPanel.classList.toggle('hidden', ctype !== 'teapoy');
+
+  // Header badges & descriptions
+  const icon = document.getElementById(`${mode}_cat_icon`);
+  const title = document.getElementById(`${mode}_cat_title`);
+  const subtitle = document.getElementById(`${mode}_cat_subtitle`);
+  const badge = document.getElementById(`${mode}_cat_badge`);
+
+  // Photo slots labels
+  const slotTitle1 = document.getElementById(`${mode}_slot_title_1`);
+  const slotTitle2 = document.getElementById(`${mode}_slot_title_2`);
+  const slotTitle3 = document.getElementById(`${mode}_slot_title_3`);
+  const slotTitle4 = document.getElementById(`${mode}_slot_title_4`);
+
+  const slotPh1 = document.getElementById(`${mode}_slot_ph_1`);
+  const slotPh2 = document.getElementById(`${mode}_slot_ph_2`);
+  const slotPh3 = document.getElementById(`${mode}_slot_ph_3`);
+  const slotPh4 = document.getElementById(`${mode}_slot_ph_4`);
+
+  if (ctype === 'bed' || ctype === 'diwan') {
+    if (icon) icon.innerText = ctype === 'diwan' ? '🛋️' : '🛏️';
+    if (title) title.innerText = ctype === 'diwan' ? 'Diwan Daybed Specifications & Storage' : 'Bed & Cot Specifications & Storage Options';
+    if (subtitle) subtitle.innerText = 'Configure size dimensions and storage type pricing deltas (No Storage, Box, Drawers, Hydraulic).';
+    if (badge) badge.innerText = ctype === 'diwan' ? 'Diwan Daybed' : 'Bed / Cot';
+
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Bed Platform (No Storage) *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: ⚙️ Hydraulic Storage Lift Mechanism';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: 🗄️ Side Drawers / Box Compartment';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: 🪵 Headboard Carving & Bedroom Setting';
+
+    if (slotPh1) slotPh1.innerText = 'Bed Front (No Storage)';
+    if (slotPh2) slotPh2.innerText = 'Hydraulic Lift Open (Gas Pistons)';
+    if (slotPh3) slotPh3.innerText = 'Sliding Drawers / Box Storage';
+    if (slotPh4) slotPh4.innerText = 'Headboard Wood Carving';
+  } else if (ctype === 'dining') {
+    if (icon) icon.innerText = '🍽️';
+    if (title) title.innerText = 'Dining Set Chairs & Plank Variations';
+    if (subtitle) subtitle.innerText = 'Configure chair count deltas (2, 4, 6, 8, 12 chairs) and tabletop plank shapes.';
+    if (badge) badge.innerText = 'Dining Set';
+
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Dining Set Cover (Rectangular Plank) *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: 🪑 8-Chairs / 12-Chairs Grand Feast Layout';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: 🪑 4-Chairs / 2-Chairs Family Setup';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: 🪵 Tabletop Plank Grain (Circle / Square Plank)';
+
+    if (slotPh1) slotPh1.innerText = '6-Chairs Standard Set (Rectangular)';
+    if (slotPh2) slotPh2.innerText = '8 / 12 Chairs Feast Layout';
+    if (slotPh3) slotPh3.innerText = '4 / 2 Chairs Setup';
+    if (slotPh4) slotPh4.innerText = 'Circle / Square Plank Grain';
+  } else if (ctype === 'sofa') {
+    if (icon) icon.innerText = '🛋️';
+    if (title) title.innerText = 'Sofa Set Suites & Layout Options';
+    if (subtitle) subtitle.innerText = 'Supports 1-seater, 2-seater, 3-seater, 3+1+1 (5-seater), and L-shape configurations.';
+    if (badge) badge.innerText = 'Sofa Suite';
+
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Sofa Front View *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: 3+1+1 Suite or L-Shape Configuration';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: Fabric Upholstery & Cushion Carving';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: Living Room Lifestyle Setting';
+
+    if (slotPh1) slotPh1.innerText = 'Sofa Front';
+    if (slotPh2) slotPh2.innerText = 'Multi-Seater / L-Shape';
+    if (slotPh3) slotPh3.innerText = 'Fabric & Wood Detail';
+    if (slotPh4) slotPh4.innerText = 'Living Room Setting';
+  } else if (ctype === 'dressing') {
+    if (icon) icon.innerText = '🪞';
+    if (title) title.innerText = 'Dressing Table & Vanity Suite';
+    if (subtitle) subtitle.innerText = 'Supports Compact (36"), Standard Arched (48"), and Grand Royal (60") vanity designs.';
+    if (badge) badge.innerText = 'Dressing Table';
+
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Dressing Table & Mirror Front *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: Vanity Drawers & Storage Compartments';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: Mirror Frame Carving / Brass Knobs';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: Master Bedroom Vanity Setting';
+
+    if (slotPh1) slotPh1.innerText = 'Front Mirror & Console';
+    if (slotPh2) slotPh2.innerText = 'Drawers Storage Open';
+    if (slotPh3) slotPh3.innerText = 'Mirror Carving Detail';
+    if (slotPh4) slotPh4.innerText = 'Bedroom Dressing Nook';
+  } else if (ctype === 'teapoy') {
+    if (icon) icon.innerText = '☕';
+    if (title) title.innerText = 'Teapoy & Coffee Table Configurations';
+    if (subtitle) subtitle.innerText = 'Supports Compact Square (24"×24"), Standard (42"×24"), and Grand Travertine/Oval (48"×28").';
+    if (badge) badge.innerText = 'Coffee Table';
+
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Teapoy Overview / Front Angle *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: Lower Shelf / Drawers Storage View';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: Top Wood Grain & Mortise Joinery';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: Living Room Accent Setup';
+
+    if (slotPh1) slotPh1.innerText = 'Teapoy Front Angle';
+    if (slotPh2) slotPh2.innerText = 'Lower Shelf Storage';
+    if (slotPh3) slotPh3.innerText = 'Wood Grain & Mortise Joinery';
+    if (slotPh4) slotPh4.innerText = 'Living Room Setup';
+  } else {
+    if (icon) icon.innerText = '🪵';
+    if (title) title.innerText = 'Solid Teak Product Specifications';
+    if (subtitle) subtitle.innerText = 'Standard dimensions, hand-rubbed oil finish, and seasoned hardwood build.';
+    if (badge) badge.innerText = 'Handcrafted Wood';
+
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Cover / Primary *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: Side / Angle View';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: Carving / Wood Texture';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: Room Setup / Placement';
+
+    if (slotPh1) slotPh1.innerText = 'Main Cover Photo';
+    if (slotPh2) slotPh2.innerText = 'Side View Angle';
+    if (slotPh3) slotPh3.innerText = 'Carving / Wood Detail';
+    if (slotPh4) slotPh4.innerText = 'Room Setup / Dimensions';
+  }
 }
 
 function openEditModal(btn) {
@@ -749,6 +1186,25 @@ function openEditModal(btn) {
   document.getElementById('edit_featured').checked = btn.dataset.featured === '1';
   document.getElementById('edit_new_arrival').checked = btn.dataset.newArrival === '1';
 
+  // Populate category-specific storage & chair deltas
+  const storageNo = document.getElementById('edit_storage_no');
+  if (storageNo) storageNo.value = btn.dataset.storageNoDelta || -5000;
+  const storageBox = document.getElementById('edit_storage_box');
+  if (storageBox) storageBox.value = btn.dataset.storageBoxDelta || 0;
+  const storageDrawer = document.getElementById('edit_storage_drawer');
+  if (storageDrawer) storageDrawer.value = btn.dataset.storageDrawerDelta || 5500;
+  const storageHydraulic = document.getElementById('edit_storage_hydraulic');
+  if (storageHydraulic) storageHydraulic.value = btn.dataset.storageHydraulicDelta || 11000;
+
+  const dining2 = document.getElementById('edit_dining_2');
+  if (dining2) dining2.value = btn.dataset.diningChair2 || -14000;
+  const dining4 = document.getElementById('edit_dining_4');
+  if (dining4) dining4.value = btn.dataset.diningChair4 || -7000;
+  const dining8 = document.getElementById('edit_dining_8');
+  if (dining8) dining8.value = btn.dataset.diningChair8 || 15000;
+  const dining12 = document.getElementById('edit_dining_12');
+  if (dining12) dining12.value = btn.dataset.diningChair12 || 35000;
+
   // Populate up to 4 images from dataset
   const imagesStr = btn.dataset.images || btn.dataset.image || '';
   const imgList = imagesStr ? imagesStr.split('|||') : [];
@@ -757,6 +1213,8 @@ function openEditModal(btn) {
     const imgUrl = imgList[slot - 1] || '';
     setSlotImage('edit', slot, imgUrl);
   }
+
+  handleCategoryChange('edit');
 
   document.getElementById('edit-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
