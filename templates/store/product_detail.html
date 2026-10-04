@@ -119,9 +119,10 @@
       background-color: #fbf9f6;
     }
     .thumb-btn.active-thumb {
-      border-color: #2d1e18 !important;
+      border-color: #d97706 !important;
       opacity: 1 !important;
       transform: scale(1.03);
+      box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.35);
     }
   </style>
 </head>
@@ -207,7 +208,7 @@
         <div class="lg:col-span-7 flex flex-col gap-4">
           <!-- Main Featured Product Image Showcase with Navigation Arrows -->
           <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-low border border-surface-container flex items-center justify-center group shadow-sm">
-            <img id="mainGalleryImg" alt="{{ product.name }}" class="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-105" src="{{ product.primary_image }}">
+            <img id="mainGalleryImg" alt="{{ product.name }}" class="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-105" src="{% if product.category_type == 'bed' or product.category_type == 'diwan' %}{% for opt in product.storage_config_list %}{% if opt.is_default %}{{ opt.images.0 }}{% endif %}{% endfor %}{% elif product.category_type == 'dining' %}{% for c in product.size_config_list %}{% if c.is_default %}{{ c.images.0 }}{% endif %}{% endfor %}{% else %}{{ product.primary_image }}{% endif %}">
             
             <!-- Left Navigation Arrow -->
             <button type="button" onclick="navigatePhoto(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-95" title="Previous photo">
@@ -226,11 +227,33 @@
 
           <!-- Thumbnail Row matching Stitch multi-angle gallery -->
           <div class="grid grid-cols-4 sm:grid-cols-5 gap-2.5" id="thumbsGrid">
-            {% for img in product.all_images %}
-            <div onclick="switchPhoto('{{ img }}', this, {{ forloop.counter0 }})" class="thumb-btn aspect-square rounded-xl overflow-hidden border {% if forloop.first %}border-2 border-[#2d1e18] active-thumb{% else %}border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-[#2d1e18]{% endif %} p-0.5 cursor-pointer bg-surface-container transition-all">
-              <img src="{{ img }}" alt="{{ product.name }} angle {{ forloop.counter }}" class="w-full h-full object-cover rounded-lg">
-            </div>
-            {% endfor %}
+            {% if product.category_type == 'bed' or product.category_type == 'diwan' %}
+              {% for opt in product.storage_config_list %}
+                {% if opt.is_default %}
+                  {% for im in opt.images %}
+                  <div onclick="switchPhoto('{{ im|escapejs }}', this, {{ forloop.counter0 }})" class="thumb-btn aspect-square rounded-xl overflow-hidden border {% if forloop.first %}border-2 border-amber-600 active-thumb shadow-xs{% else %}border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-amber-600{% endif %} p-0.5 cursor-pointer bg-surface-container transition-all">
+                    <img src="{{ im }}" alt="{{ product.name }} angle {{ forloop.counter }}" class="w-full h-full object-cover rounded-lg">
+                  </div>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            {% elif product.category_type == 'dining' %}
+              {% for c in product.size_config_list %}
+                {% if c.is_default %}
+                  {% for im in c.images %}
+                  <div onclick="switchPhoto('{{ im|escapejs }}', this, {{ forloop.counter0 }})" class="thumb-btn aspect-square rounded-xl overflow-hidden border {% if forloop.first %}border-2 border-amber-600 active-thumb shadow-xs{% else %}border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-amber-600{% endif %} p-0.5 cursor-pointer bg-surface-container transition-all">
+                    <img src="{{ im }}" alt="{{ product.name }} angle {{ forloop.counter }}" class="w-full h-full object-cover rounded-lg">
+                  </div>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for img in product.all_images %}
+              <div onclick="switchPhoto('{{ img|escapejs }}', this, {{ forloop.counter0 }})" class="thumb-btn aspect-square rounded-xl overflow-hidden border {% if forloop.first %}border-2 border-amber-600 active-thumb shadow-xs{% else %}border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-amber-600{% endif %} p-0.5 cursor-pointer bg-surface-container transition-all">
+                <img src="{{ img }}" alt="{{ product.name }} angle {{ forloop.counter }}" class="w-full h-full object-cover rounded-lg">
+              </div>
+              {% endfor %}
+            {% endif %}
           </div>
         </div>
 
@@ -282,12 +305,12 @@
               <button 
                 type="button" 
                 onclick="selectSize(this, '{{ s.name|escapejs }}', {{ s.delta }}, '{{ s.dimensions|escapejs }}')" 
-                class="size-opt-btn p-2.5 text-left rounded-xl border {% if s.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
+                class="size-opt-btn p-2.5 text-left rounded-xl border {% if s.is_default %}border-2 border-amber-500 bg-amber-100/70 shadow-xs ring-1 ring-amber-400{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-amber-500{% endif %} transition-all focus:outline-none cursor-pointer"
               >
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary">{{ s.name }}</span>
                   {% if s.is_default %}
-                  <span class="material-symbols-outlined text-[15px] text-primary">check_circle</span>
+                  <span class="material-symbols-outlined text-[15px] text-amber-900">check_circle</span>
                   {% endif %}
                 </div>
                 <div class="text-[10px] text-on-surface-variant mt-0.5">{{ s.subtitle }}</div>
@@ -297,7 +320,7 @@
             </div>
           </div>
 
-          <!-- 2. Bed / Diwan Storage Mechanism Selector with Photo Switcher -->
+          <!-- 2. Bed / Diwan Storage Mechanism Selector with 4-Photo Switcher -->
           <div class="flex flex-col gap-2">
             <div class="text-xs font-bold text-primary flex items-center justify-between">
               <span>Storage Mechanism &amp; Timber Cavity:</span>
@@ -307,8 +330,8 @@
               {% for opt in product.storage_config_list %}
               <button 
                 type="button" 
-                onclick="selectStorage(this, '{{ opt.name|escapejs }}', {{ opt.delta }}, '{{ opt.image|escapejs }}', {{ opt.photo_index|default_if_none:forloop.counter0 }})" 
-                class="storage-opt-btn p-2 text-center rounded-xl border {% if opt.is_default %}border-2 border-[#8c4f20] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]{% endif %} transition-all cursor-pointer"
+                onclick="selectStorage(this, '{{ opt.name|escapejs }}', {{ opt.delta }}, [{% for im in opt.images %}'{{ im|escapejs }}'{% if not forloop.last %},{% endif %}{% endfor %}])" 
+                class="storage-opt-btn p-2 text-center rounded-xl border {% if opt.is_default %}border-2 border-amber-500 bg-amber-100/70 shadow-xs ring-1 ring-amber-400{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-amber-500{% endif %} transition-all cursor-pointer"
               >
                 <div class="text-xs font-bold text-primary">{{ opt.name }}</div>
                 <div class="text-[10px] text-on-surface-variant mt-0.5">{{ opt.delta_label }}</div>
@@ -319,7 +342,7 @@
           </div>
 
           {% elif product.category_type == 'dining' %}
-          <!-- 1. Dining Chairs Capacity Selector -->
+          <!-- 1. Dining Chairs Capacity Selector with 4-Photo Switcher -->
           <div class="flex flex-col gap-2 pt-2 border-t border-surface-container">
             <div class="text-xs font-bold text-primary flex items-center justify-between">
               <span>Dining Seating Capacity:</span>
@@ -329,8 +352,8 @@
               {% for c in product.size_config_list %}
               <button 
                 type="button" 
-                onclick="selectDiningChairs(this, '{{ c.name|escapejs }}', {{ c.delta }}, '{{ c.dimensions|escapejs }}', '{{ c.image|escapejs }}', {{ c.photo_index|default_if_none:forloop.counter0 }})" 
-                class="dining-chair-btn p-2 text-center rounded-xl border {% if c.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
+                onclick="selectDiningChairs(this, '{{ c.name|escapejs }}', {{ c.delta }}, '{{ c.dimensions|escapejs }}', [{% for im in c.images %}'{{ im|escapejs }}'{% if not forloop.last %},{% endif %}{% endfor %}])" 
+                class="dining-chair-btn p-2 text-center rounded-xl border {% if c.is_default %}border-2 border-amber-500 bg-amber-100/70 shadow-xs ring-1 ring-amber-400{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-amber-500{% endif %} transition-all focus:outline-none cursor-pointer"
               >
                 <div class="text-xs font-bold text-primary">{{ c.id|cut:"chairs_" }} Chairs</div>
                 <div class="text-[10px] text-on-surface-variant mt-0.5">₹{{ c.price|floatformat:0 }}</div>
@@ -812,11 +835,36 @@
   <!-- Interactive JavaScript Logic                                    -->
   <!-- =============================================================== -->
   <script>
-    const allGalleryImages = [
-      {% for img in product.all_images %}
-      "{{ img }}",
-      {% endfor %}
+    let allGalleryImages = [
+      {% if product.category_type == 'bed' or product.category_type == 'diwan' %}
+        {% for opt in product.storage_config_list %}
+          {% if opt.is_default %}
+            {% for im in opt.images %}
+              "{{ im|escapejs }}",
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% elif product.category_type == 'dining' %}
+        {% for c in product.size_config_list %}
+          {% if c.is_default %}
+            {% for im in c.images %}
+              "{{ im|escapejs }}",
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% for img in product.all_images %}
+          "{{ img|escapejs }}",
+        {% endfor %}
+      {% endif %}
     ];
+    if (!allGalleryImages.length) {
+      allGalleryImages = [
+        {% for img in product.all_images %}
+          "{{ img|escapejs }}",
+        {% endfor %}
+      ];
+    }
     let currentPhotoIndex = 0;
     const basePrice = {{ product.price|floatformat:0 }};
     let currentPrice = basePrice;
@@ -835,12 +883,12 @@
       currentPhotoIndex = (typeof idx === 'number') ? idx : 0;
       const thumbs = document.querySelectorAll('.thumb-btn');
       thumbs.forEach(btn => {
-        btn.classList.remove('active-thumb', 'border-2', 'border-[#2d1e18]');
+        btn.classList.remove('active-thumb', 'border-2', 'border-amber-600', 'border-[#2d1e18]', 'shadow-xs');
         btn.classList.add('border-outline-variant/60', 'opacity-80');
       });
       const activeElem = elem || thumbs[currentPhotoIndex];
       if (activeElem) {
-        activeElem.classList.add('active-thumb', 'border-2', 'border-[#2d1e18]');
+        activeElem.classList.add('active-thumb', 'border-2', 'border-amber-600', 'shadow-xs');
         activeElem.classList.remove('opacity-80', 'border-outline-variant/60');
       }
     }
@@ -851,6 +899,40 @@
       const targetSrc = allGalleryImages[currentPhotoIndex];
       const thumbs = document.querySelectorAll('.thumb-btn');
       switchPhoto(targetSrc, thumbs[currentPhotoIndex], currentPhotoIndex);
+    }
+
+    function updateGalleryPhotos(photos) {
+      if (!photos || !photos.length) return;
+      allGalleryImages.length = 0;
+      photos.forEach(img => {
+        if (img && typeof img === 'string' && img.trim()) {
+          allGalleryImages.push(img.trim());
+        }
+      });
+      currentPhotoIndex = 0;
+
+      const mainImg = document.getElementById('mainGalleryImg');
+      if (mainImg && allGalleryImages.length > 0) {
+        mainImg.src = allGalleryImages[0];
+      }
+
+      const thumbsGrid = document.getElementById('thumbsGrid');
+      if (thumbsGrid) {
+        thumbsGrid.innerHTML = '';
+        allGalleryImages.forEach((imgUrl, idx) => {
+          const thumbDiv = document.createElement('div');
+          thumbDiv.className = `thumb-btn aspect-square rounded-xl overflow-hidden border ${idx === 0 ? 'border-2 border-amber-600 active-thumb shadow-xs' : 'border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-amber-600'} p-0.5 cursor-pointer bg-surface-container transition-all`;
+          thumbDiv.onclick = function() {
+            switchPhoto(imgUrl, thumbDiv, idx);
+          };
+          const imgTag = document.createElement('img');
+          imgTag.src = imgUrl;
+          imgTag.alt = `Product Angle ${idx + 1}`;
+          imgTag.className = 'w-full h-full object-cover rounded-lg';
+          thumbDiv.appendChild(imgTag);
+          thumbsGrid.appendChild(thumbDiv);
+        });
+      }
     }
 
     function changeQuantity(delta) {
@@ -864,18 +946,18 @@
 
     function selectSize(btn, sizeName, priceDelta, dimensions) {
       document.querySelectorAll('.size-opt-btn').forEach(b => {
-        b.classList.remove('border-2', 'border-[#2d1e18]', 'shadow-sm');
-        b.classList.add('border', 'border-outline-variant/60');
+        b.classList.remove('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
+        b.classList.add('border', 'border-outline-variant/60', 'bg-surface-container-lowest');
         const icon = b.querySelector('.material-symbols-outlined');
         if (icon) icon.remove();
       });
-      btn.classList.add('border-2', 'border-[#2d1e18]', 'shadow-sm');
-      btn.classList.remove('border', 'border-outline-variant/60');
+      btn.classList.add('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
+      btn.classList.remove('border-outline-variant/60', 'bg-surface-container-lowest');
       
       const titleDiv = btn.querySelector('.flex');
       if (titleDiv && !titleDiv.querySelector('.material-symbols-outlined')) {
         const check = document.createElement('span');
-        check.className = 'material-symbols-outlined text-[15px] text-primary';
+        check.className = 'material-symbols-outlined text-[15px] text-amber-900';
         check.textContent = 'check_circle';
         titleDiv.appendChild(check);
       }
@@ -887,49 +969,43 @@
       updatePriceDisplay();
     }
 
-    function selectStorage(btn, storageName, priceDelta, image, photoIndex) {
+    function selectStorage(btn, storageName, priceDelta, images) {
       document.querySelectorAll('.storage-opt-btn').forEach(b => {
-        b.classList.remove('border-2', 'border-[#8c4f20]', 'shadow-sm');
-        b.classList.add('border', 'border-outline-variant/60');
+        b.classList.remove('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
+        b.classList.add('border', 'border-outline-variant/60', 'bg-surface-container-lowest');
       });
-      btn.classList.add('border-2', 'border-[#8c4f20]', 'shadow-sm');
-      btn.classList.remove('border', 'border-outline-variant/60');
+      btn.classList.add('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
+      btn.classList.remove('border-outline-variant/60', 'bg-surface-container-lowest');
 
       currentStorageName = storageName;
       storagePriceAdjustment = priceDelta || 0;
       const label = document.getElementById('selectedStorageLabel');
       if (label) label.textContent = storageName;
 
-      // Automatically swap photo to show the storage mechanism (hydraulic, drawers, box, or open platform)
-      if (image && image.trim()) {
-        const thumbs = document.querySelectorAll('.thumb-btn');
-        const pIdx = (typeof photoIndex === 'number') ? photoIndex : 0;
-        const targetThumb = thumbs[pIdx] || null;
-        switchPhoto(image.trim(), targetThumb, pIdx);
+      // Automatically swap all 4 gallery photos for the selected storage variant
+      if (images && images.length) {
+        updateGalleryPhotos(images);
       }
 
       updatePriceDisplay();
     }
 
-    function selectDiningChairs(btn, chairsName, priceDelta, dimensions, image, photoIndex) {
+    function selectDiningChairs(btn, chairsName, priceDelta, dimensions, images) {
       document.querySelectorAll('.dining-chair-btn').forEach(b => {
-        b.classList.remove('border-2', 'border-[#2d1e18]', 'shadow-sm');
-        b.classList.add('border', 'border-outline-variant/60');
+        b.classList.remove('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
+        b.classList.add('border', 'border-outline-variant/60', 'bg-surface-container-lowest');
       });
-      btn.classList.add('border-2', 'border-[#2d1e18]', 'shadow-sm');
-      btn.classList.remove('border', 'border-outline-variant/60');
+      btn.classList.add('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
+      btn.classList.remove('border-outline-variant/60', 'bg-surface-container-lowest');
 
       currentSizeName = chairsName;
       sizePriceAdjustment = priceDelta || 0;
       const label = document.getElementById('selectedChairsLabel');
       if (label) label.textContent = chairsName;
 
-      // Switch to matching dining chair image (2, 4, 6, 8, or 12 chairs)
-      if (image && image.trim()) {
-        const thumbs = document.querySelectorAll('.thumb-btn');
-        const pIdx = (typeof photoIndex === 'number') ? photoIndex : 0;
-        const targetThumb = thumbs[pIdx] || null;
-        switchPhoto(image.trim(), targetThumb, pIdx);
+      // Automatically swap all 4 gallery photos for the selected dining chair suite (2, 4, 6, 8, 12 chairs)
+      if (images && images.length) {
+        updateGalleryPhotos(images);
       }
 
       updatePriceDisplay();

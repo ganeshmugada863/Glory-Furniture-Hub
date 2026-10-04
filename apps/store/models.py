@@ -21,28 +21,79 @@ class Category(models.Model):
         return self.name
 
 
+BED_STORAGE_SETS = {
+    'no_storage': [
+        '/static/images/card_bed.jpg',
+        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1540518614846-7ede433c517a?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=800&q=80',
+    ],
+    'box_storage': [
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuBCpo2r-u3S4r_DDwj9-UpN6jSORQRAG9WmDNK0aY4jUKohmmDmBkwwEl5V0xAF1RFzc5URtTHZm0hjB_gme5JnCRG-jLDklOJeXkPdUzj8eN5B6SF1QBWwMbqrSH9sQWGbgScsvcyzqXpgNwYnV5G-VLFToYS4ga2swhm73s3331KctMKpbabv1Clp3uUwElyZy8IpAWlh_vQ45HWb2jNrcSMghqVpqTrcLPBWx52RLfGI7QXh4ps',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc',
+    ],
+    'drawer_storage': [
+        'https://lh3.googleusercontent.com/aida/AEtjO1XW6wvd3HPw6lQROHuN3wTzkMY-Pnyw3G48vpR297ZoJsahlf94NmUilmd_ACYfzfZQByax2ItM0r7MKWITGTXhOhbL7HOnEeuAr8dZKHS_YTNu3Jc0d7rjE-s-YneQ7nBA29BnM6XOsYddNzVWn6ic8KCFkHUYNFj1C9PKXAdO2olI_UsvK9TbNl9Rpv015RUge0DHRCNukhPoxmiLYa1ZPPifNzfUU97mOjov13A-RvQK_jA2c6G-3g',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuCcpGfqb2W2mFXgsQ7WnS8TCUjZTyxcomjvPp-r9AS-FoD5TNSEfT448L6B7JByWsZO2RXvahPCZuBJ7d7GU31JBjbO12NHnTshd4AH_DTsZvxRVlKdrxIpVZtVzjy6qumIRh5o1QGM1uu2gG3VXjuPBcNXDRFZ1c_eRQoXRp0dip7yjPAeh2amxCZpT63WqzqiYYBMQOwRCRt9cz29mxZTtosSGI4WeoaL1h-eZywvtBil0IYc5cQ',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuB7eqSPu3q8EzHg-WYsOBAtSE_NM76h_PuOXe0qJEw3pyGHmkorNmXhhH1HiAON7ohiwaLCi4COBafONdqQ2aJo36OcNEz6NCF9EqEWtN8xRCjRAC3cxta3NpkrcSzvY5G6yX_rYWExg88XCSq3NDcgSgrZB47f3LZCocAhu6xk-YNYvbibDCqYVPN2a--jcHpjoJDIAwaCziRHV6dq6cPxZcMZshUasYFJcrCH1w76-D8oZ8z9kplHNPts8gIy6oyd',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM',
+    ],
+    'hydraulic_storage': [
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuC5tmvhDvplR4JylTIAPO0xE2b5pCQER9BhzeiwQd-NoFfftA_KOk9YFLk3WXaZ3ZZKdggnfYoGigQbRkUiSYWGzix2n5BO8kI2qg_dRinzG1AOkw5UfhT4k851ohJwAfkdiWY_1lTV7r8P47A6TbYRKBM4tJ1utIOu_Uj2rkWhuaSlYCni6Eb7ma3tjE7lgn84u2IkFlTDsofZzMHGGlxHeBeFLj8WeclPe8-Ypcf2t06HgtL-p0V5LRwL4oHu8YxW',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuDs1CHnDgSpTW5dhn1BcIAfAhYFdyKxtizaWKBMPVorGediRIzcm_9eX3-Mo-6YbKcczGaVCXl0jBbVOnTnFBEClI5HyHTxfUoQCKdtafBvMn4idGDRHhQCuj5zWA4YVHPKSnBVzl76UN4J7qLiAtKriv_H8PFRghXYWApKM-gAYO0eKhOI_NisKFBnpWA8GuLpe9IVewf2AocrGe1rrSnRsJcx9VKRSKl9papqsUmDZdHJm1mqf-k',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuDeaFRiwZwCm1i5AVqC30S7jF8WM72meMr7Hz2M9GdKdVfcpLM3hyUU1JAnSln2F0X0OsM5kgSJyMoMhrK0eL23b4xMY2Jf_lCPMzOBiAm8fsCrf3y4kGxk54OAsG4C5_LZ0fqyZkgMPV-E1iMcANx6aQXlU8n2LD5OH8mZ-yrV7CRHQ2A3wTgDrdP5t_L9yogvqLPWr6v7x5YGlRyoTZfk4MCGUhsD4wipuHnm-VVgaUzgDq2b7is',
+        'https://lh3.googleusercontent.com/aida/AEtjO1VU3st2pJL0SOafKizs5fapLcuyZM_dh0cX7WpEjKm3iQ0ga_iTR8HSNkP1ec3x7ZyPO8hg5TQlyVQzm3UN32EOqw356eEAomaZSZwB4itSB21QxEdnXT371vjHUDWsrPKereKDUpppoU8f56CILXfd2YkI8Autne_M6BZZFN-H7NwLxrE9_FWPzLE7cKG-tIn1vqD6hLY3UDSrHRSBohi0Ut1FyA_Qt3nNlQqjI-KOTpZ95_q88_hV',
+    ],
+}
+
+DINING_CHAIR_SETS = {
+    'chairs_2': [
+        '/static/images/card_dining.jpg',
+        'https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=800&q=80',
+    ],
+    'chairs_4': [
+        'https://lh3.googleusercontent.com/aida/AEtjO1XLLUjRt17Ny6-HrngOfrDSBKzwlUNzviwSws6FIUBV8QcpVOYIRcN49Bk5CVEGC3Uiu0JeKZQj_8z4ayDsZVMy6Rn0TSWBGw90s1GwY78Bv1NXP16twUw3kKQm5q_sYXh9WQyBPI22IWNmdWZOUQLhj9iCpMauUxpGNRT6JD9RJ4SbVXzNHHNMPLwi6fITU_JN9qWIFz-dqJle-d7AplZKDkJKD9LMAxz7093MlxSe2gPBTQRVeO2zQw',
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80',
+    ],
+    'chairs_6': [
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ',
+        'https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&w=800&q=80',
+        '/static/images/hero_epoxy_teak.jpg',
+    ],
+    'chairs_8': [
+        'https://lh3.googleusercontent.com/aida/AEtjO1Ve42EmZZ8qT2ZyS6__mqtrzFES4W2oRX-7mDlivsziDazmoOZTiuCTNs_wM8z3oguAZzcWrNVk_RqvtBwplHFpOX1t_zVJmABnK0RuKJoSwLpwnROy3fDxgjLNXKaeEiY1iGV7E0tgaE0VIB9v4dBrJhxdODpAhdoP-gXLT3RCLERVswcVTiOunYfCkqJCa1AbJy7nfOtejkShEhrLArxUVm-PO7aXcT5xHYyUlW5gSWND29MgR_gQOA',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+    ],
+    'chairs_12': [
+        'https://lh3.googleusercontent.com/aida/AEtjO1WecA0t0O-eg9gyhPLe0YKZMxCLAPl6_gitKv2MTZYJqHvHST3cCqbHoeHn-0GbMKfu2n_XvFtV83nUCDy8iBSLt4zTLNIO70J_8HfCWZHgqRtEZGEtJ5WlDgRJyuCIa51xqRm5EsNJyxyeswPXa1md1aUL6N52eyQXUJn2kcX6TlE9zx3NBnOU7g0yf2LUkvqTNUbVlnEfngFe0XlFUh-ul5PHvQYFhsnQtls3k7FtGkc1wYlRdeSt_Q',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&w=800&q=80',
+    ],
+}
+
 BED_STORAGE_FALLBACKS = [
-    # 0: Without Storage (Plain Platform)
-    '/static/images/card_bed.jpg',
-    # 1: Box Storage (Solid Plank Cavity)
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBCpo2r-u3S4r_DDwj9-UpN6jSORQRAG9WmDNK0aY4jUKohmmDmBkwwEl5V0xAF1RFzc5URtTHZm0hjB_gme5JnCRG-jLDklOJeXkPdUzj8eN5B6SF1QBWwMbqrSH9sQWGbgScsvcyzqXpgNwYnV5G-VLFToYS4ga2swhm73s3331KctMKpbabv1Clp3uUwElyZy8IpAWlh_vQ45HWb2jNrcSMghqVpqTrcLPBWx52RLfGI7QXh4ps',
-    # 2: Drawer Storage (Side Sliding Drawers)
-    'https://lh3.googleusercontent.com/aida/AEtjO1XW6wvd3HPw6lQROHuN3wTzkMY-Pnyw3G48vpR297ZoJsahlf94NmUilmd_ACYfzfZQByax2ItM0r7MKWITGTXhOhbL7HOnEeuAr8dZKHS_YTNu3Jc0d7rjE-s-YneQ7nBA29BnM6XOsYddNzVWn6ic8KCFkHUYNFj1C9PKXAdO2olI_UsvK9TbNl9Rpv015RUge0DHRCNukhPoxmiLYa1ZPPifNzfUU97mOjov13A-RvQK_jA2c6G-3g',
-    # 3: Hydraulic Storage (German Gas-Lift Pistons Open)
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuC5tmvhDvplR4JylTIAPO0xE2b5pCQER9BhzeiwQd-NoFfftA_KOk9YFLk3WXaZ3ZZKdggnfYoGigQbRkUiSYWGzix2n5BO8kI2qg_dRinzG1AOkw5UfhT4k851ohJwAfkdiWY_1lTV7r8P47A6TbYRKBM4tJ1utIOu_Uj2rkWhuaSlYCni6Eb7ma3tjE7lgn84u2IkFlTDsofZzMHGGlxHeBeFLj8WeclPe8-Ypcf2t06HgtL-p0V5LRwL4oHu8YxW',
+    BED_STORAGE_SETS['no_storage'][0],
+    BED_STORAGE_SETS['box_storage'][0],
+    BED_STORAGE_SETS['drawer_storage'][0],
+    BED_STORAGE_SETS['hydraulic_storage'][0],
 ]
 
 DINING_CHAIR_FALLBACKS = [
-    # 0: 6 Chairs (Standard Dining Suite - Cover)
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ',
-    # 1: 2 Chairs (Bistro / Cafe 2-Seater)
-    '/static/images/card_dining.jpg',
-    # 2: 4 Chairs (Compact Family 4-Seater)
-    'https://lh3.googleusercontent.com/aida/AEtjO1XLLUjRt17Ny6-HrngOfrDSBKzwlUNzviwSws6FIUBV8QcpVOYIRcN49Bk5CVEGC3Uiu0JeKZQj_8z4ayDsZVMy6Rn0TSWBGw90s1GwY78Bv1NXP16twUw3kKQm5q_sYXh9WQyBPI22IWNmdWZOUQLhj9iCpMauUxpGNRT6JD9RJ4SbVXzNHHNMPLwi6fITU_JN9qWIFz-dqJle-d7AplZKDkJKD9LMAxz7093MlxSe2gPBTQRVeO2zQw',
-    # 3: 8 Chairs (Grand Manor 8-Seater Feast)
-    'https://lh3.googleusercontent.com/aida/AEtjO1Ve42EmZZ8qT2ZyS6__mqtrzFES4W2oRX-7mDlivsziDazmoOZTiuCTNs_wM8z3oguAZzcWrNVk_RqvtBwplHFpOX1t_zVJmABnK0RuKJoSwLpwnROy3fDxgjLNXKaeEiY1iGV7E0tgaE0VIB9v4dBrJhxdODpAhdoP-gXLT3RCLERVswcVTiOunYfCkqJCa1AbJy7nfOtejkShEhrLArxUVm-PO7aXcT5xHYyUlW5gSWND29MgR_gQOA',
-    # 4: 12 Chairs (Royal Banquet 12-Seater Feast)
-    'https://lh3.googleusercontent.com/aida/AEtjO1WecA0t0O-eg9gyhPLe0YKZMxCLAPl6_gitKv2MTZYJqHvHST3cCqbHoeHn-0GbMKfu2n_XvFtV83nUCDy8iBSLt4zTLNIO70J_8HfCWZHgqRtEZGEtJ5WlDgRJyuCIa51xqRm5EsNJyxyeswPXa1md1aUL6N52eyQXUJn2kcX6TlE9zx3NBnOU7g0yf2LUkvqTNUbVlnEfngFe0XlFUh-ul5PHvQYFhsnQtls3k7FtGkc1wYlRdeSt_Q',
+    DINING_CHAIR_SETS['chairs_6'][0],
+    DINING_CHAIR_SETS['chairs_2'][0],
+    DINING_CHAIR_SETS['chairs_4'][0],
+    DINING_CHAIR_SETS['chairs_8'][0],
+    DINING_CHAIR_SETS['chairs_12'][0],
 ]
 
 
@@ -230,12 +281,19 @@ class Product(models.Model):
             d8 = int(f.get('dining_chair_8_delta', 15000))
             d12 = int(f.get('dining_chair_12_delta', 35000))
 
-            all_imgs = self.all_images
-            img_6 = all_imgs[0] if len(all_imgs) > 0 else DINING_CHAIR_FALLBACKS[0]
-            img_2 = all_imgs[1] if len(all_imgs) > 1 else DINING_CHAIR_FALLBACKS[1]
-            img_4 = all_imgs[2] if len(all_imgs) > 2 else DINING_CHAIR_FALLBACKS[2]
-            img_8 = all_imgs[3] if len(all_imgs) > 3 else DINING_CHAIR_FALLBACKS[3]
-            img_12 = all_imgs[4] if len(all_imgs) > 4 else DINING_CHAIR_FALLBACKS[4]
+            primary = self.primary_image.strip() if self.primary_image else ''
+            
+            def get_dining_images(key):
+                base_imgs = list(DINING_CHAIR_SETS[key])
+                if primary and key == 'chairs_6' and primary not in base_imgs:
+                    return [primary] + base_imgs[1:4]
+                return base_imgs
+
+            imgs_2 = get_dining_images('chairs_2')
+            imgs_4 = get_dining_images('chairs_4')
+            imgs_6 = get_dining_images('chairs_6')
+            imgs_8 = get_dining_images('chairs_8')
+            imgs_12 = get_dining_images('chairs_12')
 
             return [
                 {
@@ -245,7 +303,8 @@ class Product(models.Model):
                     'dimensions': '36" L × 36" W × 30" H',
                     'delta': d2,
                     'price': max(1000, base + d2),
-                    'image': img_2,
+                    'image': imgs_2[0],
+                    'images': imgs_2,
                     'photo_index': 1,
                     'is_default': False
                 },
@@ -256,7 +315,8 @@ class Product(models.Model):
                     'dimensions': '48" L × 36" W × 30" H',
                     'delta': d4,
                     'price': max(1000, base + d4),
-                    'image': img_4,
+                    'image': imgs_4[0],
+                    'images': imgs_4,
                     'photo_index': 2,
                     'is_default': False
                 },
@@ -267,7 +327,8 @@ class Product(models.Model):
                     'dimensions': '72" L × 38" W × 30" H',
                     'delta': 0,
                     'price': base,
-                    'image': img_6,
+                    'image': imgs_6[0],
+                    'images': imgs_6,
                     'photo_index': 0,
                     'is_default': True
                 },
@@ -278,7 +339,8 @@ class Product(models.Model):
                     'dimensions': '96" L × 42" W × 30" H',
                     'delta': d8,
                     'price': base + d8,
-                    'image': img_8,
+                    'image': imgs_8[0],
+                    'images': imgs_8,
                     'photo_index': 3,
                     'is_default': False
                 },
@@ -289,7 +351,8 @@ class Product(models.Model):
                     'dimensions': '132" L × 46" W × 30" H',
                     'delta': d12,
                     'price': base + d12,
-                    'image': img_12,
+                    'image': imgs_12[0],
+                    'images': imgs_12,
                     'photo_index': 4,
                     'is_default': False
                 }
@@ -421,18 +484,25 @@ class Product(models.Model):
         if ctype not in ['bed', 'diwan']:
             return []
 
-        all_imgs = self.all_images
-        img_no_storage = all_imgs[0] if len(all_imgs) > 0 else BED_STORAGE_FALLBACKS[0]
-        img_box = all_imgs[1] if len(all_imgs) > 1 else BED_STORAGE_FALLBACKS[1]
-        img_drawers = all_imgs[2] if len(all_imgs) > 2 else BED_STORAGE_FALLBACKS[2]
-        img_hydraulic = all_imgs[3] if len(all_imgs) > 3 else BED_STORAGE_FALLBACKS[3]
-
         # Read admin configured deltas if present
         f = self.finishes if isinstance(self.finishes, dict) else {}
         no_storage_delta = int(f.get('no_storage_delta', -5000))
         box_storage_delta = int(f.get('box_storage_delta', 0))
         drawer_storage_delta = int(f.get('drawer_storage_delta', 5500))
         hydraulic_storage_delta = int(f.get('hydraulic_storage_delta', 11000))
+
+        primary = self.primary_image.strip() if self.primary_image else ''
+
+        def get_bed_images(key):
+            base_imgs = list(BED_STORAGE_SETS[key])
+            if primary and key in ['no_storage', 'box_storage'] and primary not in base_imgs:
+                return [primary] + base_imgs[1:4]
+            return base_imgs
+
+        imgs_no = get_bed_images('no_storage')
+        imgs_box = get_bed_images('box_storage')
+        imgs_drawers = get_bed_images('drawer_storage')
+        imgs_hydraulic = get_bed_images('hydraulic_storage')
 
         def fmt_delta(d):
             if d == 0:
@@ -450,7 +520,8 @@ class Product(models.Model):
                 'delta': no_storage_delta,
                 'delta_label': fmt_delta(no_storage_delta),
                 'description': 'Minimalist open timber framework with posture slats for natural air circulation.',
-                'image': img_no_storage,
+                'image': imgs_no[0],
+                'images': imgs_no,
                 'photo_index': 0,
                 'is_default': False
             },
@@ -461,7 +532,8 @@ class Product(models.Model):
                 'delta': box_storage_delta,
                 'delta_label': fmt_delta(box_storage_delta),
                 'description': 'Heavy-duty manual plank lift partitions with deep solid wood underbed storage.',
-                'image': img_box,
+                'image': imgs_box[0],
+                'images': imgs_box,
                 'photo_index': 1,
                 'is_default': True
             },
@@ -472,7 +544,8 @@ class Product(models.Model):
                 'delta': drawer_storage_delta,
                 'delta_label': fmt_delta(drawer_storage_delta),
                 'description': 'Four heavy-duty ball-bearing side glide sliding drawers for quick linen access.',
-                'image': img_drawers,
+                'image': imgs_drawers[0],
+                'images': imgs_drawers,
                 'photo_index': 2,
                 'is_default': False
             },
@@ -483,7 +556,8 @@ class Product(models.Model):
                 'delta': hydraulic_storage_delta,
                 'delta_label': fmt_delta(hydraulic_storage_delta),
                 'description': 'Effortless German gas-strut hydraulic lift mechanism with 100% full underbed storage bay.',
-                'image': img_hydraulic,
+                'image': imgs_hydraulic[0],
+                'images': imgs_hydraulic,
                 'photo_index': 3,
                 'is_default': False
             }

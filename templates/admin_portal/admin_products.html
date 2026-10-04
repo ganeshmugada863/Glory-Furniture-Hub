@@ -278,31 +278,31 @@
             <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
               Storage Type Price Adjustments (₹ Delta relative to base price)
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">Without Storage</span>
-                <input type="number" name="storage_no_delta" id="add_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="add_storage_cards_grid">
+              <div id="add_bed_card_no" onclick="selectAdminStorageCard('add', 'no', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">Without Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_no_delta" id="add_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">e.g. -5000 (Slot 1)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">Box Storage</span>
-                <input type="number" name="storage_box_delta" id="add_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="add_bed_card_box" onclick="selectAdminStorageCard('add', 'box', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">Box Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_box_delta" id="add_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">e.g. 0 (Standard)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">Drawer Storage</span>
-                <input type="number" name="storage_drawer_delta" id="add_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="add_bed_card_drawer" onclick="selectAdminStorageCard('add', 'drawer', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">Drawer Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_drawer_delta" id="add_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">e.g. +5500 (Slot 3)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border-2 border-amber-500/80 bg-amber-50/40">
-                <span class="block text-[10px] font-black text-amber-900">Hydraulic Storage</span>
-                <input type="number" name="storage_hydraulic_delta" id="add_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="add_bed_card_hydraulic" onclick="selectAdminStorageCard('add', 'hydraulic', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
+                <span class="block text-[10px] font-black text-amber-950">Hydraulic Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_hydraulic_delta" id="add_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-amber-800 font-bold mt-0.5">e.g. +11000 (Slot 2)</span>
               </div>
             </div>
-            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+            <p id="add_bed_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
               <span>💡</span>
-              <span><strong>Hydraulic Storage Photo Link:</strong> Upload the bed open with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, clicking "Hydraulic Storage" instantly displays Photo Slot 2!</span>
+              <span><strong>Hydraulic Storage Selected:</strong> Upload bed open at 45° with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, selecting Hydraulic Storage instantly displays all 4 hydraulic photos!</span>
             </p>
           </div>
         </div>
@@ -321,31 +321,31 @@
             <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
               Chair Suite Price Adjustments (₹ Delta relative to 6-Chairs standard price)
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">2 Chairs Suite</span>
-                <input type="number" name="dining_chair_2_delta" id="add_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="add_dining_cards_grid">
+              <div id="add_dining_card_2" onclick="selectAdminDiningCard('add', '2', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">2 Chairs Suite</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_2_delta" id="add_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">36"×36" Table (-₹14,000)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">4 Chairs Suite</span>
-                <input type="number" name="dining_chair_4_delta" id="add_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="add_dining_card_4" onclick="selectAdminDiningCard('add', '4', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">4 Chairs Suite</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_4_delta" id="add_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">48"×36" Table (-₹7,000)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">8 Chairs Grand Suite</span>
-                <input type="number" name="dining_chair_8_delta" id="add_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="add_dining_card_8" onclick="selectAdminDiningCard('add', '8', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">8 Chairs Grand Suite</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_8_delta" id="add_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">96"×42" Table (+₹15,000)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-amber-300 bg-amber-50/50">
-                <span class="block text-[10px] font-black text-amber-900">12 Chairs Royal Feast</span>
-                <input type="number" name="dining_chair_12_delta" id="add_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="add_dining_card_12" onclick="selectAdminDiningCard('add', '12', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
+                <span class="block text-[10px] font-black text-amber-950">12 Chairs Royal Feast</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_12_delta" id="add_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-amber-800 font-bold mt-0.5">132"×46" Table (+₹35,000)</span>
               </div>
             </div>
-            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+            <p id="add_dining_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
               <span>💡</span>
-              <span><strong>Dining Photos Link:</strong> Upload 8/12 Chairs setup in <strong>Photo Slot 2</strong>, and 2/4 Chairs setup in <strong>Photo Slot 3</strong>. Customers selecting chairs will automatically preview matching photos!</span>
+              <span><strong>12 Chairs Royal Feast Selected:</strong> Upload 12-Chairs grand banquet setup photos in Photo Slots. In customer storefront, selecting 12 Chairs instantly displays all 4 twelve-chair photos!</span>
             </p>
           </div>
         </div>
@@ -700,31 +700,31 @@
             <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
               Storage Type Price Adjustments (₹ Delta relative to base price)
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">Without Storage</span>
-                <input type="number" name="storage_no_delta" id="edit_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="edit_storage_cards_grid">
+              <div id="edit_bed_card_no" onclick="selectAdminStorageCard('edit', 'no', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">Without Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_no_delta" id="edit_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">e.g. -5000 (Slot 1)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">Box Storage</span>
-                <input type="number" name="storage_box_delta" id="edit_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="edit_bed_card_box" onclick="selectAdminStorageCard('edit', 'box', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">Box Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_box_delta" id="edit_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">e.g. 0 (Standard)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">Drawer Storage</span>
-                <input type="number" name="storage_drawer_delta" id="edit_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="edit_bed_card_drawer" onclick="selectAdminStorageCard('edit', 'drawer', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">Drawer Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_drawer_delta" id="edit_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">e.g. +5500 (Slot 3)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border-2 border-amber-500/80 bg-amber-50/40">
-                <span class="block text-[10px] font-black text-amber-900">Hydraulic Storage</span>
-                <input type="number" name="storage_hydraulic_delta" id="edit_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="edit_bed_card_hydraulic" onclick="selectAdminStorageCard('edit', 'hydraulic', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
+                <span class="block text-[10px] font-black text-amber-950">Hydraulic Storage</span>
+                <input type="number" onclick="event.stopPropagation()" name="storage_hydraulic_delta" id="edit_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-amber-800 font-bold mt-0.5">e.g. +11000 (Slot 2)</span>
               </div>
             </div>
-            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+            <p id="edit_bed_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
               <span>💡</span>
-              <span><strong>Hydraulic Storage Photo Link:</strong> Upload the bed open with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, clicking "Hydraulic Storage" instantly displays Photo Slot 2!</span>
+              <span><strong>Hydraulic Storage Selected:</strong> Upload bed open at 45° with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, selecting Hydraulic Storage instantly displays all 4 hydraulic photos!</span>
             </p>
           </div>
         </div>
@@ -743,31 +743,31 @@
             <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
               Chair Suite Price Adjustments (₹ Delta relative to 6-Chairs standard price)
             </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">2 Chairs Suite</span>
-                <input type="number" name="dining_chair_2_delta" id="edit_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="edit_dining_cards_grid">
+              <div id="edit_dining_card_2" onclick="selectAdminDiningCard('edit', '2', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">2 Chairs Suite</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_2_delta" id="edit_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">36"×36" Table (-₹14,000)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">4 Chairs Suite</span>
-                <input type="number" name="dining_chair_4_delta" id="edit_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="edit_dining_card_4" onclick="selectAdminDiningCard('edit', '4', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">4 Chairs Suite</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_4_delta" id="edit_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">48"×36" Table (-₹7,000)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-gray-200">
-                <span class="block text-[10px] font-bold text-gray-600">8 Chairs Grand Suite</span>
-                <input type="number" name="dining_chair_8_delta" id="edit_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="edit_dining_card_8" onclick="selectAdminDiningCard('edit', '8', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
+                <span class="block text-[10px] font-bold text-gray-700">8 Chairs Grand Suite</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_8_delta" id="edit_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-gray-400 mt-0.5">96"×42" Table (+₹15,000)</span>
               </div>
-              <div class="bg-white p-2.5 rounded-xl border border-amber-300 bg-amber-50/50">
-                <span class="block text-[10px] font-black text-amber-900">12 Chairs Royal Feast</span>
-                <input type="number" name="dining_chair_12_delta" id="edit_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-[#5C3D2E]" />
+              <div id="edit_dining_card_12" onclick="selectAdminDiningCard('edit', '12', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
+                <span class="block text-[10px] font-black text-amber-950">12 Chairs Royal Feast</span>
+                <input type="number" onclick="event.stopPropagation()" name="dining_chair_12_delta" id="edit_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
                 <span class="block text-[9px] text-amber-800 font-bold mt-0.5">132"×46" Table (+₹35,000)</span>
               </div>
             </div>
-            <p class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
+            <p id="edit_dining_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
               <span>💡</span>
-              <span><strong>Dining Photos Link:</strong> Upload 8/12 Chairs setup in <strong>Photo Slot 2</strong>, and 2/4 Chairs setup in <strong>Photo Slot 3</strong>. Customers selecting chairs will automatically preview matching photos!</span>
+              <span><strong>12 Chairs Royal Feast Selected:</strong> Upload 12-Chairs grand banquet setup photos in Photo Slots. In customer storefront, selecting 12 Chairs instantly displays all 4 twelve-chair photos!</span>
             </p>
           </div>
         </div>
@@ -1349,6 +1349,75 @@ async function compressImageFile(file, maxWidth = 1600, maxHeight = 1600, qualit
     };
     reader.readAsDataURL(file);
   });
+}
+
+// --- Interactive Variant Cards (Bed Storage & Dining Chairs) with 70% Yellow Highlight ---
+function selectAdminStorageCard(mode, key, evt) {
+  const keys = ['no', 'box', 'drawer', 'hydraulic'];
+  keys.forEach(k => {
+    const card = document.getElementById(`${mode}_bed_card_${k}`);
+    if (card) {
+      card.className = "cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400";
+      const titleSpan = card.querySelector('span:first-child');
+      if (titleSpan) titleSpan.className = "block text-[10px] font-bold text-gray-700";
+    }
+  });
+
+  const activeCard = document.getElementById(`${mode}_bed_card_${key}`);
+  if (activeCard) {
+    activeCard.className = "cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400";
+    const titleSpan = activeCard.querySelector('span:first-child');
+    if (titleSpan) titleSpan.className = "block text-[10px] font-black text-amber-950";
+    const input = activeCard.querySelector('input');
+    if (input && (!evt || evt.target !== input)) {
+      input.focus();
+    }
+  }
+
+  const note = document.getElementById(`${mode}_bed_photo_link_note`);
+  if (note) {
+    const messages = {
+      'no': '<strong>Without Storage (Normal Bed) Selected:</strong> Upload plain platform cot without storage (slats & timber frame). In customer storefront, selecting "Without Storage" instantly displays all 4 normal bed photos!',
+      'box': '<strong>Box Storage Selected:</strong> Upload bed with solid plank cavity box storage. In customer storefront, selecting "Box Storage" instantly displays all 4 box cot photos!',
+      'drawer': '<strong>Drawer Storage Selected:</strong> Upload bed with pull-out sliding side drawers open. In customer storefront, selecting "Drawer Storage" instantly displays all 4 drawer storage photos!',
+      'hydraulic': '<strong>Hydraulic Storage Selected:</strong> Upload bed open at 45° with German gas lift pistons. In customer storefront, selecting "Hydraulic Storage" instantly displays all 4 hydraulic photos!'
+    };
+    note.innerHTML = `<span>💡</span><span>${messages[key] || messages['box']}</span>`;
+  }
+}
+
+function selectAdminDiningCard(mode, key, evt) {
+  const keys = ['2', '4', '8', '12'];
+  keys.forEach(k => {
+    const card = document.getElementById(`${mode}_dining_card_${k}`);
+    if (card) {
+      card.className = "cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400";
+      const titleSpan = card.querySelector('span:first-child');
+      if (titleSpan) titleSpan.className = "block text-[10px] font-bold text-gray-700";
+    }
+  });
+
+  const activeCard = document.getElementById(`${mode}_dining_card_${key}`);
+  if (activeCard) {
+    activeCard.className = "cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400";
+    const titleSpan = activeCard.querySelector('span:first-child');
+    if (titleSpan) titleSpan.className = "block text-[10px] font-black text-amber-950";
+    const input = activeCard.querySelector('input');
+    if (input && (!evt || evt.target !== input)) {
+      input.focus();
+    }
+  }
+
+  const note = document.getElementById(`${mode}_dining_photo_link_note`);
+  if (note) {
+    const messages = {
+      '2': '<strong>2 Chairs Suite Selected:</strong> Upload 2-Chairs bistro / cafe dining set photos. In customer storefront, clicking "2 Chairs" instantly displays all 4 two-chair photos!',
+      '4': '<strong>4 Chairs Suite Selected:</strong> Upload 4-Chairs compact family dining set photos. In customer storefront, clicking "4 Chairs" instantly displays all 4 four-chair photos!',
+      '8': '<strong>8 Chairs Grand Suite Selected:</strong> Upload 8-Chairs grand manor dining set photos. In customer storefront, clicking "8 Chairs" instantly displays all 4 eight-chair photos!',
+      '12': '<strong>12 Chairs Royal Feast Selected:</strong> Upload 12-Chairs royal banquet feast dining set photos. In customer storefront, clicking "12 Chairs" instantly displays all 4 twelve-chair photos!'
+    };
+    note.innerHTML = `<span>💡</span><span>${messages[key] || messages['12']}</span>`;
+  }
 }
 
 // --- 4 Image Slots Preview & Management ---
