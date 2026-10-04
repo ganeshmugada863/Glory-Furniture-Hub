@@ -21,6 +21,31 @@ class Category(models.Model):
         return self.name
 
 
+BED_STORAGE_FALLBACKS = [
+    # 0: Without Storage (Plain Platform)
+    '/static/images/card_bed.jpg',
+    # 1: Box Storage (Solid Plank Cavity)
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBCpo2r-u3S4r_DDwj9-UpN6jSORQRAG9WmDNK0aY4jUKohmmDmBkwwEl5V0xAF1RFzc5URtTHZm0hjB_gme5JnCRG-jLDklOJeXkPdUzj8eN5B6SF1QBWwMbqrSH9sQWGbgScsvcyzqXpgNwYnV5G-VLFToYS4ga2swhm73s3331KctMKpbabv1Clp3uUwElyZy8IpAWlh_vQ45HWb2jNrcSMghqVpqTrcLPBWx52RLfGI7QXh4ps',
+    # 2: Drawer Storage (Side Sliding Drawers)
+    'https://lh3.googleusercontent.com/aida/AEtjO1XW6wvd3HPw6lQROHuN3wTzkMY-Pnyw3G48vpR297ZoJsahlf94NmUilmd_ACYfzfZQByax2ItM0r7MKWITGTXhOhbL7HOnEeuAr8dZKHS_YTNu3Jc0d7rjE-s-YneQ7nBA29BnM6XOsYddNzVWn6ic8KCFkHUYNFj1C9PKXAdO2olI_UsvK9TbNl9Rpv015RUge0DHRCNukhPoxmiLYa1ZPPifNzfUU97mOjov13A-RvQK_jA2c6G-3g',
+    # 3: Hydraulic Storage (German Gas-Lift Pistons Open)
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuC5tmvhDvplR4JylTIAPO0xE2b5pCQER9BhzeiwQd-NoFfftA_KOk9YFLk3WXaZ3ZZKdggnfYoGigQbRkUiSYWGzix2n5BO8kI2qg_dRinzG1AOkw5UfhT4k851ohJwAfkdiWY_1lTV7r8P47A6TbYRKBM4tJ1utIOu_Uj2rkWhuaSlYCni6Eb7ma3tjE7lgn84u2IkFlTDsofZzMHGGlxHeBeFLj8WeclPe8-Ypcf2t06HgtL-p0V5LRwL4oHu8YxW',
+]
+
+DINING_CHAIR_FALLBACKS = [
+    # 0: 6 Chairs (Standard Dining Suite - Cover)
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ',
+    # 1: 2 Chairs (Bistro / Cafe 2-Seater)
+    '/static/images/card_dining.jpg',
+    # 2: 4 Chairs (Compact Family 4-Seater)
+    'https://lh3.googleusercontent.com/aida/AEtjO1XLLUjRt17Ny6-HrngOfrDSBKzwlUNzviwSws6FIUBV8QcpVOYIRcN49Bk5CVEGC3Uiu0JeKZQj_8z4ayDsZVMy6Rn0TSWBGw90s1GwY78Bv1NXP16twUw3kKQm5q_sYXh9WQyBPI22IWNmdWZOUQLhj9iCpMauUxpGNRT6JD9RJ4SbVXzNHHNMPLwi6fITU_JN9qWIFz-dqJle-d7AplZKDkJKD9LMAxz7093MlxSe2gPBTQRVeO2zQw',
+    # 3: 8 Chairs (Grand Manor 8-Seater Feast)
+    'https://lh3.googleusercontent.com/aida/AEtjO1Ve42EmZZ8qT2ZyS6__mqtrzFES4W2oRX-7mDlivsziDazmoOZTiuCTNs_wM8z3oguAZzcWrNVk_RqvtBwplHFpOX1t_zVJmABnK0RuKJoSwLpwnROy3fDxgjLNXKaeEiY1iGV7E0tgaE0VIB9v4dBrJhxdODpAhdoP-gXLT3RCLERVswcVTiOunYfCkqJCa1AbJy7nfOtejkShEhrLArxUVm-PO7aXcT5xHYyUlW5gSWND29MgR_gQOA',
+    # 4: 12 Chairs (Royal Banquet 12-Seater Feast)
+    'https://lh3.googleusercontent.com/aida/AEtjO1WecA0t0O-eg9gyhPLe0YKZMxCLAPl6_gitKv2MTZYJqHvHST3cCqbHoeHn-0GbMKfu2n_XvFtV83nUCDy8iBSLt4zTLNIO70J_8HfCWZHgqRtEZGEtJ5WlDgRJyuCIa51xqRm5EsNJyxyeswPXa1md1aUL6N52eyQXUJn2kcX6TlE9zx3NBnOU7g0yf2LUkvqTNUbVlnEfngFe0XlFUh-ul5PHvQYFhsnQtls3k7FtGkc1wYlRdeSt_Q',
+]
+
+
 class Product(models.Model):
     STYLE_CHOICES = [
         ('Classic', 'Classic'),
@@ -83,6 +108,17 @@ class Product(models.Model):
             for img in self.secondary_images:
                 if img and isinstance(img, str) and img.strip() and img.strip() not in images:
                     images.append(img.strip())
+
+        ctype = self.category_type
+        if ctype in ['bed', 'diwan']:
+            for fb in BED_STORAGE_FALLBACKS:
+                if len(images) < 4 and fb not in images:
+                    images.append(fb)
+        elif ctype == 'dining':
+            for fb in DINING_CHAIR_FALLBACKS:
+                if len(images) < 5 and fb not in images:
+                    images.append(fb)
+
         return images or ['/static/images/card_bed.jpg']
 
     @property
@@ -193,6 +229,14 @@ class Product(models.Model):
             d4 = int(f.get('dining_chair_4_delta', -7000))
             d8 = int(f.get('dining_chair_8_delta', 15000))
             d12 = int(f.get('dining_chair_12_delta', 35000))
+
+            all_imgs = self.all_images
+            img_6 = all_imgs[0] if len(all_imgs) > 0 else DINING_CHAIR_FALLBACKS[0]
+            img_2 = all_imgs[1] if len(all_imgs) > 1 else DINING_CHAIR_FALLBACKS[1]
+            img_4 = all_imgs[2] if len(all_imgs) > 2 else DINING_CHAIR_FALLBACKS[2]
+            img_8 = all_imgs[3] if len(all_imgs) > 3 else DINING_CHAIR_FALLBACKS[3]
+            img_12 = all_imgs[4] if len(all_imgs) > 4 else DINING_CHAIR_FALLBACKS[4]
+
             return [
                 {
                     'id': 'chairs_2',
@@ -201,6 +245,8 @@ class Product(models.Model):
                     'dimensions': '36" L × 36" W × 30" H',
                     'delta': d2,
                     'price': max(1000, base + d2),
+                    'image': img_2,
+                    'photo_index': 1,
                     'is_default': False
                 },
                 {
@@ -210,6 +256,8 @@ class Product(models.Model):
                     'dimensions': '48" L × 36" W × 30" H',
                     'delta': d4,
                     'price': max(1000, base + d4),
+                    'image': img_4,
+                    'photo_index': 2,
                     'is_default': False
                 },
                 {
@@ -219,6 +267,8 @@ class Product(models.Model):
                     'dimensions': '72" L × 38" W × 30" H',
                     'delta': 0,
                     'price': base,
+                    'image': img_6,
+                    'photo_index': 0,
                     'is_default': True
                 },
                 {
@@ -228,6 +278,8 @@ class Product(models.Model):
                     'dimensions': '96" L × 42" W × 30" H',
                     'delta': d8,
                     'price': base + d8,
+                    'image': img_8,
+                    'photo_index': 3,
                     'is_default': False
                 },
                 {
@@ -237,6 +289,8 @@ class Product(models.Model):
                     'dimensions': '132" L × 46" W × 30" H',
                     'delta': d12,
                     'price': base + d12,
+                    'image': img_12,
+                    'photo_index': 4,
                     'is_default': False
                 }
             ]
@@ -368,10 +422,10 @@ class Product(models.Model):
             return []
 
         all_imgs = self.all_images
-        img_no_storage = all_imgs[0] if len(all_imgs) > 0 else ''
-        img_hydraulic = all_imgs[1] if len(all_imgs) > 1 else img_no_storage
-        img_drawers = all_imgs[2] if len(all_imgs) > 2 else img_hydraulic
-        img_box = all_imgs[3] if len(all_imgs) > 3 else img_no_storage
+        img_no_storage = all_imgs[0] if len(all_imgs) > 0 else BED_STORAGE_FALLBACKS[0]
+        img_box = all_imgs[1] if len(all_imgs) > 1 else BED_STORAGE_FALLBACKS[1]
+        img_drawers = all_imgs[2] if len(all_imgs) > 2 else BED_STORAGE_FALLBACKS[2]
+        img_hydraulic = all_imgs[3] if len(all_imgs) > 3 else BED_STORAGE_FALLBACKS[3]
 
         # Read admin configured deltas if present
         f = self.finishes if isinstance(self.finishes, dict) else {}
@@ -397,6 +451,7 @@ class Product(models.Model):
                 'delta_label': fmt_delta(no_storage_delta),
                 'description': 'Minimalist open timber framework with posture slats for natural air circulation.',
                 'image': img_no_storage,
+                'photo_index': 0,
                 'is_default': False
             },
             {
@@ -407,6 +462,7 @@ class Product(models.Model):
                 'delta_label': fmt_delta(box_storage_delta),
                 'description': 'Heavy-duty manual plank lift partitions with deep solid wood underbed storage.',
                 'image': img_box,
+                'photo_index': 1,
                 'is_default': True
             },
             {
@@ -417,6 +473,7 @@ class Product(models.Model):
                 'delta_label': fmt_delta(drawer_storage_delta),
                 'description': 'Four heavy-duty ball-bearing side glide sliding drawers for quick linen access.',
                 'image': img_drawers,
+                'photo_index': 2,
                 'is_default': False
             },
             {
@@ -427,6 +484,7 @@ class Product(models.Model):
                 'delta_label': fmt_delta(hydraulic_storage_delta),
                 'description': 'Effortless German gas-strut hydraulic lift mechanism with 100% full underbed storage bay.',
                 'image': img_hydraulic,
+                'photo_index': 3,
                 'is_default': False
             }
         ]

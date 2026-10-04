@@ -1235,17 +1235,17 @@ def admin_products_view(request):
                 except Exception:
                     price = Decimal('0')
 
-                # Process 4 Image Slots
-                images_list = ['', '', '', '']
+                # Process 5 Image Slots
+                images_list = ['', '', '', '', '']
 
                 # Multi-file upload batch support
                 multi_files = request.FILES.getlist('product_images')
-                for idx, mfile in enumerate(multi_files[:4]):
+                for idx, mfile in enumerate(multi_files[:5]):
                     if mfile:
                         images_list[idx] = _save_product_image_file(mfile)
 
                 # Check slot-specific file uploads and URLs
-                for slot in range(1, 5):
+                for slot in range(1, 6):
                     idx = slot - 1
                     file_key = f'image_file_{slot}'
                     url_key = f'image_url_{slot}'
@@ -1337,10 +1337,10 @@ def admin_products_view(request):
                     except Exception:
                         pass
                     
-                # Update 4 image slots for existing product
+                # Update 5 image slots for existing product
                 current_secondary = list(product.secondary_images or [])
-                # Ensure current_secondary has 3 slots
-                while len(current_secondary) < 3:
+                # Ensure current_secondary has 4 slots
+                while len(current_secondary) < 4:
                     current_secondary.append('')
 
                 # Slot 1 (Primary)
@@ -1353,9 +1353,9 @@ def admin_products_view(request):
                 elif request.POST.get('primary_image', '').strip():
                     product.primary_image = request.POST.get('primary_image').strip()
 
-                # Slots 2, 3, 4 (Secondary Images)
-                for slot in [2, 3, 4]:
-                    s_idx = slot - 2  # 0, 1, 2 index in secondary
+                # Slots 2, 3, 4, 5 (Secondary Images)
+                for slot in [2, 3, 4, 5]:
+                    s_idx = slot - 2  # 0, 1, 2, 3 index in secondary
                     file_key = f'image_file_{slot}'
                     url_key = f'image_url_{slot}'
 

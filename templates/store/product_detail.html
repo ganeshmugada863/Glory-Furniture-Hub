@@ -225,7 +225,7 @@
           </div>
 
           <!-- Thumbnail Row matching Stitch multi-angle gallery -->
-          <div class="grid grid-cols-4 gap-3" id="thumbsGrid">
+          <div class="grid grid-cols-4 sm:grid-cols-5 gap-2.5" id="thumbsGrid">
             {% for img in product.all_images %}
             <div onclick="switchPhoto('{{ img }}', this, {{ forloop.counter0 }})" class="thumb-btn aspect-square rounded-xl overflow-hidden border {% if forloop.first %}border-2 border-[#2d1e18] active-thumb{% else %}border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-[#2d1e18]{% endif %} p-0.5 cursor-pointer bg-surface-container transition-all">
               <img src="{{ img }}" alt="{{ product.name }} angle {{ forloop.counter }}" class="w-full h-full object-cover rounded-lg">
@@ -307,7 +307,7 @@
               {% for opt in product.storage_config_list %}
               <button 
                 type="button" 
-                onclick="selectStorage(this, '{{ opt.name|escapejs }}', {{ opt.delta }}, '{{ opt.image|escapejs }}')" 
+                onclick="selectStorage(this, '{{ opt.name|escapejs }}', {{ opt.delta }}, '{{ opt.image|escapejs }}', {{ opt.photo_index|default_if_none:forloop.counter0 }})" 
                 class="storage-opt-btn p-2 text-center rounded-xl border {% if opt.is_default %}border-2 border-[#8c4f20] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]{% endif %} transition-all cursor-pointer"
               >
                 <div class="text-xs font-bold text-primary">{{ opt.name }}</div>
@@ -329,7 +329,7 @@
               {% for c in product.size_config_list %}
               <button 
                 type="button" 
-                onclick="selectDiningChairs(this, '{{ c.name|escapejs }}', {{ c.delta }}, '{{ c.dimensions|escapejs }}')" 
+                onclick="selectDiningChairs(this, '{{ c.name|escapejs }}', {{ c.delta }}, '{{ c.dimensions|escapejs }}', '{{ c.image|escapejs }}', {{ c.photo_index|default_if_none:forloop.counter0 }})" 
                 class="dining-chair-btn p-2 text-center rounded-xl border {% if c.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
               >
                 <div class="text-xs font-bold text-primary">{{ c.id|cut:"chairs_" }} Chairs</div>
@@ -349,7 +349,7 @@
               {% for p in product.dining_plank_options %}
               <button 
                 type="button" 
-                onclick="selectPlankShape(this, '{{ p.name|escapejs }}', '{{ p.image|escapejs }}')" 
+                onclick="selectPlankShape(this, '{{ p.name|escapejs }}', '{{ p.image|escapejs }}', {{ forloop.counter0 }})" 
                 class="plank-opt-btn p-2.5 text-center rounded-xl border {% if p.is_default %}border-2 border-[#8c4f20] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]{% endif %} transition-all cursor-pointer"
               >
                 <div class="text-xs font-bold text-primary">{{ p.name }}</div>
@@ -832,14 +832,16 @@
       if (mainImg) {
         mainImg.src = src;
       }
-      currentPhotoIndex = idx || 0;
-      document.querySelectorAll('.thumb-btn').forEach(btn => {
+      currentPhotoIndex = (typeof idx === 'number') ? idx : 0;
+      const thumbs = document.querySelectorAll('.thumb-btn');
+      thumbs.forEach(btn => {
         btn.classList.remove('active-thumb', 'border-2', 'border-[#2d1e18]');
         btn.classList.add('border-outline-variant/60', 'opacity-80');
       });
-      if (elem) {
-        elem.classList.add('active-thumb', 'border-2', 'border-[#2d1e18]');
-        elem.classList.remove('opacity-80', 'border-outline-variant/60');
+      const activeElem = elem || thumbs[currentPhotoIndex];
+      if (activeElem) {
+        activeElem.classList.add('active-thumb', 'border-2', 'border-[#2d1e18]');
+        activeElem.classList.remove('opacity-80', 'border-outline-variant/60');
       }
     }
 
@@ -885,7 +887,7 @@
       updatePriceDisplay();
     }
 
-    function selectStorage(btn, storageName, priceDelta, image) {
+    function selectStorage(btn, storageName, priceDelta, image, photoIndex) {
       document.querySelectorAll('.storage-opt-btn').forEach(b => {
         b.classList.remove('border-2', 'border-[#8c4f20]', 'shadow-sm');
         b.classList.add('border', 'border-outline-variant/60');
@@ -900,13 +902,16 @@
 
       // Automatically swap photo to show the storage mechanism (hydraulic, drawers, box, or open platform)
       if (image && image.trim()) {
-        switchPhoto(image.trim(), null, 1);
+        const thumbs = document.querySelectorAll('.thumb-btn');
+        const pIdx = (typeof photoIndex === 'number') ? photoIndex : 0;
+        const targetThumb = thumbs[pIdx] || null;
+        switchPhoto(image.trim(), targetThumb, pIdx);
       }
 
       updatePriceDisplay();
     }
 
-    function selectDiningChairs(btn, chairsName, priceDelta, dimensions) {
+    function selectDiningChairs(btn, chairsName, priceDelta, dimensions, image, photoIndex) {
       document.querySelectorAll('.dining-chair-btn').forEach(b => {
         b.classList.remove('border-2', 'border-[#2d1e18]', 'shadow-sm');
         b.classList.add('border', 'border-outline-variant/60');
@@ -919,21 +924,18 @@
       const label = document.getElementById('selectedChairsLabel');
       if (label) label.textContent = chairsName;
 
-      // Switch to secondary angle image if chairs count changes
-      if (allGalleryImages.length > 1) {
-        if (chairsName.includes('8') || chairsName.includes('12')) {
-          switchPhoto(allGalleryImages[1], null, 1);
-        } else if (chairsName.includes('2') || chairsName.includes('4')) {
-          switchPhoto(allGalleryImages[2] || allGalleryImages[0], null, 2);
-        } else {
-          switchPhoto(allGalleryImages[0], null, 0);
-        }
+      // Switch to matching dining chair image (2, 4, 6, 8, or 12 chairs)
+      if (image && image.trim()) {
+        const thumbs = document.querySelectorAll('.thumb-btn');
+        const pIdx = (typeof photoIndex === 'number') ? photoIndex : 0;
+        const targetThumb = thumbs[pIdx] || null;
+        switchPhoto(image.trim(), targetThumb, pIdx);
       }
 
       updatePriceDisplay();
     }
 
-    function selectPlankShape(btn, plankName, image) {
+    function selectPlankShape(btn, plankName, image, photoIndex) {
       document.querySelectorAll('.plank-opt-btn').forEach(b => {
         b.classList.remove('border-2', 'border-[#8c4f20]', 'shadow-sm');
         b.classList.add('border', 'border-outline-variant/60');
@@ -946,7 +948,10 @@
       if (label) label.textContent = plankName;
 
       if (image && image.trim()) {
-        switchPhoto(image.trim(), null, 2);
+        const thumbs = document.querySelectorAll('.thumb-btn');
+        const pIdx = (typeof photoIndex === 'number') ? photoIndex : 0;
+        const targetThumb = thumbs[pIdx] || null;
+        switchPhoto(image.trim(), targetThumb, pIdx);
       }
 
       updatePriceDisplay();

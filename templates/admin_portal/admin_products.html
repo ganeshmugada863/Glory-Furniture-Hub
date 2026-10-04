@@ -397,16 +397,16 @@
           <div>
             <h3 class="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
               <span>🖼️ Product Gallery Photos</span>
-              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Up to 4 Images</span>
+              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">Up to 5 Images</span>
             </h3>
-            <p class="text-[11px] text-gray-500">Upload 4 distinct photos matched to customer variant previews.</p>
+            <p class="text-[11px] text-gray-500">Upload up to 5 distinct photos matched to customer variant previews.</p>
           </div>
 
           <!-- Quick Multi-file Batch & Camera Selector -->
           <div class="flex items-center gap-2 flex-wrap">
             <input type="file" id="add_batch_input" multiple accept="image/*" class="hidden" onchange="handleBatchFileSelect(this, 'add')" />
             <button type="button" onclick="document.getElementById('add_batch_input').click()" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-[#5C3D2E] border border-amber-300 text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
-              <span>📁 Select up to 4 Photos</span>
+              <span>📁 Select up to 5 Photos</span>
             </button>
             <button type="button" onclick="openAdminCameraModal('add')" class="px-3 py-1.5 rounded-xl bg-gray-950 hover:bg-[#5C3D2E] text-white text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
               <span>📷 Snap Workshop Photo</span>
@@ -414,8 +414,8 @@
           </div>
         </div>
 
-        <!-- 4 Image Slots Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+        <!-- 5 Image Slots Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
 
           <!-- SLOT 1: Primary Cover Image -->
           <div class="p-3 rounded-xl bg-white border-2 border-amber-400/80 shadow-2xs space-y-2 relative group">
@@ -441,11 +441,11 @@
             </div>
           </div>
 
-          <!-- SLOT 2: Angle 2 / Hydraulic Lift / 8 Chairs -->
+          <!-- SLOT 2: Angle 2 / Box Storage / 2 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
               <span id="add_slot_title_2" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 2: Side / Angle / Hydraulic
+                Photo 2: Box Storage / 2 Chairs
               </span>
               <button type="button" onclick="clearImageSlot('add', 2)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -453,9 +453,9 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="add_preview_2" src="" alt="Preview 2" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_2" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">⚙️</span>
-                <span id="add_slot_ph_2" class="text-[10px] font-bold text-gray-600">Hydraulic Storage Lift / Angle</span>
-                <span class="text-[9px] text-gray-400">Shows on Hydraulic select</span>
+                <span class="text-2xl mb-0.5">📦</span>
+                <span id="add_slot_ph_2" class="text-[10px] font-bold text-gray-600">Box Storage / 2 Chairs</span>
+                <span class="text-[9px] text-gray-400">Shows on select</span>
               </div>
             </div>
 
@@ -469,7 +469,7 @@
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
               <span id="add_slot_title_3" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 3: Carving / Drawers / Setup
+                Photo 3: Drawer Storage / 4 Chairs
               </span>
               <button type="button" onclick="clearImageSlot('add', 3)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -478,8 +478,8 @@
               <img id="add_preview_3" src="" alt="Preview 3" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_3" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
                 <span class="text-2xl mb-0.5">🗄️</span>
-                <span id="add_slot_ph_3" class="text-[10px] font-bold text-gray-600">Drawers / Wood Texture</span>
-                <span class="text-[9px] text-gray-400">Shows on Drawer select</span>
+                <span id="add_slot_ph_3" class="text-[10px] font-bold text-gray-600">Drawers / 4 Chairs</span>
+                <span class="text-[9px] text-gray-400">Shows on select</span>
               </div>
             </div>
 
@@ -489,11 +489,11 @@
             </div>
           </div>
 
-          <!-- SLOT 4: Room Setup / Lifestyle / Plank Grain -->
+          <!-- SLOT 4: Hydraulic Lift / 8 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
               <span id="add_slot_title_4" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 4: Room Setup / Plank Grain
+                Photo 4: Hydraulic Lift / 8 Chairs
               </span>
               <button type="button" onclick="clearImageSlot('add', 4)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -501,15 +501,39 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="add_preview_4" src="" alt="Preview 4" class="w-full h-full object-cover hidden" />
               <div id="add_placeholder_4" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">🛋️</span>
-                <span id="add_slot_ph_4" class="text-[10px] font-bold text-gray-600">Room Layout / Planks</span>
-                <span class="text-[9px] text-gray-400">Optional lifestyle photo</span>
+                <span class="text-2xl mb-0.5">⚙️</span>
+                <span id="add_slot_ph_4" class="text-[10px] font-bold text-gray-600">Hydraulic / 8 Chairs</span>
+                <span class="text-[9px] text-gray-400">Shows on select</span>
               </div>
             </div>
 
             <div class="space-y-1.5">
               <input type="file" name="image_file_4" id="add_file_4" accept="image/*" onchange="previewFileSlot(this, 'add', 4)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
               <input type="text" name="image_url_4" id="add_url_4" placeholder="Or enter Image URL..." oninput="previewUrlSlot(this, 'add', 4)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- SLOT 5: Headboard Carving / 12 Chairs Feast / Room Setup -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span id="add_slot_title_5" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 5: Carving / 12 Chairs
+              </span>
+              <button type="button" onclick="clearImageSlot('add', 5)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="add_preview_5" src="" alt="Preview 5" class="w-full h-full object-cover hidden" />
+              <div id="add_placeholder_5" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">👑</span>
+                <span id="add_slot_ph_5" class="text-[10px] font-bold text-gray-600">Carving / 12 Chairs</span>
+                <span class="text-[9px] text-gray-400">Shows on 12 chairs / room view</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_5" id="add_file_5" accept="image/*" onchange="previewFileSlot(this, 'add', 5)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_5" id="add_url_5" placeholder="Or enter Image URL..." oninput="previewUrlSlot(this, 'add', 5)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
             </div>
           </div>
 
@@ -794,15 +818,15 @@
         <div class="flex items-center justify-between flex-wrap gap-2">
           <h3 class="text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
             <span>🖼️ Product Gallery Photos</span>
-            <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">4 Photo Slots</span>
+            <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">5 Photo Slots</span>
           </h3>
           <button type="button" onclick="openAdminCameraModal('edit')" class="px-3 py-1.5 rounded-xl bg-gray-950 hover:bg-[#5C3D2E] text-white text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
             <span>📷 Snap Workshop Photo</span>
           </button>
         </div>
 
-        <!-- 4 Image Slots Grid for Edit -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+        <!-- 5 Image Slots Grid for Edit -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
 
           <!-- EDIT SLOT 1: Primary Cover -->
           <div class="p-3 rounded-xl bg-white border-2 border-amber-400/80 shadow-2xs space-y-2 relative group">
@@ -827,11 +851,11 @@
             </div>
           </div>
 
-          <!-- EDIT SLOT 2: Side View / Hydraulic / 8 Chairs -->
+          <!-- EDIT SLOT 2: Box Storage / 2 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
               <span id="edit_slot_title_2" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 2: Side / Hydraulic / Setup
+                Photo 2: Box Storage / 2 Chairs
               </span>
               <button type="button" onclick="clearImageSlot('edit', 2)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -839,8 +863,8 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="edit_preview_2" src="" alt="Preview 2" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_2" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">⚙️</span>
-                <span id="edit_slot_ph_2" class="text-[10px] font-bold text-gray-600">Hydraulic / Side Angle</span>
+                <span class="text-2xl mb-0.5">📦</span>
+                <span id="edit_slot_ph_2" class="text-[10px] font-bold text-gray-600">Box Storage / 2 Chairs</span>
               </div>
             </div>
 
@@ -850,11 +874,11 @@
             </div>
           </div>
 
-          <!-- EDIT SLOT 3: Carving Detail / Drawers / 4 Chairs -->
+          <!-- EDIT SLOT 3: Drawer Storage / 4 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
               <span id="edit_slot_title_3" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 3: Carving / Drawers / Setup
+                Photo 3: Drawer Storage / 4 Chairs
               </span>
               <button type="button" onclick="clearImageSlot('edit', 3)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -863,7 +887,7 @@
               <img id="edit_preview_3" src="" alt="Preview 3" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_3" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
                 <span class="text-2xl mb-0.5">🗄️</span>
-                <span id="edit_slot_ph_3" class="text-[10px] font-bold text-gray-600">Carving / Wood Detail</span>
+                <span id="edit_slot_ph_3" class="text-[10px] font-bold text-gray-600">Drawers / 4 Chairs</span>
               </div>
             </div>
 
@@ -873,11 +897,11 @@
             </div>
           </div>
 
-          <!-- EDIT SLOT 4: Room Setup / Plank Grain -->
+          <!-- EDIT SLOT 4: Hydraulic Lift / 8 Chairs -->
           <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
             <div class="flex items-center justify-between">
               <span id="edit_slot_title_4" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
-                Photo 4: Room Setup / Planks
+                Photo 4: Hydraulic Lift / 8 Chairs
               </span>
               <button type="button" onclick="clearImageSlot('edit', 4)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
             </div>
@@ -885,14 +909,37 @@
             <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
               <img id="edit_preview_4" src="" alt="Preview 4" class="w-full h-full object-cover hidden" />
               <div id="edit_placeholder_4" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
-                <span class="text-2xl mb-0.5">🛋️</span>
-                <span id="edit_slot_ph_4" class="text-[10px] font-bold text-gray-600">Room Layout / Dimensions</span>
+                <span class="text-2xl mb-0.5">⚙️</span>
+                <span id="edit_slot_ph_4" class="text-[10px] font-bold text-gray-600">Hydraulic / 8 Chairs</span>
               </div>
             </div>
 
             <div class="space-y-1.5">
               <input type="file" name="image_file_4" id="edit_file_4" accept="image/*" onchange="previewFileSlot(this, 'edit', 4)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
               <input type="text" name="image_url_4" id="edit_url_4" placeholder="Replace Image URL..." oninput="previewUrlSlot(this, 'edit', 4)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+            </div>
+          </div>
+
+          <!-- EDIT SLOT 5: Carving / 12 Chairs Feast / Room Setup -->
+          <div class="p-3 rounded-xl bg-white border border-gray-200 shadow-2xs space-y-2 relative group">
+            <div class="flex items-center justify-between">
+              <span id="edit_slot_title_5" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-700">
+                Photo 5: Carving / 12 Chairs
+              </span>
+              <button type="button" onclick="clearImageSlot('edit', 5)" class="text-xs text-gray-400 hover:text-red-600 font-bold" title="Clear image">✕</button>
+            </div>
+
+            <div class="relative aspect-video rounded-xl bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center">
+              <img id="edit_preview_5" src="" alt="Preview 5" class="w-full h-full object-cover hidden" />
+              <div id="edit_placeholder_5" class="flex flex-col items-center justify-center p-2 text-center text-gray-400">
+                <span class="text-2xl mb-0.5">👑</span>
+                <span id="edit_slot_ph_5" class="text-[10px] font-bold text-gray-600">Carving / 12 Chairs</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <input type="file" name="image_file_5" id="edit_file_5" accept="image/*" onchange="previewFileSlot(this, 'edit', 5)" class="w-full text-[11px] text-gray-600 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer" />
+              <input type="text" name="image_url_5" id="edit_url_5" placeholder="Replace Image URL..." oninput="previewUrlSlot(this, 'edit', 5)" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[11px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
             </div>
           </div>
 
@@ -1072,42 +1119,48 @@ function handleCategoryChange(mode) {
   const slotTitle2 = document.getElementById(`${mode}_slot_title_2`);
   const slotTitle3 = document.getElementById(`${mode}_slot_title_3`);
   const slotTitle4 = document.getElementById(`${mode}_slot_title_4`);
+  const slotTitle5 = document.getElementById(`${mode}_slot_title_5`);
 
   const slotPh1 = document.getElementById(`${mode}_slot_ph_1`);
   const slotPh2 = document.getElementById(`${mode}_slot_ph_2`);
   const slotPh3 = document.getElementById(`${mode}_slot_ph_3`);
   const slotPh4 = document.getElementById(`${mode}_slot_ph_4`);
+  const slotPh5 = document.getElementById(`${mode}_slot_ph_5`);
 
   if (ctype === 'bed' || ctype === 'diwan') {
     if (icon) icon.innerText = ctype === 'diwan' ? '🛋️' : '🛏️';
     if (title) title.innerText = ctype === 'diwan' ? 'Diwan Daybed Specifications & Storage' : 'Bed & Cot Specifications & Storage Options';
-    if (subtitle) subtitle.innerText = 'Configure size dimensions and storage type pricing deltas (No Storage, Box, Drawers, Hydraulic).';
+    if (subtitle) subtitle.innerText = 'Configure size dimensions and storage type pricing deltas (Without Storage, Box, Drawers, Hydraulic).';
     if (badge) badge.innerText = ctype === 'diwan' ? 'Diwan Daybed' : 'Bed / Cot';
 
-    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Bed Platform (No Storage) *';
-    if (slotTitle2) slotTitle2.innerText = 'Photo 2: ⚙️ Hydraulic Storage Lift Mechanism';
-    if (slotTitle3) slotTitle3.innerText = 'Photo 3: 🗄️ Side Drawers / Box Compartment';
-    if (slotTitle4) slotTitle4.innerText = 'Photo 4: 🪵 Headboard Carving & Bedroom Setting';
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Without Storage (Platform View) *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: 📦 Box Storage (Cavity View)';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: 🗄️ Side Drawers (Sliding Drawers View)';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: ⚙️ Hydraulic Storage (German Gas-Lift Pistons Open)';
+    if (slotTitle5) slotTitle5.innerText = 'Photo 5: 🪵 Headboard Carving & Bedroom Setting';
 
-    if (slotPh1) slotPh1.innerText = 'Bed Front (No Storage)';
-    if (slotPh2) slotPh2.innerText = 'Hydraulic Lift Open (Gas Pistons)';
-    if (slotPh3) slotPh3.innerText = 'Sliding Drawers / Box Storage';
-    if (slotPh4) slotPh4.innerText = 'Headboard Wood Carving';
+    if (slotPh1) slotPh1.innerText = 'Bed Platform (Without Storage)';
+    if (slotPh2) slotPh2.innerText = 'Solid Plank Box Storage';
+    if (slotPh3) slotPh3.innerText = 'Sliding Drawers Storage';
+    if (slotPh4) slotPh4.innerText = 'Hydraulic Lift Open (Gas Pistons)';
+    if (slotPh5) slotPh5.innerText = 'Headboard Wood Carving & Setting';
   } else if (ctype === 'dining') {
     if (icon) icon.innerText = '🍽️';
     if (title) title.innerText = 'Dining Set Chairs & Plank Variations';
     if (subtitle) subtitle.innerText = 'Configure chair count deltas (2, 4, 6, 8, 12 chairs) and tabletop plank shapes.';
     if (badge) badge.innerText = 'Dining Set';
 
-    if (slotTitle1) slotTitle1.innerText = 'Photo 1: Dining Set Cover (Rectangular Plank) *';
-    if (slotTitle2) slotTitle2.innerText = 'Photo 2: 🪑 8-Chairs / 12-Chairs Grand Feast Layout';
-    if (slotTitle3) slotTitle3.innerText = 'Photo 3: 🪑 4-Chairs / 2-Chairs Family Setup';
-    if (slotTitle4) slotTitle4.innerText = 'Photo 4: 🪵 Tabletop Plank Grain (Circle / Square Plank)';
+    if (slotTitle1) slotTitle1.innerText = 'Photo 1: 6 Chairs (Standard Dining Suite - Cover) *';
+    if (slotTitle2) slotTitle2.innerText = 'Photo 2: 🪑 2 Chairs (Bistro / Cafe Suite)';
+    if (slotTitle3) slotTitle3.innerText = 'Photo 3: 🪑 4 Chairs (Compact Family Suite)';
+    if (slotTitle4) slotTitle4.innerText = 'Photo 4: 🪑 8 Chairs (Grand Manor Suite)';
+    if (slotTitle5) slotTitle5.innerText = 'Photo 5: 👑 12 Chairs (Royal Banquet Feast Suite)';
 
-    if (slotPh1) slotPh1.innerText = '6-Chairs Standard Set (Rectangular)';
-    if (slotPh2) slotPh2.innerText = '8 / 12 Chairs Feast Layout';
-    if (slotPh3) slotPh3.innerText = '4 / 2 Chairs Setup';
-    if (slotPh4) slotPh4.innerText = 'Circle / Square Plank Grain';
+    if (slotPh1) slotPh1.innerText = '6 Chairs Dining Suite (Cover)';
+    if (slotPh2) slotPh2.innerText = '2 Chairs Bistro Suite';
+    if (slotPh3) slotPh3.innerText = '4 Chairs Family Suite';
+    if (slotPh4) slotPh4.innerText = '8 Chairs Grand Suite';
+    if (slotPh5) slotPh5.innerText = '12 Chairs Royal Feast Suite';
   } else if (ctype === 'sofa') {
     if (icon) icon.innerText = '🛋️';
     if (title) title.innerText = 'Sofa Set Suites & Layout Options';
@@ -1118,11 +1171,13 @@ function handleCategoryChange(mode) {
     if (slotTitle2) slotTitle2.innerText = 'Photo 2: 3+1+1 Suite or L-Shape Configuration';
     if (slotTitle3) slotTitle3.innerText = 'Photo 3: Fabric Upholstery & Cushion Carving';
     if (slotTitle4) slotTitle4.innerText = 'Photo 4: Living Room Lifestyle Setting';
+    if (slotTitle5) slotTitle5.innerText = 'Photo 5: Armrest & Wood Joinery Detail';
 
     if (slotPh1) slotPh1.innerText = 'Sofa Front';
     if (slotPh2) slotPh2.innerText = 'Multi-Seater / L-Shape';
     if (slotPh3) slotPh3.innerText = 'Fabric & Wood Detail';
     if (slotPh4) slotPh4.innerText = 'Living Room Setting';
+    if (slotPh5) slotPh5.innerText = 'Armrest & Joinery Detail';
   } else if (ctype === 'dressing') {
     if (icon) icon.innerText = '🪞';
     if (title) title.innerText = 'Dressing Table & Vanity Suite';
@@ -1133,11 +1188,13 @@ function handleCategoryChange(mode) {
     if (slotTitle2) slotTitle2.innerText = 'Photo 2: Vanity Drawers & Storage Compartments';
     if (slotTitle3) slotTitle3.innerText = 'Photo 3: Mirror Frame Carving / Brass Knobs';
     if (slotTitle4) slotTitle4.innerText = 'Photo 4: Master Bedroom Vanity Setting';
+    if (slotTitle5) slotTitle5.innerText = 'Photo 5: Stool & Full Vanity Perspective';
 
     if (slotPh1) slotPh1.innerText = 'Front Mirror & Console';
     if (slotPh2) slotPh2.innerText = 'Drawers Storage Open';
     if (slotPh3) slotPh3.innerText = 'Mirror Carving Detail';
     if (slotPh4) slotPh4.innerText = 'Bedroom Dressing Nook';
+    if (slotPh5) slotPh5.innerText = 'Stool & Full Vanity Perspective';
   } else if (ctype === 'teapoy') {
     if (icon) icon.innerText = '☕';
     if (title) title.innerText = 'Teapoy & Coffee Table Configurations';
@@ -1148,11 +1205,13 @@ function handleCategoryChange(mode) {
     if (slotTitle2) slotTitle2.innerText = 'Photo 2: Lower Shelf / Drawers Storage View';
     if (slotTitle3) slotTitle3.innerText = 'Photo 3: Top Wood Grain & Mortise Joinery';
     if (slotTitle4) slotTitle4.innerText = 'Photo 4: Living Room Accent Setup';
+    if (slotTitle5) slotTitle5.innerText = 'Photo 5: Edge Profile & Lacquer Detail';
 
     if (slotPh1) slotPh1.innerText = 'Teapoy Front Angle';
     if (slotPh2) slotPh2.innerText = 'Lower Shelf Storage';
     if (slotPh3) slotPh3.innerText = 'Wood Grain & Mortise Joinery';
     if (slotPh4) slotPh4.innerText = 'Living Room Setup';
+    if (slotPh5) slotPh5.innerText = 'Edge Profile & Lacquer Detail';
   } else {
     if (icon) icon.innerText = '🪵';
     if (title) title.innerText = 'Solid Teak Product Specifications';
@@ -1163,11 +1222,13 @@ function handleCategoryChange(mode) {
     if (slotTitle2) slotTitle2.innerText = 'Photo 2: Side / Angle View';
     if (slotTitle3) slotTitle3.innerText = 'Photo 3: Carving / Wood Texture';
     if (slotTitle4) slotTitle4.innerText = 'Photo 4: Room Setup / Placement';
+    if (slotTitle5) slotTitle5.innerText = 'Photo 5: Detail / Finish Inspection';
 
     if (slotPh1) slotPh1.innerText = 'Main Cover Photo';
     if (slotPh2) slotPh2.innerText = 'Side View Angle';
     if (slotPh3) slotPh3.innerText = 'Carving / Wood Detail';
     if (slotPh4) slotPh4.innerText = 'Room Setup / Dimensions';
+    if (slotPh5) slotPh5.innerText = 'Detail / Finish Inspection';
   }
 }
 
@@ -1205,11 +1266,11 @@ function openEditModal(btn) {
   const dining12 = document.getElementById('edit_dining_12');
   if (dining12) dining12.value = btn.dataset.diningChair12 || 35000;
 
-  // Populate up to 4 images from dataset
+  // Populate up to 5 images from dataset
   const imagesStr = btn.dataset.images || btn.dataset.image || '';
   const imgList = imagesStr ? imagesStr.split('|||') : [];
 
-  for (let slot = 1; slot <= 4; slot++) {
+  for (let slot = 1; slot <= 5; slot++) {
     const imgUrl = imgList[slot - 1] || '';
     setSlotImage('edit', slot, imgUrl);
   }
@@ -1375,10 +1436,10 @@ function clearImageSlot(prefix, slot) {
   if (placeholder) placeholder.classList.remove('hidden');
 }
 
-// Batch upload up to 4 images with automatic instant compression
+// Batch upload up to 5 images with automatic instant compression
 async function handleBatchFileSelect(input, prefix) {
   if (!input.files || input.files.length === 0) return;
-  const files = Array.from(input.files).slice(0, 4);
+  const files = Array.from(input.files).slice(0, 5);
 
   for (let index = 0; index < files.length; index++) {
     const file = files[index];
