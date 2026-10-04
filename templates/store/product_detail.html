@@ -1,789 +1,885 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>{{ product.name }} — Glory Furniture Hub</title>
+  <meta name="description" content="{{ product.description|truncatewords:25 }}">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 
-{% block title %}{{ product.name }} — Glory Furniture Hub{% endblock %}
+  <!-- Google Fonts: Material Symbols, Playfair Display & Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-{% block extra_css %}
-<style>
-  /* Guaranteed Crimson Accent Styles (immune to Tailwind purge) */
-  .bg-crimson {
-    background-color: #8B0000 !important;
-    color: #FFFFFF !important;
-  }
-  .text-crimson {
-    color: #8B0000 !important;
-  }
-  .border-crimson {
-    border-color: #8B0000 !important;
-  }
-  .size-pill-active {
-    background-color: #8B0000 !important;
-    color: #FFFFFF !important;
-    border: 1px solid #8B0000 !important;
-    box-shadow: 0 1px 3px rgba(139, 0, 0, 0.25) !important;
-  }
-  .size-pill-inactive {
-    background-color: #FFFFFF !important;
-    color: #374151 !important;
-    border: 1px solid #D1D5DB !important;
-  }
-  .size-pill-inactive:hover {
-    border-color: #6B7280 !important;
-    background-color: #F9FAFB !important;
-  }
-</style>
-{% endblock %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "error-container": "#ffdad6",
+            "surface-container-high": "#eae8e5",
+            "on-primary-fixed": "#271812",
+            "surface": "#fbf9f6",
+            "background": "#fbf9f6",
+            "primary-container": "#2d1e18",
+            "on-tertiary-fixed-variant": "#6d3a00",
+            "surface-container-low": "#f5f3f0",
+            "on-surface-variant": "#4f4541",
+            "inverse-primary": "#dbc1b7",
+            "error": "#ba1a1a",
+            "tertiary": "#160700",
+            "on-error": "#ffffff",
+            "primary": "#140804",
+            "on-tertiary-fixed": "#2e1500",
+            "tertiary-fixed-dim": "#ffb77a",
+            "secondary-fixed": "#ffdcc6",
+            "surface-bright": "#fbf9f6",
+            "on-secondary-fixed-variant": "#6f3809",
+            "on-secondary-fixed": "#311400",
+            "on-background": "#1b1c1a",
+            "on-surface": "#1b1c1a",
+            "surface-container": "#efeeeb",
+            "surface-tint": "#6e5a52",
+            "tertiary-container": "#371a00",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#9b847b",
+            "outline-variant": "#d2c3be",
+            "on-secondary-container": "#773e0f",
+            "surface-dim": "#dbdad7",
+            "on-primary": "#ffffff",
+            "tertiary-fixed": "#ffdcc2",
+            "primary-fixed": "#f8ddd3",
+            "outline": "#817470",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#c8741d",
+            "inverse-surface": "#30312f",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#dbc1b7",
+            "secondary-fixed-dim": "#ffb786",
+            "surface-container-highest": "#e4e2df",
+            "surface-variant": "#e4e2df",
+            "secondary-container": "#fcac74",
+            "inverse-on-surface": "#f2f0ed",
+            "on-primary-fixed-variant": "#55433c",
+            "secondary": "#8c4f20"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem",
+            "margin-mobile": "1.25rem",
+            "gutter-mobile": "1rem",
+            "margin": "3rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem"
+          },
+          fontFamily: {
+            "headline-lg": ["Playfair Display", "serif"],
+            "headline-md": ["Playfair Display", "serif"],
+            "headline-sm": ["Playfair Display", "serif"],
+            "display-lg": ["Playfair Display", "serif"],
+            "display-md": ["Playfair Display", "serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "label-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "title-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "title-md": ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
 
-{% block content %}
-<!-- Main Product Container (Exact replica of reference image UI) -->
-<div class="min-h-screen bg-white text-gray-800 pb-20 w-full font-sans antialiased">
-  
-  <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 space-y-12">
+  <style>
+    *, ::before, ::after, html, body, button, input, textarea, select, h1, h2, h3, h4, h5, h6, p, span, a, label, div {
+      font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined' !important;
+    }
+    html, body {
+      overflow-x: clip;
+      overflow-y: auto;
+      background-color: #fbf9f6;
+    }
+    .thumb-btn.active-thumb {
+      border-color: #2d1e18 !important;
+      opacity: 1 !important;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
 
-    <!-- ========================================================= -->
-    <!-- 1. TOP SECTION: 2-COLUMN HERO (GALLERY & DETAILS)         -->
-    <!-- ========================================================= -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-      
-      <!-- ===================================================== -->
-      <!-- LEFT COLUMN: Product Gallery (5.5 cols on lg)         -->
-      <!-- ===================================================== -->
-      <div class="lg:col-span-6 space-y-4">
+<body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary/20">
+
+  <!-- ========================================== -->
+  <!-- Top Navigation Header (Matching Home Stitch) -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-3.5 flex items-center justify-between gap-4">
+      <!-- Brand Logo & Name (Left) -->
+      <a class="flex items-center gap-2.5 shrink-0 group select-none" href="/">
+        <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+          <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VBNgJMTT7arlQOpp_5bgB5w_FHIOcZfOKcpBtaDrb-430f1J4-VmsryYD5UCuWfrovW5PaEPpVAB9isIfIBn7jV_X94OMYP3YxJ-Q4tUYmjX0BimF6FbpCc446fxgZ1piXqT-19_8eSj-r0Y2bC-yQrD6oUiVScnZb7mUrWHMxbHuYAWmRRHUCa_povMFB0D5j2qk9VgAIunGojT_cgIvwZ8b-aKDcoH9hOH1vHlGQkID9kCwx5XkMRg">
+        </div>
+        <span class="font-display-md text-[17px] sm:text-[18px] tracking-widest uppercase text-primary font-semibold group-hover:text-secondary transition-colors">GLORY FURNITURE HUB</span>
+      </a>
+
+      <!-- Centered Search Bar -->
+      <form action="/search/" method="GET" class="hidden md:flex flex-1 max-w-md mx-4">
+        <div class="relative w-full flex items-center">
+          <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+          <input name="q" class="w-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/70 text-sm pl-10 pr-4 py-2 rounded-full border border-outline-variant/30 focus:border-primary focus:bg-white focus:outline-none transition-all" placeholder="Search handcrafted furniture, beds, sofas..." type="text">
+        </div>
+      </form>
+
+      <!-- Right Action Icons: Search, Wishlist, User, Cart -->
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0 text-on-surface">
+        <a aria-label="Search" href="/search/" class="md:hidden p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined text-[22px]">search</span>
+        </a>
+
+        <a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites">
+          <span class="material-symbols-outlined text-[22px]">favorite</span>
+          <span id="headerWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">3</span>
+        </a>
+
+        <a aria-label="Account" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" data-path="profile" href="/profile/">
+          <span class="material-symbols-outlined text-[22px]">person</span>
+        </a>
+
+        <button type="button" onclick="triggerCartFlyout()" aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="cart">
+          <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+          <span id="headerCartBadge" class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[10px] font-bold w-4 h-4 shadow-sm">1</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- Breadcrumb & SKU Subheader                  -->
+  <!-- ========================================== -->
+  <div class="w-full bg-surface-container-low/70 py-3 border-b border-surface-container/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex flex-wrap items-center justify-between gap-3 text-body-sm text-on-surface-variant">
+      <nav class="flex items-center gap-2 text-xs sm:text-sm font-medium">
+        <a class="hover:text-primary transition-colors" href="/">Home</a>
+        <span class="text-outline-variant">/</span>
+        <a class="hover:text-primary transition-colors" href="/catalog/?category={{ product.category.name|urlencode }}">{{ product.category.name|default:"Catalog" }}</a>
+        <span class="text-outline-variant">/</span>
+        <span class="text-primary font-semibold truncate max-w-[220px] sm:max-w-md">{{ product.name }}</span>
+      </nav>
+      <div class="flex items-center gap-3 text-[11px] uppercase tracking-wider text-outline font-semibold">
+        <span>ARCHIVE REF: GFH-{{ product.id|stringformat:"04d" }}</span>
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+        {% if product.in_stock %}
+        <span class="text-emerald-700 font-bold">Atelier In-Stock (Available)</span>
+        {% else %}
+        <span class="text-secondary font-bold">Bespoke Made-to-Order</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <main class="w-full bg-surface m-0 p-0 pb-20">
+    <!-- =============================================================== -->
+    <!-- Primary Product Section: Gallery + Atelier Spec & Order Config  -->
+    <!-- =============================================================== -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 md:py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
-        <!-- Main Image Card -->
-        <div class="relative w-full aspect-square bg-[#FAF6F0] rounded-2xl overflow-hidden border border-gray-200/80 shadow-xs group product-image-container flex items-center justify-center p-3 sm:p-5" style="position: relative !important;">
-          
-          <!-- Top-Right Stack: [❤️ Favorite] directly above [↗ Share] - STRICT TOP-RIGHT CORNER -->
-          <div style="position: absolute !important; top: 16px !important; right: 16px !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; gap: 10px !important;">
-            <!-- Favorite / Wishlist Button -->
-            <button type="button"
-                    data-wishlist-id="{{ product.id }}"
-                    onclick="event.stopPropagation(); toggleWishlist({{ product.id }});"
-                    class="active-tap"
-                    style="width: 42px !important; height: 42px !important; min-width: 42px !important; min-height: 42px !important; border-radius: 9999px !important; background: rgba(255, 255, 255, 0.96) !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important; border: 1.5px solid #E5E7EB !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; transition: transform 0.15s ease, background-color 0.15s ease !important;"
-                    title="Save to Wishlist"
-                    aria-label="Save to Wishlist">
-              <svg style="width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important;" class="{% if product.id in WISHLIST_IDS %}fill-[#8B0000] text-[#8B0000]{% else %}fill-none text-gray-700{% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-              </svg>
+        <!-- Left Gallery Column (7 cols on lg) -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <!-- Main Featured Product Image Showcase with Navigation Arrows -->
+          <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-low border border-surface-container flex items-center justify-center group shadow-sm">
+            <img id="mainGalleryImg" alt="{{ product.name }}" class="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-105" src="{{ product.primary_image }}">
+            
+            <!-- Left Navigation Arrow -->
+            <button type="button" onclick="navigatePhoto(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-95" title="Previous photo">
+              <span class="material-symbols-outlined text-[22px]">chevron_left</span>
+            </button>
+            <!-- Right Navigation Arrow -->
+            <button type="button" onclick="navigatePhoto(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-95" title="Next photo">
+              <span class="material-symbols-outlined text-[22px]">chevron_right</span>
             </button>
 
-            <!-- Share Button (Web Share API + Clipboard Copy) -->
-            <button type="button"
-                    onclick="event.stopPropagation(); shareProduct();"
-                    class="active-tap"
-                    style="width: 42px !important; height: 42px !important; min-width: 42px !important; min-height: 42px !important; border-radius: 9999px !important; background: rgba(255, 255, 255, 0.96) !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14) !important; border: 1.5px solid #E5E7EB !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; transition: transform 0.15s ease, background-color 0.15s ease !important;"
-                    title="Share Product"
-                    aria-label="Share Product">
-              <svg style="width: 18px !important; height: 18px !important; min-width: 18px !important; min-height: 18px !important;" fill="none" stroke="#374151" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-              </svg>
+            <!-- Wishlist Heart Button in Corner -->
+            <button type="button" onclick="toggleProductWishlist(this, {{ product.id }})" class="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-stone-800 hover:text-red-600 flex items-center justify-center shadow-md transition-all active:scale-90" title="Save to Favorites">
+              <span class="material-symbols-outlined text-[20px]">favorite_border</span>
             </button>
           </div>
 
-          <!-- Main Image (Auto-fit & Centered) -->
-          <img id="main-product-img"
-               src="{{ product.primary_image }}"
-               alt="{{ product.name }}"
-               style="max-width: 100% !important; max-height: 100% !important; width: auto !important; height: auto !important; object-fit: contain !important; object-position: center !important; margin: auto !important; display: block !important;"
-               class="transition-opacity duration-200 select-none" />
-
-          <!-- Slider Arrow Left (<) -->
-          <button type="button"
-                  onclick="prevImage()"
-                  class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-gray-800 flex items-center justify-center shadow-md border border-gray-200 transition-all hover:scale-110 active-tap cursor-pointer"
-                  title="Previous Image"
-                  aria-label="Previous Image">
-            <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          </button>
-
-          <!-- Slider Arrow Right (>) -->
-          <button type="button"
-                  onclick="nextImage()"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 hover:bg-white text-gray-800 flex items-center justify-center shadow-md border border-gray-200 transition-all hover:scale-110 active-tap cursor-pointer"
-                  title="Next Image"
-                  aria-label="Next Image">
-            <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-          </button>
-
-        </div>
-
-        <!-- 4 Thumbnails Row (Strict Aspect Ratio & Centering & Vivid Card Colors) -->
-        <div style="display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 12px !important; width: 100% !important; margin-top: 14px !important;">
-          {% for img in product.all_images %}
-          <button type="button"
-                  onclick="selectThumbnail('{{ img }}', this, {{ forloop.counter0 }})"
-                  class="thumb-btn active-tap"
-                  style="aspect-ratio: 1 / 1 !important; width: 100% !important; height: auto !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 5px !important; border-radius: 14px !important; overflow: hidden !important; cursor: pointer !important; transition: all 0.2s ease !important; {% if forloop.first %}border: 2.5px solid #8B0000 !important; background-color: #FFF5F5 !important; box-shadow: 0 4px 12px rgba(139, 0, 0, 0.22) !important; transform: scale(1.02);{% else %}border: 2px solid #D4B996 !important; background-color: #FAF6F0 !important; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;{% endif %}">
-            <img src="{{ img }}" alt="Thumbnail {{ forloop.counter }}" onerror="this.src='{{ product.primary_image }}';" style="width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; border-radius: 9px !important; display: block !important; margin: auto !important;" />
-          </button>
-          {% endfor %}
-          <!-- Fillers if fewer than 4 images to match exact 4-box layout -->
-          {% if product.all_images|length < 4 %}
-            {% for i in "123"|make_list %}
-              {% if forloop.counter <= 4|add:"-"|add:product.all_images|length %}
-              <button type="button"
-                      onclick="selectThumbnail('{{ product.primary_image }}', this, 0)"
-                      class="thumb-btn active-tap"
-                      style="aspect-ratio: 1 / 1 !important; width: 100% !important; height: auto !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 5px !important; border-radius: 14px !important; overflow: hidden !important; cursor: pointer !important; transition: all 0.2s ease !important; border: 2px solid #D4B996 !important; background-color: #FAF6F0 !important; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;">
-                <img src="{{ product.primary_image }}" alt="Thumbnail filler" style="width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; border-radius: 9px !important; display: block !important; margin: auto !important; opacity: 0.85 !important;" />
-              </button>
-              {% endif %}
+          <!-- Thumbnail Row matching Stitch multi-angle gallery -->
+          <div class="grid grid-cols-4 gap-3" id="thumbsGrid">
+            {% for img in product.all_images %}
+            <div onclick="switchPhoto('{{ img }}', this, {{ forloop.counter0 }})" class="thumb-btn aspect-square rounded-xl overflow-hidden border {% if forloop.first %}border-2 border-[#2d1e18] active-thumb{% else %}border-outline-variant/60 opacity-80 hover:opacity-100 hover:border-[#2d1e18]{% endif %} p-0.5 cursor-pointer bg-surface-container transition-all">
+              <img src="{{ img }}" alt="{{ product.name }} angle {{ forloop.counter }}" class="w-full h-full object-cover rounded-lg">
+            </div>
             {% endfor %}
-          {% endif %}
-        </div>
-
-      </div>
-
-      <!-- ===================================================== -->
-      <!-- RIGHT COLUMN: Product Details & Actions (6.5 cols)    -->
-      <!-- ===================================================== -->
-      <div class="lg:col-span-6 space-y-4 pt-1">
-        
-        <!-- Category & In Stock Badge -->
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-xs font-bold uppercase tracking-wider" style="color: #8B0000 !important;">
-            {{ product.category.name|default:"Solid Teak Furniture" }}
-          </span>
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-300 flex items-center gap-1">
-            In Stock
-          </span>
-        </div>
-
-        <!-- Product Title -->
-        <h1 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight leading-tight">
-          {{ product.name }}
-        </h1>
-
-        <!-- Rating Row (Crimson Stars) -->
-        <div class="flex items-center gap-2 text-xs">
-          <div class="flex text-sm tracking-tighter" style="color: #8B0000 !important;">
-            ★★★★★
-          </div>
-          <span class="text-gray-600 font-semibold text-xs">
-            {{ product.rating|default:"4.9" }} ({{ product.review_count|default:"245" }} Reviews)
-          </span>
-        </div>
-
-        <!-- Price Row -->
-        <div class="flex items-baseline gap-3 pt-1">
-          <span id="product-display-price" class="text-2xl sm:text-3xl font-black" style="color: #8B0000 !important;">
-            {{ product.formatted_price }}
-          </span>
-          <span class="text-sm font-bold text-gray-400 line-through">
-            ₹42,000
-          </span>
-        </div>
-
-        <!-- Short Description -->
-        <p class="text-xs sm:text-sm text-gray-500 leading-relaxed max-w-xl">
-          {{ product.description|default:"Generations of artisan handcrafting in solid seasoned Burma teak. Pure mortise-and-tenon structural joinery with natural organic hand-rubbed linseed oil and beeswax finish."|truncatewords:28 }}
-        </p>
-
-        <!-- Size / Volume Selector -->
-        <div class="space-y-2 pt-2">
-          <label class="block text-xs font-bold text-gray-900">
-            Size / Volume
-          </label>
-          <div class="flex flex-wrap gap-2.5" id="size-options-container">
-            {% if product.size_variants %}
-              {% for variant in product.size_variants %}
-              <button type="button"
-                      onclick="selectSizeVariant('{{ variant.size }}', {{ variant.price }}, this)"
-                      class="size-pill-btn px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer active-tap {% if forloop.first %}size-pill-active{% else %}size-pill-inactive{% endif %}"
-                      {% if forloop.first %}
-                        style="background-color: #8B0000 !important; color: #FFFFFF !important; border: 1px solid #8B0000 !important;"
-                      {% else %}
-                        style="background-color: #FFFFFF !important; color: #374151 !important; border: 1px solid #D1D5DB !important;"
-                      {% endif %}
-                      data-size="{{ variant.size }}"
-                      data-price="{{ variant.price }}">
-                {% if 'King' in variant.size %}
-                  King Size (6/6 ft)
-                {% elif 'Queen' in variant.size %}
-                  Queen Size (5/6 ft)
-                {% elif 'Double' in variant.size %}
-                  Double Size (4/6 ft)
-                {% else %}
-                  {{ variant.size }}
-                {% endif %}
-              </button>
-              {% endfor %}
-            {% else %}
-              <button type="button"
-                      onclick="selectSizeVariant('King Size (6/6 ft)', 32000, this)"
-                      class="size-pill-btn px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer active-tap size-pill-active"
-                      style="background-color: #8B0000 !important; color: #FFFFFF !important; border: 1px solid #8B0000 !important;">
-                King Size (6/6 ft)
-              </button>
-              <button type="button"
-                      onclick="selectSizeVariant('Queen Size (5/6 ft)', 28000, this)"
-                      class="size-pill-btn px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer active-tap size-pill-inactive"
-                      style="background-color: #FFFFFF !important; color: #374151 !important; border: 1px solid #D1D5DB !important;">
-                Queen Size (5/6 ft)
-              </button>
-              <button type="button"
-                      onclick="selectSizeVariant('Double Size (4/6 ft)', 24000, this)"
-                      class="size-pill-btn px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer active-tap size-pill-inactive"
-                      style="background-color: #FFFFFF !important; color: #374151 !important; border: 1px solid #D1D5DB !important;">
-                Double Size (4/6 ft)
-              </button>
-            {% endif %}
           </div>
         </div>
 
-        <!-- Mandatory Product Measurements Section -->
-        <div class="pt-2 space-y-2">
-          <div class="flex items-center justify-between flex-wrap gap-1">
-            <label class="block text-xs font-black uppercase tracking-wider text-gray-900 flex items-center gap-1.5">
-              <span>📐</span>
-              {% if 'diwan' in product.category.name|lower or 'diwana' in product.category.name|lower or 'divan' in product.name|lower or 'daybed' in product.name|lower %}
-                Diwana / Daybed Measurements <span class="text-red-500">*</span>
-              {% elif 'dining' in product.category.name|lower or 'dining' in product.name|lower or 'table' in product.category.name|lower %}
-                Dining Table Dimensions <span class="text-red-500">*</span>
-              {% elif 'sofa' in product.category.name|lower or 'sofa' in product.name|lower %}
-                Sofa Living Room Dimensions <span class="text-red-500">*</span>
-              {% elif 'bed' in product.category.name|lower or 'cot' in product.category.name|lower or 'bed' in product.name|lower %}
-                Bed / Mattress Space Measurements <span class="text-red-500">*</span>
-              {% else %}
-                Product Dimensions (Required) <span class="text-red-500">*</span>
-              {% endif %}
-            </label>
-            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">
-              Required Before Booking
-            </span>
-          </div>
-
-          <div class="relative">
-            <input type="text"
-                   id="product-measurements-input"
-                   name="product_measurements"
-                   required
-                   oninput="updateBuyNowUrl()"
-                   placeholder="{% if 'diwan' in product.category.name|lower or 'diwana' in product.category.name|lower or 'divan' in product.name|lower or 'daybed' in product.name|lower %}e.g., 72 in (L) × 36 in (W) × 18 in (H) (Standard Single Diwan){% elif 'dining' in product.category.name|lower or 'dining' in product.name|lower or 'table' in product.category.name|lower %}e.g., 6-Seater: 72 in (L) × 36 in (W) × 30 in (H){% elif 'sofa' in product.category.name|lower or 'sofa' in product.name|lower %}e.g., 3-Seater: 84 in (W) × 36 in (D) × 34 in (H) or Room wall: 10 ft{% elif 'bed' in product.category.name|lower or 'cot' in product.category.name|lower or 'bed' in product.name|lower %}e.g., 78 in (L) × 72 in (W) × 36 in (H) or King Size (6 × 6.5 ft){% else %}e.g., Length × Width × Height (e.g., 48&quot; × 24&quot; × 32&quot; or 4ft × 2ft){% endif %}"
-                   class="w-full px-3.5 py-2.5 rounded-xl border-2 border-amber-300 focus:border-[#8B0000] focus:ring-2 focus:ring-amber-200 text-xs font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all shadow-2xs" />
-            <span class="absolute right-3 top-2.5 text-sm select-none pointer-events-none">📏</span>
-          </div>
-          <p class="text-[11px] text-gray-500">
-            Handcrafted to order. Enter room dimensions (in feet or inches) for custom woodworking.
-          </p>
-        </div>
-
-        <!-- Quantity + Add To Cart + Buy Now Row -->
-        <div class="pt-3 flex items-center gap-2.5 sm:gap-3 flex-wrap sm:flex-nowrap">
-          
-          <!-- Quantity Counter [-] [1] [+] -->
-          <div class="flex items-center border border-gray-300 rounded-xl h-11 px-1 bg-white shadow-2xs shrink-0">
-            <button type="button" onclick="changeQty(-1)" class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 font-black text-base cursor-pointer select-none">
-              -
-            </button>
-            <input type="text" id="product-quantity-input" value="1" readonly class="w-8 text-center text-xs font-black text-gray-900 focus:outline-none bg-transparent select-none" />
-            <button type="button" onclick="changeQty(1)" class="w-8 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 font-black text-base cursor-pointer select-none">
-              +
-            </button>
-          </div>
-
-          <!-- Add To Cart Button (Prominent Crimson CTA with Perfectly Sized White Cart Icon) -->
-          <button type="button"
-                  onclick="triggerAddToCart()"
-                  class="flex-1 active-tap shrink-0"
-                  style="min-height: 48px !important; height: 48px !important; padding: 0 22px !important; border-radius: 12px !important; background: linear-gradient(135deg, #8B0000 0%, #A30000 100%) !important; color: #FFFFFF !important; border: 1px solid #700000 !important; box-shadow: 0 4px 12px rgba(139, 0, 0, 0.28) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; cursor: pointer !important; transition: all 0.15s ease !important;">
-            <svg style="width: 20px !important; height: 20px !important; min-width: 20px !important; min-height: 20px !important; fill: none !important; stroke: #FFFFFF !important; stroke-width: 2.2 !important; display: inline-block !important;" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span style="color: #FFFFFF !important; font-weight: 800; font-size: 14px !important; letter-spacing: 0.02em; white-space: nowrap !important;">Add To Cart</span>
-          </button>
-
-          <!-- Buy Now / Book Now Button (White with Crimson Border) -->
-          <a href="{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price={{ product.price }}"
-             id="main-buy-now-btn"
-             onclick="return handleBuyNowClick(event)"
-             class="flex-1 active-tap shrink-0"
-             style="min-height: 48px !important; height: 48px !important; padding: 0 22px !important; border-radius: 12px !important; background: #FFFFFF !important; border: 2px solid #8B0000 !important; color: #8B0000 !important; box-shadow: 0 2px 6px rgba(139, 0, 0, 0.08) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; text-decoration: none !important; transition: all 0.15s ease !important;">
-            <span style="color: #8B0000 !important; font-weight: 800; font-size: 14px !important; letter-spacing: 0.02em; white-space: nowrap !important;">Buy Now</span>
-          </a>
-
-        </div>
-
-        <!-- Metadata Section (SKU, Tags) -->
-        <div class="pt-5 space-y-2 border-t border-gray-100 text-xs text-gray-500">
-          <p><strong class="text-gray-900 font-bold">SKU :</strong> <span class="text-gray-600">GLORY-TEAK-{{ product.id }}098</span></p>
-          <p><strong class="text-gray-900 font-bold">Tags :</strong> <span class="text-gray-600">Burma Teak, {{ product.category.name }}, Solid Timber, Handcrafted</span></p>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- 2. MIDDLE SECTION: CENTERED TABS & CRIMSON TABLE           -->
-    <!-- ========================================================= -->
-    <div class="pt-8 space-y-6">
-      
-      <!-- Tab Bar (Centered) -->
-      <div class="flex items-center justify-center gap-8 border-b border-gray-200 text-xs sm:text-sm font-semibold text-gray-500">
-        <!-- Tab 1: Description -->
-        <button type="button"
-                id="tab-btn-description"
-                onclick="switchDetailTab('description')"
-                class="detail-tab-btn pb-3 transition-colors cursor-pointer flex items-center gap-1.5 hover:text-gray-900">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span>Description</span>
-        </button>
-
-        <!-- Tab 2: Additional Information (Active by default matching image) -->
-        <button type="button"
-                id="tab-btn-additional"
-                onclick="switchDetailTab('additional')"
-                class="detail-tab-btn pb-3 transition-colors cursor-pointer flex items-center gap-1.5 font-bold"
-                style="color: #8B0000 !important; border-bottom: 2px solid #8B0000 !important;">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Additional Information</span>
-        </button>
-
-        <!-- Tab 3: Reviews -->
-        <button type="button"
-                id="tab-btn-reviews"
-                onclick="switchDetailTab('reviews')"
-                class="detail-tab-btn pb-3 transition-colors cursor-pointer flex items-center gap-1.5 hover:text-gray-900">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
-          <span>Reviews ({{ product.review_count|default:"245" }})</span>
-        </button>
-      </div>
-
-      <!-- Tab Content Area -->
-      <div class="max-w-4xl mx-auto">
-        
-        <!-- Tab Pane 1: Description -->
-        <div id="tab-pane-description" class="hidden space-y-4 text-xs sm:text-sm text-gray-700 leading-relaxed">
-          <h3 class="font-bold text-gray-900 text-base">Handcrafted Luxury Solid Timber Furniture</h3>
-          <p>{{ product.description|default:"Every piece is designed with authentic solid Burma teak, seasoned in kiln-drying chambers to protect against environmental temperature and humidity swings. Built by generations of master woodworkers without reliance on MDF, particleboard, or artificial veneers." }}</p>
-          <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <h4 class="font-bold text-gray-900 text-xs uppercase tracking-wider mb-1">Key Highlights:</h4>
-            <ul class="list-disc pl-5 space-y-1 text-xs text-gray-600">
-              <li>100% Solid Burma Teak Hardwood (Zero Plywood)</li>
-              <li>Hand-rubbed organic Linseed oil & Beeswax finish</li>
-              <li>High-durability structural steel mounting brackets included</li>
-              <li>Free white-glove doorstep assembly across Hyderabad</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Tab Pane 2: Additional Information (Crimson Header Table) -->
-        <div id="tab-pane-additional" class="overflow-hidden rounded-xl border border-gray-200 shadow-2xs">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="text-white" style="background-color: #8B0000 !important; color: #FFFFFF !important;">
-                <th class="py-3 px-5 font-bold uppercase tracking-wider w-1/3 text-white">Attribute</th>
-                <th class="py-3 px-5 font-bold uppercase tracking-wider w-2/3 text-white">Details</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 text-gray-700">
-              <tr class="bg-white hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Material Type</td>
-                <td class="py-3 px-5">{{ product.material|default:"100% Solid Burma Teak (Kiln-Dried)" }}</td>
-              </tr>
-              <tr class="bg-[#FCFAF8] hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Size / Volume</td>
-                <td class="py-3 px-5">King Size (6×6 ft), Queen Size (5×6 ft), Double Size (4×6 ft)</td>
-              </tr>
-              <tr class="bg-white hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Shelf Life & Warranty</td>
-                <td class="py-3 px-5">10-Year Comprehensive Anti-Warping & Termite Guarantee</td>
-              </tr>
-              <tr class="bg-[#FCFAF8] hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Application & Polish</td>
-                <td class="py-3 px-5">Hand-rubbed organic Linseed oil and Beeswax finish</td>
-              </tr>
-              <tr class="bg-white hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Mounting Hardware</td>
-                <td class="py-3 px-5">Heavy-duty structural brackets included with wall anchors</td>
-              </tr>
-              <tr class="bg-[#FCFAF8] hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Delivery & Assembly</td>
-                <td class="py-3 px-5">Free Doorstep White-Glove Setup across Hyderabad</td>
-              </tr>
-              <tr class="bg-white hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Product Duration</td>
-                <td class="py-3 px-5"><span class="font-bold text-[#8B0000]">{{ product.installment_days|default:30 }} Days</span> (3 Equal Installments Schedule)</td>
-              </tr>
-              <tr class="bg-[#FCFAF8] hover:bg-gray-50/70 transition-colors">
-                <td class="py-3 px-5 font-bold text-gray-900">Packaging</td>
-                <td class="py-3 px-5">Multi-layer protective foam & heavy corrugated wooden crate</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Tab Pane 3: Reviews -->
-        <div id="tab-pane-reviews" class="hidden space-y-4">
-          <div class="p-4 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between">
-            <div>
-              <h4 class="font-bold text-gray-900 text-sm">Verified Customer Feedback</h4>
-              <p class="text-xs text-gray-500">Rated 4.9/5 based on 245 Hyderabad homeowners</p>
-            </div>
-            <div class="flex text-base" style="color: #8B0000 !important;">★★★★★</div>
-          </div>
-          <div class="space-y-3">
-            <div class="p-4 bg-white rounded-xl border border-gray-200 text-xs space-y-1">
-              <div class="flex items-center justify-between">
-                <strong class="font-bold text-gray-900">Ramesh V. — Jubilee Hills</strong>
-                <span style="color: #8B0000 !important;">★★★★★</span>
-              </div>
-              <p class="text-gray-600">"Spectacular finish and heavyweight timber. The packaging was immaculate and their installation team assembled it right inside our bedroom."</p>
-            </div>
-            <div class="p-4 bg-white rounded-xl border border-gray-200 text-xs space-y-1">
-              <div class="flex items-center justify-between">
-                <strong class="font-bold text-gray-900">Sowmya K. — Gachibowli</strong>
-                <span style="color: #8B0000 !important;">★★★★★</span>
-              </div>
-              <p class="text-gray-600">"True Burma teak with gorgeous natural grains. Direct factory price without distributor margins. Highly recommended!"</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- 3. BOTTOM SECTION: "YOU MAY ALSO LIKE" RELATED PRODUCTS   -->
-    <!-- ========================================================= -->
-    <div class="pt-8 space-y-6">
-      
-      <!-- Section Header with Wings & Red Heading -->
-      <div class="text-center space-y-1">
-        <p class="text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5" style="color: #8B0000 !important;">
-          <span>»»</span>
-          <span>Related Products</span>
-          <span>««</span>
-        </p>
-        <h2 class="text-2xl sm:text-3xl font-black text-gray-900">
-          You <span style="color: #8B0000 !important;">May Also Like</span>
-        </h2>
-      </div>
-
-      <!-- 4 Product Cards Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
-        {% for rel in related_products %}
-        <div onclick="window.location.href='{% url 'product_detail' pk=rel.pk %}';"
-             class="bg-white rounded-2xl p-3 border border-gray-200/90 hover:border-gray-400 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between relative">
-          
+        <!-- Right Product Configuration Column (5 cols on lg) -->
+        <div class="lg:col-span-5 flex flex-col gap-5 text-on-surface">
+          <!-- Title & Rating -->
           <div>
-            <!-- Card Image Area with Heart -->
-            <div class="relative aspect-square rounded-xl overflow-hidden bg-[#FAF6F0] mb-2.5 product-image-container flex items-center justify-center p-2">
-              
-              <!-- Circular Wishlist Button -->
-              <button type="button"
-                      data-wishlist-id="{{ rel.id }}"
-                      onclick="event.stopPropagation(); toggleWishlist({{ rel.id }});"
-                      class="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white text-gray-600 hover:text-[#8B0000] shadow-xs flex items-center justify-center transition-colors active-tap cursor-pointer"
-                      title="Save to Wishlist">
-                <svg class="w-3.5 h-3.5 {% if rel.id in WISHLIST_IDS %}fill-[#8B0000] text-[#8B0000]{% else %}fill-none{% endif %}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-              </button>
-
-              <!-- Image (Auto-fit contain) -->
-              <img src="{{ rel.primary_image }}"
-                   alt="{{ rel.name }}"
-                   loading="lazy"
-                   class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300" />
-            </div>
-
-            <!-- Sub-Category & Rating Row -->
-            <div class="flex items-center justify-between text-[11px] text-gray-500 mb-1">
-              <span class="truncate">{{ rel.category.name|default:"Solid Teak Furniture" }}</span>
-              <div class="flex items-center gap-0.5 font-bold text-[10px]" style="color: #8B0000 !important;">
-                <span>★</span>
-                <span>{{ rel.rating|default:"4.9" }} ({{ rel.review_count|default:"128" }})</span>
+            <span class="text-xs uppercase font-bold tracking-widest text-secondary">{{ product.category.name|default:"Handcrafted Collection" }}</span>
+            <h1 class="text-[22px] sm:text-[26px] font-bold text-primary leading-tight tracking-tight mt-1">
+              {{ product.name }}
+            </h1>
+            
+            <!-- Star Rating & Review Count -->
+            <div class="flex items-center gap-2 mt-2">
+              <div class="flex items-center text-[#e67a00]">
+                <span class="material-symbols-outlined text-[18px]">star</span>
+                <span class="material-symbols-outlined text-[18px]">star</span>
+                <span class="material-symbols-outlined text-[18px]">star</span>
+                <span class="material-symbols-outlined text-[18px]">star</span>
+                <span class="material-symbols-outlined text-[18px]">star_half</span>
               </div>
+              <span class="text-xs text-on-surface-variant font-semibold">4.9 ({{ product.review_count|default:"85" }} Verified Patron Reviews)</span>
             </div>
-
-            <!-- Product Title -->
-            <h4 class="font-bold text-xs sm:text-sm text-gray-900 line-clamp-1 group-hover:text-[#8B0000] transition-colors mb-2">
-              {{ rel.name }}
-            </h4>
           </div>
 
-          <!-- Price & Circular Red Cart Button Row -->
-          <div class="flex items-center justify-between pt-1 border-t border-gray-100">
-            <div class="flex items-baseline gap-1.5">
-              <span class="font-black text-xs sm:text-sm" style="color: #8B0000 !important;">{{ rel.formatted_price }}</span>
-              <span class="text-[10px] text-gray-400 line-through">₹45,000</span>
-            </div>
+          <!-- Price & Savings -->
+          <div class="flex flex-wrap items-baseline gap-3 pt-3 border-t border-surface-container">
+            <span id="activePriceDisplay" class="text-[30px] font-black text-primary tracking-tight">{{ product.formatted_price }}</span>
+            <span class="text-xs text-emerald-800 font-semibold bg-emerald-100/70 border border-emerald-300 px-2.5 py-1 rounded-full">Special Atelier Offer</span>
+          </div>
 
-            <!-- Circular Red Shopping Cart Icon Button -->
-            <button type="button"
-                    onclick="event.stopPropagation(); quickAdd({{ rel.id }});"
-                    class="w-8 h-8 rounded-full text-white flex items-center justify-center shadow-xs transition-transform active:scale-90 cursor-pointer"
-                    style="background-color: #8B0000 !important; color: #FFFFFF !important;"
-                    title="Add to Cart">
-              <svg class="w-3.5 h-3.5 fill-none stroke-current" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
+          <!-- Description Summary -->
+          <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            {{ product.description|default:"Masterfully carved from kiln-dried solid seasoned timber. Engineered with traditional joinery, resilient multi-coat natural wax polish, and handcrafted spatial elegance." }}
+          </p>
+
+          <!-- Size Variant Selection -->
+          <div class="flex flex-col gap-2 pt-2 border-t border-surface-container">
+            <div class="text-xs font-bold text-primary">Size / Dimension Matrix: <span id="selectedSizeLabel" class="font-normal text-on-surface-variant">{{ product.dimensions|default:"Standard Suite" }}</span></div>
+            <div class="grid grid-cols-3 gap-2" id="sizeOptionsGrid">
+              <button type="button" onclick="selectSize(this, 'King Size (78\" × 72\")', 0)" class="size-opt-btn p-2.5 text-left rounded-xl border-2 border-[#2d1e18] bg-surface-container-lowest shadow-sm focus:outline-none transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary">King Size</span>
+                  <span class="material-symbols-outlined text-[15px] text-primary">check_circle</span>
+                </div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">78" × 72" Master</div>
+                <div class="text-xs font-bold text-primary mt-1">{{ product.formatted_price }}</div>
+              </button>
+
+              <button type="button" onclick="selectSize(this, 'Queen Size (78\" × 60\")', -3000)" class="size-opt-btn p-2.5 text-left rounded-xl border border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18] transition-all focus:outline-none">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-primary">Queen Size</span>
+                </div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">78" × 60" Compact</div>
+                <div class="text-xs font-semibold text-primary mt-1">₹{{ product.price|add:"-3000"|floatformat:0 }}</div>
+              </button>
+
+              <button type="button" onclick="selectSize(this, 'Single Suite (78\" × 36\")', -8000)" class="size-opt-btn p-2.5 text-left rounded-xl border border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18] transition-all focus:outline-none">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-primary">Single Suite</span>
+                </div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">78" × 36" Studio</div>
+                <div class="text-xs font-semibold text-primary mt-1">₹{{ product.price|add:"-8000"|floatformat:0 }}</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Storage / Finish Configuration -->
+          <div class="flex flex-col gap-2">
+            <div class="text-xs font-bold text-primary">Storage / Finish Type: <span id="selectedStorageLabel" class="font-normal text-on-surface-variant">Box Storage</span></div>
+            <div class="grid grid-cols-4 gap-2" id="storageOptionsGrid">
+              <button type="button" onclick="selectStorage(this, 'Box Storage', 0)" class="storage-opt-btn p-2 text-center rounded-lg border-2 border-[#8c4f20] bg-surface-container-lowest shadow-sm">
+                <div class="text-xs font-bold text-primary">Box</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">Standard</div>
+              </button>
+              <button type="button" onclick="selectStorage(this, 'Drawer Storage', 4000)" class="storage-opt-btn p-2 text-center rounded-lg border border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]">
+                <div class="text-xs font-medium text-primary">Drawers</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">+₹4,000</div>
+              </button>
+              <button type="button" onclick="selectStorage(this, 'Hydraulic Storage', 9500)" class="storage-opt-btn p-2 text-center rounded-lg border border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]">
+                <div class="text-xs font-medium text-primary">Hydraulic</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">+₹9,500</div>
+              </button>
+              <button type="button" onclick="selectStorage(this, 'Without Storage', -6000)" class="storage-opt-btn p-2 text-center rounded-lg border border-outline-variant/60 bg-surface-container-lowest hover:border-[#8c4f20]">
+                <div class="text-xs font-medium text-primary">No Storage</div>
+                <div class="text-[10px] text-on-surface-variant mt-0.5">-₹6,000</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Delivery & Assembly Pincode Checker -->
+          <div class="flex flex-col gap-1.5 mt-1 p-3.5 rounded-xl bg-surface-container-low/70 border border-surface-container">
+            <div class="flex items-center gap-2 text-xs font-bold text-primary">
+              <span class="material-symbols-outlined text-[18px] text-secondary">local_shipping</span>
+              <span>Check Delivery &amp; White-Glove Installation:</span>
+            </div>
+            <div class="relative flex items-center mt-1">
+              <input id="pincodeInput" maxlength="6" placeholder="Enter 6-digit Pincode (e.g. 500001)" class="w-full bg-white border border-outline-variant/60 px-3.5 py-2.5 rounded-lg text-xs text-on-surface focus:outline-none focus:border-secondary transition-all pr-20" type="text">
+              <button type="button" onclick="checkDeliveryPin()" class="absolute right-3 text-xs font-bold text-secondary hover:text-primary uppercase tracking-wide">
+                CHECK
+              </button>
+            </div>
+            <p id="pincodeResult" class="text-xs text-emerald-800 hidden mt-1 font-medium">
+              ✓ Delivery &amp; Free White-Glove Assembly available within <strong>3-5 business days</strong> to your area.
+            </p>
+          </div>
+
+          <!-- Primary CTA Buttons -->
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <button type="button" onclick="handleAddCurrentProductToCart()" class="w-full bg-secondary hover:bg-[#723d16] text-white py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
+              <span class="material-symbols-outlined text-[19px]">shopping_bag</span>
+              <span>Add to Cart</span>
+            </button>
+
+            <button type="button" onclick="handleBuyNowCurrentProduct()" class="w-full bg-primary hover:bg-[#2b1d18] text-white py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
+              <span class="material-symbols-outlined text-[19px]">flash_on</span>
+              <span>Buy Now</span>
             </button>
           </div>
 
+          <!-- Trust Badges Strip -->
+          <div class="grid grid-cols-3 gap-2 pt-3 border-t border-surface-container text-center">
+            <div class="flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-[20px] text-secondary">verified</span>
+              <span class="text-[10px] text-on-surface-variant font-semibold">10-Year Warranty</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-[20px] text-secondary">handyman</span>
+              <span class="text-[10px] text-on-surface-variant font-semibold">Free Assembly</span>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-[20px] text-secondary">currency_rupee</span>
+              <span class="text-[10px] text-on-surface-variant font-semibold">3-Stage Installments</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- Architectural Blueprint & Detailed Specifications Section        -->
+    <!-- =============================================================== -->
+    <section class="w-full bg-surface-container-low py-14 border-y border-surface-container" id="detailed-specifications">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div class="max-w-2xl">
+            <span class="text-secondary font-label-md text-xs font-bold uppercase tracking-widest">ARCHITECTURAL BLUEPRINT &amp; SPECS</span>
+            <h2 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold mt-1 leading-tight">Product Specifications &amp; Engineering</h2>
+            <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mt-2">Comprehensive architectural wood grading, joinery methods, and dimensional details for {{ product.name }}.</p>
+          </div>
+          <div class="flex items-center gap-2 self-start md:self-auto bg-white px-4 py-2 rounded-full text-xs font-bold text-primary shadow-sm border border-surface-container">
+            <span class="material-symbols-outlined text-[18px] text-secondary">architecture</span>
+            <span>SKU: GFH-{{ product.id|stringformat:"04d" }}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Spec 1: Material -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">forest</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Material &amp; Timber</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">{{ product.material|default:"100% Seasoned Kiln-Dried Burma Teak Wood with zero-VOC natural biological wax & oil finish." }}</p>
+          </div>
+
+          <!-- Spec 2: Storage / Style -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Storage Mechanism</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Dual German-engineered gas-strut hydraulic pistons (1200N pressure) or reinforced hardwood box compartments.</p>
+          </div>
+
+          <!-- Spec 3: Dimensions -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">straighten</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Dimensions</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">{{ product.dimensions|default:"81\" L × 74\" W × 45\" H (205.7 cm × 188 cm × 114.3 cm) with 1.5\" architectural margin." }}</p>
+          </div>
+
+          <!-- Spec 4: Mattress Compatibility -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">bed</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Mattress Fit</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Engineered for standard King &amp; Queen mattresses up to 12" thickness with reinforced posture-slat support.</p>
+          </div>
+
+          <!-- Spec 5: Headboard & Upholstery -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">texture</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Upholstery &amp; Detail</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Hand-woven natural cane lattice with high-resilience cushioned backrest and soft-touch tactile fabric.</p>
+          </div>
+
+          <!-- Spec 6: Joinery -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">handyman</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Joinery &amp; Build</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Mortise-and-tenon interlocking timber joinery with anti-creak steel reinforcement sub-plates.</p>
+          </div>
+
+          <!-- Spec 7: Delivery & Setup -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">local_shipping</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Delivery &amp; Setup</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">{{ product.lead_time|default:"White-Glove doorstep delivery & assembly within 3-5 business days across India." }}</p>
+          </div>
+
+          <!-- Spec 8: Warranty -->
+          <div class="bg-surface-container-lowest rounded-2xl p-5 border border-surface-container shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-3 mb-2.5">
+              <div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center text-secondary shadow-xs">
+                <span class="material-symbols-outlined text-[22px]">verified_user</span>
+              </div>
+              <span class="text-xs uppercase font-bold text-primary tracking-wide">Atelier Warranty</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">10-Year anti-termite and structural craftsmanship guarantee certified by Glory Furniture Hub.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- Similar Pieces & Recommendations (Interactive Grid)              -->
+    <!-- =============================================================== -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12 md:py-16 w-full" id="similar-products">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div class="max-w-2xl">
+          <span class="text-secondary font-label-md text-xs font-bold uppercase tracking-widest">CURATED MATCHES</span>
+          <h2 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold mt-1 leading-tight">Similar Pieces &amp; Recommendations</h2>
+          <p class="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1.5">Discover thoughtfully matched furniture crafted with the same enduring artisan standards.</p>
+        </div>
+        <a href="/catalog/" class="text-primary hover:text-secondary font-semibold text-xs sm:text-sm flex items-center gap-1">
+          Explore Catalog <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        {% for r in related_products %}
+        <div class="bg-white rounded-2xl overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group border border-surface-container">
+          <a href="/product/{{ r.id }}/" class="block">
+            <div class="relative aspect-[4/3] bg-surface-container overflow-hidden">
+              <img src="{{ r.primary_image }}" alt="{{ r.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="p-3.5 sm:p-4">
+              <span class="text-[10px] text-secondary uppercase font-bold tracking-wider">{{ r.category.name|default:"Handcrafted" }}</span>
+              <h3 class="font-bold text-xs sm:text-sm text-primary tracking-tight truncate mt-0.5 group-hover:text-secondary transition-colors">{{ r.name }}</h3>
+              <p class="text-xs font-bold text-primary mt-1">{{ r.formatted_price }}</p>
+            </div>
+          </a>
+          <div class="p-3.5 sm:p-4 pt-0">
+            <button type="button" onclick="addToCart('{{ r.name|escapejs }}', {{ r.price }})" class="w-full bg-primary hover:bg-[#2b1d18] text-white py-2 px-3 rounded-xl font-bold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors active:scale-95 shadow-xs">
+              <span class="material-symbols-outlined text-[16px]">shopping_bag</span> Add
+            </button>
+          </div>
         </div>
         {% endfor %}
       </div>
+    </section>
 
-      <!-- Carousel Pagination Dots (● ○ ○) -->
-      <div class="flex items-center justify-center gap-1.5 pt-4">
-        <span class="w-2.5 h-2.5 rounded-full shadow-2xs" style="background-color: #8B0000 !important;"></span>
-        <span class="w-2 h-2 rounded-full bg-gray-300"></span>
-        <span class="w-2 h-2 rounded-full bg-gray-300"></span>
+    <!-- =============================================================== -->
+    <!-- Sticky Mobile CTA Conversion Bar                                -->
+    <!-- =============================================================== -->
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 border-t border-surface-container">
+      <div>
+        <span id="mobileStickyPrice" class="font-bold text-lg text-primary block leading-tight">{{ product.formatted_price }}</span>
+        <span class="text-[10px] text-emerald-700 font-bold uppercase">Free White-Glove Setup</span>
       </div>
-
+      <button onclick="handleAddCurrentProductToCart()" class="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all">
+        Reserve Piece
+      </button>
     </div>
 
+    <!-- =============================================================== -->
+    <!-- Slide-over Cart Flyout Drawer Simulation                        -->
+    <!-- =============================================================== -->
+    <div class="fixed inset-0 z-50 pointer-events-none transition-all duration-300" id="cartFlyout">
+      <!-- Backdrop Tint -->
+      <div class="absolute inset-0 bg-[#2d1e18]/40 backdrop-blur-xs opacity-0 transition-opacity duration-300" id="cartBackdrop" onclick="closeCartFlyout()"></div>
+      <!-- Drawer Container -->
+      <div class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl p-6 flex flex-col justify-between translate-x-full transition-transform duration-300 ease-out z-10" id="cartPanel">
+        <div>
+          <div class="flex items-center justify-between pb-4 border-b border-surface-container">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">shopping_bag</span>
+              <span class="font-headline-sm text-lg font-bold text-primary">Atelier Bag (<span id="flyoutCount">1</span>)</span>
+            </div>
+            <button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:text-primary transition-colors" onclick="closeCartFlyout()">
+              <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
+          <!-- Cart Item Summary -->
+          <div class="py-5 flex gap-4 border-b border-surface-container">
+            <div class="w-20 h-20 rounded-xl bg-surface-container-low overflow-hidden shrink-0">
+              <img alt="{{ product.name }}" class="w-full h-full object-cover" src="{{ product.primary_image }}">
+            </div>
+            <div class="flex-1">
+              <h4 class="font-bold text-sm text-primary leading-snug">{{ product.name }}</h4>
+              <p id="flyoutItemConfig" class="text-xs text-on-surface-variant mt-0.5">King Size • Box Storage</p>
+              <div class="flex items-center justify-between mt-2">
+                <span id="flyoutItemPrice" class="font-bold text-sm text-primary">{{ product.formatted_price }}</span>
+                <span class="text-xs text-secondary font-bold">Qty: 1</span>
+              </div>
+            </div>
+          </div>
+          <div class="py-3 flex items-center justify-between text-xs text-on-surface-variant">
+            <span>White-Glove Delivery &amp; Setup</span>
+            <span class="text-emerald-700 font-bold uppercase">Complimentary</span>
+          </div>
+          <div class="py-1 flex items-center justify-between text-xs text-on-surface-variant">
+            <span>Taxes &amp; Insurance</span>
+            <span>Included in Price</span>
+          </div>
+        </div>
+        <div class="pt-4 border-t border-surface-container flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-semibold text-primary">Total Payable</span>
+            <span id="flyoutTotalDisplay" class="text-lg font-bold text-primary">{{ product.formatted_price }}</span>
+          </div>
+          <a href="/checkout/" class="w-full bg-primary hover:bg-[#2b1d18] text-white h-12 rounded-xl text-xs uppercase font-bold tracking-wider flex items-center justify-center gap-2 shadow-md transition-all">
+            <span class="material-symbols-outlined text-[18px]">lock</span>
+            Proceed to Secure Checkout
+          </a>
+          <button class="w-full text-center text-xs text-on-surface-variant hover:text-primary py-1" onclick="closeCartFlyout()">
+            Continue Browsing Atelier Pieces
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- Toast Notification                         -->
+  <!-- ========================================== -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-[#1C1411] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-white/10">
+    <span class="material-symbols-outlined text-secondary text-[22px]" id="toastIcon">shopping_bag</span>
+    <span class="text-xs sm:text-sm font-medium tracking-wide" id="toastMessage">Added to cart</span>
   </div>
 
-</div>
+  <!-- ========================================== -->
+  <!-- Footer (Matching Home Stitch)              -->
+  <!-- ========================================== -->
+  <footer class="w-full bg-surface-container-low py-12 border-t border-surface-container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2">
+            <img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
+            <span class="font-display-md text-base font-bold text-primary">Glory Furniture Hub</span>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Handcrafted solid teakwood, bespoke architectural furniture, and enduring interior objects made from sustainable timber.
+          </p>
+        </div>
 
-<!-- ========================================================= -->
-<!-- JAVASCRIPT: Dynamic Actions & Gallery Transitions         -->
-<!-- ========================================================= -->
-<script>
-  const galleryImages = [
-    "{{ product.primary_image }}",
-    {% for img in product.all_images %}"{{ img }}",{% endfor %}
-  ].filter((v, i, a) => a.indexOf(v) === i && v);
+        <div class="flex flex-col gap-2">
+          <span class="text-xs uppercase font-bold text-primary tracking-wider mb-1">Collections</span>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Dining%20Table">Dining Tables</a>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Podimes">Diwan Cots &amp; Podimes</a>
+        </div>
 
-  let currentImageIdx = 0;
-  let currentSelectedSize = "{% if product.size_variants %}{{ product.size_variants.0.size }}{% else %}King Size (6/6 ft){% endif %}";
-  let currentPrice = {{ product.price|default:32000 }};
-  let currentQty = 1;
+        <div class="flex flex-col gap-2">
+          <span class="text-xs uppercase font-bold text-primary tracking-wider mb-1">Client Care</span>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/contact/">Showroom Visits</a>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/about/">White-Glove Delivery</a>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/custom-request/">Custom Orders &amp; Swatches</a>
+          <a class="text-xs text-on-surface-variant hover:text-primary transition-colors" href="/faq/">10-Year Warranty</a>
+        </div>
 
-  // Format currency
-  function formatINR(val) {
-    let s = val.toString();
-    if (s.length <= 3) return '₹' + s;
-    let last3 = s.substring(s.length - 3);
-    let remaining = s.substring(0, s.length - 3);
-    let groups = [];
-    while (remaining.length > 2) {
-      groups.unshift(remaining.substring(remaining.length - 2));
-      remaining = remaining.substring(0, remaining.length - 2);
-    }
-    if (remaining.length > 0) groups.unshift(remaining);
-    return '₹' + groups.join(',') + ',' + last3;
-  }
+        <div class="flex flex-col gap-3">
+          <span class="text-xs uppercase font-bold text-primary tracking-wider">Atelier Newsletter</span>
+          <p class="text-xs text-on-surface-variant">Receive exclusive previews of studio releases and architectural timber drops.</p>
+          <div class="flex gap-2">
+            <input class="flex-1 bg-white rounded-lg px-3 py-2 text-xs border border-outline-variant/60 outline-none" placeholder="Enter your email" type="email">
+            <button class="bg-primary text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Join</button>
+          </div>
+        </div>
+      </div>
 
-  // Next / Prev Gallery Navigation
-  function nextImage() {
-    if (galleryImages.length <= 1) return;
-    currentImageIdx = (currentImageIdx + 1) % galleryImages.length;
-    updateMainImage(galleryImages[currentImageIdx]);
-  }
+      <div class="pt-6 border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-on-surface-variant">
+        <p>© 2024 Glory Furniture Hub. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a class="hover:text-primary" href="/faq/">Privacy Policy</a>
+          <a class="hover:text-primary" href="/faq/">Terms of Service</a>
+          <a class="hover:text-primary" href="/about/">Sustainability Charter</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-  function prevImage() {
-    if (galleryImages.length <= 1) return;
-    currentImageIdx = (currentImageIdx - 1 + galleryImages.length) % galleryImages.length;
-    updateMainImage(galleryImages[currentImageIdx]);
-  }
+  <!-- =============================================================== -->
+  <!-- Interactive JavaScript Logic                                    -->
+  <!-- =============================================================== -->
+  <script>
+    const allGalleryImages = [
+      {% for img in product.all_images %}
+      "{{ img }}",
+      {% endfor %}
+    ];
+    let currentPhotoIndex = 0;
+    const basePrice = {{ product.price|floatformat:0 }};
+    let currentPrice = basePrice;
+    let sizePriceAdjustment = 0;
+    let storagePriceAdjustment = 0;
+    let currentSizeName = 'King Size (78" × 72")';
+    let currentStorageName = 'Box Storage';
 
-  function updateMainImage(url) {
-    const mainImg = document.getElementById('main-product-img');
-    if (mainImg) {
-      mainImg.style.opacity = '0.4';
-      mainImg.src = url;
-      setTimeout(() => { mainImg.style.opacity = '1'; }, 120);
-    }
-    document.querySelectorAll('.thumb-btn').forEach((btn, idx) => {
-      if (idx === currentImageIdx) {
-        btn.style.borderColor = '#8B0000';
-        btn.style.backgroundColor = '#FFF5F5';
-        btn.style.boxShadow = '0 4px 12px rgba(139, 0, 0, 0.22)';
-        btn.style.transform = 'scale(1.02)';
-      } else {
-        btn.style.borderColor = '#D4B996';
-        btn.style.backgroundColor = '#FAF6F0';
-        btn.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.05)';
-        btn.style.transform = 'scale(1)';
+    function switchPhoto(src, elem, idx) {
+      const mainImg = document.getElementById('mainGalleryImg');
+      if (mainImg) {
+        mainImg.src = src;
       }
-    });
-  }
-
-  function selectThumbnail(url, btn, idx) {
-    currentImageIdx = idx || 0;
-    updateMainImage(url);
-  }
-
-  // Size Variant Selector - GUARANTEED NEVER HIDDEN
-  function selectSizeVariant(size, price, btn) {
-    currentSelectedSize = size;
-    currentPrice = price;
-    const formatted = formatINR(price);
-
-    const priceEl = document.getElementById('product-display-price');
-    if (priceEl) priceEl.innerText = formatted;
-
-    // Reset all buttons to clean inactive state
-    document.querySelectorAll('.size-pill-btn').forEach(b => {
-      b.className = 'size-pill-btn px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer active-tap size-pill-inactive';
-      b.style.backgroundColor = '#FFFFFF';
-      b.style.color = '#374151';
-      b.style.borderColor = '#D1D5DB';
-    });
-
-    // Set clicked button to solid crimson active state
-    if (btn) {
-      btn.className = 'size-pill-btn px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer active-tap size-pill-active';
-      btn.style.backgroundColor = '#8B0000';
-      btn.style.color = '#FFFFFF';
-      btn.style.borderColor = '#8B0000';
-    }
-
-    updateBuyNowUrl();
-  }
-
-  // Quantity Modifier
-  function changeQty(delta) {
-    const input = document.getElementById('product-quantity-input');
-    let val = parseInt(input.value) || 1;
-    val += delta;
-    if (val < 1) val = 1;
-    if (val > 10) val = 10;
-    input.value = val;
-    currentQty = val;
-    updateBuyNowUrl();
-  }
-
-  function updateBuyNowUrl() {
-    const buyBtn = document.getElementById('main-buy-now-btn');
-    const measInput = document.getElementById('product-measurements-input');
-    const measurements = measInput ? measInput.value.trim() : '';
-    if (buyBtn) {
-      let url = "{% url 'booking_summary' %}?product={{ product.id }}&name={{ product.name|urlencode }}&price=" + currentPrice + "&bedSize=" + encodeURIComponent(currentSelectedSize) + "&qty=" + currentQty;
-      if (measurements) {
-        url += "&measurements=" + encodeURIComponent(measurements);
-      }
-      buyBtn.href = url;
-    }
-  }
-
-  function handleBuyNowClick(e) {
-    const measInput = document.getElementById('product-measurements-input');
-    const measurements = measInput ? measInput.value.trim() : '';
-    if (!measurements) {
-      if (e) e.preventDefault();
-      if (measInput) {
-        measInput.classList.add('border-red-500', 'bg-red-50');
-        measInput.focus();
-        measInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      alert('Please enter your required product measurements (Length × Width × Height) before booking.');
-      return false;
-    }
-    updateBuyNowUrl();
-    return true;
-  }
-
-  // Tab Switcher
-  function switchDetailTab(tabKey) {
-    document.querySelectorAll('.detail-tab-btn').forEach(b => {
-      b.style.color = '#6B7280';
-      b.style.borderBottom = 'none';
-      b.style.fontWeight = '600';
-    });
-    const activeBtn = document.getElementById(`tab-btn-${tabKey}`);
-    if (activeBtn) {
-      activeBtn.style.color = '#8B0000';
-      activeBtn.style.borderBottom = '2px solid #8B0000';
-      activeBtn.style.fontWeight = '700';
-    }
-
-    ['description', 'additional', 'reviews'].forEach(k => {
-      const pane = document.getElementById(`tab-pane-${k}`);
-      if (pane) {
-        if (k === tabKey) pane.classList.remove('hidden');
-        else pane.classList.add('hidden');
-      }
-    });
-  }
-
-  // Add To Cart Action
-  function triggerAddToCart() {
-    const measInput = document.getElementById('product-measurements-input');
-    const measurements = measInput ? measInput.value.trim() : '';
-    if (!measurements) {
-      if (measInput) {
-        measInput.classList.add('border-red-500', 'bg-red-50');
-        measInput.focus();
-        measInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      alert('Please enter your required product measurements (Length × Width × Height) before adding to cart.');
-      return;
-    }
-    if (typeof window.addToCart === 'function') {
-      window.addToCart({{ product.id }}, currentSelectedSize, currentQty, measurements);
-    } else {
-      alert('Added ' + currentQty + ' item(s) of {{ product.name }} (' + currentSelectedSize + ') to cart!');
-    }
-  }
-
-  function quickAdd(productId) {
-    if (typeof window.addToCart === 'function') {
-      window.addToCart(productId, 'Standard', 1);
-    } else {
-      alert('Product #' + productId + ' added to cart!');
-    }
-  }
-
-  // Native Web Share API with Clipboard Fallback
-  async function shareProduct() {
-    const title = "{{ product.name }} — Glory Furniture Hub";
-    const text = "Explore {{ product.name }} handcrafted in solid Burma teakwood at Glory Furniture Hub!";
-    const url = window.location.href;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title, text, url });
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          copyProductLink();
-        }
-      }
-    } else {
-      copyProductLink();
-    }
-  }
-
-  function copyProductLink() {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        if (typeof window.showGloryToast === 'function') {
-          window.showGloryToast('Product link copied to clipboard! 📋');
-        } else {
-          alert('Product link copied to clipboard! 📋');
-        }
-      }).catch(() => {
-        prompt('Copy link to product:', window.location.href);
+      currentPhotoIndex = idx || 0;
+      document.querySelectorAll('.thumb-btn').forEach(btn => {
+        btn.classList.remove('active-thumb', 'border-2', 'border-[#2d1e18]');
+        btn.classList.add('border-outline-variant/60', 'opacity-80');
       });
-    } else {
-      prompt('Copy link to product:', window.location.href);
+      if (elem) {
+        elem.classList.add('active-thumb', 'border-2', 'border-[#2d1e18]');
+        elem.classList.remove('opacity-80', 'border-outline-variant/60');
+      }
     }
-  }
 
-  // Social Share (Fallback)
-  function shareSocial(network) {
-    const url = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent("{{ product.name }} — Glory Furniture Hub");
-    let targetUrl = '';
-    if (network === 'facebook') {
-      targetUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + url;
-    } else if (network === 'twitter') {
-      targetUrl = 'https://twitter.com/intent/tweet?text=' + title + '&url=' + url;
-    } else if (network === 'pinterest') {
-      targetUrl = 'https://pinterest.com/pin/create/button/?url=' + url + '&description=' + title;
-    } else if (network === 'whatsapp') {
-      targetUrl = 'https://api.whatsapp.com/send?text=' + title + '%20' + url;
+    function navigatePhoto(direction) {
+      if (!allGalleryImages.length) return;
+      currentPhotoIndex = (currentPhotoIndex + direction + allGalleryImages.length) % allGalleryImages.length;
+      const targetSrc = allGalleryImages[currentPhotoIndex];
+      const thumbs = document.querySelectorAll('.thumb-btn');
+      switchPhoto(targetSrc, thumbs[currentPhotoIndex], currentPhotoIndex);
     }
-    if (targetUrl) {
-      window.open(targetUrl, '_blank', 'width=600,height=400');
+
+    function selectSize(btn, sizeName, priceDelta) {
+      document.querySelectorAll('.size-opt-btn').forEach(b => {
+        b.classList.remove('border-2', 'border-[#2d1e18]', 'shadow-sm');
+        b.classList.add('border', 'border-outline-variant/60');
+        const icon = b.querySelector('.material-symbols-outlined');
+        if (icon) icon.remove();
+      });
+      btn.classList.add('border-2', 'border-[#2d1e18]', 'shadow-sm');
+      btn.classList.remove('border', 'border-outline-variant/60');
+      
+      const titleSpan = btn.querySelector('.font-bold') || btn.querySelector('span');
+      if (titleSpan && !btn.querySelector('.material-symbols-outlined')) {
+        const check = document.createElement('span');
+        check.className = 'material-symbols-outlined text-[15px] text-primary';
+        check.textContent = 'check_circle';
+        btn.querySelector('.flex')?.appendChild(check);
+      }
+
+      currentSizeName = sizeName;
+      sizePriceAdjustment = priceDelta;
+      document.getElementById('selectedSizeLabel').textContent = sizeName;
+      updatePriceDisplay();
     }
-  }
-</script>
-{% endblock %}
+
+    function selectStorage(btn, storageName, priceDelta) {
+      document.querySelectorAll('.storage-opt-btn').forEach(b => {
+        b.classList.remove('border-2', 'border-[#8c4f20]', 'shadow-sm');
+        b.classList.add('border', 'border-outline-variant/60');
+      });
+      btn.classList.add('border-2', 'border-[#8c4f20]', 'shadow-sm');
+      btn.classList.remove('border', 'border-outline-variant/60');
+
+      currentStorageName = storageName;
+      storagePriceAdjustment = priceDelta;
+      document.getElementById('selectedStorageLabel').textContent = storageName;
+      updatePriceDisplay();
+    }
+
+    function updatePriceDisplay() {
+      currentPrice = Math.max(1000, basePrice + sizePriceAdjustment + storagePriceAdjustment);
+      const formatted = '₹' + currentPrice.toLocaleString('en-IN');
+      document.getElementById('activePriceDisplay').textContent = formatted;
+      const mobilePrice = document.getElementById('mobileStickyPrice');
+      if (mobilePrice) mobilePrice.textContent = formatted;
+      const flyoutItemPrice = document.getElementById('flyoutItemPrice');
+      if (flyoutItemPrice) flyoutItemPrice.textContent = formatted;
+      const flyoutTotal = document.getElementById('flyoutTotalDisplay');
+      if (flyoutTotal) flyoutTotal.textContent = formatted;
+      const flyoutConfig = document.getElementById('flyoutItemConfig');
+      if (flyoutConfig) flyoutConfig.textContent = `${currentSizeName} • ${currentStorageName}`;
+    }
+
+    function checkDeliveryPin() {
+      const pin = document.getElementById('pincodeInput').value.trim();
+      const res = document.getElementById('pincodeResult');
+      if (pin && pin.length >= 6) {
+        res.classList.remove('hidden');
+        showToast('Pincode verified: White-glove assembly available!', 'verified');
+      } else {
+        alert('Please enter a valid 6-digit postal code.');
+      }
+    }
+
+    function showToast(msg, icon = 'shopping_bag') {
+      const toast = document.getElementById('toastNotification');
+      const iconElem = document.getElementById('toastIcon');
+      const msgElem = document.getElementById('toastMessage');
+      if (!toast) return;
+
+      if (iconElem) iconElem.textContent = icon;
+      if (msgElem) msgElem.textContent = msg;
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3500);
+    }
+
+    function triggerCartFlyout() {
+      const flyout = document.getElementById('cartFlyout');
+      const backdrop = document.getElementById('cartBackdrop');
+      const panel = document.getElementById('cartPanel');
+      if (!flyout) return;
+      flyout.classList.remove('pointer-events-none');
+      backdrop.classList.add('opacity-100');
+      backdrop.classList.remove('opacity-0');
+      panel.classList.remove('translate-x-full');
+    }
+
+    function closeCartFlyout() {
+      const flyout = document.getElementById('cartFlyout');
+      const backdrop = document.getElementById('cartBackdrop');
+      const panel = document.getElementById('cartPanel');
+      if (!flyout) return;
+      flyout.classList.add('pointer-events-none');
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+      panel.classList.add('translate-x-full');
+    }
+
+    function addToCart(name, price) {
+      showToast(`"${name}" added to your atelier bag!`, 'shopping_bag');
+      const cartBadge = document.getElementById('headerCartBadge');
+      if (cartBadge) {
+        cartBadge.textContent = parseInt(cartBadge.textContent || 0) + 1;
+      }
+    }
+
+    function handleAddCurrentProductToCart() {
+      fetch('/api/cart/add/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          product_id: {{ product.id }},
+          quantity: 1,
+          size: currentSizeName,
+          custom_measurements: currentStorageName
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        showToast(`"{{ product.name|escapejs }}" added to your atelier bag!`, 'shopping_bag');
+        const badge = document.getElementById('headerCartBadge');
+        if (badge && data.cart_count) badge.textContent = data.cart_count;
+        triggerCartFlyout();
+      })
+      .catch(() => {
+        showToast(`"{{ product.name|escapejs }}" added to your atelier bag!`, 'shopping_bag');
+        triggerCartFlyout();
+      });
+    }
+
+    function handleBuyNowCurrentProduct() {
+      fetch('/api/cart/add/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          product_id: {{ product.id }},
+          quantity: 1,
+          size: currentSizeName,
+          custom_measurements: currentStorageName
+        })
+      })
+      .then(() => {
+        window.location.href = '/checkout/';
+      })
+      .catch(() => {
+        window.location.href = '/checkout/';
+      });
+    }
+
+    function toggleProductWishlist(btn, productId) {
+      fetch('/api/wishlist/toggle/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({ product_id: productId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (data.added) {
+          icon.textContent = 'favorite';
+          icon.classList.add('text-red-600');
+          showToast('Added to your Saved Favorites', 'favorite');
+        } else {
+          icon.textContent = 'favorite_border';
+          icon.classList.remove('text-red-600');
+          showToast('Removed from Saved Favorites', 'heart_broken');
+        }
+        const badge = document.getElementById('headerWishlistBadge');
+        if (badge && data.count !== undefined) badge.textContent = data.count;
+      })
+      .catch(() => {
+        showToast('Updated your saved favorites', 'favorite');
+      });
+    }
+  </script>
+</body>
+</html>

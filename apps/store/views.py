@@ -147,8 +147,18 @@ def catalog_view(request):
     return render(request, 'store/catalog.html', context)
 
 
-def product_detail_view(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+def product_detail_view(request, pk=None, slug=None):
+    if pk is not None:
+        product = get_object_or_404(Product, pk=pk)
+    elif slug:
+        product = get_object_or_404(Product, slug=slug)
+    else:
+        first_product = Product.objects.first()
+        if not first_product:
+            from django.http import Http404
+            raise Http404("No products found")
+        product = first_product
+
     related = list(Product.objects.filter(category=product.category).exclude(pk=product.pk)[:4])
     if len(related) < 4:
         others = list(Product.objects.exclude(pk=product.pk)[:8])
@@ -162,7 +172,7 @@ def product_detail_view(request, pk):
         'product': product,
         'related_products': related_products,
         'reviews': reviews,
-        'page_title': 'Product Details',
+        'page_title': product.name,
     }
     return render(request, 'store/product_detail.html', context)
 
