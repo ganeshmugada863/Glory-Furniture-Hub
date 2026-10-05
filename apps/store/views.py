@@ -131,6 +131,26 @@ def catalog_view(request):
         cat_list = []
         total_count = 0
 
+    wishlist_ids = []
+    try:
+        if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.wishlist_ids:
+            wishlist_ids = request.user.profile.wishlist_ids
+        else:
+            wishlist_ids = request.session.get('glory_wishlist', [])
+        wishlist_ids = [int(x) for x in wishlist_ids if str(x).isdigit()]
+    except Exception:
+        wishlist_ids = []
+
+    cart_items = []
+    try:
+        if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.cart_items:
+            cart_items = request.user.profile.cart_items
+        else:
+            cart_items = request.session.get('glory_cart', [])
+    except Exception:
+        cart_items = []
+    cart_count = len(cart_items) if isinstance(cart_items, list) else 0
+
     context = {
         'products': product_list,
         'categories': cat_list,
@@ -142,6 +162,9 @@ def catalog_view(request):
         'max_price': max_price_val,
         'in_stock_only': in_stock_only,
         'total_count': total_count,
+        'wishlist_ids': wishlist_ids,
+        'wishlist_count': len(wishlist_ids),
+        'cart_count': cart_count,
         'page_title': 'Furniture Catalog',
     }
     return render(request, 'store/catalog.html', context)
