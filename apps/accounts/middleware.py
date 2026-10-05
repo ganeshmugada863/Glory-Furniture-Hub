@@ -78,6 +78,8 @@ class RoleBasedAccessMiddleware:
         is_public_storefront = (
             path in ['/', '/home/', '/home', '/welcome/', '/welcome', '/store/', '/store'] or
             path.startswith('/catalog') or
+            path.startswith('/collection') or
+            path.startswith('/shop') or
             path.startswith('/product/') or
             path.startswith('/search') or
             path in ['/about/', '/contact/', '/faq/', '/guide/', '/splash/', '/onboarding/']
