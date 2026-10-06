@@ -1,275 +1,751 @@
-{% extends 'base.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="web_standard" name="shell-type">
+  <title>Client Atelier Account — Glory Furniture Hub</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 
-{% block title %}My Profile &mdash; Glory Furniture Hub{% endblock %}
+  <!-- Google Fonts: Material Symbols, Playfair Display & Plus Jakarta Sans & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
-{% block back_bar %}
-<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-3 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20 overflow-hidden">
-  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center shrink-0 cursor-pointer" aria-label="Go back">
-      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-    </button>
-    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-2.5 truncate leading-none">
-      Patron Profile &amp; Preferences
-    </span>
-  </div>
-  <div class="flex items-center gap-2 shrink-0">
-    <span class="px-2 sm:px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
-      &bull; Active Member
-    </span>
-  </div>
-</div>
-{% endblock %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "error-container": "#ffdad6",
+            "surface-container-high": "#eae8e5",
+            "on-primary-fixed": "#271812",
+            "surface": "#fbf9f6",
+            "background": "#fbf9f6",
+            "primary-container": "#2d1e18",
+            "on-tertiary-fixed-variant": "#6d3a00",
+            "surface-container-low": "#f5f3f0",
+            "on-surface-variant": "#4f4541",
+            "inverse-primary": "#dbc1b7",
+            "error": "#ba1a1a",
+            "tertiary": "#160700",
+            "on-error": "#ffffff",
+            "primary": "#140804",
+            "on-tertiary-fixed": "#2e1500",
+            "tertiary-fixed-dim": "#ffb77a",
+            "secondary-fixed": "#ffdcc6",
+            "surface-bright": "#fbf9f6",
+            "on-secondary-fixed-variant": "#6f3809",
+            "on-secondary-fixed": "#311400",
+            "on-background": "#1b1c1a",
+            "on-surface": "#1b1c1a",
+            "surface-container": "#efeeeb",
+            "surface-tint": "#6e5a52",
+            "tertiary-container": "#371a00",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#9b847b",
+            "outline-variant": "#d2c3be",
+            "on-secondary-container": "#773e0f",
+            "surface-dim": "#dbdad7",
+            "on-primary": "#ffffff",
+            "tertiary-fixed": "#ffdcc2",
+            "primary-fixed": "#f8ddd3",
+            "outline": "#817470",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#c8741d",
+            "inverse-surface": "#30312f",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#dbc1b7",
+            "secondary-fixed-dim": "#ffb786",
+            "surface-container-highest": "#e4e2df",
+            "surface-variant": "#e4e2df",
+            "secondary-container": "#fcac74",
+            "inverse-on-surface": "#f2f0ed",
+            "on-primary-fixed-variant": "#55433c",
+            "secondary": "#8c4f20"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem",
+            "margin-mobile": "1.25rem",
+            "gutter-mobile": "1rem",
+            "margin": "3rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem"
+          },
+          fontFamily: {
+            "label-lg": ["Plus Jakarta Sans"],
+            "display-md-mobile": ["Playfair Display"],
+            "headline-lg": ["Playfair Display"],
+            "display-lg": ["Playfair Display"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Playfair Display"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "display-md": ["Playfair Display"]
+          }
+        }
+      }
+    };
+  </script>
 
-{% block content %}
-<div class="w-full max-w-3xl mx-auto px-3 sm:px-6 py-5 sm:py-8 space-y-6 font-sans">
-  
   <style>
-    .patron-hero-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    *, ::before, ::after, html, body, button, input, textarea, select, h1, h2, h3, h4, h5, h6, p, span, a, label, div {
+      font-family: 'Poppins', 'Plus Jakarta Sans', sans-serif;
     }
-    @media (min-width: 640px) {
-      .patron-hero-wrap {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-      }
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined' !important;
     }
-    .patron-hero-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      min-width: 0;
-      flex: 1 1 auto;
+    html, body {
+      overflow-x: clip;
+      overflow-y: auto;
+      background-color: #fbf9f6;
     }
-    .patron-hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-      width: 100%;
-    }
-    @media (min-width: 640px) {
-      .patron-hero-actions {
-        width: auto;
-      }
-    }
-    .patron-hero-actions a {
-      flex: 1;
-    }
-    @media (min-width: 640px) {
-      .patron-hero-actions a {
-        flex: 0 0 auto;
-      }
-    }
-    .patron-stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-    @media (min-width: 640px) {
-      .patron-stat-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-      }
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
+</head>
 
-  <!-- LUXURY PATRON HERO CARD -->
-  <div class="rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden border border-white/10"
-       style="background: linear-gradient(135deg, #1b0e07 0%, #2e160a 35%, #1e1b4b 75%, #0f172a 100%);">
-    
-    <!-- Ambient colorful glow circles -->
-    <div class="absolute -right-16 -top-16 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute right-1/3 -bottom-16 w-80 h-80 bg-indigo-500/25 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -left-10 bottom-0 w-48 h-48 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
+<body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-fixed">
 
-    <div class="relative z-10 patron-hero-wrap">
+  <!-- ========================================== -->
+  <!-- 1. NAVIGATION BAR (Unified Glory Hub Standard) -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 inset-x-0 z-50 bg-surface/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_6px_rgba(45,30,24,0.04)]">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
       
-      <!-- Avatar & Info -->
-      <div class="patron-hero-info">
-        <!-- Glowing Avatar -->
-        <div class="relative shrink-0" style="flex-shrink: 0;">
-          <div style="width: 68px; height: 68px; border-radius: 18px; background: linear-gradient(135deg, #FFB703 0%, #FB8500 50%, #E63946 100%); color: #FFFFFF; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(251, 133, 0, 0.35); border: 2.5px solid rgba(255, 255, 255, 0.3);">
-            {{ user_initial|default:"P" }}
+      <!-- Left: Mobile 3-Lines Button (Hidden on Desktop) + Brand Logo & Name (Straight on Desktop) -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <!-- 3-Lines Menu Button: ONLY ON MOBILE (Android), hidden on desktop (Windows) -->
+        <button type="button" onclick="toggleNavDrawer()" class="sm:hidden p-1.5 rounded-lg hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center cursor-pointer shrink-0" title="Open Menu">
+          <span class="material-symbols-outlined text-[24px]">menu</span>
+        </button>
+
+        <!-- Brand Logo & Straight Name "GLORY FURNITURE HUB" -->
+        <a class="flex items-center gap-2 sm:gap-2.5 shrink-0 group select-none cursor-pointer" href="/">
+          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-amber-600/30 shadow-xs bg-[#5C3D2E]">
+            <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="{% static 'favicon.svg' %}" onerror="this.onerror=null; this.src='/static/favicon.svg';">
           </div>
-          <span style="position: absolute; bottom: -3px; right: -3px; width: 22px; height: 22px; border-radius: 50%; background-color: #10B981; border: 2px solid #1b0e07; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #FFFFFF; font-weight: 900;" title="Verified Patron">
-            ✓
+          <!-- Mobile (stacked) -->
+          <div class="flex sm:hidden flex-col justify-center leading-none">
+            <span class="font-display-md text-[13px] tracking-wider uppercase text-primary font-black leading-tight whitespace-nowrap">GLORY</span>
+            <span class="text-[9px] tracking-widest uppercase text-secondary font-bold leading-tight whitespace-nowrap">FURNITURE HUB</span>
+          </div>
+          <!-- Windows / Desktop (straight order "GLORY FURNITURE HUB") -->
+          <span class="hidden sm:inline font-display-md text-[17px] lg:text-[19px] tracking-wider uppercase text-primary font-black group-hover:text-secondary transition-colors whitespace-nowrap">
+            GLORY FURNITURE HUB
           </span>
+        </a>
+      </div>
+
+      <!-- Center (Desktop / Blue box): Extended Search Bar -->
+      <div class="hidden sm:flex flex-1 max-w-2xl mx-2 sm:mx-6">
+        <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-4 py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+          <span class="material-symbols-outlined text-outline text-[20px] mr-2 shrink-0">search</span>
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search bed, dining table, sofa, mandir..." 
+            class="w-full bg-transparent text-sm text-primary placeholder:text-stone-400 outline-none"
+          />
+        </form>
+      </div>
+
+      <!-- Right (Desktop / Orange area): Direct Profile, Cart, Fav Icons -->
+      <div class="hidden sm:flex items-center gap-2 md:gap-3 shrink-0 text-primary">
+        <!-- 1. Profile (Active) -->
+        <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="p-2 rounded-full bg-surface-container-high text-secondary transition-colors flex items-center justify-center cursor-pointer" title="Profile">
+          <span class="material-symbols-outlined text-[24px]">person</span>
+        </a>
+
+        <!-- 2. Cart -->
+        <a href="/cart/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
+          <span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+          <span id="navCartBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">2</span>
+        </a>
+
+        <!-- 3. Fav (Favorites) -->
+        <a href="/wishlist/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Favorites">
+          <span class="material-symbols-outlined text-[24px]">favorite</span>
+          <span id="navWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">{{ wishlist_count|default:"3" }}</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Mobile Full-Width Extended Search Bar (Row 2 on Mobile) -->
+    <div class="px-3 pb-2.5 sm:hidden">
+      <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-3.5 py-1.5 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+        <span class="material-symbols-outlined text-outline text-[18px] mr-2 shrink-0">search</span>
+        <input 
+          type="text" 
+          name="search" 
+          placeholder="Search bed, dining table, sofa, mandir..." 
+          class="w-full bg-transparent text-xs text-primary placeholder:text-stone-400 outline-none"
+        />
+      </form>
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- SLIDE-OUT NAVIGATION DRAWER (3-Lines Menu - Mobile)            -->
+  <!-- ============================================================== -->
+  <div id="navDrawerOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
+  <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out">
+    <div>
+      <!-- Drawer Header -->
+      <div class="p-5 border-b border-surface-container flex items-center justify-between bg-surface-container-low/50">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center border border-amber-600/30 bg-[#5C3D2E]">
+            <img alt="Glory Furniture" class="w-full h-full object-contain" src="{% static 'favicon.svg' %}" onerror="this.onerror=null; this.src='/static/favicon.svg';">
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="font-display-md text-xs font-black text-primary tracking-wider uppercase">GLORY</span>
+            <span class="text-[9px] font-bold text-secondary tracking-widest uppercase">FURNITURE HUB</span>
+          </div>
+        </div>
+        <button type="button" onclick="toggleNavDrawer()" class="p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Close Menu">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Drawer Menu: ONLY Profile, Cart, and Fav (Favorites) -->
+      <nav class="p-4 flex flex-col gap-2.5">
+        <!-- 1. Profile -->
+        <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container transition-all group">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[22px]">person</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-sm text-primary">Profile</span>
+              <span class="text-[11px] text-on-surface-variant font-medium">{% if request.user.is_authenticated %}My Account &amp; Orders{% else %}Sign In / Register{% endif %}</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-stone-400 group-hover:translate-x-1 transition-transform text-[18px]">chevron_right</span>
+        </a>
+
+        <!-- 2. Cart -->
+        <a href="/cart/" class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low/60 hover:bg-surface-container transition-all group">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-sm text-primary">Cart</span>
+              <span class="text-[11px] text-on-surface-variant font-medium">Shopping Bag</span>
+            </div>
+          </div>
+          <span id="drawerCartBadge" class="bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full">2</span>
+        </a>
+
+        <!-- 3. Fav (Favorites) -->
+        <a href="/wishlist/" class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low/60 hover:bg-surface-container transition-all group">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined text-[22px]">favorite</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-sm text-primary">Fav</span>
+              <span class="text-[11px] text-on-surface-variant font-medium">Saved Items &amp; Wishlist</span>
+            </div>
+          </div>
+          <span id="drawerWishlistBadge" class="bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full">{{ wishlist_count|default:"3" }}</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
+      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © 2024</p>
+    </div>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- 2. STITCH USER PROFILE MAIN CANVAS        -->
+  <!-- ========================================== -->
+  <main class="w-full bg-surface">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
+      
+      <!-- Top Breadcrumb & Status Pill -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2 text-on-surface-variant text-xs sm:text-sm font-medium">
+          <a class="hover:text-primary transition-colors" href="/">Home</a>
+          <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+          <span class="text-primary font-semibold">Client Atelier Account</span>
+        </div>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="flex flex-col gap-6">
+
+        <!-- 1. Header Profile Identity Canvas -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-sm border border-surface-container relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div class="flex items-center gap-4 sm:gap-5">
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary-container text-surface flex items-center justify-center text-xl sm:text-2xl font-bold tracking-wider shadow-md">
+                {{ user_initial|default:"AV" }}
+              </div>
+              <div class="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow">
+                <span class="material-symbols-outlined text-[14px] sm:text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-wrap items-center gap-2">
+                <h1 class="font-headline-sm text-xl sm:text-2xl font-bold text-primary">{{ customer_name|default:"Valued Patron" }}</h1>
+                <span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[11px] uppercase tracking-wider font-bold">Atelier Platinum Member</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-on-surface-variant text-xs sm:text-sm mt-1.5">
+                <span class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">mail</span>
+                  {{ customer_email|default:"patron@gloryfurniture.com" }}
+                </span>
+                {% if customer_phone %}
+                <span class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">phone</span>
+                  {{ customer_phone }}
+                </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <button onclick="document.getElementById('profileForm').scrollIntoView({behavior: 'smooth'})" class="px-4 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+              <span>Edit Profile</span>
+            </button>
+            <a href="{% url 'logout' %}" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-primary hover:bg-surface-container text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">logout</span>
+              <span>Sign Out</span>
+            </a>
+          </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 auto;">
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <h1 style="font-size: 20px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.02em; margin: 0; line-height: 1.2;">
-              {{ customer_name|default:"Valued Patron" }}
-            </h1>
-            
-            {% if auth_provider == 'google' %}
-            <span style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; background: #FFFFFF; color: #1F2937; box-shadow: 0 2px 6px rgba(0,0,0,0.15); white-space: nowrap; flex-shrink: 0;">
-              <svg style="width: 12px; height: 12px;" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-              <span>Google Verified</span>
-            </span>
-            {% else %}
-            <span style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 9999px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; background: linear-gradient(90deg, #F59E0B, #D97706); color: #0A0604; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3); white-space: nowrap; flex-shrink: 0;">
-              👑 Teak Patron
-            </span>
-            {% endif %}
+        <!-- 2. Profile Tabs & Consultation Banner -->
+        <div class="flex flex-col gap-4 w-full">
+          <!-- Horizontal Action Navigation -->
+          <nav class="bg-surface-container-lowest rounded-2xl p-1.5 shadow-sm flex items-center gap-1.5 overflow-x-auto w-full border border-surface-container no-scrollbar">
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-surface text-xs sm:text-sm font-medium shrink-0 transition-all select-none shadow-sm cursor-pointer" href="/customer/profile/">
+              <span class="material-symbols-outlined text-[18px]">account_circle</span>
+              <span>My Profile</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="{% url 'orders' %}">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">inventory_2</span>
+              <span>My Orders</span>
+              <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold shrink-0">{{ active_orders_count|default:"1" }} Active</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="{% url 'address' %}">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">home_pin</span>
+              <span>Saved Addresses</span>
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold shrink-0">{{ saved_addresses_count|default:"2" }} Saved</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="{% url 'wishlist' %}">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">favorite</span>
+              <span>Wishlist</span>
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold shrink-0">{{ wishlist_count|default:"3" }} Items</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="{% url 'custom_request' %}">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">architecture</span>
+              <span>Custom Studio</span>
+            </a>
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="/contact/">
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">support_agent</span>
+              <span>Concierge</span>
+            </a>
+            <div class="h-6 w-[1px] bg-surface-container mx-1 shrink-0"></div>
+            <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-error hover:bg-error-container hover:text-on-error-container text-xs sm:text-sm font-medium shrink-0 transition-all select-none ml-auto cursor-pointer" href="{% url 'logout' %}">
+              <span class="material-symbols-outlined text-[18px]">logout</span>
+              <span>Log Out</span>
+            </a>
+          </nav>
+
+          <!-- Bespoke Styling Banner -->
+          <div class="rounded-2xl bg-surface-container-high px-5 py-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border border-surface-container">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-xs">
+                <span class="material-symbols-outlined text-[20px]">nest_clock_farsight_analog</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2">
+                <span class="text-sm font-bold text-primary">Need Bespoke Styling?</span>
+                <span class="text-xs text-on-surface-variant">Connect with your dedicated architectural furniture consultant.</span>
+              </div>
+            </div>
+            <a href="{% url 'booking' %}" class="py-2 px-4 rounded-xl bg-primary text-on-primary text-xs sm:text-sm font-semibold hover:bg-primary-container transition-colors flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">chat</span>
+              <span>Schedule Consultation</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. 4 Minimal Quick Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <!-- Stat 1: Active Order -->
+          <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-surface-container flex flex-col justify-between group hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Active Order</span>
+              <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+              </div>
+            </div>
+            <div>
+              <div class="font-headline-sm text-lg font-bold text-primary">{% if active_orders_count %}{{ active_orders_count }} In-Transit{% else %}0 In-Transit{% endif %}</div>
+              <p class="text-xs text-on-surface-variant truncate mt-0.5">{% if latest_order %}{{ latest_order.product_name }}{% else %}Serah Teak Platform Bed{% endif %}</p>
+            </div>
+            <a href="{% url 'orders' %}" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-secondary text-xs font-bold cursor-pointer">
+              <span>Arriving Soon</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
           </div>
 
-          <p style="font-size: 12px; color: #D1D5DB; margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span style="color: #E5E7EB; font-weight: 600;">{{ customer_email|default:"customer@gloryfurniture.com" }}</span>
-            {% if customer_phone %}
-            <span style="color: rgba(255,255,255,0.4);">&bull;</span>
-            <span style="color: #D1D5DB;">{{ customer_phone }}</span>
-            {% endif %}
+          <!-- Stat 2: Delivered Orders -->
+          <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-surface-container flex flex-col justify-between group hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Total Orders</span>
+              <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[18px]">inventory</span>
+              </div>
+            </div>
+            <div>
+              <div class="font-headline-sm text-lg font-bold text-primary">{{ orders_count|default:"4" }} Orders</div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Architectural pieces</p>
+            </div>
+            <a href="{% url 'orders' %}" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-on-surface-variant group-hover:text-primary text-xs font-bold transition-colors cursor-pointer">
+              <span>View History</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+          </div>
+
+          <!-- Stat 3: Saved Favorites -->
+          <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-surface-container flex flex-col justify-between group hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Saved Items</span>
+              <div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+              </div>
+            </div>
+            <div>
+              <div class="font-headline-sm text-lg font-bold text-primary">{{ wishlist_count|default:"6" }} Pieces</div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Living room collection</p>
+            </div>
+            <a href="{% url 'wishlist' %}" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-secondary text-xs font-bold cursor-pointer">
+              <span>Explore Wishlist</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+          </div>
+
+          <!-- Stat 4: Atelier Credits -->
+          <div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-surface-container flex flex-col justify-between group hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] uppercase tracking-wider text-on-surface-variant font-bold">Hub Credits</span>
+              <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined text-[18px]">toll</span>
+              </div>
+            </div>
+            <div>
+              <div class="font-headline-sm text-lg font-bold text-primary">₹2,400</div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Redeemable at checkout</p>
+            </div>
+            <a href="/cart/" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-secondary text-xs font-bold cursor-pointer">
+              <span>Apply to cart</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. Personal Information Section (Editable Form) -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-sm border border-surface-container flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex flex-col">
+              <h2 class="font-title-lg text-lg font-bold text-primary">Personal Details</h2>
+              <span class="text-xs text-on-surface-variant">Update your verified account profile and delivery communications.</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded bg-surface-container-low text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Autosaved</span>
+            </div>
+          </div>
+
+          <form method="POST" action="{% url 'customer_profile' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5" id="profileForm">
+            {% csrf_token %}
+            <!-- First Name -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] uppercase font-bold tracking-wider text-on-surface-variant" for="firstName">
+                First Name
+              </label>
+              <input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl text-on-surface text-sm focus:bg-white focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-surface-container" id="firstName" name="first_name" type="text" value="{{ first_name|default:'Arjun' }}">
+            </div>
+
+            <!-- Last Name -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] uppercase font-bold tracking-wider text-on-surface-variant" for="lastName">
+                Last Name
+              </label>
+              <input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl text-on-surface text-sm focus:bg-white focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-surface-container" id="lastName" name="last_name" type="text" value="{{ last_name|default:'Varma' }}">
+            </div>
+
+            <!-- Email Address with Verified Badge -->
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <label class="text-[11px] uppercase font-bold tracking-wider text-on-surface-variant" for="emailAddress">
+                  Email Address
+                </label>
+                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-secondary">
+                  <span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                  Verified
+                </span>
+              </div>
+              <input class="w-full h-11 px-3.5 bg-surface-container-low/60 rounded-xl text-on-surface-variant text-sm border border-surface-container outline-none cursor-not-allowed" id="emailAddress" type="email" value="{{ customer_email|default:'arjun.varma@atelierhub.com' }}" readonly title="Email cannot be changed directly">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] uppercase font-bold tracking-wider text-on-surface-variant" for="phoneNumber">
+                Phone Number
+              </label>
+              <input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl text-on-surface text-sm focus:bg-white focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-surface-container" id="phoneNumber" name="phone" type="tel" value="{{ customer_phone|default:'+91 98480 22334' }}">
+            </div>
+
+            <!-- Preferred Language / Region -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] uppercase font-bold tracking-wider text-on-surface-variant" for="preferredCity">
+                Primary City / Region
+              </label>
+              <input class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl text-on-surface text-sm focus:bg-white focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-surface-container" id="preferredCity" name="city" type="text" value="{{ customer_city|default:'Bengaluru, Karnataka' }}">
+            </div>
+
+            <!-- Wood Standard Badge / Tier -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[11px] uppercase font-bold tracking-wider text-on-surface-variant">
+                Craftsmanship Tier
+              </label>
+              <div class="w-full h-11 px-3.5 bg-surface-container-low rounded-xl text-on-surface text-sm flex items-center justify-between border border-surface-container">
+                <span class="font-semibold text-primary">Solid Burma Teak VIP</span>
+                <span class="text-xs text-secondary font-bold">10-Year Guarantee</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-span-1 md:col-span-2 pt-2 flex items-center justify-end gap-3">
+              <button class="px-4 py-2.5 rounded-xl text-on-surface-variant text-xs sm:text-sm font-medium hover:bg-surface-container transition-colors cursor-pointer" type="reset">
+                Cancel
+              </button>
+              <button class="px-6 py-2.5 rounded-xl bg-primary text-on-primary text-xs sm:text-sm font-bold hover:bg-primary-container transition-all shadow-sm flex items-center gap-2 cursor-pointer" id="saveBtn" type="submit">
+                <span>Save Changes</span>
+                <span class="material-symbols-outlined text-[16px]">check</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 5. In-Transit Highlight Order Card -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-sm border border-surface-container flex flex-col md:flex-row items-center justify-between gap-5">
+          <div class="flex items-center gap-4 sm:gap-5 w-full md:w-auto">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-surface-container border border-surface-container">
+              <img class="w-full h-full object-cover" alt="Serah Teak Platform Bed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-pzpDp3GmJgImX5now3dTKLergjSsqj1DHBsjGEZNpvPPEJ8dpLeFwVkguAVFS678et-nEKWh0HnKuL-RR1pnsTYEYofrehsunw2Cf0aI2JgZt8NcDJO9QYZhdnwTLTKxSm-z-IVAvWqJgqeQ6Rz3Y1amSO8GkvO19YUwTRySCaAMrK8HAN5vN8p75QIGw6Mi2AMHxYooD40Pti6fc8yT5ifybKGf9kBZ2W_xYg">
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-base font-bold text-primary">{% if latest_order %}{{ latest_order.product_name }}{% else %}Serah Teak Platform Bed{% endif %}</span>
+                <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold">Shipped</span>
+              </div>
+              <span class="text-xs text-on-surface-variant mt-0.5">Order #{% if latest_order %}{{ latest_order.order_number }}{% else %}GL-89240{% endif %} • King Size • Natural Oiled Teak</span>
+              <span class="text-xs text-secondary font-bold mt-1">Estimated White-Glove Setup: Thursday, 3:00 PM</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <a href="{% url 'orders' %}" class="px-4 py-2.5 rounded-xl bg-surface-container text-primary hover:bg-surface-container-high text-xs sm:text-sm font-semibold transition-colors cursor-pointer">
+              Track Courier
+            </a>
+            <button class="px-4 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container text-xs sm:text-sm font-semibold transition-colors cursor-pointer" type="button">
+              Delivery Pin: 4920
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. Preferences & Notifications Hub -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-sm border border-surface-container flex flex-col gap-4">
+          <div class="flex flex-col">
+            <h2 class="font-title-lg text-lg font-bold text-primary">Communication Preferences</h2>
+            <span class="text-xs text-on-surface-variant">Manage how the atelier updates you on orders, logistics, and limited releases.</span>
+          </div>
+          
+          <div class="flex flex-col gap-2">
+            <!-- Toggle Item 1 -->
+            <div class="flex items-center justify-between py-2 rounded-xl hover:bg-surface-container-low px-2 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">sms</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs sm:text-sm font-bold text-primary">Order updates via WhatsApp &amp; SMS</span>
+                  <span class="text-[11px] text-on-surface-variant">Instant logistics, tracking milestones, and dispatch notifications</span>
+                </div>
+              </div>
+              <button aria-checked="true" class="toggle-switch relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full bg-primary transition-colors duration-200 ease-in-out focus:outline-none" onclick="toggleSwitch(this)" role="switch" type="button">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-surface shadow ring-0 transition duration-200 ease-in-out translate-x-5 mt-0.5 ml-0.5"></span>
+              </button>
+            </div>
+
+            <!-- Toggle Item 2 -->
+            <div class="flex items-center justify-between py-2 rounded-xl hover:bg-surface-container-low px-2 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">palette</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs sm:text-sm font-bold text-primary">New Arrivals &amp; Atelier Curations</span>
+                  <span class="text-[11px] text-on-surface-variant">Invitations to limited furniture drops, timber showcases, and private previews</span>
+                </div>
+              </div>
+              <button aria-checked="true" class="toggle-switch relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full bg-primary transition-colors duration-200 ease-in-out focus:outline-none" onclick="toggleSwitch(this)" role="switch" type="button">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-surface shadow ring-0 transition duration-200 ease-in-out translate-x-5 mt-0.5 ml-0.5"></span>
+              </button>
+            </div>
+
+            <!-- Toggle Item 3 -->
+            <div class="flex items-center justify-between py-2 rounded-xl hover:bg-surface-container-low px-2 transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+                  <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-xs sm:text-sm font-bold text-primary">Delivery Scheduling Reminders</span>
+                  <span class="text-[11px] text-on-surface-variant">White-glove assembly appointment confirmations and installer check-ins</span>
+                </div>
+              </div>
+              <button aria-checked="true" class="toggle-switch relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full bg-primary transition-colors duration-200 ease-in-out focus:outline-none" onclick="toggleSwitch(this)" role="switch" type="button">
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-surface shadow ring-0 transition duration-200 ease-in-out translate-x-5 mt-0.5 ml-0.5"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Security & Login Credentials Snapshot -->
+        <div class="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-sm border border-surface-container flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary shrink-0">
+              <span class="material-symbols-outlined text-[20px]">lock</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs sm:text-sm font-bold text-primary">Password &amp; Security Authentication</span>
+              <span class="text-[11px] text-on-surface-variant">Authenticated account • 2FA protection active</span>
+            </div>
+          </div>
+          <a href="{% url 'customer_edit_profile' %}" class="px-4 py-2.5 rounded-xl bg-surface-container-high text-primary hover:bg-surface-container text-xs sm:text-sm font-semibold transition-colors cursor-pointer">
+            Update Security
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 3. FOOTER (Matching Stitch Design)         -->
+  <!-- ========================================== -->
+  <footer class="w-full bg-surface-container-low mt-10 py-10 border-t border-surface-container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-2.5">
+            <img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="{% static 'favicon.svg' %}" onerror="this.onerror=null; this.src='/static/favicon.svg';">
+            <span class="font-headline-sm text-base font-bold text-primary">Glory Furniture Hub</span>
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.
           </p>
-
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 3px; flex-wrap: wrap;">
-            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 700; background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(52, 211, 153, 0.4); white-space: nowrap;">
-              🛡️ 10-Yr Guarantee
-            </span>
-            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 8px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid rgba(96, 165, 250, 0.4); white-space: nowrap;">
-              🚚 White-Glove Doorstep Delivery
-            </span>
+        </div>
+        <div class="flex flex-col gap-2 text-xs">
+          <span class="uppercase tracking-wider font-bold text-primary mb-1">Collections</span>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/catalog/">Atelier Workdesks</a>
+        </div>
+        <div class="flex flex-col gap-2 text-xs">
+          <span class="uppercase tracking-wider font-bold text-primary mb-1">Client Care</span>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/contact/">Showroom Visits</a>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/about/">White-Glove Delivery</a>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/custom-request/">Material Swatches &amp; Custom Care</a>
+          <a class="text-on-surface-variant hover:text-primary transition-colors" href="/about/">10-Year Warranty</a>
+        </div>
+        <div class="flex flex-col gap-3 text-xs">
+          <span class="uppercase tracking-wider font-bold text-primary">Atelier Newsletter</span>
+          <p class="text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p>
+          <div class="flex gap-2">
+            <input class="flex-1 bg-white rounded-lg px-3 py-2 text-xs text-on-surface border border-outline-variant/60 outline-none" placeholder="Enter your email" type="email">
+            <button class="bg-primary text-on-primary text-xs font-semibold px-4 py-2 rounded-lg hover:bg-primary-container transition-colors">Join</button>
           </div>
         </div>
       </div>
-
-      <!-- Action Buttons (Sign out & Edit) -->
-      <div class="patron-hero-actions">
-        <a href="{% url 'customer_edit_profile' %}"
-           class="active-tap"
-           style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: 12px; background: rgba(255, 255, 255, 0.14); border: 1.5px solid rgba(255, 255, 255, 0.3); color: #FFFFFF; font-size: 12px; font-weight: 700; text-decoration: none; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.2s;">
-          <span>✏️</span>
-          <span>Edit Profile</span>
-        </a>
-        <a href="{% url 'logout' %}"
-           class="active-tap"
-           style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 20px; border-radius: 12px; background: linear-gradient(135deg, #FFB703 0%, #FB8500 100%) !important; color: #0A0604 !important; font-size: 12px; font-weight: 900; text-decoration: none; white-space: nowrap; box-shadow: 0 4px 14px rgba(251, 133, 0, 0.35); transition: all 0.2s;">
-          <span>🚪</span>
-          <span>Sign Out</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Stat Chips Bar (2x2 on mobile, 4 in a row on desktop) -->
-    <div class="patron-stat-grid" style="margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.12); text-align: center;">
-      <div style="padding: 12px 14px; border-radius: 16px; background: rgba(30, 58, 138, 0.55); border: 1.5px solid rgba(96, 165, 250, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
-        <span style="font-size: 10px; color: #93C5FD; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">📦 Total Orders</span>
-        <span style="font-size: 20px; font-weight: 900; color: #FFFFFF; line-height: 1.1;">{{ orders_count|default:0 }}</span>
-      </div>
-      <div style="padding: 12px 14px; border-radius: 16px; background: rgba(136, 19, 55, 0.55); border: 1.5px solid rgba(251, 113, 133, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
-        <span style="font-size: 10px; color: #FDA4AF; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">❤️ Wishlist Items</span>
-        <span style="font-size: 20px; font-weight: 900; color: #FFFFFF; line-height: 1.1;">{{ wishlist_count|default:0 }}</span>
-      </div>
-      <div style="padding: 12px 14px; border-radius: 16px; background: rgba(120, 53, 15, 0.55); border: 1.5px solid rgba(251, 191, 36, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
-        <span style="font-size: 10px; color: #FCD34D; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">👑 Teak Club Tier</span>
-        <span style="font-size: 20px; font-weight: 900; color: #FEF08A; line-height: 1.1;">Gold</span>
-      </div>
-      <div style="padding: 12px 14px; border-radius: 16px; background: rgba(6, 78, 59, 0.55); border: 1.5px solid rgba(52, 211, 153, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
-        <span style="font-size: 10px; color: #6EE7B7; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">🛡️ Wood Standard</span>
-        <span style="font-size: 20px; font-weight: 900; color: #A7F3D0; line-height: 1.1;">100% Teak</span>
+      <div class="pt-6 border-t border-surface-container flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-on-surface-variant">
+        <p>© 2024 Glory Furniture Hub. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <a class="hover:text-primary" href="/faq/">Privacy Policy</a>
+          <a class="hover:text-primary" href="/faq/">Terms of Service</a>
+          <a class="hover:text-primary" href="/about/">Sustainability Charter</a>
+        </div>
       </div>
     </div>
-  </div>
+  </footer>
 
-  <!-- PATRON HUB NAVIGATION (Red-Circled Account Menu List) -->
-  <div class="bg-white rounded-3xl p-5 sm:p-7 border border-[#EADBCE] shadow-sm space-y-3" style="border-radius: 28px !important;">
-    <h2 class="text-xs font-black uppercase tracking-wider text-[#8C5E1E] pb-3 border-b border-gray-100 flex items-center justify-between">
-      <span>Patron Hub Navigation</span>
-      <span class="text-[10px] font-bold text-gray-400 font-mono">ACCOUNT MENU</span>
-    </h2>
+  <!-- Scripts -->
+  <script>
+    function toggleNavDrawer() {
+      const drawer = document.getElementById('navDrawer');
+      const overlay = document.getElementById('navDrawerOverlay');
+      if (!drawer || !overlay) return;
+      const isOpen = !drawer.classList.contains('-translate-x-full');
+      if (isOpen) {
+        drawer.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = '';
+      } else {
+        drawer.classList.remove('-translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+      }
+    }
 
-    <div class="space-y-2.5">
-      <!-- 1. My Orders -->
-      <a href="{% url 'orders' %}" class="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[#FAF7F4] hover:bg-blue-50/60 border border-transparent hover:border-blue-200 transition-all active-tap group" style="border-radius: 18px !important;">
-        <div class="flex items-center gap-3.5">
-          <span class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-            📦
-          </span>
-          <div>
-            <span class="text-sm font-bold text-gray-950 block">My Orders</span>
-            <span class="text-xs text-gray-500">Live production tracking</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-100 text-blue-800 border border-blue-300">
-            {{ orders_count|default:0 }}
-          </span>
-          <span class="text-gray-400 text-sm font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-        </div>
-      </a>
-
-      <!-- 2. Saved Wishlist -->
-      <a href="{% url 'wishlist' %}" class="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[#FAF7F4] hover:bg-rose-50/60 border border-transparent hover:border-rose-200 transition-all active-tap group" style="border-radius: 18px !important;">
-        <div class="flex items-center gap-3.5">
-          <span class="w-10 h-10 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-            ❤️
-          </span>
-          <div>
-            <span class="text-sm font-bold text-gray-950 block">Saved Wishlist</span>
-            <span class="text-xs text-gray-500">Curated teak pieces</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-300">
-            {{ wishlist_count|default:0 }}
-          </span>
-          <span class="text-gray-400 text-sm font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-        </div>
-      </a>
-
-      <!-- 3. Delivery Addresses -->
-      <a href="{% url 'address' %}" class="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[#FAF7F4] hover:bg-emerald-50/60 border border-transparent hover:border-emerald-200 transition-all active-tap group" style="border-radius: 18px !important;">
-        <div class="flex items-center gap-3.5">
-          <span class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-            📍
-          </span>
-          <div>
-            <span class="text-sm font-bold text-gray-950 block">Delivery Addresses</span>
-            <span class="text-xs text-gray-500">Doorstep coordinates</span>
-          </div>
-        </div>
-        <span class="text-gray-400 text-sm font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-      </a>
-
-      <!-- 4. Custom 3D Designs -->
-      <a href="{% url 'custom_request' %}" class="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[#FAF7F4] hover:bg-purple-50/60 border border-transparent hover:border-purple-200 transition-all active-tap group" style="border-radius: 18px !important;">
-        <div class="flex items-center gap-3.5">
-          <span class="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-            📐
-          </span>
-          <div>
-            <span class="text-sm font-bold text-gray-950 block">Custom 3D Designs</span>
-            <span class="text-xs text-gray-500">Bespoke timber joinery</span>
-          </div>
-        </div>
-        <span class="text-gray-400 text-sm font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-      </a>
-
-      <!-- 5. Account Settings -->
-      <a href="{% url 'customer_edit_profile' %}" class="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-[#FAF7F4] hover:bg-amber-50/60 border border-transparent hover:border-amber-200 transition-all active-tap group" style="border-radius: 18px !important;">
-        <div class="flex items-center gap-3.5">
-          <span class="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition-transform">
-            ✏️
-          </span>
-          <div>
-            <span class="text-sm font-bold text-gray-950 block">Account Settings</span>
-            <span class="text-xs text-gray-500">Name, phone &amp; details</span>
-          </div>
-        </div>
-        <span class="text-gray-400 text-sm font-bold group-hover:translate-x-0.5 transition-transform">&rarr;</span>
-      </a>
-    </div>
-  </div>
-
-</div>
-{% endblock %}
+    function toggleSwitch(btn) {
+      const isChecked = btn.getAttribute('aria-checked') === 'true';
+      const circle = btn.querySelector('span');
+      
+      if (isChecked) {
+        btn.setAttribute('aria-checked', 'false');
+        btn.classList.remove('bg-primary');
+        btn.classList.add('bg-surface-container-highest');
+        circle.classList.remove('translate-x-5');
+        circle.classList.add('translate-x-0.5');
+      } else {
+        btn.setAttribute('aria-checked', 'true');
+        btn.classList.remove('bg-surface-container-highest');
+        btn.classList.add('bg-primary');
+        circle.classList.remove('translate-x-0.5');
+        circle.classList.add('translate-x-5');
+      }
+    }
+  </script>
+</body>
+</html>

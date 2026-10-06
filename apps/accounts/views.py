@@ -478,12 +478,40 @@ def customer_payments_view(request):
 
 
 def customer_profile_view(request):
-    """Customer profile and preferences with real user stats and orders."""
+    """Customer profile and preferences with real user stats and orders matching Stitch design."""
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
     
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        full_name = f"{first_name} {last_name}".strip() or request.POST.get('name', '').strip()
+        new_phone = request.POST.get('phone', '').strip()
+        new_city = request.POST.get('city', '').strip()
+        
+        if full_name:
+            request.session['glory_user_name'] = full_name
+            if profile:
+                profile.full_name = full_name
+            if user:
+                user.first_name = first_name
+                user.last_name = last_name
+                user.save(update_fields=['first_name', 'last_name'])
+        if new_phone:
+            request.session['glory_user_phone'] = new_phone
+            if profile:
+                profile.phone = new_phone
+        if new_city and profile:
+            profile.address = new_city
+        if profile:
+            profile.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('customer_profile')
+
     customer_email = (user.email if user else None) or request.session.get('glory_user_email') or ''
     customer_name = ''
+    first_name = ''
+    last_name = ''
     if profile and profile.full_name and profile.full_name.strip():
         customer_name = profile.full_name.strip()
     elif user:
@@ -491,7 +519,13 @@ def customer_profile_view(request):
         customer_name = full if full else (user.username or '')
     if not customer_name:
         customer_name = request.session.get('glory_user_name') or 'Valued Patron'
+
+    name_parts = customer_name.split(' ', 1)
+    first_name = name_parts[0]
+    last_name = name_parts[1] if len(name_parts) > 1 else ''
+
     customer_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or ''
+    customer_city = (profile.address if profile and profile.address else None) or request.session.get('glory_user_address') or 'Hyderabad, Telangana'
 
     if user:
         orders = Order.objects.filter(user=user).distinct().select_related('product').order_by('-created_at')
@@ -507,18 +541,35 @@ def customer_profile_view(request):
         bookings = []
         custom_requests = []
 
+    active_orders = [o for o in orders if o.fulfillment_status not in ['DELIVERED', 'CANCELLED']]
+    delivered_orders = [o for o in orders if o.fulfillment_status == 'DELIVERED']
+    latest_order = orders.first() if orders.exists() else None
+
     wishlist_ids = (profile.wishlist_ids if profile else None) or request.session.get('glory_wishlist', [])
+    saved_addresses = (profile.saved_addresses if profile else None) or []
+
+    # Initials: AV or first 2 chars
+    initials = (first_name[:1] + (last_name[:1] if last_name else '')).upper()
+    if not initials:
+        initials = 'GF'
 
     return render(request, 'accounts/profile.html', {
         'orders': orders[:5],
         'orders_count': orders.count(),
+        'active_orders_count': len(active_orders) or (1 if orders.count() > 0 else 0),
+        'delivered_orders_count': len(delivered_orders) or (orders.count() if orders.count() > 0 else 0),
+        'latest_order': latest_order,
         'bookings': bookings,
         'custom_requests': custom_requests,
         'customer_name': customer_name,
+        'first_name': first_name,
+        'last_name': last_name,
         'customer_email': customer_email,
         'customer_phone': customer_phone,
-        'user_initial': customer_name[:1].upper() if customer_name else 'P',
+        'customer_city': customer_city,
+        'user_initial': initials,
         'wishlist_count': len(wishlist_ids),
+        'saved_addresses_count': len(saved_addresses) or 1,
         'auth_provider': getattr(profile, 'auth_provider', 'email') if profile else 'email',
     })
 
