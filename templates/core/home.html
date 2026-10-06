@@ -33,33 +33,158 @@
       -webkit-overflow-scrolling: touch;
     }
   </style>
-</head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="top-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><!-- Top Announcement Bar (Minimalist NATURA Style) -->
-<!-- Main Navigation Bar -->
-<div class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
-<div class="max-w-7xl mx-auto px-3 sm:px-margin py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-space-md">
-<!-- Brand Logo & Name (Left) -->
-<a class="flex items-center gap-2 sm:gap-2.5 shrink min-w-0 group select-none" href="/">
-<div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-<img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
-</div>
-<span class="font-display-md text-[13px] xs:text-[15px] sm:text-[18px] tracking-normal sm:tracking-widest uppercase text-primary font-bold group-hover:text-secondary transition-colors truncate">GLORY FURNITURE HUB</span>
-</a>
-<!-- Centered Clean Horizontal Navigation Links -->
-<!-- Right Minimal Action Icons -->
-<div class="flex items-center gap-1 sm:gap-space-sm md:gap-4 shrink-0 text-on-surface">
-<button aria-label="Search" onclick="window.location.href='/catalog/'" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px] sm:text-[22px]">search</span>
-</button>
-<a aria-label="Account" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center" data-path="profile" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}">
-<span class="material-symbols-outlined text-[20px] sm:text-[22px]">person</span>
-</a>
-<a aria-label="Favorites" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="favorites" href="/wishlist/" title="Favorites"><svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="rounded-full absolute top-0.5 right-0.5 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[9px] sm:text-[10px] font-bold w-3.5 h-3.5 sm:w-4 sm:h-4 shadow-sm">3</span></a><a aria-label="Shopping Bag" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center" data-path="cart" href="/cart/">
-<span class="material-symbols-outlined text-[20px] sm:text-[22px]">shopping_bag</span>
-<span class="absolute top-0.5 right-0.5 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[9px] sm:text-[10px] font-bold w-3.5 h-3.5 sm:w-4 sm:h-4 shadow-sm">2</span>
-</a>
-</div>
-</div>
-</div></header><main class="w-full bg-surface"><div class="flex flex-col w-full">
+</head><body class="bg-surface font-body-md text-on-surface antialiased">
+<header class="sticky top-0 w-full z-50 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+  <!-- Main Navigation Bar -->
+  <div class="w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Left: 3-Lines Menu & Brand Logo -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <!-- 3-Lines Menu Bar Button -->
+        <button type="button" onclick="toggleNavDrawer()" class="p-1.5 sm:p-2 rounded-lg hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center cursor-pointer shrink-0" title="Open Menu">
+          <span class="material-symbols-outlined text-[24px]">menu</span>
+        </button>
+
+        <!-- Brand Logo & Name (Arranged properly: GLORY on top, FURNITURE HUB underneath) -->
+        <a class="flex items-center gap-2 sm:gap-2.5 shrink-0 group select-none cursor-pointer" href="/">
+          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-amber-600/30 shadow-xs bg-[#5C3D2E]">
+            <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
+          </div>
+          <div class="flex flex-col justify-center leading-none">
+            <span class="font-display-md text-[13px] xs:text-[14px] sm:text-[16px] tracking-wider uppercase text-primary font-black leading-tight group-hover:text-secondary transition-colors whitespace-nowrap">
+              GLORY
+            </span>
+            <span class="text-[9px] xs:text-[10px] sm:text-[11px] tracking-widest uppercase text-secondary font-bold leading-tight whitespace-nowrap">
+              FURNITURE HUB
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center: Extended Search Bar -->
+      <div class="flex-1 max-w-xl mx-2 sm:mx-6">
+        <form action="/catalog/" method="GET" class="relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+          <span class="material-symbols-outlined text-outline text-[18px] sm:text-[20px] mr-2 shrink-0">search</span>
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search bed, dining table, sofa, mandir..." 
+            class="w-full bg-transparent text-xs sm:text-sm text-primary placeholder:text-stone-400 outline-none"
+          />
+        </form>
+      </div>
+
+      <!-- Right: 3-Dots Menu Button (Contains Profile, Favorites & Cart inside) -->
+      <div class="relative shrink-0">
+        <button type="button" onclick="toggleOptionsDropdown(event)" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer" title="Options">
+          <span class="material-symbols-outlined text-[24px]">more_vert</span>
+        </button>
+
+        <!-- 3-Dots Dropdown Panel: ONLY Profile, Fav & Cart -->
+        <div id="optionsDropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-stone-200/80 py-2 z-50 text-xs text-stone-800">
+          <!-- 1. Profile -->
+          <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[20px] text-secondary">person</span>
+              <span>Profile</span>
+            </div>
+            <span class="text-[10px] text-stone-400 font-normal">{% if request.user.is_authenticated %}Account{% else %}Sign In{% endif %}</span>
+          </a>
+
+          <!-- 2. Fav (Wishlist) -->
+          <a href="/wishlist/" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[20px] text-secondary">favorite</span>
+              <span>Favorites</span>
+            </div>
+            <span id="navDropdownWishlistCount" class="bg-secondary/15 text-secondary text-[11px] font-bold px-2 py-0.5 rounded-full">3</span>
+          </a>
+
+          <!-- 3. Cart -->
+          <a href="/cart/" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[20px] text-secondary">shopping_bag</span>
+              <span>Cart</span>
+            </div>
+            <span id="navDropdownCartCount" class="bg-secondary text-white text-[11px] font-bold px-2 py-0.5 rounded-full">2</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================== -->
+<!-- SLIDE-OUT NAVIGATION DRAWER (3-Lines)                          -->
+<!-- ============================================================== -->
+<div id="navDrawerOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
+<aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out">
+  <div>
+    <div class="p-5 border-b border-surface-container flex items-center justify-between bg-surface-container-low/50">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center border border-amber-600/30 bg-[#5C3D2E]">
+          <img alt="Glory Furniture" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
+        </div>
+        <div class="flex flex-col leading-none">
+          <span class="font-display-md text-xs font-black text-primary tracking-wider uppercase">GLORY</span>
+          <span class="text-[9px] font-bold text-secondary tracking-widest uppercase">FURNITURE HUB</span>
+        </div>
+      </div>
+      <button type="button" onclick="toggleNavDrawer()" class="p-1 rounded-full text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <nav class="p-4 flex flex-col gap-1 text-xs font-semibold text-primary">
+      <a href="/" class="flex items-center gap-3 p-2.5 rounded-xl bg-surface-container-low text-secondary font-bold transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">home</span>
+        <span>Home Storefront</span>
+      </a>
+      <a href="/catalog/" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">grid_view</span>
+        <span>Explore All Collections</span>
+      </a>
+      <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">bed</span>
+        <span>Solid Teak Beds</span>
+      </a>
+      <a href="/catalog/?category=Dining%20Table" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">table_restaurant</span>
+        <span>Dining Suites</span>
+      </a>
+      <a href="/catalog/?category=Sofa%20Set" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">chair</span>
+        <span>Living Room Sofas</span>
+      </a>
+      <a href="/catalog/?category=Dressing%20Table" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">dresser</span>
+        <span>Dressing Tables</span>
+      </a>
+      <a href="/catalog/?category=Podimes" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">weekend</span>
+        <span>Heritage Diwans</span>
+      </a>
+      <a href="/custom-request/" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-secondary text-[20px]">architecture</span>
+        <span>Custom Furniture Studio</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
+    <div class="flex items-center gap-2 text-primary font-bold mb-1">
+      <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
+      <span>Showroom Timings:</span>
+    </div>
+    <p class="text-[11px] leading-relaxed">10:00 AM - 9:00 PM (All 7 Days)</p>
+    <div class="mt-2 pt-2 border-t border-surface-container/60 text-[11px] font-semibold text-secondary flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-[15px]">call</span>
+      <span>+91 98400 12345</span>
+    </div>
+  </div>
+</aside><main class="w-full bg-surface"><div class="flex flex-col w-full">
 <!-- Dynamic Notification Toast Container -->
 <div class="fixed bottom-8 right-8 z-50 transform transition-all duration-300 pointer-events-none flex items-center gap-space-sm bg-primary text-on-primary px-space-md py-space-sm rounded-xl shadow-xl translate-y-24 opacity-0" id="interactionToast">
 <span class="material-symbols-outlined text-secondary-container" id="toastIcon">volume_up</span>
@@ -907,9 +1032,39 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       renderCoverflow();
       startCoverflowAutoPlay();
     });
-    // Call immediately
-    renderCoverflow();
-    startCoverflowAutoPlay();
+    // Navigation Drawer Toggle
+    function toggleNavDrawer() {
+      const drawer = document.getElementById('navDrawer');
+      const overlay = document.getElementById('navDrawerOverlay');
+      if (!drawer || !overlay) return;
+      const isOpen = !drawer.classList.contains('-translate-x-full');
+      if (isOpen) {
+        drawer.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = '';
+      } else {
+        drawer.classList.remove('-translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // 3-Dots Options Dropdown Toggle (Only Profile, Fav & Cart)
+    function toggleOptionsDropdown(e) {
+      if (e) e.stopPropagation();
+      const dd = document.getElementById('optionsDropdown');
+      if (!dd) return;
+      dd.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const dd = document.getElementById('optionsDropdown');
+      if (dd && !dd.classList.contains('hidden') && !e.target.closest('#optionsDropdown') && !e.target.closest('button[onclick*="toggleOptionsDropdown"]')) {
+        dd.classList.add('hidden');
+      }
+    });
   </script>
 </div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-xl"><div class="w-full px-4 sm:px-6 lg:px-10"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g"><span class="font-headline-sm text-headline-sm font-semibold text-primary">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div></div></footer>
 

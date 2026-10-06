@@ -129,119 +129,69 @@
           <span class="material-symbols-outlined text-[24px]">menu</span>
         </button>
 
-        <!-- Brand Logo & Name -->
-        <a class="flex items-center gap-2 sm:gap-2.5 group select-none cursor-pointer" href="/">
-          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-            <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
+        <!-- Brand Logo & Name (Arranged properly: GLORY on top, FURNITURE HUB underneath) -->
+        <a class="flex items-center gap-2 sm:gap-2.5 shrink-0 group select-none cursor-pointer" href="/">
+          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-amber-600/30 shadow-xs bg-[#5C3D2E]">
+            <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
           </div>
-          <span class="font-display-md text-[14px] xs:text-[15px] sm:text-[18px] tracking-normal sm:tracking-widest uppercase text-primary font-bold group-hover:text-secondary transition-colors truncate">
-            GLORY FURNITURE HUB
-          </span>
+          <div class="flex flex-col justify-center leading-none">
+            <span class="font-display-md text-[13px] xs:text-[14px] sm:text-[16px] tracking-wider uppercase text-primary font-black leading-tight group-hover:text-secondary transition-colors whitespace-nowrap">
+              GLORY
+            </span>
+            <span class="text-[9px] xs:text-[10px] sm:text-[11px] tracking-widest uppercase text-secondary font-bold leading-tight whitespace-nowrap">
+              FURNITURE HUB
+            </span>
+          </div>
         </a>
       </div>
 
-      <!-- Center: Fit-Width Search Bar -->
-      <form action="/catalog/" method="GET" class="hidden sm:flex flex-1 max-w-md mx-3">
-        <div class="relative w-full flex items-center">
-          <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[18px] pointer-events-none">search</span>
-          <input name="search" class="w-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/70 text-xs sm:text-sm pl-9 pr-4 py-2 rounded-full border border-outline-variant/30 focus:border-primary focus:bg-white focus:outline-none transition-all" placeholder="Search handcrafted furniture, beds, sofas..." type="text">
-        </div>
-      </form>
+      <!-- Center: Extended Search Bar -->
+      <div class="flex-1 max-w-xl mx-2 sm:mx-6">
+        <form action="/catalog/" method="GET" class="relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+          <span class="material-symbols-outlined text-outline text-[18px] sm:text-[20px] mr-2 shrink-0">search</span>
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search bed, dining table, sofa, mandir..." 
+            class="w-full bg-transparent text-xs sm:text-sm text-primary placeholder:text-stone-400 outline-none"
+          />
+        </form>
+      </div>
 
-      <!-- Right: Wishlist, Cart & 3-Dots / Options Menu -->
-      <div class="flex items-center gap-1 sm:gap-2 shrink-0 text-on-surface relative">
-        <!-- Wishlist Icon -->
-        <a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center cursor-pointer" href="/wishlist/" title="Favorites">
-          <span class="material-symbols-outlined text-[21px]">favorite</span>
-          <span id="headerWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary text-[9px] font-bold w-4 h-4 shadow-2xs">3</span>
-        </a>
-
-        <!-- Shopping Bag / Cart Icon -->
-        <button type="button" onclick="triggerCartFlyout()" aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
-          <span class="material-symbols-outlined text-[21px]">shopping_bag</span>
-          <span id="headerCartBadge" class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full text-[9px] font-bold w-4 h-4 shadow-2xs">1</span>
+      <!-- Right: 3-Dots Menu Button (Contains Profile, Favorites & Cart inside) -->
+      <div class="relative shrink-0">
+        <button type="button" onclick="toggleThreeDotsDropdown(event)" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer" title="Options">
+          <span class="material-symbols-outlined text-[24px]">more_vert</span>
         </button>
 
-        <!-- 3-Dots Menu Button (Options & Profile Menu) -->
-        <div class="relative" id="threeDotsMenuWrapper">
-          <button 
-            type="button" 
-            onclick="toggleThreeDotsDropdown(event)" 
-            aria-label="Options &amp; Profile" 
-            class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95" 
-            title="Options &amp; Profile"
-          >
-            <span class="material-symbols-outlined text-[22px]">more_vert</span>
-          </button>
-
-          <!-- 3-Dots Dropdown Menu -->
-          <div 
-            id="threeDotsDropdown" 
-            class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 transform opacity-0 scale-95 transition-all duration-200 origin-top-right font-sans text-xs"
-          >
-            <!-- User / Patron Header -->
-            <div class="px-4 py-2.5 border-b border-gray-100 flex items-center gap-2.5 bg-surface-container-low/40">
-              <div class="w-8 h-8 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                {% if request.user.is_authenticated %}{{ request.user.first_name|slice:":1"|default:"U" }}{% else %}G{% endif %}
-              </div>
-              <div class="min-w-0 flex-1">
-                <p class="font-bold text-gray-950 truncate">{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% else %}Glory Guest Patron{% endif %}</p>
-                <p class="text-[10px] text-gray-500 truncate">{% if request.user.is_authenticated %}{{ request.user.email }}{% else %}Welcome to Digital Atelier{% endif %}</p>
-              </div>
+        <!-- 3-Dots Dropdown Panel: ONLY Profile, Fav & Cart -->
+        <div id="threeDotsDropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-stone-200/80 py-2 z-50 text-xs text-stone-800">
+          <!-- 1. Profile -->
+          <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[20px] text-secondary">person</span>
+              <span>Profile</span>
             </div>
+            <span class="text-[10px] text-stone-400 font-normal">{% if request.user.is_authenticated %}Account{% else %}Sign In{% endif %}</span>
+          </a>
 
-            <!-- Showroom Timings & Hours -->
-            <div class="px-4 py-2.5 border-b border-gray-100 flex items-start gap-2 bg-amber-50/50 text-[11px] text-amber-950">
-              <span class="material-symbols-outlined text-[16px] text-amber-700 shrink-0 mt-0.5">schedule</span>
-              <div>
-                <span class="font-bold block">Showroom Timings</span>
-                <span class="text-stone-600">10:00 AM - 9:00 PM (All 7 Days)</span>
-              </div>
+          <!-- 2. Fav (Wishlist) -->
+          <a href="/wishlist/" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[20px] text-secondary">favorite</span>
+              <span>Favorites</span>
             </div>
+            <span id="headerWishlistBadge" class="bg-secondary/15 text-secondary text-[11px] font-bold px-2 py-0.5 rounded-full">3</span>
+          </a>
 
-            <!-- Action Items -->
-            <div class="py-1">
-              <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
-                <span class="material-symbols-outlined text-[18px] text-secondary">person</span>
-                <span>My Profile</span>
-              </a>
-              <a href="{% if request.user.is_authenticated %}/customer/orders/{% else %}/login/{% endif %}" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
-                <span class="material-symbols-outlined text-[18px] text-secondary">receipt_long</span>
-                <span>My Orders</span>
-              </a>
-              <a href="/wishlist/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
-                <span class="material-symbols-outlined text-[18px] text-secondary">favorite</span>
-                <span>Wishlist / Saved Items</span>
-              </a>
-              <a href="/cart/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
-                <span class="material-symbols-outlined text-[18px] text-secondary">shopping_bag</span>
-                <span>Atelier Cart</span>
-              </a>
-              <a href="/custom-request/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
-                <span class="material-symbols-outlined text-[18px] text-secondary">architecture</span>
-                <span>Custom Furniture Request</span>
-              </a>
-              <a href="/contact/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
-                <span class="material-symbols-outlined text-[18px] text-secondary">support_agent</span>
-                <span>Showroom &amp; Contact: +91 98400 12345</span>
-              </a>
+          <!-- 3. Cart -->
+          <a href="/cart/" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-[20px] text-secondary">shopping_bag</span>
+              <span>Cart</span>
             </div>
-
-            <!-- Auth Link -->
-            <div class="pt-1 border-t border-gray-100">
-              {% if request.user.is_authenticated %}
-              <a href="/admin/logout/" class="flex items-center gap-2.5 px-4 py-2 font-semibold text-red-600 hover:bg-red-50 transition-colors">
-                <span class="material-symbols-outlined text-[18px]">logout</span>
-                <span>Sign Out</span>
-              </a>
-              {% else %}
-              <a href="/login/" class="flex items-center gap-2.5 px-4 py-2 font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors">
-                <span class="material-symbols-outlined text-[18px]">login</span>
-                <span>Sign In / Register</span>
-              </a>
-              {% endif %}
-            </div>
-          </div>
+            <span id="headerCartBadge" class="bg-secondary text-white text-[11px] font-bold px-2 py-0.5 rounded-full">1</span>
+          </a>
         </div>
       </div>
 
@@ -254,12 +204,14 @@
   <div id="navDrawerOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
   <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out">
     <div>
-      <div class="p-5 border-b border-surface-container flex items-center justify-between bg-surface-container-low/50">
         <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">
-            <img alt="Glory Furniture" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
+          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center border border-amber-600/30 bg-[#5C3D2E]">
+            <img alt="Glory Furniture" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
           </div>
-          <span class="font-display-md text-sm font-bold text-primary tracking-wider uppercase">Menu &amp; Collections</span>
+          <div class="flex flex-col leading-none">
+            <span class="font-display-md text-xs font-black text-primary tracking-wider uppercase">GLORY</span>
+            <span class="text-[9px] font-bold text-secondary tracking-widest uppercase">FURNITURE HUB</span>
+          </div>
         </div>
         <button type="button" onclick="toggleNavDrawer()" class="p-1 rounded-full text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">close</span>
