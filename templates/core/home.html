@@ -681,17 +681,18 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
     <span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest font-semibold">THE ATELIER EXPERIENCE</span>
   </div>
 
-  <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl border border-surface-container bg-primary-container">
-    <video class="w-full h-full object-cover pointer-events-none"
+  <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl border border-surface-container bg-black">
+    <video id="atelierShowcaseVideo"
+           class="w-full h-full object-cover pointer-events-none"
+           src="/media/products/product_1.mp4"
            autoplay loop muted playsinline
            disablepictureinpicture
            disableremoteplayback
-           controlslist="nodownload nofullscreen noplaybackrate"
-           poster="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
-      <source src="/static/videos/product%201.mp4" type="video/mp4">
+           controlslist="nodownload nofullscreen noplaybackrate">
+      <source src="/media/products/product_1.mp4" type="video/mp4">
+      <source src="/static/videos/product_1.mp4" type="video/mp4">
       <source src="/media/products/product%201.mp4" type="video/mp4">
-      <source src="/static/videos/bed_showcase.mp4" type="video/mp4">
-      <img alt="Glory Furniture Hub Atelier Cinematic Showcase" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhKxP5vQlgRT_Q5wD-cB-v7rd_XfCPNwRwkcbH_uu6pKI-5H4WlID7caw1HfcKRpyW3-U_0HRyMRyyePYr2Rm3Zc7E9Q0vPJ_LOFZtp211rH9Z9IF5sjG1W2DPcycniHspC5ZjetsY6XiMtbn12GrIIB8dMx7I0D5Hj9F3fn9v75mK5SUoEcE8ShF3p4S7jcgLwR7TCH6_YFQgtTJeCXpukkk7UgSdjPFafpA_6nZsKNRVuNlj9Ng">
+      <source src="/static/videos/product%201.mp4" type="video/mp4">
     </video>
     <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-black/10 pointer-events-none"></div>
 
@@ -1004,6 +1005,21 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
     document.addEventListener('DOMContentLoaded', () => {
       renderCoverflow();
       startCoverflowAutoPlay();
+
+      // Ensure video plays continuously and automatically
+      const showcaseVid = document.getElementById('atelierShowcaseVideo');
+      if (showcaseVid) {
+        showcaseVid.muted = true;
+        const playPromise = showcaseVid.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // In case autoplay policy requires user interaction
+            document.addEventListener('click', () => {
+              showcaseVid.play();
+            }, { once: true });
+          });
+        }
+      }
     });
     // Navigation Drawer Toggle
     function toggleNavDrawer() {
