@@ -75,31 +75,12 @@
             "xl": "0.75rem",
             "full": "9999px"
           },
-          spacing: {
-            "space-xl": "2.5rem",
-            "gutter": "1.5rem",
-            "margin-mobile": "1.25rem",
-            "gutter-mobile": "1rem",
-            "margin": "3rem",
-            "space-xs": "0.25rem",
-            "space-lg": "1.5rem",
-            "space-sm": "0.5rem",
-            "space-md": "1rem"
-          },
           fontFamily: {
             "headline-lg": ["Playfair Display", "serif"],
             "headline-md": ["Playfair Display", "serif"],
             "headline-sm": ["Playfair Display", "serif"],
-            "display-lg": ["Playfair Display", "serif"],
             "display-md": ["Playfair Display", "serif"],
-            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
-            "body-md": ["Plus Jakarta Sans", "sans-serif"],
-            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
-            "label-lg": ["Plus Jakarta Sans", "sans-serif"],
-            "label-md": ["Plus Jakarta Sans", "sans-serif"],
-            "label-sm": ["Plus Jakarta Sans", "sans-serif"],
-            "title-lg": ["Plus Jakarta Sans", "sans-serif"],
-            "title-md": ["Plus Jakarta Sans", "sans-serif"]
+            "body-md": ["Plus Jakarta Sans", "sans-serif"]
           }
         }
       }
@@ -129,21 +110,21 @@
 
 <body class="bg-surface font-body-md text-on-surface antialiased selection:bg-secondary/20">
 
-  <!-- ========================================== -->
-  <!-- 1. NAVIGATION BAR with 3-Line Menu & Brand -->
-  <!-- ========================================== -->
+  <!-- ============================================================== -->
+  <!-- 1. NAVIGATION BAR: 3-Lines Menu + Brand + Search + 3-Dots Menu -->
+  <!-- ============================================================== -->
   <header class="sticky top-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_4px_rgba(45,30,24,0.03)]">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-10 py-3 flex items-center justify-between gap-3">
       
-      <!-- Left: 3-Lines Hamburger Menu + Brand Logo & Name -->
+      <!-- Left: 3-Lines Hamburger Menu Button + Brand Logo & Name -->
       <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-        <!-- 3-Lines Hamburger Menu Button -->
+        <!-- 3-Lines Menu Icon -->
         <button 
           type="button" 
           onclick="toggleNavDrawer()" 
-          aria-label="Navigation Menu" 
+          aria-label="Toggle Navigation Drawer" 
           class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95" 
-          title="Open Menu"
+          title="Collections &amp; Menu"
         >
           <span class="material-symbols-outlined text-[24px]">menu</span>
         </button>
@@ -159,7 +140,7 @@
         </a>
       </div>
 
-      <!-- Centered Compact Search Bar -->
+      <!-- Center: Fit-Width Search Bar -->
       <form action="/catalog/" method="GET" class="hidden sm:flex flex-1 max-w-md mx-3">
         <div class="relative w-full flex items-center">
           <span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant text-[18px] pointer-events-none">search</span>
@@ -167,54 +148,124 @@
         </div>
       </form>
 
-      <!-- Right Action Icons: Favorites, Account, Shopping Bag -->
-      <div class="flex items-center gap-1 sm:gap-2 shrink-0 text-on-surface">
+      <!-- Right: Wishlist, Cart & 3-Dots / Options Menu -->
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0 text-on-surface relative">
+        <!-- Wishlist Icon -->
         <a aria-label="Favorites" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center cursor-pointer" href="/wishlist/" title="Favorites">
           <span class="material-symbols-outlined text-[21px]">favorite</span>
-          <span id="headerWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary font-label-sm text-[9px] font-bold w-4 h-4 shadow-2xs">3</span>
+          <span id="headerWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary text-[9px] font-bold w-4 h-4 shadow-2xs">3</span>
         </a>
 
-        <a aria-label="Account" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer" href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" title="Account">
-          <span class="material-symbols-outlined text-[21px]">person</span>
-        </a>
-
+        <!-- Shopping Bag / Cart Icon -->
         <button type="button" onclick="triggerCartFlyout()" aria-label="Shopping Bag" class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
           <span class="material-symbols-outlined text-[21px]">shopping_bag</span>
-          <span id="headerCartBadge" class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full font-label-sm text-[9px] font-bold w-4 h-4 shadow-2xs">1</span>
+          <span id="headerCartBadge" class="absolute top-1 right-1 flex items-center justify-center bg-secondary text-on-secondary rounded-full text-[9px] font-bold w-4 h-4 shadow-2xs">1</span>
         </button>
+
+        <!-- 3-Dots Menu Button (Options & Profile Menu) -->
+        <div class="relative" id="threeDotsMenuWrapper">
+          <button 
+            type="button" 
+            onclick="toggleThreeDotsDropdown(event)" 
+            aria-label="Options &amp; Profile" 
+            class="p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95" 
+            title="Options &amp; Profile"
+          >
+            <span class="material-symbols-outlined text-[22px]">more_vert</span>
+          </button>
+
+          <!-- 3-Dots Dropdown Menu -->
+          <div 
+            id="threeDotsDropdown" 
+            class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 transform opacity-0 scale-95 transition-all duration-200 origin-top-right font-sans text-xs"
+          >
+            <!-- User / Patron Header -->
+            <div class="px-4 py-2.5 border-b border-gray-100 flex items-center gap-2.5 bg-surface-container-low/40">
+              <div class="w-8 h-8 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                {% if request.user.is_authenticated %}{{ request.user.first_name|slice:":1"|default:"U" }}{% else %}G{% endif %}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="font-bold text-gray-950 truncate">{% if request.user.is_authenticated %}{{ request.user.get_full_name|default:request.user.username }}{% else %}Glory Guest Patron{% endif %}</p>
+                <p class="text-[10px] text-gray-500 truncate">{% if request.user.is_authenticated %}{{ request.user.email }}{% else %}Welcome to Digital Atelier{% endif %}</p>
+              </div>
+            </div>
+
+            <!-- Showroom Timings & Hours -->
+            <div class="px-4 py-2.5 border-b border-gray-100 flex items-start gap-2 bg-amber-50/50 text-[11px] text-amber-950">
+              <span class="material-symbols-outlined text-[16px] text-amber-700 shrink-0 mt-0.5">schedule</span>
+              <div>
+                <span class="font-bold block">Showroom Timings</span>
+                <span class="text-stone-600">10:00 AM - 9:00 PM (All 7 Days)</span>
+              </div>
+            </div>
+
+            <!-- Action Items -->
+            <div class="py-1">
+              <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-secondary">person</span>
+                <span>My Profile</span>
+              </a>
+              <a href="{% if request.user.is_authenticated %}/customer/orders/{% else %}/login/{% endif %}" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-secondary">receipt_long</span>
+                <span>My Orders</span>
+              </a>
+              <a href="/wishlist/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-secondary">favorite</span>
+                <span>Wishlist / Saved Items</span>
+              </a>
+              <a href="/cart/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-secondary">shopping_bag</span>
+                <span>Atelier Cart</span>
+              </a>
+              <a href="/custom-request/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-secondary">architecture</span>
+                <span>Custom Furniture Request</span>
+              </a>
+              <a href="/contact/" class="flex items-center gap-2.5 px-4 py-2 font-medium text-gray-700 hover:text-black hover:bg-amber-50/60 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-secondary">support_agent</span>
+                <span>Showroom &amp; Contact: +91 98400 12345</span>
+              </a>
+            </div>
+
+            <!-- Auth Link -->
+            <div class="pt-1 border-t border-gray-100">
+              {% if request.user.is_authenticated %}
+              <a href="/admin/logout/" class="flex items-center gap-2.5 px-4 py-2 font-semibold text-red-600 hover:bg-red-50 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                <span>Sign Out</span>
+              </a>
+              {% else %}
+              <a href="/login/" class="flex items-center gap-2.5 px-4 py-2 font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">login</span>
+                <span>Sign In / Register</span>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
   </header>
 
-  <!-- ========================================== -->
-  <!-- 2. SLIDE-OUT NAVIGATION DRAWER (3-Lines)   -->
-  <!-- ========================================== -->
+  <!-- ============================================================== -->
+  <!-- 2. SLIDE-OUT NAVIGATION DRAWER (3-Lines)                       -->
+  <!-- ============================================================== -->
   <div id="navDrawerOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
   <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out">
     <div>
-      <!-- Drawer Header -->
       <div class="p-5 border-b border-surface-container flex items-center justify-between bg-surface-container-low/50">
         <div class="flex items-center gap-2">
           <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">
             <img alt="Glory Furniture" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
           </div>
-          <span class="font-display-md text-sm font-bold text-primary tracking-wider uppercase">Menu &amp; Options</span>
+          <span class="font-display-md text-sm font-bold text-primary tracking-wider uppercase">Menu &amp; Collections</span>
         </div>
         <button type="button" onclick="toggleNavDrawer()" class="p-1 rounded-full text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
 
-      <!-- Quick Search inside Drawer (Mobile) -->
-      <div class="p-4 sm:hidden border-b border-surface-container">
-        <form action="/catalog/" method="GET" class="relative flex items-center">
-          <span class="material-symbols-outlined absolute left-3 text-stone-400 text-[18px]">search</span>
-          <input name="search" class="w-full bg-surface-container-low text-xs pl-9 pr-3 py-2 rounded-full border border-stone-200 outline-none" placeholder="Search catalog..." type="text">
-        </form>
-      </div>
-
-      <!-- Navigation Links -->
       <nav class="p-4 flex flex-col gap-1 text-xs font-semibold text-primary">
         <a href="/" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
           <span class="material-symbols-outlined text-secondary text-[20px]">home</span>
@@ -248,14 +299,9 @@
           <span class="material-symbols-outlined text-secondary text-[20px]">architecture</span>
           <span>Custom Furniture Studio</span>
         </a>
-        <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-surface-container-low transition-colors">
-          <span class="material-symbols-outlined text-secondary text-[20px]">account_circle</span>
-          <span>Customer Profile &amp; Orders</span>
-        </a>
       </nav>
     </div>
 
-    <!-- Drawer Footer: Working Hours & Support -->
     <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
       <div class="flex items-center gap-2 text-primary font-bold mb-1">
         <span class="material-symbols-outlined text-[16px] text-secondary">schedule</span>
@@ -269,9 +315,9 @@
     </div>
   </aside>
 
-  <!-- ========================================== -->
-  <!-- 3. BREADCRUMB & SKU SUBHEADER              -->
-  <!-- ========================================== -->
+  <!-- ============================================================== -->
+  <!-- 3. BREADCRUMB & SKU SUBHEADER                                  -->
+  <!-- ============================================================== -->
   <div class="w-full bg-surface-container-low/70 py-2.5 border-b border-surface-container/60">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 flex flex-wrap items-center justify-between gap-3 text-body-sm text-on-surface-variant">
       <nav class="flex items-center gap-2 text-xs sm:text-sm font-medium">
@@ -321,7 +367,7 @@
             </button>
           </div>
 
-          <!-- Thumbnail Row matching Stitch multi-angle gallery -->
+          <!-- Thumbnail Row matching multi-angle gallery -->
           <div class="grid grid-cols-4 sm:grid-cols-5 gap-2.5" id="thumbsGrid">
             {% if product.category_type == 'bed' or product.category_type == 'diwan' %}
               {% for opt in product.storage_config_list %}
@@ -539,7 +585,7 @@
                 id="pincodeInput" 
                 maxlength="6" 
                 inputmode="numeric" 
-                placeholder="Enter 6-digit Pincode (e.g. 500001, 530016, 560001)" 
+                placeholder="Enter 6-digit Pincode (e.g. 530016, 520001, 560001)" 
                 oninput="handlePincodeInput(this.value)" 
                 class="w-full bg-white border border-outline-variant/60 px-3.5 py-2 rounded-xl text-xs font-medium text-on-surface focus:outline-none focus:border-secondary transition-all pr-24" 
                 type="text"
@@ -558,10 +604,10 @@
               <div class="flex items-center justify-between flex-wrap gap-1">
                 <span class="font-bold text-gray-900 flex items-center gap-1">
                   <span class="text-secondary">📍</span>
-                  <span id="detectedRegionText">Analyzing region...</span>
+                  <span id="detectedRegionText">Analyzing location...</span>
                 </span>
                 <span id="gpsCoordinatesBadge" class="text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded-md">
-                  GPS: Ready
+                  Status: Ready
                 </span>
               </div>
               <div class="text-[11px] text-emerald-800 font-semibold flex items-center gap-1">
@@ -606,7 +652,7 @@
           <!-- Primary CTA: Add to Cart with Default Quantity Selector         -->
           <!-- =============================================================== -->
           <div class="flex items-center gap-2.5 mt-2">
-            <!-- Add to Cart (Main prominent action) -->
+            <!-- Add to Cart (Main action) -->
             <button 
               type="button" 
               onclick="handleAddCurrentProductToCart()" 
@@ -640,92 +686,93 @@
     </section>
 
     <!-- =============================================================== -->
-    <!-- Compact Product Specifications & Engineering (Minimal Space)    -->
+    <!-- Compact Product Specifications (Space-Efficient Single-Line List)-->
     <!-- =============================================================== -->
-    <section class="w-full bg-surface-container-low py-8 border-y border-surface-container" id="detailed-specifications">
+    <section class="w-full bg-surface-container-low py-6 border-y border-surface-container" id="detailed-specifications">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
           <div>
             <span class="text-secondary font-label-md text-[11px] font-bold uppercase tracking-widest">TECHNICAL SPECIFICATIONS</span>
-            <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold">Product Specifications &amp; Engineering</h2>
+            <h2 class="font-headline-sm text-base sm:text-lg text-primary font-bold">Product Specifications &amp; Engineering</h2>
           </div>
           <div class="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full text-xs font-bold text-primary shadow-2xs border border-surface-container">
-            <span class="material-symbols-outlined text-[16px] text-secondary">architecture</span>
+            <span class="material-symbols-outlined text-[15px] text-secondary">architecture</span>
             <span>SKU: GFH-{{ product.id|stringformat:"04d" }}</span>
           </div>
         </div>
 
-        <!-- Space-Efficient Compact Specifications Matrix -->
-        <div class="bg-white rounded-xl p-3 sm:p-4 border border-surface-container shadow-2xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
-          <!-- Spec 1: Timber -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">forest</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Timber Material</span>
-              <span class="font-semibold text-primary text-xs truncate block">{{ product.material|default:"100% Seasoned Kiln-Dried Teak" }}</span>
+        <!-- Space-Efficient Single-Line Specification Rows -->
+        <div class="bg-white rounded-2xl border border-surface-container shadow-2xs divide-y divide-surface-container overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">forest</span>
+              <span>Timber Material</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              {{ product.material|default:"100% Kiln-Dried Seasoned Teak Wood (Zero-VOC Biological Polish)" }}
             </div>
           </div>
-
-          <!-- Spec 2: Dimensions -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">straighten</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Dimensions</span>
-              <span class="font-semibold text-primary text-xs truncate block">{{ product.dimensions|default:"81\" L × 74\" W × 45\" H" }}</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">straighten</span>
+              <span>Dimensions</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              {{ product.dimensions|default:"81\" L × 74\" W × 45\" H (Custom Sizing Available)" }}
             </div>
           </div>
-
-          <!-- Spec 3: Storage / Mechanism -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">inventory_2</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Storage / Build</span>
-              <span class="font-semibold text-primary text-xs truncate block">Hydraulic Pistons (1200N) or Box</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">inventory_2</span>
+              <span>Storage &amp; Cavity</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              German Gas-Strut Hydraulic Pistons (1200N) or Solid Hardwood Box Storage
             </div>
           </div>
-
-          <!-- Spec 4: Joinery -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">handyman</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Joinery &amp; Join</span>
-              <span class="font-semibold text-primary text-xs truncate block">Mortise &amp; Tenon Joinery with Steel Plates</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">handyman</span>
+              <span>Joinery &amp; Build</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              Mortise-and-Tenon Interlocking Joinery with Anti-Creak Steel Sub-plates
             </div>
           </div>
-
-          <!-- Spec 5: Mattress / Fit -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">bed</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Mattress Fit</span>
-              <span class="font-semibold text-primary text-xs truncate block">King / Queen (up to 12" Thickness)</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">bed</span>
+              <span>Mattress Fit</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              Standard King &amp; Queen Mattresses (up to 12" Thickness)
             </div>
           </div>
-
-          <!-- Spec 6: Finish -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">texture</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Finish &amp; Polish</span>
-              <span class="font-semibold text-primary text-xs truncate block">Natural Biological Wax &amp; Oil Polish</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">texture</span>
+              <span>Finish &amp; Detail</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              Hand-Woven Natural Cane Lattice with Tactile Natural Wax Polish
             </div>
           </div>
-
-          <!-- Spec 7: Delivery -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">local_shipping</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Delivery &amp; Setup</span>
-              <span class="font-semibold text-primary text-xs truncate block">{{ product.lead_time|default:"White-Glove 3-5 Business Days" }}</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">local_shipping</span>
+              <span>Delivery &amp; Setup</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              {{ product.lead_time|default:"Free White-Glove In-Home Assembly within 3-5 Business Days" }}
             </div>
           </div>
-
-          <!-- Spec 8: Warranty -->
-          <div class="flex items-start gap-2.5 p-2 rounded-lg bg-surface-container-low/60">
-            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0 mt-0.5">verified_user</span>
-            <div class="min-w-0">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Warranty</span>
-              <span class="font-semibold text-primary text-xs truncate block">10-Year Anti-Termite &amp; Structural</span>
+          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
+            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
+              <span class="material-symbols-outlined text-[17px] text-secondary">verified_user</span>
+              <span>Warranty Coverage</span>
+            </div>
+            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+              10-Year Anti-Termite &amp; Structural Craft Guarantee
             </div>
           </div>
         </div>
@@ -770,7 +817,7 @@
     </section>
 
     <!-- =============================================================== -->
-    <!-- Sticky Mobile CTA Conversion Bar (Balanced Price + Add to Cart) -->
+    <!-- Sticky Mobile CTA Bar                                           -->
     <!-- =============================================================== -->
     <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 border-t border-surface-container">
       <div class="flex flex-col">
@@ -791,9 +838,7 @@
     <!-- Slide-over Cart Flyout Drawer Simulation                        -->
     <!-- =============================================================== -->
     <div class="fixed inset-0 z-50 pointer-events-none transition-all duration-300" id="cartFlyout">
-      <!-- Backdrop Tint -->
       <div class="absolute inset-0 bg-[#2d1e18]/40 backdrop-blur-xs opacity-0 transition-opacity duration-300" id="cartBackdrop" onclick="closeCartFlyout()"></div>
-      <!-- Drawer Container -->
       <div class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl p-6 flex flex-col justify-between translate-x-full transition-transform duration-300 ease-out z-10" id="cartPanel">
         <div>
           <div class="flex items-center justify-between pb-4 border-b border-surface-container">
@@ -805,7 +850,6 @@
               <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
           </div>
-          <!-- Cart Item Summary -->
           <div class="py-5 flex gap-4 border-b border-surface-container">
             <div class="w-20 h-20 rounded-xl bg-surface-container-low overflow-hidden shrink-0">
               <img alt="{{ product.name }}" class="w-full h-full object-cover" src="{{ product.primary_image }}">
@@ -845,17 +889,17 @@
     </div>
   </main>
 
-  <!-- ========================================== -->
-  <!-- Toast Notification                         -->
-  <!-- ========================================== -->
+  <!-- =============================================================== -->
+  <!-- Toast Notification                                              -->
+  <!-- =============================================================== -->
   <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 bg-[#1C1411] text-white px-5 py-3 rounded-full shadow-2xl border border-white/10">
     <span class="material-symbols-outlined text-secondary text-[20px]" id="toastIcon">shopping_bag</span>
     <span class="text-xs sm:text-sm font-medium tracking-wide" id="toastMessage">Added to cart</span>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 4. CLEAN & COMPACT FOOTER                  -->
-  <!-- ========================================== -->
+  <!-- =============================================================== -->
+  <!-- 4. CLEAN & COMPACT FOOTER                                       -->
+  <!-- =============================================================== -->
   <footer class="w-full bg-surface-container-low py-8 border-t border-surface-container text-xs text-on-surface-variant">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 pb-6">
@@ -906,10 +950,10 @@
   </footer>
 
   <!-- =============================================================== -->
-  <!-- Interactive JavaScript Logic                                    -->
+  <!-- JavaScript Interactions                                         -->
   <!-- =============================================================== -->
   <script>
-    // Navigation Drawer Toggle
+    // 3-Lines Nav Drawer Toggle
     function toggleNavDrawer() {
       const drawer = document.getElementById('navDrawer');
       const overlay = document.getElementById('navDrawerOverlay');
@@ -927,7 +971,37 @@
       }
     }
 
-    // Gallery Image List
+    // 3-Dots Dropdown Menu Toggle
+    function toggleThreeDotsDropdown(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('threeDotsDropdown');
+      if (!menu) return;
+      const isHidden = menu.classList.contains('hidden');
+      if (isHidden) {
+        menu.classList.remove('hidden');
+        setTimeout(() => {
+          menu.classList.remove('opacity-0', 'scale-95');
+          menu.classList.add('opacity-100', 'scale-100');
+        }, 10);
+      } else {
+        menu.classList.add('opacity-0', 'scale-95');
+        menu.classList.remove('opacity-100', 'scale-100');
+        setTimeout(() => menu.classList.add('hidden'), 200);
+      }
+    }
+
+    // Close 3-dots dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const wrapper = document.getElementById('threeDotsMenuWrapper');
+      const menu = document.getElementById('threeDotsDropdown');
+      if (wrapper && menu && !wrapper.contains(e.target) && !menu.classList.contains('hidden')) {
+        menu.classList.add('opacity-0', 'scale-95');
+        menu.classList.remove('opacity-100', 'scale-100');
+        setTimeout(() => menu.classList.add('hidden'), 200);
+      }
+    });
+
+    // Gallery Photos Array & Switcher
     let allGalleryImages = [
       {% if product.category_type == 'bed' or product.category_type == 'diwan' %}
         {% for opt in product.storage_config_list %}
@@ -1075,7 +1149,6 @@
       const label = document.getElementById('selectedStorageLabel');
       if (label) label.textContent = storageName;
 
-      // Automatically swap all gallery photos for selected storage variant
       if (images && images.length) {
         updateGalleryPhotos(images);
       }
@@ -1096,7 +1169,6 @@
       const label = document.getElementById('selectedChairsLabel');
       if (label) label.textContent = chairsName;
 
-      // Automatically swap all gallery photos for the selected dining chair suite
       if (images && images.length) {
         updateGalleryPhotos(images);
       }
@@ -1191,7 +1263,7 @@
     }
 
     // ===============================================================
-    // GPS & Accurate Indian Postal Pincode Analyzer
+    // Real GPS & Accurate Indian Postal Pincode Resolver (Via Backend API)
     // ===============================================================
     function handlePincodeInput(val) {
       val = val.replace(/\D/g, '');
@@ -1201,37 +1273,7 @@
       }
     }
 
-    function getPincodeRegionInfo(pin) {
-      const p = parseInt(pin);
-      if (pin.startsWith('50')) {
-        return { city: 'Hyderabad / Secunderabad', state: 'Telangana', lat: '17.3850° N', lng: '78.4867° E' };
-      } else if (pin.startsWith('51') || pin.startsWith('52') || pin.startsWith('53')) {
-        if (pin.startsWith('530') || pin.startsWith('531')) {
-          return { city: 'Visakhapatnam', state: 'Andhra Pradesh', lat: '17.6868° N', lng: '83.2185° E' };
-        } else if (pin.startsWith('533') || pin.startsWith('534')) {
-          return { city: 'Kakinada / Rajahmundry', state: 'Andhra Pradesh', lat: '16.9891° N', lng: '82.2475° E' };
-        } else if (pin.startsWith('520') || pin.startsWith('521') || pin.startsWith('522')) {
-          return { city: 'Vijayawada / Guntur', state: 'Andhra Pradesh', lat: '16.5062° N', lng: '80.6480° E' };
-        } else if (pin.startsWith('517') || pin.startsWith('518') || pin.startsWith('515')) {
-          return { city: 'Tirupati / Rayalaseema', state: 'Andhra Pradesh', lat: '13.6288° N', lng: '79.4192° E' };
-        } else {
-          return { city: 'Coastal Andhra', state: 'Andhra Pradesh', lat: '16.5062° N', lng: '80.6480° E' };
-        }
-      } else if (pin.startsWith('56') || pin.startsWith('57') || pin.startsWith('58') || pin.startsWith('59')) {
-        return { city: 'Bengaluru / Mysuru', state: 'Karnataka', lat: '12.9716° N', lng: '77.5946° E' };
-      } else if (pin.startsWith('60') || pin.startsWith('61') || pin.startsWith('62') || pin.startsWith('63') || pin.startsWith('64')) {
-        return { city: 'Chennai / Coimbatore', state: 'Tamil Nadu', lat: '13.0827° N', lng: '80.2707° E' };
-      } else if (pin.startsWith('67') || pin.startsWith('68') || pin.startsWith('69')) {
-        return { city: 'Kochi / Thiruvananthapuram', state: 'Kerala', lat: '9.9312° N', lng: '76.2673° E' };
-      } else if (pin.startsWith('40') || pin.startsWith('41') || pin.startsWith('42') || pin.startsWith('43') || pin.startsWith('44')) {
-        return { city: 'Mumbai / Pune', state: 'Maharashtra', lat: '19.0760° N', lng: '72.8777° E' };
-      } else if (pin.startsWith('11') || pin.startsWith('12') || pin.startsWith('20')) {
-        return { city: 'New Delhi / NCR', state: 'Delhi NCR', lat: '28.6139° N', lng: '77.2090° E' };
-      }
-      return { city: 'National Delivery Hub', state: 'India', lat: '20.5937° N', lng: '78.9629° E' };
-    }
-
-    async function analyzePincodeAndLocation() {
+    function analyzePincodeAndLocation() {
       const pinInput = document.getElementById('pincodeInput');
       const pin = (pinInput ? pinInput.value : '').trim();
       if (!pin || pin.length < 6) {
@@ -1249,31 +1291,24 @@
       const badge = document.getElementById('gpsCoordinatesBadge');
       if (regionElem) regionElem.textContent = `Verifying PIN ${pin}...`;
 
-      // Try official India Post API for exact post office & district
-      try {
-        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length > 0) {
-            const po = data[0].PostOffice[0];
-            const office = po.Name || '';
-            const district = po.District || '';
-            const state = po.State || '';
-            if (regionElem) regionElem.textContent = `${office ? office + ', ' : ''}${district}, ${state} (PIN: ${pin})`;
+      fetch(`/api/location/lookup/?pincode=${pin}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.status === 'success') {
+            if (regionElem) regionElem.textContent = data.formatted || `${data.city}, ${data.state} (PIN: ${pin})`;
             if (badge) badge.textContent = `PIN: ${pin} Verified`;
-            showToast(`Delivery verified for ${district}, ${state}!`, 'verified');
-            return;
+            showToast(`Delivery verified for ${data.city || 'your area'}!`, 'verified');
+          } else {
+            if (regionElem) regionElem.textContent = `Pincode: ${pin} (Delivery Available across India)`;
+            if (badge) badge.textContent = `PIN: ${pin} Ready`;
+            showToast(`Delivery available for ${pin}!`, 'verified');
           }
-        }
-      } catch (err) {
-        console.warn('Postal API error:', err);
-      }
-
-      // Fallback to accurate regional dictionary
-      const info = getPincodeRegionInfo(pin);
-      if (regionElem) regionElem.textContent = `${info.city}, ${info.state} (PIN: ${pin})`;
-      if (badge) badge.textContent = `GPS: ${info.lat}, ${info.lng}`;
-      showToast(`Pincode verified: ${info.city}, ${info.state}!`, 'verified');
+        })
+        .catch(() => {
+          if (regionElem) regionElem.textContent = `Pincode: ${pin} (Delivery Available across India)`;
+          if (badge) badge.textContent = `PIN: ${pin} Ready`;
+          showToast(`Delivery available for ${pin}!`, 'verified');
+        });
     }
 
     function detectGPSLocation() {
@@ -1282,82 +1317,68 @@
         return;
       }
       const badge = document.getElementById('gpsCoordinatesBadge');
-      if (badge) badge.textContent = 'Detecting GPS...';
+      if (badge) badge.textContent = 'Acquiring GPS...';
       const card = document.getElementById('locationAnalysisCard');
       if (card) {
         card.classList.remove('hidden');
         card.classList.add('flex');
       }
+      const regionElem = document.getElementById('detectedRegionText');
+      if (regionElem) regionElem.textContent = 'Locating coordinates...';
 
+      // 1. First attempt with standard accuracy (avoids timeout on PCs/laptops)
       navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          if (badge) badge.textContent = `GPS: ${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
-
-          let detectedCity = '';
-          let detectedState = '';
-          let detectedPin = '';
-          let detectedSuburb = '';
-
-          // 1. Try BigDataCloud reverse geocode (Free, CORS-friendly, zero key)
-          try {
-            const bdcRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
-            if (bdcRes.ok) {
-              const bdc = await bdcRes.json();
-              detectedCity = bdc.city || bdc.locality || bdc.principalSubdivision || '';
-              detectedState = bdc.principalSubdivision || '';
-              detectedPin = (bdc.postcode || '').replace(/\D/g, '').substring(0, 6);
-              detectedSuburb = bdc.locality || '';
-            }
-          } catch (e) {
-            console.warn('BigDataCloud error:', e);
-          }
-
-          // 2. If not found, try OpenStreetMap Nominatim
-          if (!detectedCity) {
-            try {
-              const osmRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-              if (osmRes.ok) {
-                const osm = await osmRes.json();
-                const addr = osm.address || {};
-                detectedCity = addr.city || addr.town || addr.county || addr.state_district || '';
-                detectedState = addr.state || '';
-                detectedPin = (addr.postcode || '').replace(/\D/g, '').substring(0, 6);
-                detectedSuburb = addr.suburb || addr.neighbourhood || addr.road || '';
-              }
-            } catch (e) {
-              console.warn('OSM error:', e);
-            }
-          }
-
-          if (detectedPin && detectedPin.length === 6) {
-            document.getElementById('pincodeInput').value = detectedPin;
-          }
-
-          if (!detectedCity) {
-            detectedCity = `Location Coordinates (${lat.toFixed(2)}°, ${lng.toFixed(2)}°)`;
-            detectedState = 'India';
-          }
-
-          const regionText = `${detectedSuburb ? detectedSuburb + ', ' : ''}${detectedCity}${detectedState ? ', ' + detectedState : ''}${detectedPin ? ' (PIN: ' + detectedPin + ')' : ''}`;
-          document.getElementById('detectedRegionText').textContent = regionText;
-
-          const presentInput = document.getElementById('presentAddressInput');
-          if (presentInput && !presentInput.value.trim() && detectedCity) {
-            presentInput.value = `${detectedSuburb || detectedCity}, ${detectedState}`;
-          }
-
-          showToast(`Location locked: ${detectedCity}!`, 'my_location');
+        (pos) => {
+          resolveLocationFromCoords(pos.coords.latitude, pos.coords.longitude);
         },
         (err) => {
-          console.warn('GPS error:', err);
-          if (badge) badge.textContent = 'GPS Standby';
-          showToast('Please enter your 6-digit postal code', 'info');
-          document.getElementById('pincodeInput').focus();
+          console.warn('Low-acc GPS error, trying high accuracy:', err);
+          // 2. Retry with high accuracy
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              resolveLocationFromCoords(pos.coords.latitude, pos.coords.longitude);
+            },
+            (err2) => {
+              console.warn('GPS denied or timed out:', err2);
+              if (badge) badge.textContent = 'GPS Standby';
+              if (regionElem) regionElem.textContent = 'Please enter your 6-digit Pincode to verify delivery';
+              showToast('Please enter your 6-digit pincode below', 'info');
+              document.getElementById('pincodeInput').focus();
+            },
+            { timeout: 7000, enableHighAccuracy: true }
+          );
         },
-        { timeout: 8000, enableHighAccuracy: true }
+        { timeout: 7000, enableHighAccuracy: false }
       );
+    }
+
+    function resolveLocationFromCoords(lat, lng) {
+      const badge = document.getElementById('gpsCoordinatesBadge');
+      if (badge) badge.textContent = `GPS: ${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
+      const regionElem = document.getElementById('detectedRegionText');
+
+      fetch(`/api/location/lookup/?lat=${lat}&lng=${lng}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.status === 'success') {
+            if (regionElem) regionElem.textContent = data.formatted || `${data.city}, ${data.state}`;
+            if (data.pincode && data.pincode.length === 6) {
+              document.getElementById('pincodeInput').value = data.pincode;
+            }
+            const presentInput = document.getElementById('presentAddressInput');
+            if (presentInput && !presentInput.value.trim() && data.city) {
+              presentInput.value = `${data.locality || data.city}, ${data.state}`;
+            }
+            showToast(`Location detected: ${data.city}!`, 'my_location');
+          } else {
+            if (regionElem) regionElem.textContent = `Coordinates Locked: (${lat.toFixed(2)}°, ${lng.toFixed(2)}°)`;
+            showToast('GPS coordinates locked!', 'my_location');
+          }
+        })
+        .catch(() => {
+          if (regionElem) regionElem.textContent = `Coordinates Locked: (${lat.toFixed(2)}°, ${lng.toFixed(2)}°)`;
+          showToast('GPS coordinates locked!', 'my_location');
+        });
     }
 
     function saveDeliveryAddress() {
