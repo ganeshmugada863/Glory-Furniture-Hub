@@ -1,106 +1,438 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Shopping Bag — Glory Furniture Hub{% endblock %}
+{% block title %}Artisanal Cart — Glory Furniture Hub{% endblock %}
 
-{% block back_bar %}
-<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
-  <div class="flex items-center gap-3 flex-shrink-0">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'catalog' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back">
-      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-    </button>
-    <span class="text-xs sm:text-sm font-bold text-gray-800 border-l border-gray-300 pl-3 leading-none">
-      Shopping Bag & Orders
-    </span>
-  </div>
-</div>
+{% block extra_head %}
+<!-- Google Fonts for Stitch Luxury Design System -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#140804",
+          "primary-container": "#2d1e18",
+          "primary-fixed": "#ffdbcd",
+          secondary: "#8c4f20",
+          "secondary-container": "#fcac74",
+          "secondary-fixed": "#ffe08e",
+          "on-secondary-container": "#773e0f",
+          surface: "#fbf9f6",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f5f3f0",
+          "surface-container": "#efeeeb",
+          "surface-container-high": "#eae8e5",
+          "on-surface": "#1b1c1a",
+          "on-surface-variant": "#4f4440",
+          outline: "#817470",
+          "outline-variant": "#d2c3be",
+        },
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['"Plus Jakarta Sans"', '"Poppins"', 'sans-serif'],
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    background-color: #fbf9f6;
+    color: #1b1c1a;
+    font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+  }
+  .font-display { font-family: 'Playfair Display', Georgia, serif; }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-    
-    <!-- LEFT: Items List -->
-    <div class="lg:col-span-2 space-y-4">
-      <div class="flex items-center justify-between pb-2 border-b border-gray-200">
-        <h1 class="text-lg sm:text-xl font-black text-gray-950">Your Selected Masterpieces ({{ cart_items|length }})</h1>
-        <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline">
-          + Continue Exploring
+<div class="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] py-6 sm:py-10 selection:bg-[#fcac74] selection:text-[#140804]">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+    <!-- Top Action Bar -->
+    <div class="flex items-center justify-between py-2 border-b border-[#d2c3be]/40">
+      <div class="flex items-center gap-3">
+        <a href="{% url 'catalog' %}" aria-label="Return to Catalog" class="w-10 h-10 rounded-full bg-[#efeeeb] flex items-center justify-center text-[#1b1c1a] hover:bg-[#eae8e5] transition-colors shadow-2xs">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
-      </div>
-
-      <div class="space-y-3">
-        {% for item in cart_items %}
-        <div class="p-4 bg-white rounded-2xl border border-gray-200/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-4 min-w-0">
-            <img src="{{ item.image }}" alt="{{ item.name }}" class="w-20 h-20 rounded-xl object-cover flex-shrink-0" />
-            <div class="min-w-0">
-              <h3 class="font-bold text-sm text-gray-950 truncate">{{ item.name }}</h3>
-              <p class="text-xs text-gray-500">{{ item.size }} • {{ item.material }}</p>
-              <span class="text-xs text-green-700 font-semibold mt-0.5 block">✓ In Stock for Quick Delivery</span>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between w-full sm:w-auto sm:gap-6 border-t sm:border-t-0 pt-2 sm:pt-0">
-            <div class="text-right">
-              <span class="text-base font-black text-gray-950 block">₹{{ item.price|floatformat:0 }}</span>
-              <span class="text-[10px] text-gray-400">Qty: {{ item.quantity }}</span>
-            </div>
-
-            <button onclick="removeFromCart({{ item.id }}, '{{ item.size }}')" class="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Remove">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
-          </div>
+        <div>
+          <h1 class="font-display text-xl sm:text-2xl font-bold text-[#140804] leading-tight">Artisanal Cart</h1>
+          <p class="text-[11px] sm:text-xs text-[#4f4440] uppercase tracking-wider font-semibold">
+            <span id="cart-items-counter">{{ cart_items|length }}</span> Heirloom{% if cart_items|length != 1 %}s{% endif %} in Reservation
+          </p>
         </div>
-        {% empty %}
-        <div class="text-center py-16 bg-white rounded-3xl border border-gray-200/80 p-8 space-y-4">
-          <p class="text-sm font-semibold text-gray-500">Your bag is empty.</p>
-          <a href="{% url 'catalog' %}" class="inline-block px-6 py-2.5 rounded-full bg-[#5C3D2E] text-white text-xs font-bold">
-            Explore Furniture Pieces
-          </a>
-        </div>
-        {% endfor %}
       </div>
+      <a class="min-h-[40px] px-4 rounded-full bg-[#fcac74] text-[#773e0f] hover:bg-[#f69d5f] transition-all flex items-center gap-1.5 shadow-xs font-semibold text-xs sm:text-sm" href="tel:+918008001950">
+        <span class="material-symbols-outlined text-[18px]">support_agent</span>
+        <span>Desk Direct</span>
+      </a>
     </div>
 
-    <!-- RIGHT: Order Summary Card -->
-    <div class="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-warm space-y-5">
-      <h2 class="font-black text-base text-gray-950 pb-3 border-b border-gray-100">Order Summary</h2>
+    <!-- Artisan Guarantee Banner -->
+    <div class="bg-[#f5f3f0] rounded-2xl p-3.5 sm:p-4 border border-[#d2c3be]/50 flex items-center gap-3 shadow-2xs">
+      <div class="w-9 h-9 rounded-full bg-[#ffe08e] flex items-center justify-center text-[#8c4f20] shrink-0 shadow-xs">
+        <span class="material-symbols-outlined text-[20px]">verified</span>
+      </div>
+      <p class="text-xs sm:text-sm text-[#4f4440] leading-relaxed">
+        <strong class="text-[#140804] font-semibold">Artisan Guarantee:</strong> Direct kiln-dried timber with government legal forest certification & 100% termite proofing.
+      </p>
+    </div>
 
-      <div class="space-y-3 text-xs text-gray-600">
-        <div class="flex justify-between">
-          <span>Subtotal</span>
-          <span class="font-bold text-gray-950">₹{{ subtotal|floatformat:0 }}</span>
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+
+      <!-- LEFT: Cart Items (7 Cols) -->
+      <div class="lg:col-span-7 space-y-4" id="cart-items-wrapper">
+        {% if cart_items %}
+          {% for item in cart_items %}
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#d2c3be]/60 shadow-xs flex flex-col gap-3 relative transition-all" id="cart-item-{{ item.id }}">
+            <div class="flex gap-4">
+              <!-- Item Thumbnail -->
+              <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden shrink-0 bg-[#efeeeb] border border-[#d2c3be]/40">
+                {% if item.image %}
+                  <img class="w-full h-full object-cover" src="{{ item.image }}" alt="{{ item.name }}">
+                {% else %}
+                  <div class="w-full h-full flex items-center justify-center bg-[#f5f3f0] text-3xl">🪑</div>
+                {% endif %}
+                <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-[#140804] text-[#ffdbcd] text-[9px] uppercase font-bold tracking-wider">
+                  Made-to-Order
+                </span>
+              </div>
+
+              <!-- Item Info -->
+              <div class="flex flex-col justify-between flex-1 min-w-0">
+                <div>
+                  <div class="flex items-start justify-between gap-1">
+                    <h2 class="font-display text-sm sm:text-base font-bold leading-snug text-[#140804] line-clamp-2">
+                      {{ item.name }}
+                    </h2>
+                    <button aria-label="Remove item" class="text-[#817470] hover:text-red-700 p-1 transition-colors cursor-pointer" onclick="handleRemoveCart({{ item.id }}, '{{ item.size|default:'' }}')" type="button" title="Remove piece">
+                      <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                  </div>
+                  <p class="font-display text-base sm:text-lg text-[#140804] font-bold mt-1">
+                    ₹{{ item.price|floatformat:0 }}
+                  </p>
+                </div>
+                <div class="flex items-center gap-2 mt-2 flex-wrap">
+                  <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#efeeeb] text-[#4f4440]">
+                    Qty: {{ item.quantity|default:1 }}
+                  </span>
+                  <span class="text-[11px] font-semibold text-[#8c4f20] flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#8c4f20]"></span>
+                    24-Day Carving Slot
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bespoke Specifications Pill Box -->
+            <div class="bg-[#f5f3f0] rounded-xl p-3 flex flex-col gap-1 text-[#4f4440] text-xs leading-relaxed border border-[#d2c3be]/30">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-[#140804]">
+                <span class="material-symbols-outlined text-[16px] text-[#8c4f20]">tune</span>
+                <span>Bespoke Specifications:</span>
+              </div>
+              <p><strong class="text-[#140804]">Timber:</strong> {{ item.wood|default:'Grade-A Burma Teak' }} • <strong class="text-[#140804]">Luster:</strong> Honey Natural Matte</p>
+              <p><strong class="text-[#140804]">Footprint:</strong> {{ item.size|default:'Architectural Custom' }} • <strong class="text-[#140804]">Joinery:</strong> Hand-Chiseled Mortise & Tenon</p>
+              <div class="flex items-center gap-1 text-[#8c4f20] font-semibold mt-0.5">
+                <span class="material-symbols-outlined text-[14px]">shield</span>
+                <span>Includes 8mm Toughened Beveled Glass Shield & Wax Polish</span>
+              </div>
+            </div>
+
+            <!-- Card Actions -->
+            <div class="flex items-center justify-between pt-1 border-t border-[#efeeeb]">
+              <a href="/product/{{ item.id }}/" class="text-xs font-bold text-[#8c4f20] hover:text-[#140804] flex items-center gap-1 transition-colors">
+                <span class="material-symbols-outlined text-[15px]">brush</span>
+                <span>Edit Customization</span>
+              </a>
+              <div class="flex items-center gap-2">
+                <button onclick="handleSaveForLater({{ item.id }})" class="text-xs font-semibold text-[#4f4440] hover:text-[#140804] flex items-center gap-1 px-3 py-1 rounded-full bg-[#efeeeb] hover:bg-[#eae8e5] transition-colors" type="button">
+                  <span class="material-symbols-outlined text-[14px]">bookmark</span>
+                  <span>Save for Later</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <!-- Empty Cart State -->
+          <div class="bg-white rounded-3xl p-10 text-center space-y-4 border border-[#d2c3be]/60 shadow-xs">
+            <div class="w-16 h-16 rounded-full bg-[#f5f3f0] flex items-center justify-center text-3xl mx-auto text-[#8c4f20]">
+              🛍️
+            </div>
+            <h2 class="font-display text-xl font-bold text-[#140804]">Your Artisanal Bag is Empty</h2>
+            <p class="text-xs sm:text-sm text-[#4f4440] max-w-md mx-auto">
+              You haven't reserved any solid teak furniture pieces yet. Discover our master-crafted living, dining, and pooja collections.
+            </p>
+            <div class="pt-2">
+              <a href="{% url 'catalog' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#140804] hover:bg-[#2d1e18] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm">
+                <span>Explore Master Collections</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Custom Carpentry & Site Access Instructions -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#d2c3be]/60 shadow-xs space-y-2.5">
+          <label class="text-xs sm:text-sm font-bold text-[#140804] flex items-center gap-2" for="carpenter-notes">
+            <span class="material-symbols-outlined text-[18px] text-[#8c4f20]">carpenter</span>
+            <span>Custom Carpentry & Access Instructions</span>
+          </label>
+          <p class="text-xs text-[#4f4440] leading-snug">
+            Have specific staircase width, lift height constraints, or wall plug openings? Note them below for the master workshop.
+          </p>
+          <textarea class="w-full p-3 bg-[#f5f3f0] rounded-xl text-xs sm:text-sm text-[#140804] placeholder:text-[#817470] focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#8c4f20] transition-colors resize-none border border-transparent focus:border-[#d2c3be]" id="carpenter-notes" placeholder="e.g., Service elevator door is 6.5ft high; please construct dining base as detachable modular assembly..." rows="2"></textarea>
         </div>
-        <div class="flex justify-between">
-          <span>GST (18% Included)</span>
-          <span class="font-semibold text-gray-950">₹{{ gst|floatformat:0 }}</span>
-        </div>
-        <div class="flex justify-between">
-          <span>White-Glove Assembly</span>
-          <span class="text-green-700 font-bold">FREE (Hyderabad)</span>
-        </div>
-        <div class="flex justify-between text-sm font-black text-gray-950 pt-3 border-t border-gray-100">
-          <span>Estimated Total</span>
-          <span class="text-lg text-[#5C3D2E]">₹{{ total|floatformat:0 }}</span>
+
+        <!-- Glory Master Guarantee Card -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#d2c3be]/60 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-[#fcac74] text-[#773e0f] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[16px]">verified_user</span>
+              </div>
+              <h3 class="font-display text-sm sm:text-base font-bold text-[#140804]">Glory Master Guarantee</h3>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#8c4f20] bg-[#ffe08e]/60 px-2.5 py-0.5 rounded-full">All Included</span>
+          </div>
+          <div class="space-y-2.5 text-xs text-[#4f4440]">
+            <div class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">straighten</span>
+              <div>
+                <strong class="text-[#140804] font-semibold">Free Pre-Delivery Site Laser Measurement</strong>
+                <p class="text-[11px] text-[#817470]">Available across Hyderabad, Vijayawada, Guntur, Vizag & Bangalore prior to timber cutting.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">inventory_2</span>
+              <div>
+                <strong class="text-[#140804] font-semibold">White-Glove Wooden Crating</strong>
+                <p class="text-[11px] text-[#817470]">Triple-layer corrugated foam, corner edge-guards, and climate moisture barriers.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">handyman</span>
+              <div>
+                <strong class="text-[#140804] font-semibold">Free Master Carpenter Assembly</strong>
+                <p class="text-[11px] text-[#817470]">Complete leveling, hardware torque calibration, and beeswax hand-buffing at your home.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="space-y-2 pt-2">
-        <a href="{% url 'booking_summary' %}" class="w-full block text-center py-3.5 rounded-full bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-md active-tap">
-          Proceed to Checkout →
-        </a>
-        <a href="{% url 'custom_request' %}" class="w-full block text-center py-3 rounded-full border border-gray-300 text-gray-800 text-xs font-semibold hover:bg-gray-50 transition-colors">
-          Request Custom Alteration
-        </a>
+      <!-- RIGHT: Investment Ledger & Checkout (5 Cols) -->
+      <div class="lg:col-span-5 space-y-4">
+
+        <!-- Privilege Promo Card -->
+        <div class="bg-white rounded-2xl p-4 border border-[#d2c3be]/60 shadow-xs flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#ffe08e] flex items-center justify-center text-[#8c4f20] shrink-0 shadow-2xs">
+              <span class="material-symbols-outlined text-[20px]">sell</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs sm:text-sm text-[#140804]">GLORYFESTIVE</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">APPLIED</span>
+              </div>
+              <p class="text-[11px] text-[#4f4440]">Artisan privilege credit: ₹5,000 saved</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold text-emerald-700 uppercase">ACTIVE</span>
+        </div>
+
+        <!-- Investment Ledger Summary -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
+          <h3 class="font-display text-base sm:text-lg font-bold text-[#140804] pb-2 border-b border-[#efeeeb]">
+            Investment Ledger
+          </h3>
+
+          <div class="space-y-2.5 text-xs sm:text-sm text-[#4f4440]">
+            <div class="flex justify-between items-center">
+              <span>Handcrafted Furniture ({{ cart_items|length }} Item{% if cart_items|length != 1 %}s{% endif %})</span>
+              <span class="font-bold text-[#140804]">₹{{ subtotal|floatformat:0 }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>8mm Toughened Glass Beveled Shield</span>
+              <span class="font-medium text-[#140804]">Complimentary</span>
+            </div>
+            <div class="flex justify-between items-center text-[#8c4f20] font-semibold">
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">redeem</span>
+                Studio Privilege Discount
+              </span>
+              <span>-₹5,000</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>White-Glove Crating & Installation</span>
+              <span class="font-bold text-emerald-700">FREE <span class="line-through text-[#817470] font-normal text-xs">₹3,500</span></span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-[#817470]">
+              <span>Integrated GST (18% included in rate)</span>
+              <span>(₹{{ gst|floatformat:0 }})</span>
+            </div>
+          </div>
+
+          <div class="h-px bg-[#efeeeb] my-2"></div>
+
+          <!-- Total Investment -->
+          <div class="flex justify-between items-baseline">
+            <div>
+              <span class="font-bold text-sm sm:text-base text-[#140804]">Total Investment</span>
+              <p class="text-[11px] text-[#817470]">Including transit insurance & warranty</p>
+            </div>
+            <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#140804]" id="display-total-price">
+              ₹{{ total|floatformat:0 }}
+            </span>
+          </div>
+
+          <!-- Payment Mode Selection Toggle -->
+          <div class="bg-[#f5f3f0] rounded-2xl p-3.5 space-y-3 border border-[#d2c3be]/40">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input checked class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" name="cart_payment_mode" onchange="toggleCartAdvance(true)" type="radio" value="advance">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-[#140804]">Pay 20% Advance to Begin Woodworking</span>
+                  <span class="px-2 py-0.5 rounded bg-[#8c4f20] text-white text-[9px] font-bold uppercase">POPULAR</span>
+                </div>
+                <p class="text-[11px] text-[#4f4440] mt-0.5 leading-relaxed">
+                  Pay only 20% today. Balance payable after live high-resolution workshop video inspection before crate dispatch.
+                </p>
+              </div>
+            </label>
+
+            <div class="h-px bg-[#d2c3be]/30"></div>
+
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" name="cart_payment_mode" onchange="toggleCartAdvance(false)" type="radio" value="full">
+              <div>
+                <span class="text-xs font-bold text-[#140804]">Pay 100% Full Order</span>
+                <p class="text-[11px] text-[#4f4440] mt-0.5 leading-relaxed">
+                  Receive a complimentary Teak Care Kit (organic beeswax compound + microfiber grain buffing cloth).
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <!-- Checkout Action Button -->
+          <div class="pt-2">
+            {% if cart_items %}
+              <a href="{% url 'booking_summary' %}" id="cart-checkout-btn" class="w-full min-h-[50px] py-3.5 px-4 rounded-xl bg-[#140804] hover:bg-[#2d1e18] text-white font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.99]">
+                <span class="material-symbols-outlined text-[20px] text-[#ffdbcd]">lock</span>
+                <span id="cart-checkout-text">Proceed to Delivery & Checkout</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </a>
+            {% else %}
+              <button disabled class="w-full min-h-[50px] py-3.5 px-4 rounded-xl bg-[#efeeeb] text-[#817470] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-not-allowed">
+                <span>Artisanal Cart is Empty</span>
+              </button>
+            {% endif %}
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="flex items-center justify-center gap-3 sm:gap-4 text-[#4f4440] text-[11px] pt-1 flex-wrap">
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-[#8c4f20]">flash_on</span> UPI Fast Checkout
+            </span>
+            <span>•</span>
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-[#8c4f20]">credit_card</span> All Major Cards / EMI
+            </span>
+            <span>•</span>
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px] text-[#8c4f20]">assured_workload</span> RBI Safe
+            </span>
+          </div>
+
+          <div class="text-center text-[#817470] text-[11px] pt-1">
+            Questions about timber selection? Call our master craftsman at <a href="tel:+918008001950" class="text-[#8c4f20] font-bold underline">+91 80080 01950</a>
+          </div>
+        </div>
+
       </div>
 
-      <div class="p-3 bg-amber-50 rounded-xl text-[11px] text-amber-900 space-y-1">
-        <p class="font-bold">🪵 Master Artisan Guarantee</p>
-        <p class="leading-relaxed text-amber-800">Our studio confirms all dimensions and provides physical wood grain samples before final dispatch.</p>
-      </div>
     </div>
 
   </div>
 </div>
+
+<!-- Floating WhatsApp Artisan Desk Button -->
+<aside class="fixed right-4 sm:right-6 bottom-6 z-40">
+  <a class="min-h-[44px] h-12 px-4 rounded-full bg-[#140804] text-[#ffdbcd] shadow-xl flex items-center gap-2 hover:bg-[#2d1e18] transition-transform active:scale-95 border border-[#fcac74]/40" href="https://wa.me/918008001950" rel="noopener noreferrer" target="_blank">
+    <span class="material-symbols-outlined text-[20px] text-[#fcac74]">forum</span>
+    <span class="text-xs font-bold tracking-wide">Artisan Desk</span>
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+  </a>
+</aside>
+
+<script>
+  function toggleCartAdvance(isAdvance) {
+    const btnText = document.getElementById('cart-checkout-text');
+    if (!btnText) return;
+    if (isAdvance) {
+      btnText.innerText = 'Proceed with 20% Booking';
+    } else {
+      btnText.innerText = 'Proceed to Delivery & Checkout';
+    }
+  }
+
+  function handleRemoveCart(productId, size) {
+    if (!confirm('Remove this handcrafted item from your cart?')) return;
+    fetch('/cart/remove/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ product_id: productId, size: size })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        const itemEl = document.getElementById('cart-item-' + productId);
+        if (itemEl) itemEl.remove();
+        const counter = document.getElementById('cart-items-counter');
+        if (counter) counter.innerText = data.cart_count;
+        const totalEl = document.getElementById('display-total-price');
+        if (totalEl && data.formatted_subtotal) {
+          totalEl.innerText = '₹' + data.formatted_subtotal;
+        }
+        if (data.cart_count === 0) {
+          window.location.reload();
+        }
+      } else {
+        alert(data.message || 'Error removing item');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      window.location.reload();
+    });
+  }
+
+  function handleSaveForLater(productId) {
+    fetch('/wishlist/toggle/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ product_id: productId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || 'Saved to your Curations & Favorites!');
+    })
+    .catch(err => console.error(err));
+  }
+</script>
 {% endblock %}

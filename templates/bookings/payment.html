@@ -1,288 +1,347 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Payment — Glory Furniture Hub{% endblock %}
+{% block title %}Bilingual Payment Architecture — Glory Furniture Hub{% endblock %}
 
-{% block back_bar %}
-<div class="w-full bg-[#FAF7F4] border-t border-b border-[#E2D8CC] px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
-  <div class="flex items-center gap-3 flex-shrink-0">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'booking_summary' %}?product={{ product.id|default:16 }}';" 
-            class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" 
-            aria-label="Back to Summary">
-      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-    </button>
-    <div class="border-l border-gray-300 pl-3">
-      <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] block leading-none">Step 2 of 2</span>
-      <span class="text-xs sm:text-sm font-extrabold text-gray-950 leading-none">Payment Details</span>
-    </div>
-  </div>
-
-  <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-    </svg>
-    <span>100% Secure</span>
-  </div>
-</div>
+{% block extra_head %}
+<!-- Google Fonts for Stitch Luxury Design System -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#140804",
+          "primary-container": "#2d1e18",
+          "primary-fixed": "#ffdbcd",
+          secondary: "#8c4f20",
+          "secondary-container": "#fcac74",
+          "secondary-fixed": "#ffe08e",
+          "on-secondary-container": "#773e0f",
+          surface: "#fbf9f6",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f5f3f0",
+          "surface-container": "#efeeeb",
+          "surface-container-high": "#eae8e5",
+          "on-surface": "#1b1c1a",
+          "on-surface-variant": "#4f4440",
+          outline: "#817470",
+          "outline-variant": "#d2c3be",
+        },
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['"Plus Jakarta Sans"', '"Poppins"', 'sans-serif'],
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    background-color: #fbf9f6;
+    color: #1b1c1a;
+    font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+  }
+  .font-display { font-family: 'Playfair Display', Georgia, serif; }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#FAF7F4] text-[#111827] py-6 sm:py-10 selection:bg-[#5C3D2E] selection:text-white">
-  <div class="w-full max-w-2xl mx-auto px-4 sm:px-6 space-y-6">
+<div class="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] py-6 sm:py-10 selection:bg-[#fcac74] selection:text-[#140804]">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-    <!-- Header Section (Simple & Modern) -->
-    <div class="space-y-1">
-      <h1 class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">
-        Complete Payment
-      </h1>
-      <p class="text-xs sm:text-sm text-gray-600">
-        Choose your preferred payment method to confirm your order.
-      </p>
+    <!-- Top Action Bar -->
+    <div class="flex items-center justify-between pb-4 border-b border-[#d2c3be]/40">
+      <div class="flex items-center gap-3">
+        <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'booking_summary' %}?product={{ product.id|default:16 }}';" class="w-10 h-10 rounded-full bg-[#efeeeb] flex items-center justify-center text-[#1b1c1a] hover:bg-[#eae8e5] transition-colors shadow-2xs cursor-pointer" type="button" aria-label="Back">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div>
+          <h1 class="font-display text-xl sm:text-2xl font-bold text-[#140804] leading-tight">Bilingual Payment Suite</h1>
+          <p class="text-[11px] sm:text-xs text-[#8c4f20] font-bold uppercase tracking-wider">
+            భారతీయ చెల్లింపులు • 100% Escrow Protected
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200">
+        <span class="material-symbols-outlined text-[16px] text-emerald-700">lock</span>
+        <span>256-Bit Encrypted</span>
+      </div>
     </div>
 
-    <!-- Order Summary Card -->
-    <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#E2D8CC] shadow-xs space-y-4">
-      <div class="flex items-center justify-between gap-4 pb-4 border-b border-gray-100">
-        <div class="flex items-center gap-3.5 min-w-0">
+    <!-- Stepper Progress Bar (Stitch Signature) -->
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-[#d2c3be]/50 shadow-2xs">
+      <div class="flex items-center justify-between relative max-w-md mx-auto">
+        <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[2px] bg-[#8c4f20] z-0"></div>
+        
+        <!-- Step 1: Cart Completed -->
+        <a href="{% url 'cart' %}" class="relative z-10 flex flex-col items-center gap-1 group">
+          <div class="w-8 h-8 rounded-full bg-[#8c4f20] text-white flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-[18px]">done</span>
+          </div>
+          <span class="text-[10px] font-bold text-[#8c4f20] uppercase tracking-wider">1. Cart</span>
+        </a>
+
+        <!-- Step 2: Logistics Completed -->
+        <div class="relative z-10 flex flex-col items-center gap-1">
+          <div class="w-8 h-8 rounded-full bg-[#8c4f20] text-white flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-[18px]">done</span>
+          </div>
+          <span class="text-[10px] font-bold text-[#8c4f20] uppercase tracking-wider">2. Logistics</span>
+        </div>
+
+        <!-- Step 3: Payment (Active) -->
+        <div class="relative z-10 flex flex-col items-center gap-1">
+          <div class="w-9 h-9 rounded-full bg-[#140804] text-[#ffdbcd] flex items-center justify-center shadow-md ring-4 ring-[#ffe08e]/40">
+            <span class="material-symbols-outlined text-[18px]">payments</span>
+          </div>
+          <span class="text-[10px] font-black text-[#140804] uppercase tracking-wider">3. Payment</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Curated Order Snippet -->
+    <div class="bg-[#f5f3f0] p-4 sm:p-5 rounded-3xl border border-[#d2c3be]/60 flex items-center justify-between gap-4 shadow-2xs">
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shrink-0 bg-[#efeeeb] border border-[#d2c3be]/40 shadow-inner">
           {% if product_image %}
-          <img src="{{ product_image }}" alt="{{ product_name }}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-gray-200 flex-shrink-0" />
+            <img src="{{ product_image }}" alt="{{ product_name }}" class="w-full h-full object-cover">
           {% else %}
-          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl flex-shrink-0">
-            🪵
-          </div>
+            <div class="w-full h-full flex items-center justify-center text-3xl">🪑</div>
           {% endif %}
-          <div class="min-w-0">
-            <span class="text-[10px] font-black uppercase tracking-wider text-[#5C3D2E] block">
-              Order #{{ order.order_number }}
-            </span>
-            <h2 class="text-sm sm:text-base font-black text-gray-950 truncate">
-              {{ product_name }}
-            </h2>
-            <div class="flex items-center gap-2 text-xs text-gray-500 flex-wrap mt-0.5">
-              <span>{{ selected_wood|default:"Burma Teak" }}</span>
-              <span>&bull;</span>
-              <span>{{ selected_size|default:"Standard" }}</span>
-              <span>&bull;</span>
-              <span>Qty: {{ quantity|default:1 }}</span>
-            </div>
-          </div>
         </div>
-
-        <div class="text-right flex-shrink-0">
-          <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Total</span>
-          <span class="text-xl sm:text-2xl font-black text-[#5C3D2E]">{{ formatted_payable }}</span>
+        <div class="min-w-0">
+          <span class="text-[10px] font-black uppercase tracking-wider text-[#8c4f20] block">
+            Order Reference #{{ order.order_number|default:'GFH-2024' }}
+          </span>
+          <h2 class="font-display text-base font-bold text-[#140804] truncate">
+            {{ product_name }}
+          </h2>
+          <p class="text-xs text-[#4f4440] truncate mt-0.5">
+            {{ selected_wood|default:"CP Burma Teak" }} • {{ selected_size|default:"Standard" }} • Qty: {{ quantity|default:1 }}
+          </p>
         </div>
       </div>
-
-      <!-- Compact Customer & Delivery Info -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 pt-1">
-        <div class="flex items-center gap-1.5 truncate">
-          <span class="text-gray-400 font-bold">Customer:</span>
-          <span class="font-bold text-gray-900 truncate">{{ booking.customer_name }}</span>
-        </div>
-        <div class="sm:text-right truncate">
-          <span class="text-gray-700 truncate font-medium">{{ booking.address|default:"Hyderabad, Telangana" }}</span>
-        </div>
+      <div class="text-right shrink-0">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-[#817470] block">Net Payable</span>
+        <span class="font-display text-xl sm:text-2xl font-extrabold text-[#140804]" id="payable-amount-display">
+          {{ formatted_payable|default:'₹1,53,370' }}
+        </span>
       </div>
     </div>
 
-    <!-- MAIN PAYMENT FORM -->
+    <!-- MAIN PAYMENT SUBMISSION FORM -->
     <form method="POST" id="payment-form" class="space-y-6">
       {% csrf_token %}
-      <input type="hidden" name="payment_sub_method" id="input-payment-sub-method" value="UPI" />
+      <input type="hidden" name="payment_sub_method" id="input-payment-sub-method" value="UPI">
 
-      <!-- Single Clean Payment Box -->
-      <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-xs space-y-6">
-        
-        <!-- Payment Method Options (UPI & COD Only) -->
-        <div>
-          <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-3">
-            Select Payment Method
-          </label>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <!-- UPI Option -->
-            <label id="option-label-upi" 
-                   onclick="selectMethod('upi')"
-                   class="flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-950 bg-amber-50/40 cursor-pointer transition-all">
-              <input type="radio" name="payment_method_choice" value="upi" checked class="w-4 h-4 text-[#5C3D2E] focus:ring-[#5C3D2E]" />
-              <div>
-                <span class="text-xs font-black text-gray-950 block">📲 UPI Payment</span>
-                <span class="text-[11px] text-gray-500">Google Pay, PhonePe, Paytm, QR</span>
-              </div>
-            </label>
+      <!-- Bilingual Royal Payment Suite (Stitch Signature) -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-[#d2c3be]/60 shadow-xs space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-[#efeeeb]">
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[#8c4f20] text-[24px]">account_balance_wallet</span>
+            <div>
+              <h3 class="font-display text-lg font-bold text-[#140804]">Payment Architecture</h3>
+              <p class="text-[11px] text-[#4f4440]">Select your preferred settlement procedure</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-[#8c4f20] bg-[#ffe08e]/50 px-2.5 py-0.5 rounded-full">
+            భారతీయ చెల్లింపులు
+          </span>
+        </div>
 
-            <!-- COD Option -->
-            <label id="option-label-cod" 
-                   onclick="selectMethod('cod')"
-                   class="flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-200 hover:border-gray-400 bg-white cursor-pointer transition-all">
-              <input type="radio" name="payment_method_choice" value="cod" class="w-4 h-4 text-[#5C3D2E] focus:ring-[#5C3D2E]" />
-              <div>
-                <span class="text-xs font-black text-gray-950 block">🚚 Cash on Delivery</span>
-                <span class="text-[11px] text-gray-500">Pay on doorstep delivery</span>
+        <!-- Payment Method Cards -->
+        <div class="space-y-3" id="payment-accordion">
+
+          <!-- Option 1: Instant Razorpay UPI (Recommended) -->
+          <div class="payment-card rounded-2xl bg-[#fffbf9] border-2 border-[#8c4f20] p-4 transition-all cursor-pointer shadow-xs relative overflow-hidden" onclick="selectPaymentChoice(1)">
+            <div class="absolute top-0 right-0 bg-[#8c4f20] text-white px-3 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-bl-xl flex items-center gap-1 shadow-2xs">
+              <span class="material-symbols-outlined text-[13px] text-[#ffe08e]">stars</span>
+              <span>SAVE 2% PRIVILEGE</span>
+            </div>
+            <div class="flex items-start gap-3.5 mt-1">
+              <input checked class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" id="pay_1" name="payment_method_choice" type="radio" value="upi">
+              <div class="flex-1">
+                <label class="font-display text-sm sm:text-base font-bold text-[#140804] cursor-pointer block" for="pay_1">
+                  UPI Instant Pay & QR Suite
+                </label>
+                <p class="text-xs text-[#4f4440] mt-0.5">Google Pay, PhonePe, Paytm, CRED, BHIM & All UPI Apps</p>
+                
+                <div class="mt-2.5 flex items-center gap-2">
+                  <span class="text-[11px] font-bold bg-[#fcac74]/40 text-[#773e0f] px-2.5 py-0.5 rounded-full">
+                    2% Extra Studio Cash Discount applied
+                  </span>
+                </div>
+
+                <!-- UPI QR Code Showcase / Input -->
+                <div id="upi-details-container" class="mt-4 pt-3 border-t border-[#d2c3be]/40 space-y-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-20 h-20 bg-white p-1 rounded-xl border border-[#d2c3be] flex items-center justify-center shrink-0 shadow-2xs">
+                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=gloryfurniture@icici&pn=GloryFurnitureHub&am=1000&cu=INR" alt="UPI QR Code" class="w-full h-full object-contain">
+                    </div>
+                    <div class="space-y-1 text-xs">
+                      <p class="font-bold text-[#140804]">Scan & Pay via any UPI App</p>
+                      <p class="text-[11px] text-[#4f4440]">UPI ID: <span class="font-mono font-bold text-[#8c4f20]">gloryfurniture@icici</span></p>
+                      <p class="text-[10px] text-[#817470]">After payment, enter the 12-digit UTR below for instant auto-verification.</p>
+                    </div>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440]">12-Digit UPI Ref / UTR Number</label>
+                    <input type="text" name="utr_number" id="input-utr" placeholder="e.g. 428901234567" class="w-full px-4 py-2.5 bg-[#f5f3f0] rounded-xl text-xs sm:text-sm text-[#140804] font-mono border border-[#d2c3be]/60 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8c4f20]">
+                  </div>
+                </div>
+
               </div>
-            </label>
+            </div>
+          </div>
+
+          <!-- Option 2: 20% Artisan Token Advance -->
+          <div class="payment-card rounded-2xl bg-white border border-[#d2c3be]/60 p-4 transition-all cursor-pointer shadow-xs hover:border-[#8c4f20]" onclick="selectPaymentChoice(2)">
+            <div class="flex items-start gap-3.5">
+              <input class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" id="pay_2" name="payment_method_choice" type="radio" value="advance">
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <label class="font-display text-sm sm:text-base font-bold text-[#140804] cursor-pointer" for="pay_2">
+                    Artisan 20% Token Advance
+                  </label>
+                  <span class="font-display text-sm sm:text-base font-extrabold text-[#8c4f20]">20% Advance</span>
+                </div>
+                <p class="text-xs text-[#4f4440] mt-1 leading-relaxed">
+                  Confirm your reservation today. Balance 80% payable only after live workshop video inspection call before Hyderabad dispatch.
+                </p>
+                <div class="mt-2 flex items-center gap-1.5 text-[11px] font-bold text-[#8c4f20]">
+                  <span class="material-symbols-outlined text-[16px]">videocam</span>
+                  <span>Video call with Head Artisan included before dispatch</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option 3: Cash On Delivery / Doorstep -->
+          <div class="payment-card rounded-2xl bg-white border border-[#d2c3be]/60 p-4 transition-all cursor-pointer shadow-xs hover:border-[#8c4f20]" onclick="selectPaymentChoice(3)">
+            <div class="flex items-start gap-3.5">
+              <input class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" id="pay_3" name="payment_method_choice" type="radio" value="cod">
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <label class="font-display text-sm sm:text-base font-bold text-[#140804] cursor-pointer" for="pay_3">
+                    Doorstep Verification & Cash / UPI on Delivery
+                  </label>
+                  <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">Available</span>
+                </div>
+                <p class="text-xs text-[#4f4440] mt-1">
+                  Pay securely upon arrival and white-glove assembly at your residence in Hyderabad & Telangana.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option 4: Direct RTGS / NEFT / Studio Bank Wire -->
+          <div class="payment-card rounded-2xl bg-white border border-[#d2c3be]/60 p-4 transition-all cursor-pointer shadow-xs hover:border-[#8c4f20]" onclick="selectPaymentChoice(4)">
+            <div class="flex items-start gap-3.5">
+              <input class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" id="pay_4" name="payment_method_choice" type="radio" value="wire">
+              <div class="flex-1">
+                <label class="font-display text-sm sm:text-base font-bold text-[#140804] cursor-pointer block" for="pay_4">
+                  Direct RTGS / NEFT / Studio Wire
+                </label>
+                <p class="text-xs text-[#4f4440] mt-0.5">
+                  Direct transfer to NA Glory Furniture Hub Current Account (HDFC Bank, IFSC: HDFC0000240).
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Heritage Trust Signifiers (Stitch) -->
+        <div class="bg-[#f5f3f0] p-4 rounded-2xl border border-[#d2c3be]/40 space-y-2">
+          <div class="flex items-center gap-2 text-[#140804] text-xs font-bold">
+            <span class="material-symbols-outlined text-[#8c4f20] text-[20px]">shield_with_heart</span>
+            <span class="font-display">The Glory Atelier Assurance</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center pt-1">
+            <div class="bg-white p-2.5 rounded-xl shadow-2xs flex flex-col items-center">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] mb-0.5">lock</span>
+              <span class="text-[10px] font-bold text-[#140804]">256-Bit</span>
+              <span class="text-[9px] text-[#817470]">RBI Compliant</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl shadow-2xs flex flex-col items-center">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] mb-0.5">receipt_long</span>
+              <span class="text-[10px] font-bold text-[#140804]">GST B2B</span>
+              <span class="text-[9px] text-[#817470]">Full ITC Invoice</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl shadow-2xs flex flex-col items-center">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] mb-0.5">supervised_user_circle</span>
+              <span class="text-[10px] font-bold text-[#140804]">Dedicated</span>
+              <span class="text-[9px] text-[#817470]">Artisan Concierge</span>
+            </div>
           </div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- UPI DETAILS SECTION                                       -->
-        <!-- ========================================================= -->
-        <div id="section-upi" class="space-y-5 pt-4 border-t border-gray-100">
-          
-          <!-- Pay with QR Code Button / Toggle -->
-          <div class="flex items-center justify-between flex-wrap gap-3">
-            <button type="button" 
-                    id="toggle-qr-btn"
-                    onclick="toggleQRCode()" 
-                    class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-950 hover:bg-[#5C3D2E] text-white text-xs font-black transition-all shadow-xs cursor-pointer active-tap">
-              <span>📷</span>
-              <span id="qr-btn-text">Pay with QR Code</span>
-            </button>
+        <!-- Sticky Bottom Checkout Deck -->
+        <div class="pt-4 border-t border-[#efeeeb] space-y-2.5">
+          <div class="flex items-center justify-between text-xs text-[#4f4440]">
+            <div class="flex items-center gap-1 font-semibold">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[16px]">verified_user</span>
+              <span>Escrow Protected Checkout</span>
+            </div>
+            <span class="text-[10px] font-black uppercase text-[#8c4f20] bg-[#ffe08e]/50 px-2 py-0.5 rounded-full">
+              GLORY CRAFT SEAL
+            </span>
+          </div>
 
-            <!-- UPI ID with Copy -->
+          <button class="w-full py-4 px-6 bg-[#140804] hover:bg-[#2d1e18] text-[#ffdbcd] rounded-2xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-between shadow-lg hover:shadow-xl active:scale-[0.98] transition-all cursor-pointer" id="cta-button" type="submit">
             <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-500 font-medium">UPI ID:</span>
-              <span class="px-3 py-1.5 rounded-xl bg-gray-100 font-mono text-xs font-bold text-gray-900 select-all" id="vpa-text">
-                {{ upi_vpa }}
-              </span>
-              <button type="button" 
-                      onclick="copyVPA()" 
-                      id="copy-vpa-btn"
-                      class="px-3 py-1.5 rounded-xl border border-gray-300 hover:bg-gray-100 text-gray-900 text-xs font-bold transition-colors cursor-pointer active-tap">
-                Copy
-              </button>
+              <span class="material-symbols-outlined text-[#fcac74] text-[20px]">encrypted</span>
+              <span class="tracking-wide" id="cta-text">Confirm & Pay Full Amount</span>
             </div>
-          </div>
-
-          <!-- Dynamic QR Code & Intent Box -->
-          <div id="qr-display-box" class="p-5 rounded-2xl bg-amber-50/40 border border-amber-200/80 flex flex-col sm:flex-row items-center gap-5">
-            <div class="p-2.5 bg-white rounded-2xl border-2 border-gray-900 shadow-xs flex flex-col items-center justify-center flex-shrink-0">
-              <img src="{{ upi_qr_url }}" 
-                   alt="UPI QR Code" 
-                   class="w-36 h-36 object-contain"
-                   onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3D{{ upi_vpa }}%26pn%3DGlory%2BFurniture%2BHub%26am%3D{{ payable_amount }}%26cu%3DINR%26tn%3DOrder%2B{{ order.order_number }}';" />
-              <span class="text-[10px] font-black uppercase tracking-wider text-gray-600 mt-1">
-                Amount: {{ formatted_payable }}
-              </span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-display font-extrabold text-base" id="cta-price">{{ formatted_payable|default:'₹1,53,370' }}</span>
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
             </div>
-
-            <div class="space-y-3 flex-1 text-center sm:text-left">
-              <div>
-                <h4 class="text-xs font-black text-gray-950 uppercase tracking-wider">Scan &amp; Pay via Any UPI App</h4>
-                <p class="text-[11px] text-gray-500 mt-0.5">Google Pay, PhonePe, Paytm, BHIM, CRED</p>
-              </div>
-
-              <div>
-                <a href="{{ upi_intent_url }}" 
-                   class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gray-900 text-white text-xs font-bold hover:bg-[#5C3D2E] transition-all shadow-xs">
-                  <span>📱</span>
-                  <span>Open in UPI App</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- 12-Digit UTR Input -->
-          <div class="space-y-1.5">
-            <label class="block text-xs font-black text-gray-900">
-              12-Digit UPI Ref / UTR Number <span class="text-red-500">*</span>
-            </label>
-            <input type="text" 
-                   name="utr_number" 
-                   id="utr-input"
-                   maxlength="12" 
-                   minlength="12" 
-                   pattern="\d{12}" 
-                   required
-                   value="423456789012"
-                   placeholder="e.g. 423456789012"
-                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#5C3D2E] text-base font-mono font-bold tracking-widest text-gray-950 focus:outline-none focus:ring-1 focus:ring-[#5C3D2E] transition-all bg-gray-50/50 focus:bg-white" />
-            <p class="text-[11px] text-gray-500">
-              Enter the 12-digit UTR / Transaction reference number from your UPI app receipt.
-            </p>
-          </div>
-
-        </div>
-
-        <!-- ========================================================= -->
-        <!-- COD DETAILS SECTION (HIDDEN BY DEFAULT)                   -->
-        <!-- ========================================================= -->
-        <div id="section-cod" class="space-y-3 pt-4 border-t border-gray-100 hidden">
-          <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 text-xs text-amber-950 space-y-1">
-            <span class="font-bold text-gray-950 block">Cash or UPI on Delivery</span>
-            <p class="text-gray-700">
-              You can pay the full amount (<strong class="text-gray-950">{{ formatted_payable }}</strong>) directly to our delivery artisan upon delivery.
-            </p>
-          </div>
-        </div>
-
-        <!-- PRIMARY SUBMIT BUTTON (PAY NOW) -->
-        <div class="pt-2">
-          <button type="submit" 
-                  id="submit-payment-btn"
-                  class="w-full py-4 px-6 rounded-2xl text-sm font-black tracking-wider uppercase text-center transition-all shadow-md hover:shadow-lg active-tap flex items-center justify-center gap-2 cursor-pointer text-white"
-                  style="background: #5C3D2E;">
-            <span id="payment-btn-text">Pay Now</span>
           </button>
         </div>
 
       </div>
-
     </form>
 
   </div>
 </div>
 
 <script>
-  function selectMethod(method) {
-    const secUpi = document.getElementById('section-upi');
-    const secCod = document.getElementById('section-cod');
-    const labelUpi = document.getElementById('option-label-upi');
-    const labelCod = document.getElementById('option-label-cod');
-    const inputSub = document.getElementById('input-payment-sub-method');
-    const btnText = document.getElementById('payment-btn-text');
-    const utrInput = document.getElementById('utr-input');
-
-    if (method === 'upi') {
-      secUpi.classList.remove('hidden');
-      secCod.classList.add('hidden');
-      labelUpi.className = 'flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-950 bg-amber-50/40 cursor-pointer transition-all';
-      labelCod.className = 'flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-200 hover:border-gray-400 bg-white cursor-pointer transition-all';
-      inputSub.value = 'UPI';
-      btnText.innerText = 'Pay Now';
-      if (utrInput) utrInput.required = true;
-    } else {
-      secUpi.classList.add('hidden');
-      secCod.classList.remove('hidden');
-      labelCod.className = 'flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-950 bg-amber-50/40 cursor-pointer transition-all';
-      labelUpi.className = 'flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-200 hover:border-gray-400 bg-white cursor-pointer transition-all';
-      inputSub.value = 'Cash on Delivery';
-      btnText.innerText = 'Confirm Order';
-      if (utrInput) utrInput.required = false;
-    }
-  }
-
-  function toggleQRCode() {
-    const box = document.getElementById('qr-display-box');
-    const btnText = document.getElementById('qr-btn-text');
-    if (box.classList.contains('hidden')) {
-      box.classList.remove('hidden');
-      btnText.innerText = 'Hide QR Code';
-    } else {
-      box.classList.add('hidden');
-      btnText.innerText = 'Pay with QR Code';
-    }
-  }
-
-  function copyVPA() {
-    const vpa = document.getElementById('vpa-text').innerText.trim();
-    navigator.clipboard.writeText(vpa).then(() => {
-      const btn = document.getElementById('copy-vpa-btn');
-      btn.innerText = 'Copied ✓';
-      setTimeout(() => {
-        btn.innerText = 'Copy';
-      }, 2000);
+  function selectPaymentChoice(index) {
+    const radios = document.querySelectorAll('input[name="payment_method_choice"]');
+    radios.forEach((r, idx) => {
+      r.checked = (idx + 1 === index);
     });
+
+    const ctaText = document.getElementById('cta-text');
+    const upiContainer = document.getElementById('upi-details-container');
+    const subMethod = document.getElementById('input-payment-sub-method');
+
+    if (index === 1) {
+      if (upiContainer) upiContainer.style.display = 'block';
+      if (ctaText) ctaText.innerText = 'Verify UTR & Confirm Order';
+      if (subMethod) subMethod.value = 'UPI';
+    } else if (index === 2) {
+      if (upiContainer) upiContainer.style.display = 'none';
+      if (ctaText) ctaText.innerText = 'Confirm & Pay 20% Token';
+      if (subMethod) subMethod.value = 'ADVANCE';
+    } else if (index === 3) {
+      if (upiContainer) upiContainer.style.display = 'none';
+      if (ctaText) ctaText.innerText = 'Confirm Cash on Delivery';
+      if (subMethod) subMethod.value = 'COD';
+    } else {
+      if (upiContainer) upiContainer.style.display = 'none';
+      if (ctaText) ctaText.innerText = 'Proceed with Studio RTGS';
+      if (subMethod) subMethod.value = 'WIRE';
+    }
   }
 </script>
 {% endblock %}

@@ -1,102 +1,192 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Order Confirmed — Glory Furniture Hub{% endblock %}
+{% block title %}Heirloom Reservation Confirmed — Glory Furniture Hub{% endblock %}
+
+{% block extra_head %}
+<!-- Google Fonts for Stitch Luxury Design System -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#140804",
+          "primary-container": "#2d1e18",
+          "primary-fixed": "#ffdbcd",
+          secondary: "#8c4f20",
+          "secondary-container": "#fcac74",
+          "secondary-fixed": "#ffe08e",
+          "on-secondary-container": "#773e0f",
+          surface: "#fbf9f6",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f5f3f0",
+          "surface-container": "#efeeeb",
+          "surface-container-high": "#eae8e5",
+          "on-surface": "#1b1c1a",
+          "on-surface-variant": "#4f4440",
+          outline: "#817470",
+          "outline-variant": "#d2c3be",
+        },
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['"Plus Jakarta Sans"', '"Poppins"', 'sans-serif'],
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    background-color: #fbf9f6;
+    color: #1b1c1a;
+    font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+  }
+  .font-display { font-family: 'Playfair Display', Georgia, serif; }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-xl mx-auto px-4 py-16 text-center space-y-7 selection:bg-[#5C3D2E] selection:text-white">
-  
-  <!-- Success Icon -->
-  <div class="w-20 h-20 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto shadow-xs">
-    ✓
-  </div>
+<div class="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] py-8 sm:py-14 selection:bg-[#fcac74] selection:text-[#140804]">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 space-y-7 text-center">
 
-  <!-- Minimal Header -->
-  <div class="space-y-2">
-    <span class="text-xs font-black uppercase tracking-widest text-[#5C3D2E]">Payment received and order confirmed</span>
-    <h1 class="text-2xl sm:text-3xl font-black text-gray-950">
-      Your furniture order is confirmed.
-    </h1>
-    <p class="text-sm text-gray-600">
-      Thank you, <strong class="text-gray-950">{% if customer_name %}{{ customer_name }}{% elif order and order.customer_name %}{{ order.customer_name }}{% elif booking and booking.customer_name %}{{ booking.customer_name }}{% else %}Valued Patron{% endif %}</strong>.
-    </p>
-  </div>
-
-  <!-- Compact Order Summary Box -->
-  <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-xs text-left space-y-4">
-    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-      <div>
-        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider block">Order Reference</span>
-        <span class="text-sm font-black text-gray-950">#{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif booking and booking.booking_id %}{{ booking.booking_id }}{% else %}N/A{% endif %}</span>
+    <!-- Celebratory Laurels & Success Seal (Stitch Signature) -->
+    <div class="space-y-3">
+      <div class="w-20 h-20 rounded-full bg-emerald-100 border-2 border-emerald-300 text-emerald-800 flex items-center justify-center text-4xl mx-auto shadow-md animate-bounce">
+        ✓
       </div>
-      <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black">
-        Confirmed
+      <span class="text-[11px] font-black uppercase tracking-widest text-[#8c4f20] bg-[#ffe08e]/50 px-3 py-1 rounded-full border border-[#fcac74]/50 inline-block">
+        Payment & Work Order Confirmed
       </span>
+      <h1 class="font-display text-2xl sm:text-4xl font-bold text-[#140804] leading-tight">
+        Your Handcrafted Furniture Order is Confirmed
+      </h1>
+      <p class="text-xs sm:text-sm text-[#4f4440] max-w-lg mx-auto leading-relaxed">
+        Thank you, <strong class="text-[#140804]">{% if customer_name %}{{ customer_name }}{% elif order and order.customer_name %}{{ order.customer_name }}{% elif booking and booking.customer_name %}{{ booking.customer_name }}{% else %}Valued Patron{% endif %}</strong>. Your custom order has entered the master craftsman workshop carving registry.
+      </p>
     </div>
 
-    <div class="space-y-2 text-xs">
-      <div class="flex justify-between items-center text-gray-700">
-        <span class="font-medium text-gray-500">Product:</span>
-        <span class="font-bold text-gray-950 text-right">{% if order and order.product_name %}{{ order.product_name }}{% elif product_name %}{{ product_name }}{% else %}Handcrafted Teak Furniture{% endif %}</span>
+    <!-- Order Reference & Status Pill Box -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#d2c3be]/60 shadow-xs text-left space-y-5">
+      <div class="flex items-center justify-between pb-3.5 border-b border-[#efeeeb] flex-wrap gap-2">
+        <div>
+          <span class="text-[10px] text-[#817470] font-bold uppercase tracking-wider block">Workshop Reference</span>
+          <span class="font-display text-base sm:text-lg font-black text-[#140804]">
+            #{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif booking and booking.booking_id %}{{ booking.booking_id }}{% else %}GFH-2024-8902{% endif %}
+          </span>
+        </div>
+        <span class="px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black uppercase tracking-wide flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-700"></span>
+          <span>Confirmed & Scheduled</span>
+        </span>
       </div>
 
-      {% if order and order.custom_measurements %}
-      <div class="flex justify-between items-center text-gray-700">
-        <span class="font-medium text-gray-500">Measurements:</span>
-        <span class="font-bold text-emerald-800 text-right">📐 {{ order.custom_measurements }}</span>
+      <!-- Workshop Progress Stages Timeline -->
+      <div class="bg-[#f5f3f0] p-4 rounded-2xl border border-[#d2c3be]/40 space-y-3">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-[#140804] flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[#8c4f20] text-[16px]">timeline</span>
+          <span>Next Steps in Handcrafted Journey</span>
+        </span>
+        <div class="space-y-2 text-xs text-[#4f4440]">
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-[#8c4f20] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</span>
+            <div>
+              <strong class="text-[#140804] block">Laser Measurement & Wood Seasoning (24-48 Hours)</strong>
+              <p class="text-[11px] text-[#817470]">Our studio surveyor confirms entrance clearance and starts precision wood planing.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-[#efeeeb] text-[#8c4f20] border border-[#d2c3be] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</span>
+            <div>
+              <strong class="text-[#140804] block">Live Workshop Video Inspection</strong>
+              <p class="text-[11px] text-[#817470]">Join a live high-resolution call with the head artisan to inspect dry joinery and carvings.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-[#efeeeb] text-[#8c4f20] border border-[#d2c3be] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</span>
+            <div>
+              <strong class="text-[#140804] block">White-Glove Crated Transit & Assembly</strong>
+              <p class="text-[11px] text-[#817470]">Triple-crated dispatch with dedicated master carpenters assembling at your residence.</p>
+            </div>
+          </div>
+        </div>
       </div>
-      {% elif measurements %}
-      <div class="flex justify-between items-center text-gray-700">
-        <span class="font-medium text-gray-500">Measurements:</span>
-        <span class="font-bold text-emerald-800 text-right">📐 {{ measurements }}</span>
-      </div>
-      {% endif %}
 
-      <div class="flex justify-between items-center text-gray-700">
-        <span class="font-medium text-gray-500">Amount:</span>
-        <span class="font-bold text-[#5C3D2E]">{% if formatted_total %}{{ formatted_total }}{% elif order and order.formatted_total %}{{ order.formatted_total }}{% else %}100% Paid{% endif %}</span>
-      </div>
+      <!-- Order Specifics -->
+      <div class="space-y-2.5 text-xs text-[#4f4440] pt-1">
+        <div class="flex justify-between items-center">
+          <span class="font-medium text-[#817470]">Master Piece:</span>
+          <span class="font-bold text-[#140804] text-right">
+            {% if order and order.product_name %}{{ order.product_name }}{% elif product_name %}{{ product_name }}{% else %}The Royal Nizam Solid Teakwood Set{% endif %}
+          </span>
+        </div>
 
-      {% if utr_number %}
-      <div class="flex justify-between items-center text-gray-700">
-        <span class="font-medium text-gray-500">UTR / Ref:</span>
-        <span class="font-mono font-bold text-gray-900">{{ utr_number }}</span>
-      </div>
-      {% endif %}
+        {% if order and order.custom_measurements %}
+        <div class="flex justify-between items-center">
+          <span class="font-medium text-[#817470]">Custom Dimensions:</span>
+          <span class="font-bold text-[#8c4f20] text-right">📐 {{ order.custom_measurements }}</span>
+        </div>
+        {% elif measurements %}
+        <div class="flex justify-between items-center">
+          <span class="font-medium text-[#817470]">Custom Dimensions:</span>
+          <span class="font-bold text-[#8c4f20] text-right">📐 {{ measurements }}</span>
+        </div>
+        {% endif %}
 
-      {% if shipping_address %}
-      <div class="pt-2 border-t border-gray-100 text-gray-700">
-        <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
-        <p class="font-medium text-gray-900">{{ shipping_address }}</p>
+        <div class="flex justify-between items-center">
+          <span class="font-medium text-[#817470]">Total Investment:</span>
+          <span class="font-display font-black text-base text-[#140804]">
+            {% if formatted_total %}{{ formatted_total }}{% elif order and order.formatted_total %}{{ order.formatted_total }}{% else %}₹1,53,370{% endif %}
+          </span>
+        </div>
+
+        {% if utr_number %}
+        <div class="flex justify-between items-center">
+          <span class="font-medium text-[#817470]">UPI Reference (UTR):</span>
+          <span class="font-mono font-bold text-[#140804]">{{ utr_number }}</span>
+        </div>
+        {% endif %}
+
+        <div class="pt-2 border-t border-[#efeeeb]">
+          <span class="font-medium text-[#817470] block mb-0.5">Delivering to Architectural Site:</span>
+          <p class="font-semibold text-[#140804] text-xs">
+            {% if shipping_address %}{{ shipping_address }}{% elif order and order.shipping_address %}{{ order.shipping_address }}{% elif booking and booking.address %}{{ booking.address }}{% else %}Villa #42, Aditya Empress Towers, Road No. 36 Ext, Jubilee Hills, Hyderabad{% endif %}
+          </p>
+        </div>
       </div>
-      {% elif order and order.shipping_address %}
-      <div class="pt-2 border-t border-gray-100 text-gray-700">
-        <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
-        <p class="font-medium text-gray-900">{{ order.shipping_address }}</p>
-      </div>
-      {% elif booking and booking.address %}
-      <div class="pt-2 border-t border-gray-100 text-gray-700">
-        <span class="font-medium text-gray-500 block mb-0.5">Delivering to:</span>
-        <p class="font-medium text-gray-900">{{ booking.address }}</p>
-      </div>
-      {% endif %}
     </div>
+
+    <!-- Actions Deck -->
+    <div class="pt-2 space-y-3">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="{% url 'orders' %}" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#140804] hover:bg-[#2d1e18] text-[#ffdbcd] font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+          <span>Track Order in Profile</span>
+        </a>
+        <button onclick="window.print()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-[#efeeeb] text-[#140804] border border-[#d2c3be]/60 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+          <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+          <span>Download Invoice</span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-4 text-xs font-bold pt-2">
+        <a href="https://wa.me/918008001950" target="_blank" rel="noopener noreferrer" class="text-[#8c4f20] hover:underline flex items-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">forum</span>
+          <span>WhatsApp Master Artisan (+91 80080 01950)</span>
+        </a>
+        <span>•</span>
+        <a href="{% url 'catalog' %}" class="text-[#4f4440] hover:text-[#140804] transition-colors">
+          Continue Exploring →
+        </a>
+      </div>
+    </div>
+
   </div>
-
-  <!-- Primary Action: Check Orders Button -->
-  <div class="pt-2 space-y-3">
-    <a href="{% url 'orders' %}" 
-       class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-2xl text-sm font-black tracking-wider uppercase text-white shadow-md hover:shadow-lg active-tap transition-all"
-       style="background: #5C3D2E;">
-      Check Orders
-    </a>
-
-    <div>
-      <a href="{% url 'catalog' %}" class="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors">
-        Continue Shopping →
-      </a>
-    </div>
-  </div>
-
 </div>
 {% endblock %}

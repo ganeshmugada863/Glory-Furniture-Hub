@@ -3,370 +3,375 @@
 
 {% block title %}Order & Booking Summary — {{ product.name }} | Glory Furniture Hub{% endblock %}
 
-{% block back_bar %}
-<div class="w-full bg-[#FAF7F4] border-t border-b border-[#E2D8CC] px-4 sm:px-6 lg:px-10 py-3 flex items-center justify-between shadow-2xs relative z-20">
-  <div class="flex items-center gap-3 flex-shrink-0">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='/product/{{ product.id }}/';" 
-            class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0 cursor-pointer" 
-            aria-label="Back to piece">
-      <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-    </button>
-    <div class="border-l border-gray-300 pl-3">
-      <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] block leading-none">Checkout Stage</span>
-      <span class="text-xs sm:text-sm font-extrabold text-gray-950 leading-none">Order & Booking Summary</span>
-    </div>
-  </div>
-
-  <div class="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-    <span>100% Solid Burma Teak Guarantee</span>
-  </div>
-</div>
+{% block extra_head %}
+<!-- Google Fonts for Stitch Luxury Design System -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          primary: "#140804",
+          "primary-container": "#2d1e18",
+          "primary-fixed": "#ffdbcd",
+          secondary: "#8c4f20",
+          "secondary-container": "#fcac74",
+          "secondary-fixed": "#ffe08e",
+          "on-secondary-container": "#773e0f",
+          surface: "#fbf9f6",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f5f3f0",
+          "surface-container": "#efeeeb",
+          "surface-container-high": "#eae8e5",
+          "on-surface": "#1b1c1a",
+          "on-surface-variant": "#4f4440",
+          outline: "#817470",
+          "outline-variant": "#d2c3be",
+        },
+        fontFamily: {
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          sans: ['"Plus Jakarta Sans"', '"Poppins"', 'sans-serif'],
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body {
+    background-color: #fbf9f6;
+    color: #1b1c1a;
+    font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+  }
+  .font-display { font-family: 'Playfair Display', Georgia, serif; }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#FAF7F4] text-[#111827] py-6 sm:py-10 selection:bg-[#5C3D2E] selection:text-white">
-  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-    
-    <!-- Header Title & Stepper -->
-    <div class="mb-8 space-y-2">
-      <div class="flex items-center gap-2 text-xs font-bold text-gray-500">
-        <a href="/product/{{ product.id }}/" class="hover:text-gray-950 transition-colors">Product Detail</a>
-        <span>›</span>
-        <span class="text-[#5C3D2E] font-extrabold">1. Order Summary</span>
-        <span>›</span>
-        <span class="text-gray-400">2. Payment</span>
-        <span>›</span>
-        <span class="text-gray-400">3. Confirmation</span>
+<div class="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] py-6 sm:py-10 selection:bg-[#fcac74] selection:text-[#140804]">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+
+    <!-- Top Navigation Bar -->
+    <div class="flex items-center justify-between pb-4 border-b border-[#d2c3be]/40">
+      <div class="flex items-center gap-3">
+        <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'cart' %}';" class="w-10 h-10 rounded-full bg-[#efeeeb] flex items-center justify-center text-[#1b1c1a] hover:bg-[#eae8e5] transition-colors shadow-2xs cursor-pointer" type="button" aria-label="Go back">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div>
+          <h1 class="font-display text-xl sm:text-2xl font-bold text-[#140804] leading-tight">Order & Booking Summary</h1>
+          <p class="text-[11px] sm:text-xs text-[#4f4440] uppercase tracking-wider font-semibold">
+            Review Architectural Credentials & Investment Ledger
+          </p>
+        </div>
       </div>
-      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-950 tracking-tight">
-        Order &amp; Booking Summary
-      </h1>
-      <p class="text-xs sm:text-sm text-gray-600 max-w-2xl">
-        Review your delivery address and item details before confirming your handcrafted solid wood order.
-      </p>
+      <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+        <span class="material-symbols-outlined text-[16px] text-emerald-700">verified</span>
+        <span class="hidden sm:inline">100% Solid Burma Teak Guarantee</span>
+      </div>
     </div>
 
-    <!-- Main 2-Column Split: Left Saved Address, Right Calculation & Book Now -->
-    <form method="POST" id="checkout-booking-form" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      {% csrf_token %}
-      
-      <!-- Hidden inputs for product & pricing -->
-      <input type="hidden" name="product_id" value="{{ product.id }}" />
-      <input type="hidden" name="selected_size" id="form-selected-size" value="{{ selected_size }}" />
-      <input type="hidden" name="selected_wood" id="form-selected-wood" value="{{ selected_wood }}" />
-      <input type="hidden" name="unit_price" id="form-unit-price" value="{{ unit_price }}" />
-      <input type="hidden" name="quantity" id="form-quantity" value="{{ quantity }}" />
-      <input type="hidden" name="payment_plan" value="FULL_PAYMENT" />
-
-      <!-- Hidden address inputs from saved address in Settings -->
-      <input type="hidden" name="customer_name" value="{{ saved_address.name|default:user_name }}" />
-      <input type="hidden" name="phone" value="{{ saved_address.phone|default:user_phone }}" />
-      <input type="hidden" name="email" value="{{ saved_address.email|default:user_email }}" />
-      <input type="hidden" name="flat" value="{{ saved_address.flat|default:'' }}" />
-      <input type="hidden" name="street" value="{{ saved_address.street|default:'' }}" />
-      <input type="hidden" name="landmark" value="{{ saved_address.landmark|default:'' }}" />
-      <input type="hidden" name="city" value="{% if has_saved_address %}{{ saved_address.city|default:'Hyderabad' }}{% else %}Hyderabad{% endif %}" />
-      <input type="hidden" name="state" value="{% if has_saved_address %}{{ saved_address.state|default:'Telangana' }}{% else %}Telangana{% endif %}" />
-      <input type="hidden" name="pincode" value="{% if has_saved_address %}{{ saved_address.pincode|default:'' }}{% else %}{% endif %}" />
-
-      <!-- ========================================================= -->
-      <!-- LEFT COLUMN: SAVED DELIVERY ADDRESS CARD (7 Cols)         -->
-      <!-- ========================================================= -->
-      <div class="lg:col-span-7 space-y-6">
+    <!-- Stepper Progress Bar (Stitch Signature) -->
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-[#d2c3be]/50 shadow-2xs">
+      <div class="flex items-center justify-between relative max-w-md mx-auto">
+        <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[2px] bg-[#efeeeb] z-0"></div>
         
-        <!-- Delivery Address Card -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2D8CC] shadow-xs space-y-5">
-          <div class="flex items-center justify-between pb-3 border-b border-gray-100 flex-wrap gap-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-full bg-amber-100 text-[#5C3D2E] flex items-center justify-center font-black text-sm">
-                📍
-              </span>
-              <div>
-                <h2 class="font-black text-base text-gray-950">Address 📍 Delivery &amp; Contact Details</h2>
-                <p class="text-[11px] text-gray-500">Auto-detect via GPS or enter delivery address directly</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <button type="button" 
-                      id="btn-chk-gps"
-                      onclick="detectCheckoutLocation()" 
-                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-xs font-bold text-[#5C3D2E] transition-all cursor-pointer shadow-2xs active-tap">
-                <span id="chk-gps-icon">📍</span>
-                <span id="chk-gps-text">Use Current Location</span>
-              </button>
-              <button type="button"
-                      id="btn-toggle-inline-edit"
-                      onclick="toggleInlineAddressEdit()"
-                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-gray-300 hover:border-gray-900 text-xs font-bold text-gray-800 transition-all cursor-pointer shadow-2xs active-tap">
-                <span>✏️</span>
-                <span id="inline-edit-btn-text">{% if has_saved_address %}Edit Address{% else %}Hide Form{% endif %}</span>
-              </button>
-            </div>
+        <!-- Step 1: Cart Completed -->
+        <a href="{% url 'cart' %}" class="relative z-10 flex flex-col items-center gap-1 group">
+          <div class="w-8 h-8 rounded-full bg-[#8c4f20] text-white flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-[18px]">done</span>
           </div>
+          <span class="text-[10px] font-bold text-[#8c4f20] uppercase tracking-wider">1. Cart</span>
+        </a>
 
-          <div id="chk-gps-badge" class="hidden text-xs font-bold p-2.5 rounded-xl"></div>
+        <!-- Step 2: Logistics & Summary (Active) -->
+        <div class="relative z-10 flex flex-col items-center gap-1">
+          <div class="w-9 h-9 rounded-full bg-[#140804] text-[#ffdbcd] flex items-center justify-center shadow-md ring-4 ring-[#ffe08e]/40">
+            <span class="material-symbols-outlined text-[18px]">description</span>
+          </div>
+          <span class="text-[10px] font-black text-[#140804] uppercase tracking-wider">2. Summary</span>
+        </div>
 
-          {% if has_saved_address %}
-          <!-- Recipient & Address Details Display Card -->
-          <div id="address-display-box" class="p-5 rounded-2xl bg-amber-50/40 border border-amber-200/60 space-y-3">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span id="chk-display-name" class="font-black text-sm sm:text-base text-gray-950">{{ saved_address.name|default:user_name }}</span>
-                <span class="text-gray-300">•</span>
-                <span id="chk-display-phone" class="text-xs font-bold text-[#5C3D2E]">+91 {{ saved_address.phone|default:user_phone }}</span>
-                {% if saved_address.email or user_email %}
-                <span class="text-gray-300">•</span>
-                <span class="text-xs text-gray-500">{{ saved_address.email|default:user_email }}</span>
-                {% endif %}
-              </div>
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 border border-green-200">
-                {{ saved_address.tag|default:"Default Delivery" }}
-              </span>
+        <!-- Step 3: Payment -->
+        <div class="relative z-10 flex flex-col items-center gap-1">
+          <div class="w-8 h-8 rounded-full bg-[#efeeeb] text-[#817470] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">payments</span>
+          </div>
+          <span class="text-[10px] font-semibold text-[#817470] uppercase tracking-wider">3. Payment</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Container -->
+    <form method="POST" id="checkout-booking-form" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+      {% csrf_token %}
+
+      <!-- Hidden Technical Fields -->
+      <input type="hidden" name="product_id" value="{{ product.id }}">
+      <input type="hidden" name="selected_size" id="form-selected-size" value="{{ selected_size }}">
+      <input type="hidden" name="selected_wood" id="form-selected-wood" value="{{ selected_wood }}">
+      <input type="hidden" name="unit_price" id="form-unit-price" value="{{ unit_price }}">
+      <input type="hidden" name="quantity" id="form-quantity" value="{{ quantity|default:1 }}">
+      <input type="hidden" name="payment_plan" id="form-payment-plan" value="FULL_PAYMENT">
+
+      <!-- LEFT COLUMN: Order Piece & Delivery Site Credentials (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- 1. Curated Order Snippet Card -->
+        <div class="bg-[#f5f3f0] p-4 sm:p-5 rounded-3xl border border-[#d2c3be]/60 flex items-center gap-4 sm:gap-5 shadow-2xs">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shrink-0 bg-[#efeeeb] border border-[#d2c3be]/40 shadow-inner">
+            {% if product.primary_image %}
+              <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+            {% else %}
+              <div class="w-full h-full flex items-center justify-center text-3xl">🪑</div>
+            {% endif %}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 text-[#8c4f20] text-[11px] font-bold uppercase tracking-wider">
+              <span class="material-symbols-outlined text-[15px]">verified</span>
+              <span>Heirloom Custom Order</span>
             </div>
-
-            <p id="chk-address-text" class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
-              {{ saved_address.flat }}{% if saved_address.street %}, {{ saved_address.street }}{% endif %}
-              {% if saved_address.landmark %}, Landmark: {{ saved_address.landmark }}{% endif %}, 
-              {{ saved_address.city|default:"Hyderabad" }}, {{ saved_address.state|default:"Telangana" }}{% if saved_address.pincode %} - {{ saved_address.pincode }}{% endif %}
+            <h2 class="font-display text-base sm:text-lg font-bold text-[#140804] truncate mt-0.5">
+              {{ product.name }}
+            </h2>
+            <p class="text-xs text-[#4f4440] truncate mt-0.5">
+              {{ selected_wood|default:"Solid CP Teak" }} • {{ selected_size|default:"Hand-Rubbed Walnut Finish" }} • Qty: {{ quantity|default:1 }}
             </p>
           </div>
-          {% else %}
-          <div id="no-address-banner" class="p-4 rounded-2xl bg-amber-50/70 border border-dashed border-amber-300 flex items-start gap-3">
-            <span class="text-lg">📍</span>
-            <div>
-              <p class="text-xs font-bold text-gray-950">Enter Delivery Address</p>
-              <p class="text-[11px] text-gray-600 mt-0.5">Please fill in your delivery address and contact details below, or click <strong>Use Current Location</strong> to auto-fill.</p>
+          <div class="text-right shrink-0">
+            <div class="font-display text-lg sm:text-xl font-extrabold text-[#140804]">
+              ₹{{ formatted_grand_total|default:grand_total }}
             </div>
+            <span class="text-[10px] font-bold text-[#8c4f20] bg-[#ffe08e]/60 px-2 py-0.5 rounded-full">
+              GST 18% Incl.
+            </span>
+          </div>
+        </div>
+
+        <!-- 2. Product Measurements Verification Module -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs sm:text-sm font-bold text-[#140804] flex items-center gap-2" for="custom_measurements_input">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">square_foot</span>
+              <span>Architectural Dimensions & Custom Specifications</span>
+            </label>
+            <span class="text-[10px] font-bold uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              Mandatory
+            </span>
+          </div>
+          <p class="text-xs text-[#4f4440] leading-snug">
+            Please confirm your required dimensions (Length × Width × Height) or select a standard workshop sizing preset:
+          </p>
+          <div class="relative">
+            <input 
+              type="text" 
+              name="custom_measurements" 
+              id="custom_measurements_input" 
+              required
+              value="{{ default_measurements|default:product.dimensions|default:'72\" × 40\" × 30\" (Standard 6-Seater)' }}" 
+              placeholder="e.g. 78 x 72 inches King Size or 6ft x 3ft Dining"
+              class="w-full px-4 py-3 bg-[#f5f3f0] rounded-xl text-xs sm:text-sm text-[#140804] font-semibold border border-[#d2c3be]/40 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8c4f20]">
+          </div>
+          {% if quick_presets %}
+          <div class="flex items-center gap-2 pt-1 flex-wrap">
+            <span class="text-[11px] font-bold text-[#817470]">Presets:</span>
+            {% for preset in quick_presets %}
+            <button type="button" onclick="document.getElementById('custom_measurements_input').value='{{ preset }}'" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#efeeeb] hover:bg-[#eae8e5] text-[#140804] transition-colors cursor-pointer">
+              {{ preset }}
+            </button>
+            {% endfor %}
           </div>
           {% endif %}
+        </div>
 
-          <!-- Inline Edit Address Form (Direct Inline Customization) -->
-          <div id="inline-address-form" class="{% if has_saved_address %}hidden {% endif %}p-5 rounded-2xl bg-white border border-amber-300 shadow-sm space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
-              <div class="flex items-center gap-1.5">
-                <span class="text-sm">📝</span>
-                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-900">{% if has_saved_address %}Edit Delivery Address Directly{% else %}Delivery Address Details{% endif %}</h3>
-              </div>
-              {% if has_saved_address %}
-              <button type="button" onclick="toggleInlineAddressEdit()" class="px-3 py-1 bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold rounded-lg transition-colors cursor-pointer">
-                Save &amp; Close
-              </button>
-              {% endif %}
+        <!-- 3. Client & Site Delivery Credentials Card -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-[#efeeeb]">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[22px]">person_pin_circle</span>
+              <h3 class="font-display text-base sm:text-lg font-bold text-[#140804]">Client & Site Credentials</h3>
             </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Contact Name <span class="text-red-500">*</span></label>
-                <input type="text" id="inline-edit-name" value="{{ saved_address.name|default:user_name }}" oninput="syncInlineToForm()" placeholder="Full Name" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">10-Digit Phone Number <span class="text-red-500">*</span></label>
-                <input type="tel" id="inline-edit-phone" value="{{ saved_address.phone|default:user_phone }}" maxlength="10" oninput="syncInlineToForm()" placeholder="10-digit mobile number" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-              <div class="sm:col-span-2">
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">House / Flat / Building No. <span class="text-red-500">*</span></label>
-                <input type="text" id="inline-edit-flat" value="{{ saved_address.flat|default:'' }}" oninput="syncInlineToForm()" placeholder="e.g., Flat 301, Teak Residency / H.No 4-50" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-              <div class="sm:col-span-2">
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Street / Road / Village / Mandal <span class="text-red-500">*</span></label>
-                <input type="text" id="inline-edit-street" value="{{ saved_address.street|default:'' }}" oninput="syncInlineToForm()" placeholder="e.g., Main Bazaar Road, Near Gram Panchayat" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">Landmark (Optional)</label>
-                <input type="text" id="inline-edit-landmark" value="{{ saved_address.landmark|default:'' }}" oninput="syncInlineToForm()" placeholder="e.g., Near Shiva Temple" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" />
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">City / Town / District <span class="text-red-500">*</span></label>
-                <input type="text" id="inline-edit-city" value="{% if has_saved_address %}{{ saved_address.city|default:'Hyderabad' }}{% else %}Hyderabad{% endif %}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
-                <input type="text" id="inline-edit-state" value="{% if has_saved_address %}{{ saved_address.state|default:'Telangana' }}{% else %}Telangana{% endif %}" oninput="syncInlineToForm()" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold text-gray-700 mb-1">PIN Code <span class="text-red-500">*</span></label>
-                <input type="text" id="inline-edit-pincode" value="{% if has_saved_address %}{{ saved_address.pincode|default:'' }}{% else %}{% endif %}" oninput="syncInlineToForm()" placeholder="e.g., 500068" maxlength="6" class="w-full text-xs p-2.5 rounded-xl border border-gray-200 focus:border-[#5C3D2E] focus:outline-none" required />
-              </div>
-            </div>
+            <a href="{% url 'address' %}" class="text-xs font-bold text-[#8c4f20] hover:underline flex items-center gap-0.5">
+              <span class="material-symbols-outlined text-[14px]">edit</span>
+              <span>Edit Address</span>
+            </a>
           </div>
 
-          <!-- Delivery Note -->
-          <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 border border-gray-200/80 text-xs text-gray-600">
-            <span class="text-base">🚚</span>
+          <div class="space-y-3">
             <div>
-              <span class="font-bold text-gray-900 block">White-Glove Doorstep Delivery</span>
-              <span class="text-[11px] text-gray-500">Scheduled within 5-7 business days with in-home assembly.</span>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Patron / Recipient Full Name</label>
+              <input type="text" name="customer_name" required value="{{ saved_address.name|default:user_name|default:'Valued Patron' }}" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm focus:outline-none focus:bg-white border border-[#d2c3be]/40">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Primary Mobile Number</label>
+                <div class="relative flex items-center">
+                  <span class="absolute left-3.5 text-[#4f4440] text-xs font-semibold">+91</span>
+                  <input type="tel" name="phone" required value="{{ saved_address.phone|default:user_phone|default:'' }}" class="w-full bg-[#f5f3f0] pl-12 pr-10 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm focus:outline-none focus:bg-white border border-[#d2c3be]/40" placeholder="10-digit mobile">
+                  <span class="material-symbols-outlined absolute right-3 text-emerald-600 text-[18px]">check_circle</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Email for Invoicing & Updates</label>
+                <input type="email" name="email" value="{{ saved_address.email|default:user_email|default:'' }}" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm focus:outline-none focus:bg-white border border-[#d2c3be]/40" placeholder="patron@gloryfurniture.com">
+              </div>
+            </div>
+
+            <div class="pt-1">
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Architectural Destination</label>
+              <input type="text" name="flat" required value="{{ saved_address.flat|default:'Villa #42, Aditya Empress Towers' }}" placeholder="Villa / Flat / House No., Gated Community Name" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm mb-2 border border-[#d2c3be]/40">
+              <input type="text" name="street" value="{{ saved_address.street|default:'Road No. 36 Ext, Jubilee Hills' }}" placeholder="Street / Avenue / Road Details" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm mb-2 border border-[#d2c3be]/40">
+              <div class="grid grid-cols-2 gap-2 mb-2">
+                <input type="text" name="landmark" value="{{ saved_address.landmark|default:'' }}" placeholder="Landmark (Optional)" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs border border-[#d2c3be]/40">
+                <input type="text" name="pincode" required value="{{ saved_address.pincode|default:'500033' }}" placeholder="Pincode" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs font-bold border border-[#d2c3be]/40">
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="text" name="city" value="{{ saved_address.city|default:'Hyderabad' }}" placeholder="City" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs border border-[#d2c3be]/40">
+                <input type="text" name="state" value="{{ saved_address.state|default:'Telangana' }}" placeholder="State" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs border border-[#d2c3be]/40">
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- MANDATORY PRODUCT MEASUREMENTS CARD                       -->
-        <!-- ========================================================= -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2D8CC] shadow-xs space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-gray-100 flex-wrap gap-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-full bg-amber-100 text-[#5C3D2E] flex items-center justify-center font-black text-sm">
-                📐
-              </span>
+        <!-- 4. Solid Timber Feasibility (Signature Stitch) -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-[#140804]">
+            <span class="material-symbols-outlined text-[#8c4f20] text-[20px]">forklift</span>
+            <span class="font-display text-sm sm:text-base font-bold">Solid Timber Feasibility</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 bg-[#f5f3f0] rounded-xl border border-[#d2c3be]/30 flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">elevator</span>
               <div>
-                <h2 class="font-black text-base text-gray-950">{{ measurement_label|default:"Product Measurements (Required)" }} <span class="text-red-500">*</span></h2>
-                <p class="text-[11px] text-gray-500">{{ measurement_hint|default:"Our master carpenters craft to your exact space. Enter Length × Width × Height." }}</p>
+                <strong class="text-[#140804] block">Service Elevator Access</strong>
+                <span class="text-[11px] text-[#4f4440]">Suitable for 7ft+ freight transit</span>
               </div>
             </div>
-            <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-100 text-[#5C3D2E] border border-amber-300">
-              Required Before Booking
-            </span>
-          </div>
-
-          <div id="measurement-error-box" class="{% if not measurement_error %}hidden{% endif %} text-xs font-bold p-3 rounded-xl bg-red-50 text-red-700 border border-red-200">
-            ⚠️ {{ measurement_error|default:"Please enter your product measurements before booking." }}
-          </div>
-
-          <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-800">
-              Enter Exact Measurements (Length × Width × Height) <span class="text-red-500">*</span>
-            </label>
-            <div class="relative">
-              <input type="text"
-                     name="custom_measurements"
-                     id="custom-measurements-input"
-                     required
-                     value="{{ default_measurements|default:'' }}"
-                     placeholder="{{ measurement_placeholder }}"
-                     oninput="updateMeasurementDisplay(this.value)"
-                     class="w-full px-4 py-3.5 rounded-xl border-2 border-amber-300 focus:border-[#5C3D2E] focus:ring-2 focus:ring-amber-200 text-xs sm:text-sm font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all shadow-2xs" />
-              <span class="absolute right-3.5 top-3.5 text-base select-none pointer-events-none">📏</span>
-            </div>
-            <p class="text-[11px] text-gray-500">
-              💡 Examples: <span class="text-gray-700 font-medium">{{ measurement_placeholder }}</span>
-            </p>
-          </div>
-
-          {% if quick_presets %}
-          <div class="pt-2 border-t border-gray-100 space-y-2">
-            <span class="text-[11px] font-bold text-gray-600 block uppercase tracking-wider">
-              Popular Dimensions (Tap to Autofill):
-            </span>
-            <div class="flex flex-wrap gap-2">
-              {% for preset in quick_presets %}
-              <button type="button"
-                      onclick="setMeasurementPreset('{{ preset.val }}')"
-                      class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FAF7F4] hover:bg-amber-100 text-[#5C3D2E] border border-[#DECBB7] transition-all cursor-pointer active-tap shadow-2xs">
-                + {{ preset.label }}
-              </button>
-              {% endfor %}
+            <div class="p-3 bg-[#f5f3f0] rounded-xl border border-[#d2c3be]/30 flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">handyman</span>
+              <div>
+                <strong class="text-[#140804] block">Master Carpenter Assembly</strong>
+                <span class="text-[11px] text-[#4f4440]">Complimentary site buffing</span>
+              </div>
             </div>
           </div>
-          {% endif %}
         </div>
 
       </div>
 
-      <!-- ========================================================= -->
-      <!-- RIGHT COLUMN: CALCULATION OF ITEM & BOOK NOW (5 Cols)     -->
-      <!-- ========================================================= -->
-      <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-        
-        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2D8CC] shadow-xs space-y-6">
-          
-          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-            <h2 class="font-black text-base text-gray-950">Calculation of Item</h2>
-            <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
-              In Stock
+      <!-- RIGHT COLUMN: Summary Ledger & Progression (5 Cols) -->
+      <div class="lg:col-span-5 space-y-4">
+
+        <!-- Investment Ledger Summary -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
+          <h3 class="font-display text-base sm:text-lg font-bold text-[#140804] pb-2 border-b border-[#efeeeb]">
+            Investment Ledger
+          </h3>
+
+          <div class="space-y-2.5 text-xs sm:text-sm text-[#4f4440]">
+            <div class="flex justify-between items-center">
+              <span>Artisan Crafted Value</span>
+              <span class="font-bold text-[#140804]">₹{{ formatted_subtotal|default:item_subtotal|default:formatted_grand_total }}</span>
+            </div>
+            <div class="flex justify-between items-center text-[#8c4f20] font-semibold">
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">redeem</span>
+                Instant Studio Privilege (2%)
+              </span>
+              <span>-₹3,130</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Architectural Transit & White-Glove Fitting</span>
+              <span class="font-bold text-emerald-700">FREE</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-[#817470]">
+              <span>Integrated GST (18% included in rate)</span>
+              <span>(₹{{ formatted_gst|default:gst_included|default:'23,872' }})</span>
+            </div>
+          </div>
+
+          <div class="h-px bg-[#efeeeb] my-2"></div>
+
+          <!-- Total Net Payable -->
+          <div class="flex justify-between items-baseline pt-1">
+            <div>
+              <span class="font-display text-base sm:text-lg font-bold text-[#140804]">Total Net Payable</span>
+              <span class="block text-[10px] text-[#817470]">Inclusive of all timber taxes & road transit e-way</span>
+            </div>
+            <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#140804]">
+              ₹{{ formatted_grand_total|default:grand_total }}
             </span>
           </div>
 
-          <!-- Product Item Card Overview -->
-          <div class="p-4 rounded-2xl bg-[#F8F5F0] border border-[#E8DFD5] flex gap-4 items-center">
-            <img src="{{ product.primary_image }}" 
-                 alt="{{ product.name }}" 
-                 class="w-20 h-20 sm:w-22 sm:h-22 rounded-xl object-cover border border-white shadow-xs flex-shrink-0" />
-            
-            <div class="min-w-0 flex-1 space-y-1">
-              <span class="text-[10px] font-black uppercase tracking-widest text-[#5C3D2E] block">
-                {{ product.category.name|default:"Solid Burma Teak" }}
-              </span>
-              <h3 class="font-bold text-xs sm:text-sm text-gray-950 line-clamp-1 leading-tight">
-                {{ product.name }}
-              </h3>
-              <div class="text-[11px] text-gray-600 space-y-0.5">
-                <p><strong class="text-gray-900">Finish:</strong> <span id="summary-wood-display">{{ selected_wood }}</span></p>
-                <p><strong class="text-gray-900">Size:</strong> <span id="summary-size-display">{{ selected_size }}</span></p>
-                <p id="summary-measurements-row">
-                  <strong class="text-gray-900">Measurements:</strong> 
-                  <span id="summary-measurements-display" class="font-bold text-[#5C3D2E]">
-                    {% if default_measurements %}📐 {{ default_measurements }}{% else %}<span class="text-red-500 italic">Required before booking</span>{% endif %}
-                  </span>
+          <!-- Payment Plan Options (20% Advance vs 100% Full Payment) -->
+          <div class="bg-[#f5f3f0] rounded-2xl p-3.5 space-y-3 border border-[#d2c3be]/40">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input checked class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" name="summary_payment_plan" onchange="updateSummaryPaymentPlan('FULL_PAYMENT')" type="radio" value="FULL_PAYMENT">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-[#140804]">100% Full Payment</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-black uppercase">INSTANT BENEFIT</span>
+                </div>
+                <p class="text-[11px] text-[#4f4440] mt-0.5 leading-relaxed">
+                  Save 2% extra privilege discount and receive a complimentary Teak Care Kit.
                 </p>
               </div>
-            </div>
-          </div>
+            </label>
 
-          <!-- Interactive Quantity Stepper -->
-          <div class="flex items-center justify-between p-3.5 bg-gray-50 rounded-2xl border border-gray-200/80">
-            <div>
-              <span class="text-xs font-bold text-gray-900 block">Quantity</span>
-              <span class="text-[10px] text-gray-500">Number of pieces</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <button type="button" 
-                      onclick="changeQty(-1)"
-                      class="w-8 h-8 rounded-full bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 font-bold flex items-center justify-center active-tap cursor-pointer shadow-2xs">
-                -
-              </button>
-              <span id="qty-display" class="font-black text-sm text-gray-950 w-6 text-center">
-                {{ quantity }}
-              </span>
-              <button type="button" 
-                      onclick="changeQty(1)"
-                      class="w-8 h-8 rounded-full bg-white hover:bg-gray-200 border border-gray-300 text-gray-800 font-bold flex items-center justify-center active-tap cursor-pointer shadow-2xs">
-                +
-              </button>
-            </div>
-          </div>
+            <div class="h-px bg-[#d2c3be]/30"></div>
 
-          <!-- Clean Item Price Calculation Breakdown (No Extra Words/Discounts) -->
-          <div class="space-y-3 text-xs border-t border-b border-gray-100 py-4">
-            <div class="flex justify-between items-center text-gray-600">
-              <span>Item Subtotal (<span id="qty-label">{{ quantity }}</span> piece<span id="qty-plural"></span>)</span>
-              <span id="subtotal-display" class="font-bold text-gray-950">{{ formatted_subtotal }}</span>
-            </div>
-
-            <!-- Grand Total Calculation -->
-            <div class="flex justify-between items-baseline pt-3 border-t border-gray-200">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" name="summary_payment_plan" onchange="updateSummaryPaymentPlan('THREE_INSTALLMENTS')" type="radio" value="THREE_INSTALLMENTS">
               <div>
-                <span class="text-sm font-black text-gray-950 block">Grand Total</span>
-                <span class="text-[10px] text-gray-400">All taxes &amp; delivery included</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-[#140804]">Artisan 3-Installments (20% Token)</span>
+                  <span class="px-2 py-0.5 rounded bg-[#8c4f20] text-white text-[9px] font-bold uppercase">POPULAR</span>
+                </div>
+                <p class="text-[11px] text-[#4f4440] mt-0.5 leading-relaxed">
+                  Pay only 20% today. Balance payable after live workshop video inspection before crate dispatch.
+                </p>
               </div>
-              <span id="grand-total-display" class="text-2xl sm:text-3xl font-black text-[#5C3D2E] tracking-tight">
-                {{ formatted_grand_total }}
-              </span>
-            </div>
+            </label>
           </div>
 
-          <!-- 100% Full Payment Badge -->
+          <!-- Proceed to Payment CTA Button -->
           <div class="pt-2">
-            <div class="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50/60 flex items-center justify-between">
-              <div class="flex items-center gap-2.5">
-                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black">
-                  ✓
-                </span>
-                <span class="text-xs font-black text-emerald-950 uppercase tracking-wider">100% Full Payment</span>
+            <button type="submit" id="summary-submit-btn" class="w-full min-h-[50px] py-4 px-4 rounded-xl bg-[#140804] hover:bg-[#2d1e18] text-[#ffdbcd] font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-between shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px] text-[#fcac74]">lock</span>
+                <span>Confirm & Proceed to Payment</span>
               </div>
-              <span class="text-xs font-black text-emerald-950" id="summary-badge-amount">{{ formatted_grand_total }}</span>
-            </div>
-          </div>
-
-          <!-- BOOK NOW Primary CTA Button -->
-          <div class="pt-2">
-            <button type="submit" 
-                    id="confirm-booking-btn"
-                    class="w-full py-4 px-6 rounded-2xl text-sm font-black tracking-wider uppercase text-center transition-all shadow-md hover:shadow-lg active-tap flex items-center justify-center gap-2 cursor-pointer text-white"
-                    style="background: #5C3D2E;">
-              <span id="btn-text">Book Now</span>
+              <div class="flex items-center gap-1">
+                <span class="font-display font-bold">₹{{ formatted_grand_total|default:grand_total }}</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </div>
             </button>
+          </div>
+
+          <!-- Glory Assurance Card -->
+          <div class="bg-[#f5f3f0] p-3 rounded-xl border border-[#d2c3be]/40 flex items-center justify-between text-center pt-2">
+            <div class="flex-1">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">lock</span>
+              <span class="text-[10px] font-bold text-[#140804] block">256-Bit</span>
+              <span class="text-[9px] text-[#817470] block">RBI Safe</span>
+            </div>
+            <div class="h-6 w-px bg-[#d2c3be]"></div>
+            <div class="flex-1">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">receipt_long</span>
+              <span class="text-[10px] font-bold text-[#140804] block">GST B2B</span>
+              <span class="text-[9px] text-[#817470] block">Full ITC</span>
+            </div>
+            <div class="h-6 w-px bg-[#d2c3be]"></div>
+            <div class="flex-1">
+              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">supervised_user_circle</span>
+              <span class="text-[10px] font-bold text-[#140804] block">Dedicated</span>
+              <span class="text-[9px] text-[#817470] block">Concierge</span>
+            </div>
           </div>
 
         </div>
@@ -378,310 +383,10 @@
   </div>
 </div>
 
-<!-- Dynamic Price Script -->
 <script>
-  let unitPrice = {{ unit_price }};
-  let quantity = {{ quantity }};
-
-  function formatRupee(amount) {
-    return '₹' + Math.round(amount).toLocaleString('en-IN');
+  function updateSummaryPaymentPlan(plan) {
+    const hiddenPlan = document.getElementById('form-payment-plan');
+    if (hiddenPlan) hiddenPlan.value = plan;
   }
-
-  function changeQty(delta) {
-    const newQty = quantity + delta;
-    if (newQty < 1 || newQty > 10) return;
-    quantity = newQty;
-
-    document.getElementById('form-quantity').value = quantity;
-    document.getElementById('qty-display').innerText = quantity;
-    document.getElementById('qty-label').innerText = quantity;
-    document.getElementById('qty-plural').innerText = quantity > 1 ? 's' : '';
-
-    const grandTotal = unitPrice * quantity;
-
-    document.getElementById('subtotal-display').innerText = formatRupee(grandTotal);
-    document.getElementById('grand-total-display').innerText = formatRupee(grandTotal);
-
-    const badgeAmt = document.getElementById('summary-badge-amount');
-    if (badgeAmt) badgeAmt.innerText = formatRupee(grandTotal);
-  }
-
-  // Inline Address Customization Controls
-  function toggleInlineAddressEdit() {
-    const formPanel = document.getElementById('inline-address-form');
-    const displayBox = document.getElementById('address-display-box');
-    const btnText = document.getElementById('inline-edit-btn-text');
-    
-    if (!formPanel) return;
-
-    if (formPanel.classList.contains('hidden')) {
-      formPanel.classList.remove('hidden');
-      if (displayBox) displayBox.classList.add('opacity-75');
-      if (btnText) btnText.innerText = 'Hide Form';
-    } else {
-      formPanel.classList.add('hidden');
-      if (displayBox) displayBox.classList.remove('opacity-75');
-      if (btnText) btnText.innerText = 'Edit Address';
-    }
-  }
-
-  function syncInlineToForm() {
-    const nameVal = (document.getElementById('inline-edit-name')?.value || '').trim();
-    let phoneVal = (document.getElementById('inline-edit-phone')?.value || '').trim();
-    const flatVal = (document.getElementById('inline-edit-flat')?.value || '').trim();
-    const streetVal = (document.getElementById('inline-edit-street')?.value || '').trim();
-    const landmarkVal = (document.getElementById('inline-edit-landmark')?.value || '').trim();
-    const cityVal = (document.getElementById('inline-edit-city')?.value || '').trim() || 'Hyderabad';
-    const stateVal = (document.getElementById('inline-edit-state')?.value || '').trim() || 'Telangana';
-    const pincodeVal = (document.getElementById('inline-edit-pincode')?.value || '').trim();
-
-    // Clean phone of non-digits
-    const cleanPhoneDigits = phoneVal.replace(/\D/g, '');
-    if (cleanPhoneDigits.length === 12 && cleanPhoneDigits.startsWith('91')) {
-      phoneVal = cleanPhoneDigits.substring(2);
-    } else if (cleanPhoneDigits.length > 10) {
-      phoneVal = cleanPhoneDigits.slice(-10);
-    }
-
-    // Update hidden inputs submitted with order
-    const form = document.getElementById('checkout-booking-form');
-    if (form) {
-      if (form.querySelector('[name=customer_name]')) form.querySelector('[name=customer_name]').value = nameVal;
-      if (form.querySelector('[name=phone]')) form.querySelector('[name=phone]').value = phoneVal;
-      if (form.querySelector('[name=flat]')) form.querySelector('[name=flat]').value = flatVal;
-      if (form.querySelector('[name=street]')) form.querySelector('[name=street]').value = streetVal;
-      if (form.querySelector('[name=landmark]')) form.querySelector('[name=landmark]').value = landmarkVal;
-      if (form.querySelector('[name=city]')) form.querySelector('[name=city]').value = cityVal;
-      if (form.querySelector('[name=state]')) form.querySelector('[name=state]').value = stateVal;
-      if (form.querySelector('[name=pincode]')) form.querySelector('[name=pincode]').value = pincodeVal;
-    }
-
-    // Update display card if present
-    const nameDisp = document.getElementById('chk-display-name');
-    if (nameDisp) nameDisp.innerText = nameVal || 'Valued Patron';
-    const phoneDisp = document.getElementById('chk-display-phone');
-    if (phoneDisp) phoneDisp.innerText = phoneVal ? ('+91 ' + phoneVal) : '';
-
-    const addrP = document.getElementById('chk-address-text');
-    if (addrP) {
-      let parts = [];
-      if (flatVal) parts.push(flatVal);
-      if (streetVal) parts.push(streetVal);
-      if (landmarkVal) parts.push('Landmark: ' + landmarkVal);
-      if (cityVal) parts.push(cityVal);
-      if (stateVal && pincodeVal) parts.push(stateVal + ' - ' + pincodeVal);
-      else if (stateVal) parts.push(stateVal);
-      addrP.innerText = parts.join(', ') || '';
-    }
-  }
-
-  // HTML5 Geolocation Permission Handler for Checkout Summary
-  async function detectCheckoutLocation() {
-    const btn = document.getElementById('btn-chk-gps');
-    const badge = document.getElementById('chk-gps-badge');
-    const formPanel = document.getElementById('inline-address-form');
-    const form = document.getElementById('checkout-booking-form');
-
-    if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser. Please enter your address manually below.');
-      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
-      return;
-    }
-
-    btn.disabled = true;
-    document.getElementById('chk-gps-text').innerText = 'Detecting GPS...';
-    badge.className = 'text-xs font-bold p-3 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 block mt-2';
-    badge.textContent = '📡 Requesting browser location permission... Please tap "Allow".';
-
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
-        badge.textContent = `📍 Coordinates obtained. Resolving street address...`;
-
-        try {
-          const res = await fetch(`/api/reverse-geocode/?lat=${lat}&lon=${lon}`);
-          const json = await res.json();
-          if (json.status === 'success' || json.status === 'partial') {
-            const d = json.data;
-
-            // Ensure address form is visible so customer can see detected values and add flat/door number
-            if (formPanel && formPanel.classList.contains('hidden')) {
-              formPanel.classList.remove('hidden');
-              const editBtnText = document.getElementById('inline-edit-btn-text');
-              if (editBtnText) editBtnText.innerText = 'Hide Form';
-            }
-
-            // Explicitly set flat - never preserve old dirty values!
-            const flatVal = d.flat || '';
-            const streetVal = d.street || '';
-            const cityVal = d.city || 'Hyderabad';
-            const stateVal = d.state || 'Telangana';
-            const pincodeVal = d.pincode || '';
-            const landmarkVal = d.suburb ? 'Near ' + d.suburb : (d.mandal ? 'Mandal: ' + d.mandal : '');
-
-            // Update hidden form inputs
-            if (form) {
-              form.querySelector('[name=flat]').value = flatVal;
-              form.querySelector('[name=street]').value = streetVal;
-              form.querySelector('[name=city]').value = cityVal;
-              form.querySelector('[name=state]').value = stateVal;
-              form.querySelector('[name=pincode]').value = pincodeVal;
-              form.querySelector('[name=landmark]').value = landmarkVal;
-            }
-
-            // Sync to inline edit inputs
-            if (document.getElementById('inline-edit-flat')) document.getElementById('inline-edit-flat').value = flatVal;
-            if (document.getElementById('inline-edit-street')) document.getElementById('inline-edit-street').value = streetVal;
-            if (document.getElementById('inline-edit-city')) document.getElementById('inline-edit-city').value = cityVal;
-            if (document.getElementById('inline-edit-state')) document.getElementById('inline-edit-state').value = stateVal;
-            if (document.getElementById('inline-edit-pincode')) document.getElementById('inline-edit-pincode').value = pincodeVal;
-            if (document.getElementById('inline-edit-landmark')) document.getElementById('inline-edit-landmark').value = landmarkVal;
-
-            syncInlineToForm();
-
-            // Prompt user if house / flat number is required
-            if (!flatVal) {
-              badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 block mt-2';
-              badge.innerHTML = `📍 <strong>Area Detected:</strong> ${streetVal || cityVal}. Please enter your <u>House / Flat / Door number</u> below to complete delivery details.`;
-              const flatInput = document.getElementById('inline-edit-flat');
-              if (flatInput) {
-                flatInput.focus();
-                flatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
-            } else {
-              badge.className = 'text-xs font-bold p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 block mt-2';
-              badge.textContent = `📍 Address detected: ${d.display_name || (streetVal + ', ' + cityVal)}`;
-            }
-          }
-        } catch (err) {
-          console.error('Checkout geocode error:', err);
-          badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 block mt-2';
-          badge.textContent = '📍 GPS received. Please check and complete your address fields below.';
-          if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
-        } finally {
-          btn.disabled = false;
-          document.getElementById('chk-gps-text').innerText = 'Location Updated';
-        }
-      },
-      (err) => {
-        btn.disabled = false;
-        document.getElementById('chk-gps-text').innerText = 'Use Current Location';
-        badge.className = 'text-xs font-bold p-3 rounded-xl bg-amber-50 text-amber-900 border border-amber-300 block mt-2';
-        
-        // When permissions are denied, unhide the inline form immediately and focus input
-        if (formPanel && formPanel.classList.contains('hidden')) {
-          formPanel.classList.remove('hidden');
-          const editBtnText = document.getElementById('inline-edit-btn-text');
-          if (editBtnText) editBtnText.innerText = 'Hide Form';
-        }
-
-        if (err.code === 1) {
-          badge.innerHTML = '⚠️ <strong>Location permission not granted.</strong> Please enter your delivery address in the fields below.';
-        } else {
-          badge.innerHTML = '⚠️ <strong>Location detection unavailable.</strong> Please enter your delivery address in the fields below.';
-        }
-
-        const flatInput = document.getElementById('inline-edit-flat') || document.getElementById('inline-edit-street');
-        if (flatInput) {
-          flatInput.focus();
-          flatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      },
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
-    );
-  }
-
-  // Measurement Helpers
-  function setMeasurementPreset(val) {
-    const input = document.getElementById('custom-measurements-input');
-    if (input) {
-      input.value = val;
-      input.classList.remove('border-red-500', 'bg-red-50');
-      const errBox = document.getElementById('measurement-error-box');
-      if (errBox) errBox.classList.add('hidden');
-      updateMeasurementDisplay(val);
-    }
-  }
-
-  function updateMeasurementDisplay(val) {
-    const disp = document.getElementById('summary-measurements-display');
-    const input = document.getElementById('custom-measurements-input');
-    const errBox = document.getElementById('measurement-error-box');
-    if (val && val.trim()) {
-      if (disp) disp.innerHTML = `<span class="font-bold text-emerald-800">📐 ${val.trim()}</span>`;
-      if (input) input.classList.remove('border-red-500', 'bg-red-50');
-      if (errBox) errBox.classList.add('hidden');
-    } else {
-      if (disp) disp.innerHTML = `<span class="text-red-500 italic">Required before booking</span>`;
-    }
-  }
-
-  // Pre-submission validation
-  document.getElementById('checkout-booking-form')?.addEventListener('submit', function(e) {
-    syncInlineToForm();
-
-    const form = this;
-    const measInput = document.getElementById('custom-measurements-input');
-    const measurements = (measInput?.value || '').trim();
-    const phone = (form.querySelector('[name=phone]')?.value || '').replace(/\D/g, '');
-    const flat = (form.querySelector('[name=flat]')?.value || '').trim();
-    const street = (form.querySelector('[name=street]')?.value || '').trim();
-    const name = (form.querySelector('[name=customer_name]')?.value || '').trim();
-    const formPanel = document.getElementById('inline-address-form');
-
-    // 1. Mandatory Product Measurements Validation
-    if (!measurements) {
-      e.preventDefault();
-      const errBox = document.getElementById('measurement-error-box');
-      if (errBox) errBox.classList.remove('hidden');
-      if (measInput) {
-        measInput.classList.add('border-red-500', 'bg-red-50');
-        measInput.focus();
-        measInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      alert('Please enter your required product measurements (Length × Width × Height) before booking.');
-      return false;
-    }
-
-    // 2. Phone validation (10 digits Indian mobile number)
-    if (!phone || phone.length < 10 || phone === '9876543210') {
-      e.preventDefault();
-      alert('Please provide a valid 10-digit mobile number for order delivery coordination.');
-      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
-      const phoneInput = document.getElementById('inline-edit-phone');
-      if (phoneInput) {
-        phoneInput.focus();
-        phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-
-    // 3. Delivery address validation
-    if (!flat && !street) {
-      e.preventDefault();
-      alert('Please enter your delivery address (House/Flat No. and Street) before proceeding.');
-      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
-      const flatInput = document.getElementById('inline-edit-flat') || document.getElementById('inline-edit-street');
-      if (flatInput) {
-        flatInput.focus();
-        flatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-
-    if (!name) {
-      e.preventDefault();
-      alert('Please provide your contact name.');
-      if (formPanel && formPanel.classList.contains('hidden')) formPanel.classList.remove('hidden');
-      const nameInput = document.getElementById('inline-edit-name');
-      if (nameInput) {
-        nameInput.focus();
-        nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-  });
 </script>
 {% endblock %}
