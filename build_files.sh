@@ -22,6 +22,7 @@ cp -rf staticfiles/css staticfiles/static/ 2>/dev/null || true
 cp -rf staticfiles/images staticfiles/static/ 2>/dev/null || true
 cp -rf staticfiles/js staticfiles/static/ 2>/dev/null || true
 cp -rf staticfiles/admin staticfiles/static/ 2>/dev/null || true
+cp -rf staticfiles/videos staticfiles/static/ 2>/dev/null || true
 cp -f staticfiles/favicon.svg staticfiles/static/ 2>/dev/null || true
 
 # Mirror media assets so /media/(.*) is served directly by Vercel CDN
