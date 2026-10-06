@@ -62,27 +62,27 @@
         </a>
       </div>
 
-      <!-- Center: Extended Search Bar -->
-      <div class="flex-1 max-w-xl mx-2 sm:mx-6">
-        <form action="/catalog/" method="GET" class="relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-          <span class="material-symbols-outlined text-outline text-[18px] sm:text-[20px] mr-2 shrink-0">search</span>
+      <!-- Center (Desktop): Extended Search Bar -->
+      <div class="hidden sm:flex flex-1 max-w-xl mx-2 sm:mx-6">
+        <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-4 py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+          <span class="material-symbols-outlined text-outline text-[20px] mr-2 shrink-0">search</span>
           <input 
             type="text" 
             name="search" 
             placeholder="Search bed, dining table, sofa, mandir..." 
-            class="w-full bg-transparent text-xs sm:text-sm text-primary placeholder:text-stone-400 outline-none"
+            class="w-full bg-transparent text-sm text-primary placeholder:text-stone-400 outline-none"
           />
         </form>
       </div>
 
       <!-- Right: 3-Dots Menu Button (Contains Profile, Favorites & Cart inside) -->
       <div class="relative shrink-0">
-        <button type="button" onclick="toggleOptionsDropdown(event)" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center cursor-pointer" title="Options">
+        <button id="threeDotsBtn" type="button" onclick="toggleOptionsDropdown(event)" class="p-1.5 sm:p-2 rounded-full hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95" title="Options">
           <span class="material-symbols-outlined text-[24px]">more_vert</span>
         </button>
 
         <!-- 3-Dots Dropdown Panel: ONLY Profile, Fav & Cart -->
-        <div id="optionsDropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-stone-200/80 py-2 z-50 text-xs text-stone-800">
+        <div id="optionsDropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-stone-200/90 py-2 z-[9999] text-xs text-stone-800">
           <!-- 1. Profile -->
           <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center justify-between px-4 py-2.5 font-semibold text-gray-800 hover:text-primary hover:bg-amber-50/70 transition-colors">
             <div class="flex items-center gap-2.5">
@@ -112,6 +112,19 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- Mobile Full-Width Extended Search Bar (Row 2 on Mobile) -->
+    <div class="px-3 pb-2.5 sm:hidden">
+      <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-3.5 py-1.5 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+        <span class="material-symbols-outlined text-outline text-[18px] mr-2 shrink-0">search</span>
+        <input 
+          type="text" 
+          name="search" 
+          placeholder="Search bed, dining table, sofa, mandir..." 
+          class="w-full bg-transparent text-xs text-primary placeholder:text-stone-400 outline-none"
+        />
+      </form>
     </div>
   </div>
 </header>
@@ -1053,7 +1066,10 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 
     // 3-Dots Options Dropdown Toggle (Only Profile, Fav & Cart)
     function toggleOptionsDropdown(e) {
-      if (e) e.stopPropagation();
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
       const dd = document.getElementById('optionsDropdown');
       if (!dd) return;
       dd.classList.toggle('hidden');
@@ -1061,8 +1077,11 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 
     document.addEventListener('click', (e) => {
       const dd = document.getElementById('optionsDropdown');
-      if (dd && !dd.classList.contains('hidden') && !e.target.closest('#optionsDropdown') && !e.target.closest('button[onclick*="toggleOptionsDropdown"]')) {
-        dd.classList.add('hidden');
+      const btn = document.getElementById('threeDotsBtn');
+      if (dd && !dd.classList.contains('hidden')) {
+        if (!dd.contains(e.target) && (!btn || !btn.contains(e.target))) {
+          dd.classList.add('hidden');
+        }
       }
     });
   </script>
