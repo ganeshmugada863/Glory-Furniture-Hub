@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="min-h-screen bg-[#FAF8F5] text-[#140804] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#fae3d9] selection:text-[#8c4f20]">
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-4xl mx-auto">
 
     <!-- Top Breadcrumb & Back to Catalog Row -->
     <div class="flex items-center justify-between pb-6 sm:pb-8">
@@ -34,54 +34,54 @@
     <div id="cart-items-list" class="space-y-6">
 
       <!-- ITEM 1: Serah Premium Sheesham Wood Bed -->
-      <div class="bg-white rounded-2xl p-5 sm:p-7 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-1">
-        <div class="flex flex-col sm:flex-row gap-5 sm:gap-7 items-start">
-          <!-- Thumbnail Image -->
-          <div class="w-full sm:w-44 h-48 sm:h-40 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc]">
-            <img src="{% static 'images/card_bed.jpg' %}" alt="Serah Premium Sheesham Wood Bed" class="w-full h-full object-cover">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-1">
+        <div class="flex flex-row gap-4 sm:gap-6 items-start">
+          <!-- Thumbnail Image (Fixed compact dimensions matching design exactly) -->
+          <div class="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 max-w-[145px] max-h-[145px] rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] shadow-2xs">
+            <img src="{% static 'images/cart_serah_bed.png' %}" alt="Serah Premium Sheesham Wood Bed" class="w-full h-full object-cover object-center" />
           </div>
 
           <!-- Content Details -->
-          <div class="flex-1 flex flex-col justify-between min-w-0 w-full h-full self-stretch">
+          <div class="flex-1 flex flex-col justify-between min-w-0 self-stretch">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-              <div>
+              <div class="min-w-0 pr-2">
                 <span class="text-[11px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
                   MASTER SUITE COLLECTION
                 </span>
-                <h2 class="text-lg sm:text-2xl font-bold text-[#140804] mt-0.5 tracking-tight">
+                <h2 class="text-base sm:text-xl font-bold text-[#140804] mt-0.5 tracking-tight truncate sm:whitespace-normal">
                   Serah Premium Sheesham Wood Bed
                 </h2>
                 <p class="text-xs sm:text-sm text-[#736a64] mt-1">
                   King Size • Natural Teak Finish
                 </p>
-                <div class="mt-3">
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#f3f4f6] text-xs font-medium text-[#374151]">
-                    <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                <div class="mt-2.5">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f3f4f6] text-[11px] sm:text-xs font-medium text-[#374151]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
                     <span>In Stock • Atelier Ready</span>
                   </span>
                 </div>
               </div>
 
               <!-- Price -->
-              <div class="sm:text-right mt-1 sm:mt-0">
-                <span class="text-xl sm:text-2xl font-extrabold text-[#140804] tracking-tight">
+              <div class="sm:text-right shrink-0 mt-1 sm:mt-0">
+                <span class="text-lg sm:text-2xl font-extrabold text-[#140804] tracking-tight">
                   ₹99,989
                 </span>
               </div>
             </div>
 
             <!-- Bottom Controls: Qty Stepper & Actions -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-5 mt-4 border-t border-[#f5f3f0]">
-              <div class="flex items-center gap-3">
-                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-xl bg-white p-0.5">
-                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(1, -1)">−</button>
-                  <span class="w-8 text-center font-bold text-sm text-[#140804]" id="qty-val-1">1</span>
-                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(1, 1)">+</button>
+            <div class="flex flex-wrap items-center justify-between gap-3 sm:gap-4 pt-4 mt-3 border-t border-[#f5f3f0]">
+              <div class="flex items-center gap-2 sm:gap-3">
+                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-lg bg-white p-0.5">
+                  <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-sm sm:text-base cursor-pointer" onclick="updateQty(1, -1)">−</button>
+                  <span class="w-7 sm:w-8 text-center font-bold text-xs sm:text-sm text-[#140804]" id="qty-val-1">1</span>
+                  <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-sm sm:text-base cursor-pointer" onclick="updateQty(1, 1)">+</button>
                 </div>
                 <span class="text-xs sm:text-sm text-[#736a64] font-medium">Qty: <span id="qty-lbl-1">1</span></span>
               </div>
 
-              <div class="flex items-center gap-5 text-xs sm:text-sm font-semibold text-[#524b45]">
+              <div class="flex items-center gap-4 sm:gap-5 text-xs sm:text-sm font-semibold text-[#524b45]">
                 <button type="button" onclick="handleSaveLater('Serah Premium Sheesham Wood Bed')" class="inline-flex items-center gap-1.5 hover:text-[#140804] transition-colors cursor-pointer">
                   <svg class="w-4 h-4 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                   <span>Save for Later</span>
@@ -97,54 +97,54 @@
       </div>
 
       <!-- ITEM 2: Royal Teak Bedside Table -->
-      <div class="bg-white rounded-2xl p-5 sm:p-7 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-2">
-        <div class="flex flex-col sm:flex-row gap-5 sm:gap-7 items-start">
-          <!-- Thumbnail Image -->
-          <div class="w-full sm:w-44 h-48 sm:h-40 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc]">
-            <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=800&q=80" alt="Royal Teak Bedside Table" class="w-full h-full object-cover">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-2">
+        <div class="flex flex-row gap-4 sm:gap-6 items-start">
+          <!-- Thumbnail Image (Fixed compact dimensions matching design exactly) -->
+          <div class="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 max-w-[145px] max-h-[145px] rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] shadow-2xs">
+            <img src="{% static 'images/cart_royal_bedside.png' %}" alt="Royal Teak Bedside Table" class="w-full h-full object-cover object-center" />
           </div>
 
           <!-- Content Details -->
-          <div class="flex-1 flex flex-col justify-between min-w-0 w-full h-full self-stretch">
+          <div class="flex-1 flex flex-col justify-between min-w-0 self-stretch">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-              <div>
+              <div class="min-w-0 pr-2">
                 <span class="text-[11px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
                   COMPANION ACCENT
                 </span>
-                <h2 class="text-lg sm:text-2xl font-bold text-[#140804] mt-0.5 tracking-tight">
+                <h2 class="text-base sm:text-xl font-bold text-[#140804] mt-0.5 tracking-tight truncate sm:whitespace-normal">
                   Royal Teak Bedside Table
                 </h2>
                 <p class="text-xs sm:text-sm text-[#736a64] mt-1">
                   Solid Teak • Companion Piece
                 </p>
-                <div class="mt-3">
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#f3f4f6] text-xs font-medium text-[#374151]">
-                    <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                <div class="mt-2.5">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#f3f4f6] text-[11px] sm:text-xs font-medium text-[#374151]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>
                     <span>In Stock • Atelier Ready</span>
                   </span>
                 </div>
               </div>
 
               <!-- Price -->
-              <div class="sm:text-right mt-1 sm:mt-0">
-                <span class="text-xl sm:text-2xl font-extrabold text-[#140804] tracking-tight">
+              <div class="sm:text-right shrink-0 mt-1 sm:mt-0">
+                <span class="text-lg sm:text-2xl font-extrabold text-[#140804] tracking-tight">
                   ₹14,999
                 </span>
               </div>
             </div>
 
             <!-- Bottom Controls: Qty Stepper & Actions -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-5 mt-4 border-t border-[#f5f3f0]">
-              <div class="flex items-center gap-3">
-                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-xl bg-white p-0.5">
-                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(2, -1)">−</button>
-                  <span class="w-8 text-center font-bold text-sm text-[#140804]" id="qty-val-2">1</span>
-                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(2, 1)">+</button>
+            <div class="flex flex-wrap items-center justify-between gap-3 sm:gap-4 pt-4 mt-3 border-t border-[#f5f3f0]">
+              <div class="flex items-center gap-2 sm:gap-3">
+                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-lg bg-white p-0.5">
+                  <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-sm sm:text-base cursor-pointer" onclick="updateQty(2, -1)">−</button>
+                  <span class="w-7 sm:w-8 text-center font-bold text-xs sm:text-sm text-[#140804]" id="qty-val-2">1</span>
+                  <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-sm sm:text-base cursor-pointer" onclick="updateQty(2, 1)">+</button>
                 </div>
                 <span class="text-xs sm:text-sm text-[#736a64] font-medium">Qty: <span id="qty-lbl-2">1</span></span>
               </div>
 
-              <div class="flex items-center gap-5 text-xs sm:text-sm font-semibold text-[#524b45]">
+              <div class="flex items-center gap-4 sm:gap-5 text-xs sm:text-sm font-semibold text-[#524b45]">
                 <button type="button" onclick="handleSaveLater('Royal Teak Bedside Table')" class="inline-flex items-center gap-1.5 hover:text-[#140804] transition-colors cursor-pointer">
                   <svg class="w-4 h-4 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                   <span>Save for Later</span>
@@ -176,7 +176,7 @@
 
     <!-- TOTAL AMOUNT & CHECKOUT CARD -->
     <div class="bg-white rounded-2xl p-6 sm:p-8 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] mt-6 sm:mt-8" id="cart-summary-card">
-      <div class="flex items-center justify-between pb-6">
+      <div class="flex items-center justify-between pb-6 border-b border-[#f5f3f0]">
         <span class="text-base sm:text-lg font-bold text-[#140804]">
           Total Amount
         </span>
@@ -185,7 +185,7 @@
         </span>
       </div>
 
-      <a href="{% url 'booking_summary' %}" class="w-full py-4 px-6 rounded-xl bg-[#251812] hover:bg-[#150d0a] text-white font-bold text-base flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] tracking-wide">
+      <a href="{% url 'booking_summary' %}" class="w-full mt-6 py-4 px-6 rounded-xl bg-[#251812] hover:bg-[#150d0a] text-white font-bold text-base flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] tracking-wide">
         <span>Proceed to Checkout</span>
         <span class="text-lg">→</span>
       </a>
