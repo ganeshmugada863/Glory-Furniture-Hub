@@ -1,340 +1,270 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><title>Artisanal Cart — Glory Furniture Hub</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100%;margin:0;padding:0;background-color:#fff8f6;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}*{scrollbar-width:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-secondary-fixed-variant": "#584400", "primary-fixed-dim": "#e2bfb2", "surface-container-highest": "#f5ded5", "on-primary-fixed-variant": "#5a4137", "on-error-container": "#93000a", "on-tertiary-fixed": "#002113", "on-surface-variant": "#4f4440", "inverse-primary": "#e2bfb2", "on-secondary-fixed": "#241a00", "surface-tint": "#73584e", "primary-fixed": "#ffdbcd", "surface": "#fff8f6", "background": "#fff8f6", "error": "#ba1a1a", "on-secondary": "#ffffff", "primary-container": "#2b1810", "surface-dim": "#ecd5cc", "on-tertiary-container": "#618e75", "tertiary-fixed": "#bdeed0", "surface-container-low": "#fff1ec", "error-container": "#ffdad6", "secondary-container": "#fed255", "surface-variant": "#f5ded5", "tertiary-fixed-dim": "#a2d1b5", "on-tertiary": "#ffffff", "on-primary-fixed": "#2a170f", "inverse-on-surface": "#ffede6", "tertiary": "#000301", "on-surface": "#251913", "on-tertiary-fixed-variant": "#234f3a", "secondary-fixed": "#ffe08e", "secondary": "#755b00", "on-primary": "#ffffff", "surface-bright": "#fff8f6", "secondary-fixed-dim": "#ecc246", "on-secondary-container": "#735a00", "tertiary-container": "#002214", "surface-container": "#ffeae1", "surface-container-high": "#fbe3da", "surface-container-lowest": "#ffffff", "on-background": "#251913", "inverse-surface": "#3b2d27", "outline-variant": "d3c3be", "on-error": "#ffffff", "outline": "#817470", "primary": "#070100", "on-primary-container": "#9c7e73" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-xs": "0.25rem", "space-sm": "0.5rem", "space-md": "1rem", "gutter": "1.5rem", "margin": "3rem", "gutter-mobile": "1rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "space-xl": "2.5rem" }, fontFamily: { "label-sm": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Playfair Display"], "label-md": ["Plus Jakarta Sans"], "headline-lg": ["Playfair Display"], "display-lg-mobile": ["Playfair Display"], "headline-md": ["Playfair Display"], "display-lg": ["Playfair Display"], "headline-md-mobile": ["Playfair Display"], "label-lg": ["Plus Jakarta Sans"], "headline-sm": ["Playfair Display"] }, fontSize: { "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "700" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" }], "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "0em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }], "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-md": ["30px", { "lineHeight": "38px", "letterSpacing": "0em", "fontWeight": "500" }], "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-md-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "0em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.04em", "fontWeight": "600" }], "headline-sm": ["22px", { "lineHeight": "30px", "letterSpacing": "0em", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface text-on-surface flex flex-col min-h-screen relative selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_2px_14px_rgba(43,24,16,0.06)]"><div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm"><a href="/" class="font-headline-md-mobile text-headline-md-mobile tracking-tight text-primary font-semibold hover:opacity-90">Glory</a></div><div class="flex items-center gap-1"><a href="/catalog/" aria-label="Search Catalogue" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors"><span class="material-symbols-outlined text-[22px]">search</span></a><a href="/wishlist/" aria-label="Saved Heirlooms" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors"><span class="material-symbols-outlined text-[22px]">favorite</span><span class="absolute top-2 right-2 w-4 h-4 bg-secondary text-on-secondary font-label-sm text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">3</span></a><a href="/cart/" aria-label="Cart" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors"><span class="material-symbols-outlined text-[22px]">shopping_bag</span><span class="absolute top-2 right-2 w-4 h-4 bg-primary-container text-primary-fixed font-label-sm text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">2</span></a><a href="/profile/" class="w-8 h-8 ml-1 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-28 bg-surface"><div class="flex flex-col w-full px-gutter-mobile gap-space-md max-w-2xl mx-auto">
-<div class="flex items-center justify-between py-2">
-<div class="flex items-center gap-2">
-<button aria-label="Return to Catalog" class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors" onclick="window.history.length > 1 ? window.history.back() : window.location.href='/catalog/';" type="button">
-<span class="material-symbols-outlined text-[20px]">arrow_back</span>
-</button>
-<div>
-<h1 class="font-headline-sm text-headline-sm text-primary">Artisanal Cart</h1>
-<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">2 Heirlooms in Reservation</p>
-</div>
-</div>
-<a class="min-h-[40px] px-3 rounded-full bg-secondary-container text-on-secondary-container flex items-center gap-1.5 shadow-sm" href="tel:+918008001950">
-<span class="material-symbols-outlined text-[18px]">support_agent</span>
-<span class="font-label-sm text-label-sm font-bold">Desk Direct</span>
-</a>
-</div>
-<div class="bg-surface-container-low rounded-xl p-3 flex items-center gap-3">
-<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
-<span class="material-symbols-outlined text-[18px]">verified</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
-<span class="font-semibold text-primary">Artisan Guarantee:</span> Direct kiln-dried timber with government legal forest certification.
-    </p>
-</div>
-<div class="flex flex-col gap-space-sm" id="cart-items-wrapper">
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-3 relative" id="cart-item-1">
-<div class="flex gap-3">
-<div class="relative w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-surface-container">
-<img class="w-full h-full object-cover" data-alt="High-end artisanal CP Burma teak dining table with six handcrafted chairs, glowing amber wood grain, honey natural finish, shot in a sunlit warm architectural dining room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA280HQTr_h2tIGx25jDbXJuw8ECZzj9o2GjQG3n0nsganDyrVKjylrwcvIrynBIeT9i3cuMg2i9xXzS6uZFN6H4dUXG-Y-nqxV8MQSwtqdnAfKHX5ZesVP76FD5gXclMbIHixUExlX40mazAJ9Q7sn6Vn3LQgvlet4JPy9QpanQXfDYYZyVVL3BAC4_AwAIlfxt5szr4YYNFl2BNCEPqm5xDLqyn4mMKKa1Mt5UyuAF4zkqtuxkvef">
-<span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-primary-container text-primary-fixed font-label-sm text-[9px] uppercase font-bold tracking-wider">Made-to-Order</span>
-</div>
-<div class="flex flex-col justify-between flex-1 min-w-0">
-<div>
-<div class="flex items-start justify-between gap-1">
-<h2 class="font-headline-sm text-[16px] leading-5 text-primary line-clamp-2">The Nizam Royal Teakwood 6-Seater Dining Set</h2>
-<button aria-label="Remove item" class="text-outline hover:text-error p-1" onclick="document.getElementById('cart-item-1').remove()" type="button">
-<span class="material-symbols-outlined text-[18px]">close</span>
-</button>
-</div>
-<p class="font-headline-md-mobile text-[17px] text-primary font-semibold mt-1">₹89,000</p>
-</div>
-<div class="flex items-center gap-2">
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">Qty: 1</span>
-<span class="font-label-sm text-label-sm text-on-tertiary-container flex items-center gap-0.5">
-<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
-              24-Day Carving Slot
-            </span>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1 text-on-surface-variant font-body-sm text-[12px] leading-relaxed">
-<div class="flex items-center gap-1.5 font-label-md text-label-md text-primary">
-<span class="material-symbols-outlined text-[15px] text-secondary">tune</span>
-<span class="">Bespoke Specifications:</span>
-</div>
-<p class=""><strong class="text-on-surface">Timber:</strong> CP Burma Teak • <strong class="text-on-surface">Luster:</strong> Honey Natural Matte</p>
-<p class=""><strong class="text-on-surface">Footprint:</strong> 6-Seater (72" × 40") • <strong class="text-on-surface">Upholstery:</strong> Cream Raw Silk</p>
-<div class="flex items-center gap-1 text-secondary font-semibold">
-<span class="material-symbols-outlined text-[14px]">shield</span>
-<span class="">Includes 8mm Toughened Beveled Glass Shield</span>
-</div>
-</div>
-<div class="flex items-center justify-between pt-1">
-<a href="/catalog/" class="font-label-sm text-label-sm text-secondary flex items-center gap-1 hover:underline">
-<span class="material-symbols-outlined text-[15px]">brush</span>
-          Edit Customization
-        </a>
-<div class="flex items-center gap-2">
-<button class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors" onclick="alert('Saved to your Curations & Favorites!')" type="button">
-<span class="material-symbols-outlined text-[14px]">bookmark</span>
-            Save for Later
-          </button>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-3 relative" id="cart-item-2">
-<div class="flex gap-3">
-<div class="relative w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-surface-container">
-<img class="w-full h-full object-cover" data-alt="Traditional Indian teakwood home pooja temple mandapam with brass bells and intricate hand-chiseled temple pillars, glowing gently under warm brass oil lamp light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxxA1_ET9nZwVhg5ut24mK_ePqKez6OvL8Ad3hBWHO8OAEu2ysMjyZXEGwTJbpLDoPQeQ2FikwLRKbLfQtgqo9YtaWrdHcEOWzflNgNhFUEJpoVnCrv_d9sEPI2nab-EjvqeL-IqX6Y4TmSGmPTiwevGm6JCHXkWr_3qdTC_T6P5NaPloCcifkcOA0h2UDDhQFwf2lS1r3mM8I4e6gh9T1YkCaLai1x4AZVnG18MXRrubE4_qoEvWS">
-<span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-primary-container text-primary-fixed font-label-sm text-[9px] uppercase font-bold tracking-wider">Sanctuary</span>
-</div>
-<div class="flex flex-col justify-between flex-1 min-w-0">
-<div>
-<div class="flex items-start justify-between gap-1">
-<h2 class="font-headline-sm text-[16px] leading-5 text-primary line-clamp-2">Vaikunta Handcarved Teakwood Pooja Mandapam</h2>
-<button aria-label="Remove item" class="text-outline hover:text-error p-1" onclick="document.getElementById('cart-item-2').remove()" type="button">
-<span class="material-symbols-outlined text-[18px]">close</span>
-</button>
-</div>
-<p class="font-headline-md-mobile text-[17px] text-primary font-semibold mt-1">₹68,000</p>
-</div>
-<div class="flex items-center gap-2">
-<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">Qty: 1</span>
-<span class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-0.5">
-<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
-              Heirloom Certified
-            </span>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-low rounded-lg p-2.5 flex flex-col gap-1 text-on-surface-variant font-body-sm text-[12px] leading-relaxed">
-<div class="flex items-center gap-1.5 font-label-md text-label-md text-primary">
-<span class="material-symbols-outlined text-[15px] text-secondary">tune</span>
-<span class="">Bespoke Specifications:</span>
-</div>
-<p class=""><strong class="text-on-surface">Timber:</strong> 100% Solid Seasoned Teak</p>
-<p class=""><strong class="text-on-surface">Finish:</strong> Antique Gold Chisel Highlight</p>
-<p class=""><strong class="text-on-surface">Accessories:</strong> 18 Solid Brass Sanctum Bells Included</p>
-</div>
-<div class="flex items-center justify-between pt-1">
-<a href="/catalog/" class="font-label-sm text-label-sm text-secondary flex items-center gap-1 hover:underline">
-<span class="material-symbols-outlined text-[15px]">brush</span>
-          Edit
-        </a>
-<button class="font-label-sm text-label-sm text-outline hover:text-error flex items-center gap-1" onclick="document.getElementById('cart-item-2').remove()" type="button">
-<span class="material-symbols-outlined text-[14px]">delete</span>
-          Remove
-        </button>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-2">
-<label class="font-label-md text-label-md text-primary flex items-center gap-1.5" for="carpenter-notes">
-<span class="material-symbols-outlined text-[18px] text-secondary">carpenter</span>
-      Custom Carpentry &amp; Access Instructions
-    </label>
-<p class="font-body-sm text-[12px] text-on-surface-variant leading-tight">
-      Have specific staircase width, lift height constraints, or wall plug openings?
-    </p>
-<textarea class="w-full p-2.5 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest transition-colors resize-none" id="carpenter-notes" placeholder="e.g., Service elevator door is 6.5ft high; please construct dining base as detachable assembly..." rows="2"></textarea>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-3">
-<div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-[16px]">verified_user</span>
-</div>
-<h3 class="font-label-lg text-label-lg text-primary">Glory Master Guarantee</h3>
-</div>
-<span class="font-label-sm text-label-sm text-on-tertiary-container uppercase tracking-wider font-bold">All Included</span>
-</div>
-<div class="flex flex-col gap-2.5 text-on-surface-variant font-body-sm text-body-sm">
-<div class="flex items-start gap-2.5">
-<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">straighten</span>
-<div>
-<span class="font-semibold text-primary">Free Pre-Delivery Site Laser Measurement</span>
-<p class="text-[12px] text-on-surface-variant">Available in Hyderabad, Vijayawada, Guntur, Vizag &amp; Bangalore prior to timber cutting.</p>
-</div>
-</div>
-<div class="flex items-start gap-2.5">
-<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">inventory_2</span>
-<div>
-<span class="font-semibold text-primary">White-Glove Wooden Crating</span>
-<p class="text-[12px] text-on-surface-variant">Triple-layer corrugated foam, corner edge-guards, and climate moisture barriers.</p>
-</div>
-</div>
-<div class="flex items-start gap-2.5">
-<span class="material-symbols-outlined text-secondary text-[18px] shrink-0 mt-0.5">handyman</span>
-<div>
-<span class="font-semibold text-primary">Free Master Carpenter Assembly</span>
-<p class="text-[12px] text-on-surface-variant">Complete leveling, hardware torque calibration, and beeswax hand-buffing at your home.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex items-center justify-between gap-2">
-<div class="flex items-center gap-2.5">
-<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed shrink-0">
-<span class="material-symbols-outlined text-[18px]">sell</span>
-</div>
-<div>
-<div class="flex items-center gap-1.5">
-<span class="font-label-md text-label-md font-bold text-primary">GLORYFESTIVE</span>
-<span class="px-1.5 py-0.2 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] font-bold">APPLIED</span>
-</div>
-<p class="font-body-sm text-[11px] text-on-surface-variant">Artisan privilege credit: ₹5,000 saved</p>
-</div>
-</div>
-<button class="font-label-sm text-label-sm text-error uppercase font-bold px-2 py-1" onclick="alert('Promo code applied and locked for checkout!')" type="button">Remove</button>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-3">
-<h3 class="font-headline-sm text-[17px] text-primary">Investment Ledger</h3>
-<div class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant">
-<div class="flex justify-between items-center">
-<span class="">Handcrafted Teak Furniture (2 Items)</span>
-<span class="font-medium text-primary">₹1,57,000</span>
-</div>
-<div class="flex justify-between items-center">
-<span class="">8mm Toughened Glass Beveled Shield</span>
-<span class="font-medium text-primary">₹4,500</span>
-</div>
-<div class="flex justify-between items-center text-on-tertiary-container">
-<span class="flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">redeem</span>
-          Studio Privilege Discount
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Shopping Cart — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#FAF8F5] text-[#140804] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#fae3d9] selection:text-[#8c4f20]">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Top Breadcrumb & Back to Catalog Row -->
+    <div class="flex items-center justify-between pb-6 sm:pb-8">
+      <nav class="flex items-center gap-2 text-sm text-[#736a64]">
+        <a href="/" class="hover:text-[#140804] transition-colors font-medium">Home</a>
+        <span class="text-[#c4bcba]">/</span>
+        <span class="font-bold text-[#140804]">Cart</span>
+      </nav>
+      <a href="{% url 'catalog' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#d2c3be]/80 bg-white hover:bg-[#fbf9f6] text-xs sm:text-sm font-semibold text-[#140804] transition-all shadow-2xs hover:shadow-xs">
+        <span class="text-sm">←</span>
+        <span>Back to Catalog</span>
+      </a>
+    </div>
+
+    <!-- Heading: Your Shopping Cart (2 Items) -->
+    <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+      <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#140804]">
+        Your Shopping Cart
+      </h1>
+      <span class="px-3 sm:px-4 py-1 rounded-full bg-[#fae3d9] text-[#8c4f20] text-xs sm:text-sm font-bold tracking-wide" id="cart-badge-count">
+        (2 Items)
+      </span>
+    </div>
+
+    <!-- CART ITEMS CONTAINER -->
+    <div id="cart-items-list" class="space-y-6">
+
+      <!-- ITEM 1: Serah Premium Sheesham Wood Bed -->
+      <div class="bg-white rounded-2xl p-5 sm:p-7 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-1">
+        <div class="flex flex-col sm:flex-row gap-5 sm:gap-7 items-start">
+          <!-- Thumbnail Image -->
+          <div class="w-full sm:w-44 h-48 sm:h-40 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc]">
+            <img src="{% static 'images/card_bed.jpg' %}" alt="Serah Premium Sheesham Wood Bed" class="w-full h-full object-cover">
+          </div>
+
+          <!-- Content Details -->
+          <div class="flex-1 flex flex-col justify-between min-w-0 w-full h-full self-stretch">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+              <div>
+                <span class="text-[11px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
+                  MASTER SUITE COLLECTION
+                </span>
+                <h2 class="text-lg sm:text-2xl font-bold text-[#140804] mt-0.5 tracking-tight">
+                  Serah Premium Sheesham Wood Bed
+                </h2>
+                <p class="text-xs sm:text-sm text-[#736a64] mt-1">
+                  King Size • Natural Teak Finish
+                </p>
+                <div class="mt-3">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#f3f4f6] text-xs font-medium text-[#374151]">
+                    <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                    <span>In Stock • Atelier Ready</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Price -->
+              <div class="sm:text-right mt-1 sm:mt-0">
+                <span class="text-xl sm:text-2xl font-extrabold text-[#140804] tracking-tight">
+                  ₹99,989
+                </span>
+              </div>
+            </div>
+
+            <!-- Bottom Controls: Qty Stepper & Actions -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-5 mt-4 border-t border-[#f5f3f0]">
+              <div class="flex items-center gap-3">
+                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-xl bg-white p-0.5">
+                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(1, -1)">−</button>
+                  <span class="w-8 text-center font-bold text-sm text-[#140804]" id="qty-val-1">1</span>
+                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(1, 1)">+</button>
+                </div>
+                <span class="text-xs sm:text-sm text-[#736a64] font-medium">Qty: <span id="qty-lbl-1">1</span></span>
+              </div>
+
+              <div class="flex items-center gap-5 text-xs sm:text-sm font-semibold text-[#524b45]">
+                <button type="button" onclick="handleSaveLater('Serah Premium Sheesham Wood Bed')" class="inline-flex items-center gap-1.5 hover:text-[#140804] transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                  <span>Save for Later</span>
+                </button>
+                <button type="button" onclick="handleRemoveItem(1)" class="inline-flex items-center gap-1.5 hover:text-red-700 transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITEM 2: Royal Teak Bedside Table -->
+      <div class="bg-white rounded-2xl p-5 sm:p-7 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-2">
+        <div class="flex flex-col sm:flex-row gap-5 sm:gap-7 items-start">
+          <!-- Thumbnail Image -->
+          <div class="w-full sm:w-44 h-48 sm:h-40 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc]">
+            <img src="https://images.unsplash.com/photo-1532372320572-cda25653a26d?auto=format&fit=crop&w=800&q=80" alt="Royal Teak Bedside Table" class="w-full h-full object-cover">
+          </div>
+
+          <!-- Content Details -->
+          <div class="flex-1 flex flex-col justify-between min-w-0 w-full h-full self-stretch">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+              <div>
+                <span class="text-[11px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
+                  COMPANION ACCENT
+                </span>
+                <h2 class="text-lg sm:text-2xl font-bold text-[#140804] mt-0.5 tracking-tight">
+                  Royal Teak Bedside Table
+                </h2>
+                <p class="text-xs sm:text-sm text-[#736a64] mt-1">
+                  Solid Teak • Companion Piece
+                </p>
+                <div class="mt-3">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#f3f4f6] text-xs font-medium text-[#374151]">
+                    <span class="w-2 h-2 rounded-full bg-[#16a34a]"></span>
+                    <span>In Stock • Atelier Ready</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Price -->
+              <div class="sm:text-right mt-1 sm:mt-0">
+                <span class="text-xl sm:text-2xl font-extrabold text-[#140804] tracking-tight">
+                  ₹14,999
+                </span>
+              </div>
+            </div>
+
+            <!-- Bottom Controls: Qty Stepper & Actions -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-5 mt-4 border-t border-[#f5f3f0]">
+              <div class="flex items-center gap-3">
+                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-xl bg-white p-0.5">
+                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(2, -1)">−</button>
+                  <span class="w-8 text-center font-bold text-sm text-[#140804]" id="qty-val-2">1</span>
+                  <button type="button" class="w-8 h-8 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded-lg transition-colors font-bold text-base cursor-pointer" onclick="updateQty(2, 1)">+</button>
+                </div>
+                <span class="text-xs sm:text-sm text-[#736a64] font-medium">Qty: <span id="qty-lbl-2">1</span></span>
+              </div>
+
+              <div class="flex items-center gap-5 text-xs sm:text-sm font-semibold text-[#524b45]">
+                <button type="button" onclick="handleSaveLater('Royal Teak Bedside Table')" class="inline-flex items-center gap-1.5 hover:text-[#140804] transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                  <span>Save for Later</span>
+                </button>
+                <button type="button" onclick="handleRemoveItem(2)" class="inline-flex items-center gap-1.5 hover:text-red-700 transition-colors cursor-pointer">
+                  <svg class="w-4 h-4 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty State (Hidden initially) -->
+    <div id="cart-empty-state" class="hidden bg-white rounded-2xl p-12 text-center border border-[#e8e2dc] shadow-sm my-6">
+      <div class="w-16 h-16 rounded-full bg-[#f5f3f0] flex items-center justify-center text-3xl mx-auto text-[#8c4f20] mb-4">
+        🛍️
+      </div>
+      <h3 class="text-xl font-bold text-[#140804]">Your Shopping Cart is Empty</h3>
+      <p class="text-sm text-[#736a64] mt-2 mb-6">Discover our handcrafted solid wood bed and furniture catalog.</p>
+      <a href="{% url 'catalog' %}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#251812] text-white font-bold text-sm hover:bg-[#150d0a] transition-all">
+        <span>Explore Catalog</span>
+        <span>→</span>
+      </a>
+    </div>
+
+    <!-- TOTAL AMOUNT & CHECKOUT CARD -->
+    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(43,24,16,0.04)] mt-6 sm:mt-8" id="cart-summary-card">
+      <div class="flex items-center justify-between pb-6">
+        <span class="text-base sm:text-lg font-bold text-[#140804]">
+          Total Amount
         </span>
-<span class="font-bold">-₹5,000</span>
-</div>
-<div class="flex justify-between items-center">
-<span class="">White-Glove Crating &amp; Site Installation</span>
-<span class="font-semibold text-on-tertiary-container">FREE <span class="line-through text-outline font-normal text-[11px]">₹3,500</span></span>
-</div>
-<div class="flex justify-between items-center text-[12px] text-outline">
-<span class="">Integrated GST (18% included in rate)</span>
-<span class="">(₹23,872)</span>
-</div>
-</div>
-<div class="h-px bg-surface-container my-1"></div>
-<div class="flex justify-between items-baseline">
-<div>
-<span class="font-label-lg text-label-lg text-primary">Total Investment</span>
-<p class="font-body-sm text-[11px] text-on-surface-variant">Including transit insurance &amp; warranty</p>
-</div>
-<span class="font-headline-md-mobile text-headline-md-mobile text-primary font-bold">₹1,56,500</span>
-</div>
-<div class="bg-surface-container rounded-lg p-3 flex flex-col gap-2">
-<label class="flex items-start gap-2.5 cursor-pointer">
-<input checked="" class="mt-1 accent-primary w-4 h-4" name="payment_mode" onchange="toggleAdvance(true)" type="radio">
-<div>
-<div class="flex items-center gap-1.5">
-<span class="font-label-md text-label-md font-bold text-primary">Pay 20% Artisan Advance</span>
-<span class="px-1.5 py-0.2 rounded bg-secondary text-on-secondary font-label-sm text-[10px] font-bold">POPULAR</span>
-</div>
-<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">
-            Pay only <span class="font-bold text-primary">₹31,300</span> today. Balance ₹1,25,200 payable after live high-resolution workshop video inspection before crate dispatch.
-          </p>
-</div>
-</label>
-<div class="h-px bg-surface-container-high"></div>
-<label class="flex items-start gap-2.5 cursor-pointer">
-<input class="mt-1 accent-primary w-4 h-4" name="payment_mode" onchange="toggleAdvance(false)" type="radio">
-<div>
-<span class="font-label-md text-label-md font-bold text-primary">100% Full Payment</span>
-<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">
-            Receive a complimentary Teak Care Kit (beeswax compound + microfiber grain buff).
-          </p>
-</div>
-</label>
-</div>
-</div>
+        <span class="text-2xl sm:text-3xl font-extrabold text-[#140804] tracking-tight" id="cart-total-amount">
+          ₹1,14,988
+        </span>
+      </div>
 
-<!-- UPI ARCHITECTURE & INSTRUCTIONS FROM STITCH -->
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-3 transition-all" id="upi-payment-section">
-<div class="flex items-center justify-between border-b border-surface-container pb-2">
-  <div class="flex items-center gap-2">
-    <span class="material-symbols-outlined text-[20px] text-secondary">flash_on</span>
-    <h3 class="font-label-lg text-label-lg font-bold text-primary">UPI Instant Pay &amp; Razorpay Suite</h3>
-  </div>
-  <span class="px-2 py-0.5 rounded-full bg-secondary text-on-secondary font-label-sm text-[10px] font-bold">SAVE ₹3,130</span>
-</div>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Google Pay, PhonePe, Paytm, CRED, BHIM</p>
-<div class="flex items-center gap-1.5 bg-surface-container-low p-2 rounded-lg text-secondary font-label-sm text-[11px] font-bold">
-  <span class="material-symbols-outlined text-[15px]">verified</span>
-  <span>2% Extra Studio Cash Discount applied</span>
-</div>
+      <a href="{% url 'booking_summary' %}" class="w-full py-4 px-6 rounded-xl bg-[#251812] hover:bg-[#150d0a] text-white font-bold text-base flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] tracking-wide">
+        <span>Proceed to Checkout</span>
+        <span class="text-lg">→</span>
+      </a>
 
-<!-- Stitch UPI Instructions & QR Deck -->
-<div class="bg-surface-container-low rounded-xl p-3.5 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left border border-outline-variant/30">
-  <div class="bg-white p-2.5 rounded-lg shadow-sm shrink-0 border border-surface-container-high">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&amp;data=upi%3A%2F%2Fpay%3Fpa%3Dgloryfurniture%40okaxis%26pn%3DGlory%2520Furniture%2520Hub%26am%3D31300%26cu%3DINR" alt="Glory UPI QR" class="w-28 h-28 mx-auto" />
-    <span class="block text-[9px] font-bold uppercase tracking-wider text-outline text-center mt-1">Scan &amp; Pay UPI</span>
-  </div>
-  <div class="flex flex-col gap-1.5 text-on-surface-variant font-body-sm text-[12px] leading-relaxed">
-    <span class="font-label-md text-label-md text-primary font-bold">UPI Payment Instructions from Switch:</span>
-    <p>1. Open Google Pay, PhonePe, Paytm, CRED, or BHIM.</p>
-    <p>2. Scan this QR code or pay to VPA: <strong class="text-primary select-all">gloryfurniture@okaxis</strong></p>
-    <p>3. Pay <strong class="text-primary font-bold" id="upi-payable-amount">₹31,300</strong> (Artisan 20% Advance) or Net Amount.</p>
-    <p>4. Enter the 12-digit UTR reference below after payment.</p>
+      <div class="text-center pt-4">
+        <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#736a64] hover:text-[#140804] transition-colors">
+          <span>←</span>
+          <span>Continue Shopping</span>
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- UTR Reference Input -->
-<div class="flex flex-col gap-1.5">
-  <label class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center justify-between" for="upi-utr-input">
-    <span>Enter 12-Digit UPI UTR Reference Number</span>
-    <span class="text-secondary font-normal text-[10px]">Instant Reconciliation</span>
-  </label>
-  <div class="relative flex items-center">
-    <input type="text" id="upi-utr-input" maxlength="12" placeholder="e.g. 428901234567" class="w-full bg-surface-container-low px-3 py-2.5 rounded-lg text-primary font-body-sm text-body-sm placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary tracking-widest uppercase font-mono" />
-    <span class="material-symbols-outlined absolute right-3 text-secondary text-[18px]">verified</span>
-  </div>
-</div>
-</div>
-
-<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm flex flex-col gap-3">
-<button class="w-full min-h-[50px] py-3 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary transition-colors cursor-pointer" id="checkout-btn" onclick="handleProceedCheckout()" type="button">
-<span class="material-symbols-outlined text-[20px] text-secondary-fixed">lock</span>
-<span id="checkout-text" class="">Proceed with 20% Booking (₹31,300)</span>
-</button>
-<div class="flex items-center justify-center gap-4 text-on-surface-variant font-label-sm text-[11px] flex-wrap">
-<span class="flex items-center gap-1 cursor-pointer text-secondary font-bold" onclick="document.getElementById('upi-payment-section').scrollIntoView({behavior:'smooth'})">
-<span class="material-symbols-outlined text-[14px] text-secondary">flash_on</span> UPI Fast Checkout
-      </span>
-<span class="">•</span>
-<span class="flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px] text-secondary">credit_card</span> All Major Cards / EMI
-      </span>
-<span class="">•</span>
-<span class="flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px] text-secondary">assured_workload</span> Razorpay Safe
-      </span>
-</div>
-<div class="flex items-center justify-center gap-2 text-outline font-label-sm text-[11px] pt-1">
-<span class="material-symbols-outlined text-[14px]">call</span>
-<span class="">Questions about timber selection? Call our master craftsman at +91 80080 01950</span>
-</div>
-</div>
-</div>
 <script>
-  let isAdvanceMode = true;
+  const itemPrices = {
+    1: 99989,
+    2: 14999
+  };
+  const itemQuantities = {
+    1: 1,
+    2: 1
+  };
+  let activeItemCount = 2;
 
-  function toggleAdvance(isAdvance) {
-    isAdvanceMode = isAdvance;
-    const btnText = document.getElementById('checkout-text');
-    const upiPayable = document.getElementById('upi-payable-amount');
-    if (isAdvance) {
-      btnText.innerText = 'Proceed with 20% Booking (₹31,300)';
-      if (upiPayable) upiPayable.innerText = '₹31,300';
+  function recalculateTotal() {
+    let total = 0;
+    let totalItems = 0;
+    for (const id in itemQuantities) {
+      if (document.getElementById('cart-card-' + id)) {
+        total += itemPrices[id] * itemQuantities[id];
+        totalItems += itemQuantities[id];
+      }
+    }
+    const totalEl = document.getElementById('cart-total-amount');
+    if (totalEl) {
+      totalEl.innerText = '₹' + total.toLocaleString('en-IN');
+    }
+    const badgeEl = document.getElementById('cart-badge-count');
+    if (badgeEl) {
+      badgeEl.innerText = '(' + totalItems + (totalItems === 1 ? ' Item)' : ' Items)');
+    }
+  }
+
+  function updateQty(id, change) {
+    let current = itemQuantities[id] || 1;
+    let next = current + change;
+    if (next < 1) next = 1;
+    if (next > 10) next = 10;
+    itemQuantities[id] = next;
+
+    const valEl = document.getElementById('qty-val-' + id);
+    const lblEl = document.getElementById('qty-lbl-' + id);
+    if (valEl) valEl.innerText = next;
+    if (lblEl) lblEl.innerText = next;
+
+    recalculateTotal();
+  }
+
+  function handleRemoveItem(id) {
+    const card = document.getElementById('cart-card-' + id);
+    if (!card) return;
+    if (!confirm('Remove this piece from your shopping cart?')) return;
+    
+    card.remove();
+    activeItemCount--;
+
+    if (activeItemCount <= 0) {
+      document.getElementById('cart-empty-state').classList.remove('hidden');
+      document.getElementById('cart-summary-card').classList.add('hidden');
+      document.getElementById('cart-badge-count').innerText = '(0 Items)';
     } else {
-      btnText.innerText = 'Proceed to Delivery & Checkout (₹1,56,500)';
-      if (upiPayable) upiPayable.innerText = '₹1,56,500';
+      recalculateTotal();
     }
   }
 
-  function handleProceedCheckout() {
-    const utrVal = document.getElementById('upi-utr-input') ? document.getElementById('upi-utr-input').value.trim() : '';
-    if (utrVal) {
-      sessionStorage.setItem('glory_upi_utr', utrVal);
-    }
-    const notesVal = document.getElementById('carpenter-notes') ? document.getElementById('carpenter-notes').value.trim() : '';
-    if (notesVal) {
-      sessionStorage.setItem('carpenter_notes', notesVal);
-    }
-    sessionStorage.setItem('payment_mode', isAdvanceMode ? 'ADVANCE' : 'FULL');
-    window.location.href = '/address/';
+  function handleSaveLater(name) {
+    alert('"' + name + '" has been saved to your Curations & Favorites!');
   }
-</script></main><aside class="fixed right-4 bottom-24 z-40"><a class="min-h-[44px] h-12 px-3.5 rounded-full bg-tertiary-container text-tertiary-fixed shadow-[0_8px_24px_rgba(26,15,10,0.18)] flex items-center gap-2 transition-transform active:scale-95" href="https://wa.me/918008001950" rel="noopener noreferrer" target="_blank"><span class="material-symbols-outlined text-[22px] text-secondary-fixed">forum</span><span class="font-label-md text-label-md font-semibold tracking-wide text-tertiary-fixed">Artisan Desk</span><span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span></a></aside><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-4px_24px_rgba(43,24,16,0.06)]" data-active-classes="text-primary font-bold"><div class="flex justify-around items-center h-16 px-2"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="home" href="/"><span class="material-symbols-outlined text-[22px]">cottage</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="catalog" href="/catalog/"><span class="material-symbols-outlined text-[22px]">chair</span><span class="font-label-sm text-label-sm mt-0.5">Catalog</span></a><a class="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="bespoke-studio" href="/custom-orders/"><span class="material-symbols-outlined text-[22px] text-secondary">architecture</span><span class="font-label-sm text-label-sm mt-0.5 text-secondary font-bold">Bespoke</span><span class="absolute -top-1 right-2 px-1 rounded-full bg-secondary text-on-secondary text-[9px] font-bold tracking-tighter">PRO</span></a><a aria-current="page" class="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] transition-colors text-primary font-bold" data-path="cart-and-orders" href="/cart/"><span class="material-symbols-outlined text-[22px]">local_mall</span><span class="font-label-sm text-label-sm mt-0.5">Cart</span><span class="absolute top-1 right-3 w-1.5 h-1.5 rounded-full bg-secondary"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="patron-profile" href="/profile/"><span class="material-symbols-outlined text-[22px]">verified_user</span><span class="font-label-sm text-label-sm mt-0.5">Profile</span></a></div></nav>
-
-</body></html>
+</script>
+{% endblock %}
