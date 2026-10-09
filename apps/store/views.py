@@ -331,7 +331,12 @@ def wishlist_view(request):
     else:
         wishlist_ids = request.session.get('glory_wishlist', [])
     products = Product.objects.filter(id__in=wishlist_ids)
-    return render(request, 'store/wishlist.html', {'products': products})
+    context = {
+        'products': products,
+        'is_home_page': True,
+        'is_light_navbar': True,
+    }
+    return render(request, 'store/wishlist.html', context)
 
 
 def cart_view(request):
@@ -351,6 +356,8 @@ def cart_view(request):
         'subtotal': subtotal,
         'gst': gst,
         'total': total,
+        'is_home_page': True,
+        'is_light_navbar': True,
     }
     return render(request, 'store/cart.html', context)
 

@@ -226,16 +226,16 @@
 <body class="bg-[#FDFDFD] text-gray-900 antialiased selection:bg-gray-900 selection:text-white flex flex-col min-h-screen overflow-x-hidden font-sans">
 
   <!-- ========================================================= -->
-  <!-- 1. HEADER (Adaptive: Minimalist Light for Home, Deep Teak for Subpages) -->
+  <!-- 1. HEADER (Adaptive: Minimalist Light for Home, Cart, Wishlist, Deep Teak for others) -->
   <!-- ========================================================= -->
-  <header class="glory-navbar w-full font-sans {% if is_home_page %}glory-navbar-home{% endif %}" {% if not is_home_page %}style="background-color: #382115 !important; border-bottom: 1.5px solid #4E2E1D !important;"{% endif %}>
+  <header class="glory-navbar w-full font-sans {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}glory-navbar-home{% endif %}" {% if not is_home_page and not is_light_navbar and '/cart/' not in request.path and '/wishlist/' not in request.path %}style="background-color: #382115 !important; border-bottom: 1.5px solid #4E2E1D !important;"{% endif %}>
     <div class="glory-container-90 px-2 sm:px-0">
       <div class="flex items-center justify-between h-14 sm:h-16 gap-4">
         
         <!-- Brand Logo (Left) -->
         <div class="flex items-center gap-2 sm:gap-3">
           <a href="{% url 'home' %}" class="flex items-center gap-2 cursor-pointer select-none group">
-            {% if is_home_page %}
+            {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}
             <span class="font-sans font-black text-xl sm:text-2xl text-[#1A1816] tracking-wider leading-none">
               AURA
             </span>
@@ -255,7 +255,7 @@
           </a>
         </div>
 
-        {% if is_home_page %}
+        {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}
         <!-- Center Navigation Links: Exact to AURA Reference Image -->
         <nav class="hidden md:flex items-center justify-center gap-8 lg:gap-10 flex-1">
           <a href="{% url 'catalog' %}" class="text-xs lg:text-[13px] font-medium text-gray-700 hover:text-black transition-colors">Catalog</a>
@@ -272,20 +272,20 @@
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           
           <!-- Pill Search Input -->
-          <form action="{% url 'catalog' %}" method="GET" class="hidden sm:flex items-center rounded-full pl-4 pr-1.5 py-1 {% if is_home_page %}bg-[#F5F2ED] border border-[#E2DBD1] text-gray-900{% else %}glory-search-input{% endif %} transition-all w-44 md:w-52">
+          <form action="{% url 'catalog' %}" method="GET" class="hidden sm:flex items-center rounded-full pl-4 pr-1.5 py-1 {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}bg-[#F5F2ED] border border-[#E2DBD1] text-gray-900{% else %}glory-search-input{% endif %} transition-all w-44 md:w-52">
             <input
               type="text"
               name="search"
               placeholder="Search"
               value="{{ search_query|default:'' }}"
-              class="w-full text-xs {% if is_home_page %}text-gray-900 placeholder:text-gray-400{% else %}text-white placeholder:text-amber-100/70{% endif %} focus:outline-none bg-transparent"
+              class="w-full text-xs {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}text-gray-900 placeholder:text-gray-400{% else %}text-white placeholder:text-amber-100/70{% endif %} focus:outline-none bg-transparent"
             />
-            <button type="submit" class="w-6 h-6 rounded-full {% if is_home_page %}bg-transparent text-gray-600 hover:text-black{% else %}bg-[#C9963F] hover:bg-[#D4A556] text-gray-950{% endif %} flex items-center justify-center transition-colors flex-shrink-0 ml-1 active-tap cursor-pointer" title="Search">
+            <button type="submit" class="w-6 h-6 rounded-full {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}bg-transparent text-gray-600 hover:text-black{% else %}bg-[#C9963F] hover:bg-[#D4A556] text-gray-950{% endif %} flex items-center justify-center transition-colors flex-shrink-0 ml-1 active-tap cursor-pointer" title="Search">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
           </form>
 
-          {% if is_home_page %}
+          {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}
           <!-- Direct Wishlist Icon Button -->
           <a href="{% url 'wishlist' %}" class="p-1.5 rounded-full hover:bg-gray-100 text-gray-800 transition-colors active-tap cursor-pointer relative flex items-center justify-center" title="Wishlist" aria-label="Open wishlist">
             <svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
@@ -304,7 +304,7 @@
           {% endif %}
 
           <!-- User Profile Icon -> Direct Link to Customer Profile Page -->
-          <a href="{% url 'profile' %}" class="p-1.5 rounded-full {% if is_home_page %}hover:bg-gray-100 text-gray-800{% else %}hover:bg-black/15 text-white{% endif %} transition-colors active-tap cursor-pointer" title="Account Profile" aria-label="Open profile page">
+          <a href="{% url 'profile' %}" class="p-1.5 rounded-full {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}hover:bg-gray-100 text-gray-800{% else %}hover:bg-black/15 text-white{% endif %} transition-colors active-tap cursor-pointer" title="Account Profile" aria-label="Open profile page">
             <svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           </a>
 
@@ -314,7 +314,7 @@
               id="settings-menu-btn" 
               type="button"
               onclick="toggleSettingsDropdown(event)" 
-              class="p-1.5 rounded-full {% if is_home_page %}hover:bg-gray-100 text-gray-800{% else %}hover:bg-black/15 text-white{% endif %} transition-colors active-tap cursor-pointer relative flex items-center justify-center" 
+              class="p-1.5 rounded-full {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}hover:bg-gray-100 text-gray-800{% else %}hover:bg-black/15 text-white{% endif %} transition-colors active-tap cursor-pointer relative flex items-center justify-center" 
               title="Settings" 
               aria-label="Open settings menu"
               aria-expanded="false"
@@ -451,7 +451,7 @@
 
     <!-- 2. DEDICATED ROW BELOW THE NAVBAR: Back Button (Shown on every page except homepage) -->
     {% block back_bar %}
-    {% if not is_home_page %}
+    {% if not is_home_page and not is_light_navbar and '/cart/' not in request.path and '/wishlist/' not in request.path %}
       <div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2 sm:py-2.5 flex items-center justify-between shadow-2xs relative z-20">
         <div class="flex items-center gap-3 flex-shrink-0">
           <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'home' %}';" class="p-1.5 -ml-1 rounded-full hover:bg-gray-200 text-gray-800 hover:text-gray-950 transition-colors active-tap flex items-center justify-center flex-shrink-0" aria-label="Go back to previous page" title="Go back">

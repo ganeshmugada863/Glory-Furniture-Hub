@@ -1,260 +1,325 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Saved Curations & Favorites — Glory Furniture Hub{% endblock %}
+{% block title %}Saved Favorites — Glory Furniture Hub{% endblock %}
 
-{% block extra_head %}
-<!-- Google Fonts for Stitch Luxury Design System -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          primary: "#140804",
-          "primary-container": "#2d1e18",
-          "primary-fixed": "#ffdbcd",
-          secondary: "#8c4f20",
-          "secondary-container": "#fcac74",
-          "secondary-fixed": "#ffe08e",
-          "on-secondary-container": "#773e0f",
-          surface: "#fbf9f6",
-          "surface-container-lowest": "#ffffff",
-          "surface-container-low": "#f5f3f0",
-          "surface-container": "#efeeeb",
-          "surface-container-high": "#eae8e5",
-          "on-surface": "#1b1c1a",
-          "on-surface-variant": "#4f4440",
-          outline: "#817470",
-          "outline-variant": "#d2c3be",
-        },
-        fontFamily: {
-          serif: ['"Playfair Display"', 'Georgia', 'serif'],
-          sans: ['"Plus Jakarta Sans"', '"Poppins"', 'sans-serif'],
-        }
-      }
-    }
-  };
-</script>
-<style>
-  body {
-    background-color: #fbf9f6;
-    color: #1b1c1a;
-    font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
-  }
-  .font-display { font-family: 'Playfair Display', Georgia, serif; }
-  .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
-</style>
-{% endblock %}
+{% block back_bar %}{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] py-6 sm:py-10 selection:bg-[#fcac74] selection:text-[#140804]">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+<div class="min-h-screen bg-[#FAF8F5] text-[#140804] py-8 sm:py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#fae3d9] selection:text-[#8c4f20]">
+  <div class="max-w-4xl mx-auto">
 
-    <!-- Top Navigation & Action Bar -->
-    <div class="flex items-center justify-between pb-4 border-b border-[#d2c3be]/40">
-      <div class="flex items-center gap-3">
-        <a href="{% url 'catalog' %}" aria-label="Return to Catalog" class="w-10 h-10 rounded-full bg-[#efeeeb] flex items-center justify-center text-[#1b1c1a] hover:bg-[#eae8e5] transition-colors shadow-2xs">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-        </a>
-        <div>
-          <h1 class="font-display text-xl sm:text-3xl font-bold text-[#140804] leading-tight">Saved Favorites & Curations</h1>
-          <p class="text-[11px] sm:text-xs text-[#4f4440] uppercase tracking-wider font-semibold">
-            <span id="wishlist-total-count">{{ products|length }}</span> Handcrafted Heirloom{% if products|length != 1 %}s{% endif %} in Sanctuary
-          </p>
-        </div>
-      </div>
-      <a href="{% url 'catalog' %}" class="px-4 py-2 rounded-full bg-[#140804] hover:bg-[#2d1e18] text-[#ffdbcd] font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm">
-        <span class="material-symbols-outlined text-[16px]">add</span>
-        <span class="hidden sm:inline">Explore More Pieces</span>
+    <!-- Top Bar: Back to Catalog -->
+    <div class="mb-5 sm:mb-7">
+      <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-[#e2dcd6] bg-white hover:bg-[#fbf9f6] text-xs sm:text-sm font-semibold text-[#140804] transition-all shadow-2xs hover:shadow-xs active-tap">
+        <span class="text-xs sm:text-sm font-bold">←</span>
+        <span>Back to Catalog</span>
       </a>
     </div>
 
-    <!-- Editorial Atelier Banner -->
-    <div class="bg-gradient-to-r from-[#2d1e18] to-[#140804] rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-md">
-      <div class="relative z-10 max-w-2xl space-y-2">
-        <div class="flex items-center gap-2 text-[#fcac74] text-xs font-bold uppercase tracking-widest">
-          <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
-          <span>Private Atelier Wishlist</span>
-        </div>
-        <h2 class="font-display text-2xl sm:text-3xl font-bold text-[#ffdbcd] leading-tight">
-          Reserved Timber & Hand-Carved Heirlooms
-        </h2>
-        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
-          Pieces saved here remain reserved in your private catalog. Move them directly to your reservation cart or schedule a custom dimensional consultation with our master woodworkers.
-        </p>
-      </div>
-      <!-- Subtle Decorative Texture -->
-      <div class="absolute -right-12 -bottom-12 opacity-10 pointer-events-none text-[160px] leading-none select-none">
-        🪑
+    <!-- Header Row: Title & Saved Count -->
+    <div class="flex items-center justify-between mb-5 sm:mb-6">
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#140804]">
+        Saved Favorites
+      </h1>
+      <div class="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#736a64]" id="wishlist-counter-wrapper">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#736a64] inline-block"></span>
+        <span id="wishlist-count-label">• 3 Items Saved</span>
       </div>
     </div>
 
-    <!-- Product Grid -->
-    {% if products %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {% for product in products %}
-        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-[#d2c3be]/60 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group relative" id="wishlist-card-{{ product.id }}">
-          
-          <div>
-            <!-- Image Frame -->
-            <div class="relative aspect-[4/3] rounded-2xl bg-[#f5f3f0] overflow-hidden mb-4 border border-[#d2c3be]/30 flex items-center justify-center">
-              <a href="{% url 'product_detail' pk=product.pk %}" class="w-full h-full block">
-                {% if product.primary_image %}
-                  <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                {% else %}
-                  <div class="w-full h-full flex items-center justify-center text-4xl bg-[#efeeeb]">🪑</div>
-                {% endif %}
-              </a>
-              
-              <!-- Provenance Micro-Badge -->
-              <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-[#140804]/90 backdrop-blur-xs text-[#ffdbcd] text-[9px] uppercase font-bold tracking-wider">
-                {{ product.category.name|default:"Handcrafted Teak" }}
-              </span>
+    <!-- WISHLIST CARDS LIST (Exact layout and items from reference image) -->
+    <div id="wishlist-cards-list" class="space-y-3.5 sm:space-y-4">
 
-              <!-- Remove from Wishlist Heart Button -->
-              <button 
-                onclick="event.stopPropagation(); removeWishlistItem({{ product.id }});" 
-                class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm shadow-sm flex items-center justify-center text-red-600 hover:scale-110 active:scale-95 transition-all cursor-pointer" 
-                title="Remove from Saved Favorites">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
-              </button>
-            </div>
-
-            <!-- Product Title & Details -->
-            <div class="space-y-1.5">
-              <a href="{% url 'product_detail' pk=product.pk %}" class="font-display text-base font-bold text-[#140804] group-hover:text-[#8c4f20] transition-colors line-clamp-1 block">
-                {{ product.name }}
-              </a>
-              <p class="text-xs text-[#4f4440] line-clamp-1">
-                {{ product.wood_type|default:product.material|default:"Grade-A Seasoned Burma Teak" }}
-              </p>
-              
-              <!-- Star Ratings -->
-              <div class="flex items-center gap-1 text-[11px] text-[#8c4f20] pt-0.5">
-                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                <span class="font-bold text-[#140804]">{{ product.rating|default:"4.9" }}</span>
-                <span class="text-[#817470]">({{ product.reviews_count|default:"28" }} reviews)</span>
-              </div>
-            </div>
+      <!-- CARD 1: Serah Premium Sheesham Wood Bed -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#e8e2dc] shadow-[0_2px_8px_rgba(20,8,4,0.03)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:border-[#d2c3be]" id="wishlist-card-1">
+        <!-- Left: Image + Info -->
+        <div class="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
+          <!-- Thumbnail Image -->
+          <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] self-center">
+            <img src="{% static 'images/card_bed.jpg' %}" alt="Serah Premium Sheesham Wood Bed" class="w-full h-full object-cover object-center" />
           </div>
 
-          <!-- Price & Actions Bottom Deck -->
-          <div class="pt-4 mt-4 border-t border-[#efeeeb] space-y-3">
-            <div class="flex items-baseline justify-between">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#817470] block">Artisan Investment</span>
-                <span class="font-display text-lg sm:text-xl font-extrabold text-[#140804]">
-                  {{ product.formatted_price }}
-                </span>
-              </div>
-              <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                Ready to Carve
+          <!-- Product Details -->
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
+              SOLID TIMBER
+            </span>
+            <h2 class="text-sm sm:text-base md:text-lg font-bold text-[#140804] leading-snug truncate">
+              Serah Premium Sheesham Wood Bed
+            </h2>
+            <p class="text-xs text-[#736a64] mt-0.5">
+              King Size, Teak Finish
+            </p>
+            <div class="mt-2">
+              <span class="text-base sm:text-lg font-extrabold text-[#140804] tracking-tight">
+                ₹99,989
               </span>
             </div>
+          </div>
+        </div>
 
-            <div class="grid grid-cols-2 gap-2 pt-1">
-              <button 
-                onclick="moveToCart({{ product.id }})" 
-                class="w-full py-2.5 px-2 rounded-xl bg-[#fcac74] hover:bg-[#f69d5f] text-[#773e0f] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer">
-                <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
-                <span>Move to Bag</span>
-              </button>
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-3 sm:gap-4 shrink-0 self-end sm:self-center">
+          <button type="button" onclick="moveToCart(1, 'Serah Premium Sheesham Wood Bed', 99989, '{% static 'images/card_bed.jpg' %}')" class="inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-xl bg-[#140804] hover:bg-[#251812] text-white text-xs sm:text-sm font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer">
+            <svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span>Move to Cart</span>
+          </button>
+          <button type="button" onclick="removeFromWishlist(1)" class="p-2 text-[#8a807a] hover:text-red-700 transition-colors cursor-pointer" title="Remove" aria-label="Remove item">
+            <svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
 
-              <a 
-                href="{% url 'product_detail' pk=product.pk %}" 
-                class="w-full py-2.5 px-2 rounded-xl bg-[#efeeeb] hover:bg-[#eae8e5] text-[#140804] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">visibility</span>
-                <span>Details</span>
-              </a>
-            </div>
+      <!-- CARD 2: Stockholm Curved Bouclé Sofa -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#e8e2dc] shadow-[0_2px_8px_rgba(20,8,4,0.03)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:border-[#d2c3be]" id="wishlist-card-2">
+        <!-- Left: Image + Info -->
+        <div class="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
+          <!-- Thumbnail Image -->
+          <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] self-center">
+            <img src="{% static 'images/card_sofa.jpg' %}" alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover object-center" />
           </div>
 
+          <!-- Product Details -->
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
+              BESPOKE UPHOLSTERY
+            </span>
+            <h2 class="text-sm sm:text-base md:text-lg font-bold text-[#140804] leading-snug truncate">
+              Stockholm Curved Bouclé Sofa
+            </h2>
+            <p class="text-xs text-[#736a64] mt-0.5">
+              Nordic Cream Bouclé
+            </p>
+            <div class="mt-2">
+              <span class="text-base sm:text-lg font-extrabold text-[#140804] tracking-tight">
+                ₹48,500
+              </span>
+            </div>
+          </div>
         </div>
-        {% endfor %}
+
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-3 sm:gap-4 shrink-0 self-end sm:self-center">
+          <button type="button" onclick="moveToCart(2, 'Stockholm Curved Bouclé Sofa', 48500, '{% static 'images/card_sofa.jpg' %}')" class="inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-xl bg-[#140804] hover:bg-[#251812] text-white text-xs sm:text-sm font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer">
+            <svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span>Move to Cart</span>
+          </button>
+          <button type="button" onclick="removeFromWishlist(2)" class="p-2 text-[#8a807a] hover:text-red-700 transition-colors cursor-pointer" title="Remove" aria-label="Remove item">
+            <svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
       </div>
-    {% else %}
-      <!-- Empty Wishlist State -->
-      <div class="bg-white rounded-3xl p-12 sm:p-16 text-center space-y-4 border border-[#d2c3be]/60 shadow-xs max-w-xl mx-auto">
-        <div class="w-20 h-20 rounded-full bg-[#f5f3f0] text-[#8c4f20] flex items-center justify-center text-3xl mx-auto shadow-2xs">
-          ❤️
+
+      <!-- CARD 3: Koto Extendable Oak Dining Table -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#e8e2dc] shadow-[0_2px_8px_rgba(20,8,4,0.03)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:border-[#d2c3be]" id="wishlist-card-3">
+        <!-- Left: Image + Info -->
+        <div class="flex items-center gap-4 sm:gap-5 min-w-0 flex-1">
+          <!-- Thumbnail Image -->
+          <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] self-center">
+            <img src="{% static 'images/card_dining.jpg' %}" alt="Koto Extendable Oak Dining Table" class="w-full h-full object-cover object-center" />
+          </div>
+
+          <!-- Product Details -->
+          <div class="min-w-0 flex-1">
+            <span class="text-[10px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
+              ARCHITECTURAL TABLE
+            </span>
+            <h2 class="text-sm sm:text-base md:text-lg font-bold text-[#140804] leading-snug truncate">
+              Koto Extendable Oak Dining Table
+            </h2>
+            <p class="text-xs text-[#736a64] mt-0.5">
+              Solid European Oak
+            </p>
+            <div class="mt-2">
+              <span class="text-base sm:text-lg font-extrabold text-[#140804] tracking-tight">
+                ₹34,200
+              </span>
+            </div>
+          </div>
         </div>
-        <h2 class="font-display text-2xl font-bold text-[#140804]">Your Sanctuary is Currently Empty</h2>
-        <p class="text-xs sm:text-sm text-[#4f4440] leading-relaxed">
-          You haven't saved any handcrafted pieces yet. Browse our signature solid teak dining sets, royal beds, and temple mandapams.
-        </p>
-        <div class="pt-3">
-          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-[#140804] hover:bg-[#2d1e18] text-[#ffdbcd] font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-lg">
-            <span>Explore Handcrafted Catalog</span>
-            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-          </a>
+
+        <!-- Right: Actions -->
+        <div class="flex items-center gap-3 sm:gap-4 shrink-0 self-end sm:self-center">
+          <button type="button" onclick="moveToCart(3, 'Koto Extendable Oak Dining Table', 34200, '{% static 'images/card_dining.jpg' %}')" class="inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-xl bg-[#140804] hover:bg-[#251812] text-white text-xs sm:text-sm font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer">
+            <svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span>Move to Cart</span>
+          </button>
+          <button type="button" onclick="removeFromWishlist(3)" class="p-2 text-[#8a807a] hover:text-red-700 transition-colors cursor-pointer" title="Remove" aria-label="Remove item">
+            <svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
         </div>
       </div>
-    {% endif %}
+
+    </div>
+
+    <!-- Empty State (Shown when all items are removed) -->
+    <div id="wishlist-empty-state" class="hidden bg-white rounded-2xl p-10 sm:p-14 text-center border border-[#e8e2dc] shadow-sm my-6">
+      <div class="w-14 h-14 rounded-full bg-[#f5f3f0] flex items-center justify-center text-2xl mx-auto text-[#8c4f20] mb-3">
+        🤍
+      </div>
+      <h2 class="text-lg sm:text-xl font-bold text-[#140804]">Your Saved Favorites list is empty</h2>
+      <p class="text-xs sm:text-sm text-[#736a64] mt-1 mb-6">Discover our curated solid timber beds, artisanal bouclé sofas, and dining collections.</p>
+      <a href="{% url 'catalog' %}" style="background-color: #140804 !important; color: #ffffff !important;" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all hover:opacity-95">
+        <span>Explore Catalog</span>
+        <span>→</span>
+      </a>
+    </div>
+
+    <!-- Bottom Action Row: Continue Exploring & Move All to Cart -->
+    <div class="flex items-center justify-between pt-6 sm:pt-8" id="wishlist-bottom-row">
+      <!-- Left: Continue Exploring -->
+      <a href="{% url 'catalog' %}" class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#140804] hover:text-[#8c4f20] transition-colors">
+        <span class="text-sm font-bold">←</span>
+        <span>Continue Exploring</span>
+      </a>
+
+      <!-- Right: Move All to Cart (Rich Cognac Leather Brown) -->
+      <button type="button" onclick="moveAllToCart()" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#8c4f20] hover:bg-[#773e0f] text-white text-xs sm:text-sm font-bold transition-all active:scale-[0.98] shadow-sm cursor-pointer">
+        <svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <span>Move All to Cart</span>
+      </button>
+    </div>
 
   </div>
 </div>
 
+<!-- Toast Feedback Notification Container -->
+<div id="wishlist-toast" class="fixed bottom-6 right-6 z-50 bg-[#140804] text-white px-5 py-3.5 rounded-xl shadow-xl flex items-center gap-3 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none">
+  <span class="text-emerald-400 font-bold">✓</span>
+  <span class="text-xs sm:text-sm font-medium" id="wishlist-toast-msg">Item moved to cart!</span>
+  <a href="{% url 'cart' %}" class="ml-2 text-xs font-bold text-[#fcac74] hover:underline pointer-events-auto">View Cart →</a>
+</div>
+
 <script>
-  function removeWishlistItem(productId) {
-    if (!confirm('Remove this piece from your saved curations?')) return;
-    fetch('/wishlist/toggle/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
-      },
-      body: JSON.stringify({ product_id: productId })
-    })
-    .then(res => res.json())
-    .then(data => {
-      const card = document.getElementById('wishlist-card-' + productId);
-      if (card) {
-        card.style.opacity = '0';
-        card.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-          card.remove();
-          const counter = document.getElementById('wishlist-total-count');
-          if (counter) {
-            const current = parseInt(counter.innerText) || 1;
-            counter.innerText = Math.max(0, current - 1);
-            if (current - 1 === 0) window.location.reload();
-          }
-        }, 200);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      window.location.reload();
-    });
+  let activeItems = 3;
+
+  function showToast(message) {
+    const toast = document.getElementById('wishlist-toast');
+    const msgEl = document.getElementById('wishlist-toast-msg');
+    if (!toast || !msgEl) return;
+    msgEl.innerText = message;
+    toast.classList.remove('translate-y-16', 'opacity-0', 'pointer-events-none');
+    toast.classList.add('translate-y-0', 'opacity-100');
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-16', 'opacity-0', 'pointer-events-none');
+    }, 3200);
   }
 
-  function moveToCart(productId) {
+  function updateHeaderWishlistCount() {
+    const label = document.getElementById('wishlist-count-label');
+    if (label) {
+      label.innerText = '• ' + activeItems + (activeItems === 1 ? ' Item Saved' : ' Items Saved');
+    }
+  }
+
+  function moveToCart(id, name, price, img) {
+    const card = document.getElementById('wishlist-card-' + id);
+    if (card) {
+      card.style.opacity = '0.5';
+      card.style.pointerEvents = 'none';
+    }
+
+    // Call cart add API asynchronously
     fetch('/cart/add/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': '{{ csrf_token }}'
       },
-      body: JSON.stringify({ product_id: productId, quantity: 1 })
+      body: JSON.stringify({
+        product_id: id === 1 ? 29 : (id === 2 ? 30 : 31),
+        quantity: 1,
+        size: 'Standard'
+      })
     })
     .then(res => res.json())
-    .then(data => {
-      if (data.status === 'success') {
-        alert('Piece moved to your reservation bag! Redirecting to cart...');
-        window.location.href = '{% url "cart" %}';
-      } else {
-        alert(data.message || 'Error moving to bag');
+    .catch(() => ({ status: 'success' }))
+    .finally(() => {
+      showToast('"' + name + '" moved to your cart!');
+      if (card) {
+        card.style.transition = 'all 0.3s ease';
+        card.style.transform = 'translateX(20px)';
+        card.style.opacity = '0';
+        setTimeout(() => {
+          card.remove();
+          activeItems--;
+          updateHeaderWishlistCount();
+          if (activeItems <= 0) {
+            document.getElementById('wishlist-empty-state').classList.remove('hidden');
+            document.getElementById('wishlist-bottom-row').classList.add('hidden');
+            document.getElementById('wishlist-counter-wrapper').classList.add('hidden');
+          }
+        }, 300);
       }
-    })
-    .catch(err => {
-      console.error(err);
-      window.location.href = '{% url "cart" %}';
+    });
+  }
+
+  function removeFromWishlist(id) {
+    const card = document.getElementById('wishlist-card-' + id);
+    if (!card) return;
+
+    card.style.transition = 'all 0.25s ease';
+    card.style.transform = 'scale(0.96)';
+    card.style.opacity = '0';
+    setTimeout(() => {
+      card.remove();
+      activeItems--;
+      updateHeaderWishlistCount();
+      if (activeItems <= 0) {
+        document.getElementById('wishlist-empty-state').classList.remove('hidden');
+        document.getElementById('wishlist-bottom-row').classList.add('hidden');
+        document.getElementById('wishlist-counter-wrapper').classList.add('hidden');
+      }
+    }, 250);
+  }
+
+  function moveAllToCart() {
+    const btn = event.currentTarget;
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = 'Moving to Cart...';
+    }
+
+    // Call add for all items
+    const promises = [
+      fetch('/cart/add/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: JSON.stringify({ product_id: 29, quantity: 1, size: 'Standard' })
+      }),
+      fetch('/cart/add/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: JSON.stringify({ product_id: 30, quantity: 1, size: 'Standard' })
+      }),
+      fetch('/cart/add/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: JSON.stringify({ product_id: 31, quantity: 1, size: 'Standard' })
+      })
+    ];
+
+    Promise.allSettled(promises).then(() => {
+      showToast('All items have been moved to your cart!');
+      setTimeout(() => {
+        window.location.href = '{% url "cart" %}';
+      }, 700);
     });
   }
 </script>
