@@ -1730,56 +1730,33 @@ def admin_media_cms_view(request):
     media_cms = HomeMediaCMS.get_cms()
 
     if request.method == 'POST':
-        # --- 1. HERO CARDS ---
-        # Card 1
-        if 'hero_card_1_image' in request.FILES:
-            media_cms.hero_card_1_image = request.FILES['hero_card_1_image']
-        if request.POST.get('hero_card_1_url') is not None:
-            media_cms.hero_card_1_url = request.POST.get('hero_card_1_url', '').strip()
-        media_cms.hero_card_1_title = request.POST.get('hero_card_1_title', media_cms.hero_card_1_title).strip()
-        media_cms.hero_card_1_subtitle = request.POST.get('hero_card_1_subtitle', media_cms.hero_card_1_subtitle).strip()
+        # --- 1. HERO CARDS (1 to 6) ---
+        for i in range(1, 7):
+            file_key = f'hero_card_{i}_image'
+            url_key = f'hero_card_{i}_url'
+            title_key = f'hero_card_{i}_title'
+            subtitle_key = f'hero_card_{i}_subtitle'
 
-        # Card 2
-        if 'hero_card_2_image' in request.FILES:
-            media_cms.hero_card_2_image = request.FILES['hero_card_2_image']
-        if request.POST.get('hero_card_2_url') is not None:
-            media_cms.hero_card_2_url = request.POST.get('hero_card_2_url', '').strip()
-        media_cms.hero_card_2_title = request.POST.get('hero_card_2_title', media_cms.hero_card_2_title).strip()
-        media_cms.hero_card_2_subtitle = request.POST.get('hero_card_2_subtitle', media_cms.hero_card_2_subtitle).strip()
+            if file_key in request.FILES and request.FILES[file_key]:
+                try:
+                    saved_url = _save_product_image_file(request.FILES[file_key])
+                    setattr(media_cms, url_key, saved_url)
+                    setattr(media_cms, file_key, None)
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning("Failed to save hero card image %s: %s", i, e)
+                    setattr(media_cms, file_key, request.FILES[file_key])
+            elif request.POST.get(url_key) is not None:
+                posted_url = request.POST.get(url_key, '').strip()
+                if posted_url:
+                    setattr(media_cms, url_key, posted_url)
 
-        # Card 3
-        if 'hero_card_3_image' in request.FILES:
-            media_cms.hero_card_3_image = request.FILES['hero_card_3_image']
-        if request.POST.get('hero_card_3_url') is not None:
-            media_cms.hero_card_3_url = request.POST.get('hero_card_3_url', '').strip()
-        media_cms.hero_card_3_title = request.POST.get('hero_card_3_title', media_cms.hero_card_3_title).strip()
-        media_cms.hero_card_3_subtitle = request.POST.get('hero_card_3_subtitle', media_cms.hero_card_3_subtitle).strip()
+            if request.POST.get(title_key) is not None:
+                setattr(media_cms, title_key, request.POST.get(title_key, '').strip())
+            if request.POST.get(subtitle_key) is not None:
+                setattr(media_cms, subtitle_key, request.POST.get(subtitle_key, '').strip())
 
-        # Card 4
-        if 'hero_card_4_image' in request.FILES:
-            media_cms.hero_card_4_image = request.FILES['hero_card_4_image']
-        if request.POST.get('hero_card_4_url') is not None:
-            media_cms.hero_card_4_url = request.POST.get('hero_card_4_url', '').strip()
-        media_cms.hero_card_4_title = request.POST.get('hero_card_4_title', media_cms.hero_card_4_title).strip()
-        media_cms.hero_card_4_subtitle = request.POST.get('hero_card_4_subtitle', media_cms.hero_card_4_subtitle).strip()
-
-        # Card 5
-        if 'hero_card_5_image' in request.FILES:
-            media_cms.hero_card_5_image = request.FILES['hero_card_5_image']
-        if request.POST.get('hero_card_5_url') is not None:
-            media_cms.hero_card_5_url = request.POST.get('hero_card_5_url', '').strip()
-        media_cms.hero_card_5_title = request.POST.get('hero_card_5_title', media_cms.hero_card_5_title).strip()
-        media_cms.hero_card_5_subtitle = request.POST.get('hero_card_5_subtitle', media_cms.hero_card_5_subtitle).strip()
-
-        # Card 6
-        if 'hero_card_6_image' in request.FILES:
-            media_cms.hero_card_6_image = request.FILES['hero_card_6_image']
-        if request.POST.get('hero_card_6_url') is not None:
-            media_cms.hero_card_6_url = request.POST.get('hero_card_6_url', '').strip()
-        media_cms.hero_card_6_title = request.POST.get('hero_card_6_title', media_cms.hero_card_6_title).strip()
-        media_cms.hero_card_6_subtitle = request.POST.get('hero_card_6_subtitle', media_cms.hero_card_6_subtitle).strip()
-
-        # --- 2. CATEGORY CIRCLES ---
+        # --- 2. CATEGORY CIRCLES (8 CATEGORIES) ---
         cat_fields = [
             ('cat_beds_image', 'cat_beds_url'),
             ('cat_sofa_image', 'cat_sofa_url'),
@@ -1791,21 +1768,34 @@ def admin_media_cms_view(request):
             ('cat_podiums_image', 'cat_podiums_url'),
         ]
         for img_field, url_field in cat_fields:
-            if img_field in request.FILES:
-                setattr(media_cms, img_field, request.FILES[img_field])
-            if request.POST.get(url_field) is not None:
-                setattr(media_cms, url_field, request.POST.get(url_field, '').strip())
+            if img_field in request.FILES and request.FILES[img_field]:
+                try:
+                    saved_url = _save_product_image_file(request.FILES[img_field])
+                    setattr(media_cms, url_field, saved_url)
+                    setattr(media_cms, img_field, None)
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning("Failed to save cat image %s: %s", img_field, e)
+                    setattr(media_cms, img_field, request.FILES[img_field])
+            elif request.POST.get(url_field) is not None:
+                posted_url = request.POST.get(url_field, '').strip()
+                if posted_url:
+                    setattr(media_cms, url_field, posted_url)
 
         # --- 3. VIDEO SHOWCASE BANNER ---
-        if 'video_showcase_file' in request.FILES:
+        if 'video_showcase_file' in request.FILES and request.FILES['video_showcase_file']:
             media_cms.video_showcase_file = request.FILES['video_showcase_file']
         if request.POST.get('video_showcase_url') is not None:
-            media_cms.video_showcase_url = request.POST.get('video_showcase_url', '').strip()
-        media_cms.video_tagline = request.POST.get('video_tagline', media_cms.video_tagline).strip()
-        media_cms.video_title = request.POST.get('video_title', media_cms.video_title).strip()
+            posted_v_url = request.POST.get('video_showcase_url', '').strip()
+            if posted_v_url:
+                media_cms.video_showcase_url = posted_v_url
+        if request.POST.get('video_tagline') is not None:
+            media_cms.video_tagline = request.POST.get('video_tagline', '').strip()
+        if request.POST.get('video_title') is not None:
+            media_cms.video_title = request.POST.get('video_title', '').strip()
 
         media_cms.save()
-        messages.success(request, "Media & Showcase CMS updated successfully! All new images and videos are now live on the store.")
+        messages.success(request, "Media & Showcase CMS updated successfully! All new images and videos are saved and live on the public store.")
         return redirect('admin_media_cms')
 
     context = {
