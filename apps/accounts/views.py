@@ -1706,3 +1706,97 @@ def admin_page_cms_view(request):
     }
     return render(request, 'admin_portal/admin_page_cms.html', context)
 
+
+def admin_media_cms_view(request):
+    """
+    Dedicated CMS Manager for Home Hero Showcase Cards, Categories, and Video Banners.
+    Allows administrators to upload new image files or specify image URLs for:
+    1. 4 Hero Showcase 3D Cards
+    2. 8 Replacement Category Circles (Beds, Sofa, Diwan, Dining, Dressing, Doors, Teapoy, Podiums)
+    3. Atelier Video Showcase Banner
+    """
+    from apps.core.models import HomeMediaCMS
+
+    is_admin = request.session.get('glory_role') == 'admin' or (
+        request.user.is_authenticated and (
+            request.user.is_staff or request.user.is_superuser or
+            getattr(getattr(request.user, 'profile', None), 'role', '') == 'admin'
+        )
+    )
+    if not is_admin:
+        messages.error(request, "Access restricted to Glory Studio administrators.")
+        return redirect('admin_login')
+
+    media_cms = HomeMediaCMS.get_cms()
+
+    if request.method == 'POST':
+        # --- 1. HERO CARDS ---
+        # Card 1
+        if 'hero_card_1_image' in request.FILES:
+            media_cms.hero_card_1_image = request.FILES['hero_card_1_image']
+        if request.POST.get('hero_card_1_url') is not None:
+            media_cms.hero_card_1_url = request.POST.get('hero_card_1_url', '').strip()
+        media_cms.hero_card_1_title = request.POST.get('hero_card_1_title', media_cms.hero_card_1_title).strip()
+        media_cms.hero_card_1_subtitle = request.POST.get('hero_card_1_subtitle', media_cms.hero_card_1_subtitle).strip()
+
+        # Card 2
+        if 'hero_card_2_image' in request.FILES:
+            media_cms.hero_card_2_image = request.FILES['hero_card_2_image']
+        if request.POST.get('hero_card_2_url') is not None:
+            media_cms.hero_card_2_url = request.POST.get('hero_card_2_url', '').strip()
+        media_cms.hero_card_2_title = request.POST.get('hero_card_2_title', media_cms.hero_card_2_title).strip()
+        media_cms.hero_card_2_subtitle = request.POST.get('hero_card_2_subtitle', media_cms.hero_card_2_subtitle).strip()
+
+        # Card 3
+        if 'hero_card_3_image' in request.FILES:
+            media_cms.hero_card_3_image = request.FILES['hero_card_3_image']
+        if request.POST.get('hero_card_3_url') is not None:
+            media_cms.hero_card_3_url = request.POST.get('hero_card_3_url', '').strip()
+        media_cms.hero_card_3_title = request.POST.get('hero_card_3_title', media_cms.hero_card_3_title).strip()
+        media_cms.hero_card_3_subtitle = request.POST.get('hero_card_3_subtitle', media_cms.hero_card_3_subtitle).strip()
+
+        # Card 4
+        if 'hero_card_4_image' in request.FILES:
+            media_cms.hero_card_4_image = request.FILES['hero_card_4_image']
+        if request.POST.get('hero_card_4_url') is not None:
+            media_cms.hero_card_4_url = request.POST.get('hero_card_4_url', '').strip()
+        media_cms.hero_card_4_title = request.POST.get('hero_card_4_title', media_cms.hero_card_4_title).strip()
+        media_cms.hero_card_4_subtitle = request.POST.get('hero_card_4_subtitle', media_cms.hero_card_4_subtitle).strip()
+
+        # --- 2. CATEGORY CIRCLES ---
+        cat_fields = [
+            ('cat_beds_image', 'cat_beds_url'),
+            ('cat_sofa_image', 'cat_sofa_url'),
+            ('cat_diwan_image', 'cat_diwan_url'),
+            ('cat_dining_image', 'cat_dining_url'),
+            ('cat_dressing_image', 'cat_dressing_url'),
+            ('cat_doors_image', 'cat_doors_url'),
+            ('cat_teapoy_image', 'cat_teapoy_url'),
+            ('cat_podiums_image', 'cat_podiums_url'),
+        ]
+        for img_field, url_field in cat_fields:
+            if img_field in request.FILES:
+                setattr(media_cms, img_field, request.FILES[img_field])
+            if request.POST.get(url_field) is not None:
+                setattr(media_cms, url_field, request.POST.get(url_field, '').strip())
+
+        # --- 3. VIDEO SHOWCASE BANNER ---
+        if 'video_showcase_file' in request.FILES:
+            media_cms.video_showcase_file = request.FILES['video_showcase_file']
+        if request.POST.get('video_showcase_url') is not None:
+            media_cms.video_showcase_url = request.POST.get('video_showcase_url', '').strip()
+        media_cms.video_tagline = request.POST.get('video_tagline', media_cms.video_tagline).strip()
+        media_cms.video_title = request.POST.get('video_title', media_cms.video_title).strip()
+
+        media_cms.save()
+        messages.success(request, "Media & Showcase CMS updated successfully! All new images and videos are now live on the store.")
+        return redirect('admin_media_cms')
+
+    context = {
+        'page_title': 'Media & Showcase CMS (Hero, Categories & Videos)',
+        'active_nav': 'media_cms',
+        'media_cms': media_cms,
+    }
+    return render(request, 'admin_portal/admin_media_cms.html', context)
+
+

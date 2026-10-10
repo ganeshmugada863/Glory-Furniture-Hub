@@ -1,0 +1,505 @@
+{% extends 'admin_portal/admin_base.html' %}
+{% load static %}
+
+{% block title %}Media & Showcase CMS — Glory Furniture Hub{% endblock %}
+
+{% block content %}
+<div class="space-y-6 max-w-6xl">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-gray-200">
+    <div>
+      <h1 class="text-2xl font-black text-gray-950 tracking-tight">Media &amp; Showcase CMS</h1>
+      <p class="text-xs text-gray-500 mt-0.5">Upload, replace, and customize images &amp; videos for Home Hero 3D Cards, Categories, and Video Banners.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'home' %}" target="_blank" class="px-3 py-1.5 rounded-xl bg-white border border-gray-200 hover:border-gray-300 text-gray-700 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5">
+        <span>🏪</span>
+        <span>View Public Store</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages Alert -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% else %}bg-green-50 border border-green-200 text-green-800{% endif %} rounded-xl text-xs flex items-center justify-between shadow-2xs">
+    <div class="flex items-center gap-2">
+      <span class="text-base">{% if message.tags == 'error' %}⚠️{% else %}✅{% endif %}</span>
+      <span class="font-semibold">{{ message }}</span>
+    </div>
+    <button type="button" onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-700 font-bold">&times;</button>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Tab Selector -->
+  <div class="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto no-scrollbar">
+    <button type="button" onclick="switchMediaTab('hero')" id="tab-btn-hero" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-[#5C3D2E] text-white shadow-xs shrink-0">
+      🎴 4 Hero Showcase Cards
+    </button>
+    <button type="button" onclick="switchMediaTab('categories')" id="tab-btn-categories" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0">
+      ⭕ 8 Category Circles
+    </button>
+    <button type="button" onclick="switchMediaTab('video')" id="tab-btn-video" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0">
+      🎬 Video Showcase Banner
+    </button>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- ============================================================= -->
+    <!-- 1. HERO SHOWCASE CARDS (4 CARDS)                              -->
+    <!-- ============================================================= -->
+    <div id="section-hero" class="media-section space-y-5">
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-xs text-amber-900 flex items-start gap-2.5">
+        <span class="text-lg shrink-0">💡</span>
+        <div>
+          <strong class="font-bold">Hero Cards Showcase:</strong>
+          These 4 cards animate horizontally in 3D across the home screen with auto-moving carousel rotation. You can upload high-resolution replacement photos or paste public image URLs.
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Card 1: The Living Edit -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">1</span>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Living Edit Card</h3>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+          </div>
+
+          <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img src="{{ media_cms.hero_1 }}" alt="Hero 1 Preview" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_1_title }}</p>
+              <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_1_subtitle }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
+              <input type="file" name="hero_card_1_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
+              <input type="text" name="hero_card_1_url" value="{{ media_cms.hero_card_1_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Title</label>
+                <input type="text" name="hero_card_1_title" value="{{ media_cms.hero_card_1_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Subtitle</label>
+                <input type="text" name="hero_card_1_subtitle" value="{{ media_cms.hero_card_1_subtitle }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Soft Retreats -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">2</span>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Soft Retreats Card (Bed)</h3>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+          </div>
+
+          <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img src="{{ media_cms.hero_2 }}" alt="Hero 2 Preview" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_2_title }}</p>
+              <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_2_subtitle }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
+              <input type="file" name="hero_card_2_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
+              <input type="text" name="hero_card_2_url" value="{{ media_cms.hero_card_2_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Title</label>
+                <input type="text" name="hero_card_2_title" value="{{ media_cms.hero_card_2_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Subtitle</label>
+                <input type="text" name="hero_card_2_subtitle" value="{{ media_cms.hero_card_2_subtitle }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Gather & Dine -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">3</span>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Gather &amp; Dine Card</h3>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+          </div>
+
+          <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img src="{{ media_cms.hero_3 }}" alt="Hero 3 Preview" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_3_title }}</p>
+              <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_3_subtitle }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
+              <input type="file" name="hero_card_3_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
+              <input type="text" name="hero_card_3_url" value="{{ media_cms.hero_card_3_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Title</label>
+                <input type="text" name="hero_card_3_title" value="{{ media_cms.hero_card_3_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Subtitle</label>
+                <input type="text" name="hero_card_3_subtitle" value="{{ media_cms.hero_card_3_subtitle }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Artisan Sanctuaries -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">4</span>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Artisan Sanctuaries Card</h3>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+          </div>
+
+          <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img src="{{ media_cms.hero_4 }}" alt="Hero 4 Preview" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_4_title }}</p>
+              <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_4_subtitle }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
+              <input type="file" name="hero_card_4_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
+              <input type="text" name="hero_card_4_url" value="{{ media_cms.hero_card_4_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Title</label>
+                <input type="text" name="hero_card_4_title" value="{{ media_cms.hero_card_4_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Subtitle</label>
+                <input type="text" name="hero_card_4_subtitle" value="{{ media_cms.hero_card_4_subtitle }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 2. CATEGORY CIRCLES (8 CATEGORIES)                            -->
+    <!-- ============================================================= -->
+    <div id="section-categories" class="media-section hidden space-y-5">
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-xs text-amber-900 flex items-start gap-2.5">
+        <span class="text-lg shrink-0">⭕</span>
+        <div>
+          <strong class="font-bold">Circular Category Badges:</strong>
+          These are the 8 circular furniture icons displayed prominently on the Home Screen. Recommended square ratio (1:1) PNG or JPG with transparent or clean studio background.
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- 1. Beds -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_beds }}" alt="Beds" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">1. Beds</h4>
+              <p class="text-[10px] text-gray-500">Cot / Wooden Bed</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_beds_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_beds_url" value="{{ media_cms.cat_beds_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 2. Sofa -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_sofa }}" alt="Sofa" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">2. Sofa</h4>
+              <p class="text-[10px] text-gray-500">Sofa Sets</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_sofa_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_sofa_url" value="{{ media_cms.cat_sofa_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 3. Diwan -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_diwan }}" alt="Diwan" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">3. Diwan</h4>
+              <p class="text-[10px] text-gray-500">Diwan Cot / Lounger</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_diwan_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_diwan_url" value="{{ media_cms.cat_diwan_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 4. Dining -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_dining }}" alt="Dining" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">4. Dining</h4>
+              <p class="text-[10px] text-gray-500">Dining Tables</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_dining_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_dining_url" value="{{ media_cms.cat_dining_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 5. Dressing -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_dressing }}" alt="Dressing" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">5. Dressing</h4>
+              <p class="text-[10px] text-gray-500">Dressing Tables</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_dressing_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_dressing_url" value="{{ media_cms.cat_dressing_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 6. Doors -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_doors }}" alt="Doors" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">6. Doors</h4>
+              <p class="text-[10px] text-gray-500">Solid Teak Doors</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_doors_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_doors_url" value="{{ media_cms.cat_doors_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 7. Teapoy -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_teapoy }}" alt="Teapoy" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">7. Teapoy</h4>
+              <p class="text-[10px] text-gray-500">Coffee Tables</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_teapoy_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_teapoy_url" value="{{ media_cms.cat_teapoy_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+        <!-- 8. Podiums -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 bg-stone-50 flex items-center justify-center shrink-0">
+              <img src="{{ media_cms.cat_podiums }}" alt="Podiums" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-gray-900 uppercase">8. Podiums</h4>
+              <p class="text-[10px] text-gray-500">Presentation Lecterns</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Upload Image</label>
+            <input type="file" name="cat_podiums_image" accept="image/*" class="w-full text-[11px] text-gray-500 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-amber-50 file:text-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-700 mb-0.5">Image URL</label>
+            <input type="text" name="cat_podiums_url" value="{{ media_cms.cat_podiums_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-[11px]" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 3. VIDEO SHOWCASE BANNER                                      -->
+    <!-- ============================================================= -->
+    <div id="section-video" class="media-section hidden space-y-5">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div class="flex items-center gap-2.5">
+            <span class="text-lg">🎬</span>
+            <div>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">The Atelier Experience — Video Banner</h3>
+              <p class="text-[11px] text-gray-500">Auto-looping cinema video banner displayed under the products showcase.</p>
+            </div>
+          </div>
+          <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-full border border-emerald-200">Active</span>
+        </div>
+
+        <div class="relative w-full aspect-[21/9] rounded-2xl overflow-hidden bg-black border border-gray-300 shadow-inner">
+          <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+            <source src="{{ media_cms.video_url }}" type="video/mp4">
+          </video>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
+          <div class="absolute bottom-3 left-4 text-white pointer-events-none">
+            <span class="text-[10px] tracking-widest uppercase font-bold text-[#C9963F]">{{ media_cms.video_tagline }}</span>
+            <p class="text-xs sm:text-sm font-semibold">{{ media_cms.video_title }}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Upload New Video File (.mp4 / .webm)</label>
+            <input type="file" name="video_showcase_file" accept="video/mp4,video/webm" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            <p class="text-[10px] text-gray-400 mt-1">Recommended: MP4 format, compressed under 10MB for fast mobile loading.</p>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">OR Video URL (Direct / CDN)</label>
+            <input type="text" name="video_showcase_url" value="{{ media_cms.video_showcase_url }}" placeholder="/static/videos/product_1.mp4 or https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Video Tagline</label>
+            <input type="text" name="video_tagline" value="{{ media_cms.video_tagline }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">Video Title / Headline</label>
+            <input type="text" name="video_title" value="{{ media_cms.video_title }}" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sticky Save Actions Bar -->
+    <div class="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 p-4 shadow-lg flex items-center justify-between">
+      <div class="flex items-center gap-2 text-xs text-gray-500">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Instant live sync across Public Store &amp; Android screens</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'admin_media_cms' %}" class="px-4 py-2 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-100 transition-colors">
+          Reset Changes
+        </a>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-[#432c21] text-white text-xs font-bold transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+          <span>💾 Save &amp; Publish Media</span>
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+  function switchMediaTab(tab) {
+    const tabs = ['hero', 'categories', 'video'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab-btn-${t}`);
+      const sec = document.getElementById(`section-${t}`);
+      if (t === tab) {
+        btn.classList.add('bg-[#5C3D2E]', 'text-white', 'shadow-xs');
+        btn.classList.remove('bg-gray-100', 'text-gray-700');
+        sec.classList.remove('hidden');
+      } else {
+        btn.classList.remove('bg-[#5C3D2E]', 'text-white', 'shadow-xs');
+        btn.classList.add('bg-gray-100', 'text-gray-700');
+        sec.classList.add('hidden');
+      }
+    });
+  }
+</script>
+{% endblock %}

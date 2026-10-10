@@ -49,6 +49,7 @@ urlpatterns = [
     path('admin/reports/', views.admin_reports_view, name='admin_reports'),
     path('admin/settings/', views.admin_settings_view, name='admin_settings'),
     path('admin/page-cms/', views.admin_page_cms_view, name='admin_page_cms'),
+    path('admin/media-cms/', views.admin_media_cms_view, name='admin_media_cms'),
     
     # Admin Alias for Backward Compatibility
     path('admin-portal/', views.admin_dashboard_view, name='admin_portal'),

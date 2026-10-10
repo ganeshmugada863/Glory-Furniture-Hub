@@ -181,3 +181,132 @@ class PageCMSContent(models.Model):
             return self.register_slide1_image.url
         return self.register_slide1_image_url
 
+
+class HomeMediaCMS(models.Model):
+    """
+    Dedicated CMS model for the Home Hero Showcase Cards, Categories, and Video Banners.
+    Allows administrators to upload or update images and video URLs directly from the Admin Portal.
+    """
+    # 4 Hero Cards
+    hero_card_1_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    hero_card_1_url = models.URLField(max_length=1000, blank=True, default='/static/images/hero_card_living_clean.jpg')
+    hero_card_1_title = models.CharField(max_length=200, default='The Living Edit')
+    hero_card_1_subtitle = models.CharField(max_length=255, default='Warm, timeless essentials')
+
+    hero_card_2_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    hero_card_2_url = models.URLField(max_length=1000, blank=True, default='/static/images/hero_card_bed_full.jpg')
+    hero_card_2_title = models.CharField(max_length=200, default='Soft Retreats')
+    hero_card_2_subtitle = models.CharField(max_length=255, default='Rest in natural comfort')
+
+    hero_card_3_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    hero_card_3_url = models.URLField(max_length=1000, blank=True, default='/static/images/hero_card_dining_full.jpg')
+    hero_card_3_title = models.CharField(max_length=200, default='Gather & Dine')
+    hero_card_3_subtitle = models.CharField(max_length=255, default='Spaces for meaningful moments')
+
+    hero_card_4_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    hero_card_4_url = models.URLField(max_length=1000, blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w')
+    hero_card_4_title = models.CharField(max_length=200, default='Artisan Sanctuaries')
+    hero_card_4_subtitle = models.CharField(max_length=255, default='Bespoke handcrafted suites')
+
+    # 8 Category Circles
+    cat_beds_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_beds_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_beds.png')
+
+    cat_sofa_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_sofa_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_sofa.png')
+
+    cat_diwan_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_diwan_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_diwan.png')
+
+    cat_dining_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_dining_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_dining.png')
+
+    cat_dressing_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_dressing_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_dressing.png')
+
+    cat_doors_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_doors_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_doors.png')
+
+    cat_teapoy_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_teapoy_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_teapoy.png')
+
+    cat_podiums_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    cat_podiums_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_podiums.png')
+
+    # Showcase Video Banner
+    video_showcase_file = models.FileField(upload_to='cms/videos/', blank=True, null=True)
+    video_showcase_url = models.URLField(max_length=1000, blank=True, default='/static/videos/product_1.mp4')
+    video_tagline = models.CharField(max_length=200, default='Glory Atelier • Archival Series')
+    video_title = models.CharField(max_length=255, default='Chapter 04: Handcrafted Royal Teak Bedroom Collection')
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Home Media CMS'
+        verbose_name_plural = 'Home Media CMS'
+
+    def __str__(self):
+        return f"Home Media CMS (ID {self.id})"
+
+    @classmethod
+    def get_cms(cls):
+        try:
+            cms, _ = cls.objects.get_or_create(id=1)
+            return cms
+        except Exception:
+            return cls(id=1)
+
+    # Helper properties returning active image or URL
+    @property
+    def hero_1(self):
+        return self.hero_card_1_image.url if self.hero_card_1_image else (self.hero_card_1_url or '/static/images/hero_card_living_clean.jpg')
+
+    @property
+    def hero_2(self):
+        return self.hero_card_2_image.url if self.hero_card_2_image else (self.hero_card_2_url or '/static/images/hero_card_bed_full.jpg')
+
+    @property
+    def hero_3(self):
+        return self.hero_card_3_image.url if self.hero_card_3_image else (self.hero_card_3_url or '/static/images/hero_card_dining_full.jpg')
+
+    @property
+    def hero_4(self):
+        return self.hero_card_4_image.url if self.hero_card_4_image else (self.hero_card_4_url or 'https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w')
+
+    @property
+    def cat_beds(self):
+        return self.cat_beds_image.url if self.cat_beds_image else (self.cat_beds_url or '/static/images/cat_beds.png')
+
+    @property
+    def cat_sofa(self):
+        return self.cat_sofa_image.url if self.cat_sofa_image else (self.cat_sofa_url or '/static/images/cat_sofa.png')
+
+    @property
+    def cat_diwan(self):
+        return self.cat_diwan_image.url if self.cat_diwan_image else (self.cat_diwan_url or '/static/images/cat_diwan.png')
+
+    @property
+    def cat_dining(self):
+        return self.cat_dining_image.url if self.cat_dining_image else (self.cat_dining_url or '/static/images/cat_dining.png')
+
+    @property
+    def cat_dressing(self):
+        return self.cat_dressing_image.url if self.cat_dressing_image else (self.cat_dressing_url or '/static/images/cat_dressing.png')
+
+    @property
+    def cat_doors(self):
+        return self.cat_doors_image.url if self.cat_doors_image else (self.cat_doors_url or '/static/images/cat_doors.png')
+
+    @property
+    def cat_teapoy(self):
+        return self.cat_teapoy_image.url if self.cat_teapoy_image else (self.cat_teapoy_url or '/static/images/cat_teapoy.png')
+
+    @property
+    def cat_podiums(self):
+        return self.cat_podiums_image.url if self.cat_podiums_image else (self.cat_podiums_url or '/static/images/cat_podiums.png')
+
+    @property
+    def video_url(self):
+        return self.video_showcase_file.url if self.video_showcase_file else (self.video_showcase_url or '/static/videos/product_1.mp4')
+
+

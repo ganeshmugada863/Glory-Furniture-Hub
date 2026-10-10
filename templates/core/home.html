@@ -140,41 +140,41 @@
       
       <!-- Card 0: The Living Edit (Default Active Center) -->
       <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="0" onclick="goToHeroCard(0)">
-        <img src="/static/images/hero_card_living_clean.jpg" alt="The Living Edit" class="w-full h-full object-cover object-center" />
+        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_1 }}{% else %}/static/images/hero_card_living_clean.jpg{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_1_title }}{% else %}The Living Edit{% endif %}" class="w-full h-full object-cover object-center" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
         <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">The Living Edit</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">Warm, timeless essentials</p>
+          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_1_title }}{% else %}The Living Edit{% endif %}</h3>
+          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_1_subtitle }}{% else %}Warm, timeless essentials{% endif %}</p>
         </div>
       </div>
 
       <!-- Card 1: Soft Retreats -->
       <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="1" onclick="goToHeroCard(1)">
-        <img src="/static/images/hero_card_bed_full.jpg" alt="Soft Retreats" class="w-full h-full object-cover object-center" />
+        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_2 }}{% else %}/static/images/hero_card_bed_full.jpg{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_2_title }}{% else %}Soft Retreats{% endif %}" class="w-full h-full object-cover object-center" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
         <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">Soft Retreats</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">Rest in natural comfort</p>
+          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_2_title }}{% else %}Soft Retreats{% endif %}</h3>
+          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_2_subtitle }}{% else %}Rest in natural comfort{% endif %}</p>
         </div>
       </div>
 
       <!-- Card 2: Gather & Dine -->
       <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="2" onclick="goToHeroCard(2)">
-        <img src="/static/images/hero_card_dining_full.jpg" alt="Gather & Dine" class="w-full h-full object-cover object-center" />
+        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_3 }}{% else %}/static/images/hero_card_dining_full.jpg{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_3_title }}{% else %}Gather & Dine{% endif %}" class="w-full h-full object-cover object-center" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
         <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">Gather & Dine</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">Spaces for meaningful moments</p>
+          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_3_title }}{% else %}Gather & Dine{% endif %}</h3>
+          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_3_subtitle }}{% else %}Spaces for meaningful moments{% endif %}</p>
         </div>
       </div>
 
       <!-- Card 3: Artisan Sanctuaries -->
       <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="3" onclick="goToHeroCard(3)">
-        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w" alt="Artisan Sanctuaries" class="w-full h-full object-cover object-center" />
+        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_4 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_4_title }}{% else %}Artisan Sanctuaries{% endif %}" class="w-full h-full object-cover object-center" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
         <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">Artisan Sanctuaries</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">Bespoke handcrafted suites</p>
+          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_4_title }}{% else %}Artisan Sanctuaries{% endif %}</h3>
+          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_4_subtitle }}{% else %}Bespoke handcrafted suites{% endif %}</p>
         </div>
       </div>
 
@@ -218,7 +218,7 @@
       <!-- 1. Beds -->
       <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_beds.png" alt="Beds" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_beds }}{% else %}/static/images/cat_beds.png{% endif %}" alt="Beds" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Beds
@@ -228,7 +228,7 @@
       <!-- 2. Sofa -->
       <a href="/catalog/?category=Sofa%20Set" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_sofa.png" alt="Sofa" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_sofa }}{% else %}/static/images/cat_sofa.png{% endif %}" alt="Sofa" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Sofa
@@ -238,7 +238,7 @@
       <!-- 3. Diwan -->
       <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_diwan.png" alt="Diwan" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_diwan }}{% else %}/static/images/cat_diwan.png{% endif %}" alt="Diwan" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Diwan
@@ -248,7 +248,7 @@
       <!-- 4. Dining -->
       <a href="/catalog/?category=Dining%20Table" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_dining.png" alt="Dining" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dining }}{% else %}/static/images/cat_dining.png{% endif %}" alt="Dining" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Dining
@@ -258,7 +258,7 @@
       <!-- 5. Dressing -->
       <a href="/catalog/?category=Dressing%20Table" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_dressing.png" alt="Dressing" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dressing }}{% else %}/static/images/cat_dressing.png{% endif %}" alt="Dressing" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Dressing
@@ -268,7 +268,7 @@
       <!-- 6. Doors -->
       <a href="/catalog/?search=door" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_doors.png" alt="Doors" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_doors }}{% else %}/static/images/cat_doors.png{% endif %}" alt="Doors" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Doors
@@ -278,7 +278,7 @@
       <!-- 7. Teapoy -->
       <a href="/catalog/?search=teapoy" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_teapoy.png" alt="Teapoy" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_teapoy }}{% else %}/static/images/cat_teapoy.png{% endif %}" alt="Teapoy" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Teapoy
@@ -288,7 +288,7 @@
       <!-- 8. Podiums -->
       <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[80px] sm:w-[98px]">
         <div class="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-full overflow-hidden bg-white p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="/static/images/cat_podiums.png" alt="Podiums" class="w-full h-full object-cover object-center rounded-full" />
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_podiums }}{% else %}/static/images/cat_podiums.png{% endif %}" alt="Podiums" class="w-full h-full object-cover object-center rounded-full" />
         </div>
         <span class="font-serif sm:font-sans text-xs sm:text-sm font-medium text-stone-800 text-center mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Podiums
@@ -788,6 +788,9 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
            disablepictureinpicture
            disableremoteplayback
            controlslist="nodownload nofullscreen noplaybackrate">
+      {% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.video_url %}
+      <source src="{{ HOME_MEDIA_CMS.video_url }}" type="video/mp4">
+      {% endif %}
       <source src="/static/videos/product_1.mp4" type="video/mp4">
       <source src="/media/products/product_1.mp4" type="video/mp4">
       <source src="https://raw.githubusercontent.com/ganeshmugada863/Glory-Furniture-Hub/main/static/videos/product_1.mp4" type="video/mp4">
@@ -800,8 +803,8 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       <div class="flex items-center gap-3">
         <div class="w-2.5 h-2.5 rounded-full bg-secondary-container animate-pulse shrink-0"></div>
         <div class="flex flex-col">
-          <span class="font-label-sm text-[10px] tracking-widest uppercase text-secondary-fixed font-semibold">Glory Atelier • Archival Series</span>
-          <p class="font-headline-sm text-sm sm:text-base font-medium text-white tracking-wide truncate drop-shadow-sm">Chapter 04: Handcrafted Royal Teak Bedroom Collection</p>
+          <span class="font-label-sm text-[10px] tracking-widest uppercase text-secondary-fixed font-semibold">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.video_tagline }}{% else %}Glory Atelier • Archival Series{% endif %}</span>
+          <p class="font-headline-sm text-sm sm:text-base font-medium text-white tracking-wide truncate drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.video_title }}{% else %}Chapter 04: Handcrafted Royal Teak Bedroom Collection{% endif %}</p>
         </div>
       </div>
     </div>

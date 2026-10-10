@@ -32,16 +32,22 @@ def global_furniture_context(request):
         except Exception:
             wishlist_products = []
 
-    from apps.core.models import WebsiteSettings
+    from apps.core.models import WebsiteSettings, HomeMediaCMS
     try:
         site_settings = WebsiteSettings.get_settings()
     except Exception:
         site_settings = None
 
+    try:
+        home_media_cms = HomeMediaCMS.get_cms()
+    except Exception:
+        home_media_cms = None
+
     return {
         'SITE_NAME': site_settings.website_name if site_settings else 'Glory Furniture Hub',
         'SITE_TAGLINE': (site_settings.tagline if site_settings and site_settings.tagline else 'Fine Teak Craftsmanship'),
         'WEBSITE_SETTINGS': site_settings,
+        'HOME_MEDIA_CMS': home_media_cms,
         'GLOBAL_CATEGORIES': categories,
         'CURRENT_ROLE': current_role,
         'USER_NAME': user_name,
