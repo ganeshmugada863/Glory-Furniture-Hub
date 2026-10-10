@@ -333,8 +333,6 @@ def wishlist_view(request):
     products = Product.objects.filter(id__in=wishlist_ids)
     context = {
         'products': products,
-        'is_home_page': True,
-        'is_light_navbar': True,
     }
     return render(request, 'store/wishlist.html', context)
 
@@ -356,8 +354,6 @@ def cart_view(request):
         'subtotal': subtotal,
         'gst': gst,
         'total': total,
-        'is_home_page': True,
-        'is_light_navbar': True,
     }
     return render(request, 'store/cart.html', context)
 

@@ -226,9 +226,11 @@
 <body class="bg-[#FDFDFD] text-gray-900 antialiased selection:bg-gray-900 selection:text-white flex flex-col min-h-screen overflow-x-hidden font-sans">
 
   <!-- ========================================================= -->
-  <!-- 1. HEADER (Adaptive: Minimalist Light for Home, Cart, Wishlist, Deep Teak for others) -->
+  <!-- 1. HEADER (Exclusively for Homepage)                      -->
   <!-- ========================================================= -->
-  <header class="glory-navbar w-full font-sans {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}glory-navbar-home{% endif %}" {% if not is_home_page and not is_light_navbar and '/cart/' not in request.path and '/wishlist/' not in request.path %}style="background-color: #382115 !important; border-bottom: 1.5px solid #4E2E1D !important;"{% endif %}>
+  {% block header %}
+  {% if is_home_page or request.resolver_match.url_name == 'home' or request.path == '/' %}
+  <header class="glory-navbar glory-navbar-home w-full font-sans">
     <div class="glory-container-90 px-2 sm:px-0">
       <div class="flex items-center justify-between h-14 sm:h-16 gap-4">
         
@@ -470,6 +472,8 @@
     {% endif %}
     {% endblock %}
   </header>
+  {% endif %}
+  {% endblock %}
 
   <!-- ========================================================= -->
   <!-- 2. MAIN CONTENT WRAPPER                                    -->
