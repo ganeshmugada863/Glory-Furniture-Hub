@@ -1763,6 +1763,22 @@ def admin_media_cms_view(request):
         media_cms.hero_card_4_title = request.POST.get('hero_card_4_title', media_cms.hero_card_4_title).strip()
         media_cms.hero_card_4_subtitle = request.POST.get('hero_card_4_subtitle', media_cms.hero_card_4_subtitle).strip()
 
+        # Card 5
+        if 'hero_card_5_image' in request.FILES:
+            media_cms.hero_card_5_image = request.FILES['hero_card_5_image']
+        if request.POST.get('hero_card_5_url') is not None:
+            media_cms.hero_card_5_url = request.POST.get('hero_card_5_url', '').strip()
+        media_cms.hero_card_5_title = request.POST.get('hero_card_5_title', media_cms.hero_card_5_title).strip()
+        media_cms.hero_card_5_subtitle = request.POST.get('hero_card_5_subtitle', media_cms.hero_card_5_subtitle).strip()
+
+        # Card 6
+        if 'hero_card_6_image' in request.FILES:
+            media_cms.hero_card_6_image = request.FILES['hero_card_6_image']
+        if request.POST.get('hero_card_6_url') is not None:
+            media_cms.hero_card_6_url = request.POST.get('hero_card_6_url', '').strip()
+        media_cms.hero_card_6_title = request.POST.get('hero_card_6_title', media_cms.hero_card_6_title).strip()
+        media_cms.hero_card_6_subtitle = request.POST.get('hero_card_6_subtitle', media_cms.hero_card_6_subtitle).strip()
+
         # --- 2. CATEGORY CIRCLES ---
         cat_fields = [
             ('cat_beds_image', 'cat_beds_url'),

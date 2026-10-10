@@ -208,6 +208,16 @@ class HomeMediaCMS(models.Model):
     hero_card_4_title = models.CharField(max_length=200, default='Artisan Sanctuaries')
     hero_card_4_subtitle = models.CharField(max_length=255, default='Bespoke handcrafted suites')
 
+    hero_card_5_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    hero_card_5_url = models.URLField(max_length=1000, blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA')
+    hero_card_5_title = models.CharField(max_length=200, default='Nordic Bouclé Living')
+    hero_card_5_subtitle = models.CharField(max_length=255, default='Sculptural lounge aesthetic')
+
+    hero_card_6_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    hero_card_6_url = models.URLField(max_length=1000, blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM')
+    hero_card_6_title = models.CharField(max_length=200, default='Architectural Pavilion')
+    hero_card_6_subtitle = models.CharField(max_length=255, default='Generational teak mastery')
+
     # 8 Category Circles
     cat_beds_image = models.ImageField(upload_to='cms/', blank=True, null=True)
     cat_beds_url = models.URLField(max_length=1000, blank=True, default='/static/images/cat_beds.png')
@@ -272,6 +282,14 @@ class HomeMediaCMS(models.Model):
     @property
     def hero_4(self):
         return self.hero_card_4_image.url if self.hero_card_4_image else (self.hero_card_4_url or 'https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w')
+
+    @property
+    def hero_5(self):
+        return self.hero_card_5_image.url if self.hero_card_5_image else (self.hero_card_5_url or 'https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA')
+
+    @property
+    def hero_6(self):
+        return self.hero_card_6_image.url if self.hero_card_6_image else (self.hero_card_6_url or 'https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM')
 
     @property
     def cat_beds(self):

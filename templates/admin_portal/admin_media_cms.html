@@ -223,6 +223,86 @@
           </div>
         </div>
 
+        <!-- Card 5: Nordic Bouclé Living -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">5</span>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Nordic Bouclé Living Card</h3>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+          </div>
+
+          <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img src="{{ media_cms.hero_5 }}" alt="Hero 5 Preview" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_5_title }}</p>
+              <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_5_subtitle }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
+              <input type="file" name="hero_card_5_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
+              <input type="text" name="hero_card_5_url" value="{{ media_cms.hero_card_5_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Title</label>
+                <input type="text" name="hero_card_5_title" value="{{ media_cms.hero_card_5_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Subtitle</label>
+                <input type="text" name="hero_card_5_subtitle" value="{{ media_cms.hero_card_5_subtitle }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Architectural Pavilion -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">6</span>
+              <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Architectural Pavilion Card</h3>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Active</span>
+          </div>
+
+          <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img src="{{ media_cms.hero_6 }}" alt="Hero 6 Preview" class="w-full h-full object-cover" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_6_title }}</p>
+              <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_6_subtitle }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
+              <input type="file" name="hero_card_6_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
+              <input type="text" name="hero_card_6_url" value="{{ media_cms.hero_card_6_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Title</label>
+                <input type="text" name="hero_card_6_title" value="{{ media_cms.hero_card_6_title }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Card Subtitle</label>
+                <input type="text" name="hero_card_6_subtitle" value="{{ media_cms.hero_card_6_subtitle }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
