@@ -122,89 +122,21 @@
   </style>
 </head>
 
-<body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-fixed">
+<body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-container selection:text-on-secondary-fixed pb-20 sm:pb-0">
 
   <!-- ========================================== -->
-  <!-- 1. NAVIGATION BAR (Desktop Straight, Direct Icons; Mobile 3-Lines & Drawer) -->
+  <!-- 1. TOP SEARCH BAR ONLY                      -->
   <!-- ========================================== -->
-  <header class="sticky top-0 inset-x-0 z-50 bg-surface/95 backdrop-blur-md border-b border-surface-container shadow-[0_1px_6px_rgba(45,30,24,0.04)]">
-    <div class="max-w-[1400px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
-      
-      <!-- Left: Mobile 3-Lines Button (Hidden on Desktop) + Brand Logo & Name (Straight on Desktop) -->
-      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-        <!-- 3-Lines Menu Button: ONLY ON MOBILE (Android), hidden on desktop (Windows) -->
-        <button type="button" onclick="toggleNavDrawer()" class="sm:hidden p-1.5 rounded-lg hover:bg-surface-container-low text-primary transition-colors flex items-center justify-center cursor-pointer shrink-0" title="Open Menu">
-          <span class="material-symbols-outlined text-[24px]">menu</span>
-        </button>
-
-        <!-- Brand Logo & Straight Name "GLORY FURNITURE HUB" -->
-        <a class="flex items-center gap-2 sm:gap-2.5 shrink-0 group select-none cursor-pointer" href="/">
-          <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-amber-600/30 shadow-xs bg-[#5C3D2E]">
-            <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
-          </div>
-          <!-- Mobile (stacked) -->
-          <div class="flex sm:hidden flex-col justify-center leading-none">
-            <span class="font-display-md text-[13px] tracking-wider uppercase text-primary font-black leading-tight whitespace-nowrap">GLORY</span>
-            <span class="text-[9px] tracking-widest uppercase text-secondary font-bold leading-tight whitespace-nowrap">FURNITURE HUB</span>
-          </div>
-          <!-- Windows / Desktop (straight order "GLORY FURNITURE HUB") -->
-          <span class="hidden sm:inline font-display-md text-[17px] lg:text-[19px] tracking-wider uppercase text-primary font-black group-hover:text-secondary transition-colors whitespace-nowrap">
-            GLORY FURNITURE HUB
-          </span>
-        </a>
-      </div>
-
-      <!-- Center (Desktop / Blue box): Extended Search Bar -->
-      <div class="hidden sm:flex flex-1 max-w-2xl mx-2 sm:mx-6">
-        <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-4 py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-          <span class="material-symbols-outlined text-outline text-[20px] mr-2 shrink-0">search</span>
-          <input 
-            type="text" 
-            name="search" 
-            value="{{ search_query|default:'' }}" 
-            placeholder="Search bed, dining table, sofa, mandir..." 
-            class="w-full bg-transparent text-sm text-primary placeholder:text-stone-400 outline-none"
-          />
-          {% if search_query %}
-          <a href="/catalog/" class="text-stone-400 hover:text-primary p-0.5 ml-1" title="Clear search">
-            <span class="material-symbols-outlined text-[16px]">close</span>
-          </a>
-          {% endif %}
-        </form>
-      </div>
-
-      <!-- Right (Desktop / Orange area): Direct Profile, Cart, Fav Icons (No 3-Dots) -->
-      <div class="hidden sm:flex items-center gap-2 md:gap-3 shrink-0 text-primary">
-        <!-- 1. Profile -->
-        <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors flex items-center justify-center cursor-pointer" title="Profile">
-          <span class="material-symbols-outlined text-[24px]">person</span>
-        </a>
-
-        <!-- 2. Cart -->
-        <a href="/cart/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
-          <span class="material-symbols-outlined text-[24px]">shopping_bag</span>
-          <span id="navCartBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">{{ cart_count|default:"2" }}</span>
-        </a>
-
-        <!-- 3. Fav (Favorites) -->
-        <a href="/wishlist/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Favorites">
-          <span class="material-symbols-outlined text-[24px]">favorite</span>
-          <span id="navWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">{{ wishlist_count|default:"3" }}</span>
-        </a>
-      </div>
-
-    </div>
-
-    <!-- Mobile Full-Width Extended Search Bar (Row 2 on Mobile) -->
-    <div class="px-3 pb-2.5 sm:hidden">
-      <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-3.5 py-1.5 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-        <span class="material-symbols-outlined text-outline text-[18px] mr-2 shrink-0">search</span>
+  <header class="sticky top-0 inset-x-0 z-40 bg-surface/95 backdrop-blur-md border-b border-surface-container py-2.5 px-3 sm:px-6 shadow-[0_1px_6px_rgba(45,30,24,0.04)]">
+    <div class="max-w-3xl mx-auto flex items-center justify-center">
+      <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-surface-container-low hover:bg-surface-container focus-within:bg-white rounded-full px-4 py-2 border border-outline-variant/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-xs">
+        <span class="material-symbols-outlined text-outline text-[20px] mr-2 shrink-0">search</span>
         <input 
           type="text" 
           name="search" 
           value="{{ search_query|default:'' }}" 
           placeholder="Search bed, dining table, sofa, mandir..." 
-          class="w-full bg-transparent text-xs text-primary placeholder:text-stone-400 outline-none"
+          class="w-full bg-transparent text-xs sm:text-sm text-primary placeholder:text-stone-400 outline-none"
         />
         {% if search_query %}
         <a href="/catalog/" class="text-stone-400 hover:text-primary p-0.5 ml-1" title="Clear search">
@@ -499,57 +431,7 @@
     </div>
   </section>
 
-  <!-- ========================================== -->
-  <!-- 6. FOOTER                                  -->
-  <!-- ========================================== -->
-  <footer class="w-full bg-surface-container-low text-on-surface pt-10 pb-6 border-t border-surface-container">
-    <div class="max-w-[1400px] mx-auto px-3 sm:px-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-8">
-        <div class="space-y-3">
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
-              <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wuaw99KKPFHzatbbaXZjm_WCBqBuifSZVUZXP_fx0g3jKp2hd9sacSYHLixrbKQrz9YTt5pjwTMTCOc5dWUcmgt76e0HFwsxZ_HrRFXaLIRrrlctNMRgv5VO4c5_bjEq4GeoNaLOVlqdnrO1JWkDgqxVfJ_AlTV4uQlrmBj-ny7iYNV6w7e-L3bGYfoWarQTJpsMSlK5V4W0OZq9LSSIDpMGz54OujpvrLxkxihQdMFoEVAlN7sgrH8g">
-            </div>
-            <span class="font-display-md text-sm text-primary font-bold uppercase tracking-wider">Glory Furniture Hub</span>
-          </div>
-          <p class="text-xs text-on-surface-variant leading-relaxed">
-            Embodying Indian woodworking heritage, generational solid timber craft, seasoned teak joinery, and architectural elegance.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-primary mb-3">Shop Collections</h4>
-          <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="hover:text-primary transition-colors" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Solid Teak Beds</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/catalog/?category=Sofa%20Set">Living Room Sofas</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/catalog/?category=Dining%20Table">Dining Suites</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/catalog/?category=Dressing%20Table">Dressing Units</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/catalog/?category=Podimes">Traditional Diwans</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-primary mb-3">Customer Support</h4>
-          <ul class="space-y-2 text-xs text-on-surface-variant">
-            <li><a class="hover:text-primary transition-colors" href="/custom-request/">Custom Orders</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/guide/">Wood Care Guide</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/about/">About Atelier</a></li>
-            <li><a class="hover:text-primary transition-colors" href="/contact/">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-primary">Showroom &amp; Workshop</h4>
-          <p class="text-xs text-on-surface-variant">Hyderabad &amp; Chennai Digital Atelier. Direct workshop commissions.</p>
-          <div class="text-xs font-bold text-primary">+91 98400 12345</div>
-        </div>
-      </div>
-      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-secondary border-t border-surface-container">
-        <span>© 2025 Glory Furniture Hub. Handcrafted Woodwork India.</span>
-        <div class="flex items-center gap-2 font-label-caps text-[11px] text-on-surface-variant">
-          <span class="material-symbols-outlined text-[15px] text-tertiary-fixed-dim">lock</span>
-          <span>100% SECURE TRANSACTIONS • CASHFREE • UPI • RUPAY</span>
-        </div>
-      </div>
-    </div>
-  </footer>
+
 
   <!-- Instant Toast Notification Container -->
   <div class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-primary text-on-primary px-5 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 transition-all duration-300 opacity-0 pointer-events-none translate-y-4" id="atelierToast">
@@ -674,5 +556,34 @@
       }
     }
   </script>
+  <!-- Mobile Bottom Navigation (Identical across Home, Catalog, Orders, Bag, Account) -->
+  <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-2 py-1.5 flex items-center justify-around shadow-lg">
+    <a href="/" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-gray-500 hover:text-gray-900">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="/catalog/" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-[#5C3D2E]">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+      <span>Catalog</span>
+    </a>
+    <a href="/orders/" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-gray-500 hover:text-gray-900">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+      <span>Orders</span>
+    </a>
+    <a href="/cart/" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-gray-500 hover:text-gray-900">
+      <div class="relative">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span id="navCartCount" class="cart-badge-count absolute -top-1 -right-2 w-3.5 h-3.5 bg-[#5C3D2E] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+          {{ cart_count|default:"2" }}
+        </span>
+      </div>
+      <span>Bag</span>
+    </a>
+    <a href="/customer/profile/" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-gray-500 hover:text-gray-900 cursor-pointer">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      <span>Account</span>
+    </a>
+  </nav>
+
 </body>
 </html>
