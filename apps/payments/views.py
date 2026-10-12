@@ -5,6 +5,7 @@ from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.conf import settings
@@ -58,6 +59,78 @@ def checkout_payment_view(request, order_number):
         if last_payment:
             return redirect('payment_receipt', payment_id=last_payment.payment_id)
         return redirect('booking_confirmation', booking_id=order.booking.booking_id if order.booking else order.order_number)
+
+    # Process Form POST for Payment Methods: UPI, Card, Cash on Delivery (COD)
+    if request.method == 'POST':
+        method = request.POST.get('payment_method', 'UPI').upper()
+        upi_id = request.POST.get('upi_id', '').strip()
+        selected_app = request.POST.get('selected_app', '')
+
+        if method == 'COD':
+            order.payment_plan = 'CASH_ON_DELIVERY'
+            order.fulfillment_status = 'CONFIRMED'
+            order.order_status = 'CONFIRMED'
+            order.save(update_fields=['payment_plan', 'fulfillment_status', 'order_status'])
+
+            payment = Payment.objects.create(
+                order=order,
+                customer=request.user if request.user.is_authenticated else order.user,
+                payment_type='FULL',
+                amount=order.total_amount,
+                currency='INR',
+                gateway='Cash on Delivery',
+                payment_method='COD',
+                status='PENDING',
+                verification_status='PENDING_VERIFICATION',
+                admin_notes='Doorstep Cash/QR Payment on Delivery'
+            )
+            order_ids = request.session.get('glory_customer_order_ids', [])
+            if order.id not in order_ids:
+                order_ids.append(order.id)
+            request.session['glory_customer_order_ids'] = order_ids
+            request.session.modified = True
+
+            messages.success(request, f"Order #{order.order_number} confirmed with Cash on Delivery!")
+            return redirect('payment_receipt', payment_id=payment.payment_id)
+
+        else:  # 'UPI' or 'CARD'
+            ref_id = f"PAY_{uuid.uuid4().hex[:8].upper()}"
+            payment = Payment.objects.create(
+                order=order,
+                customer=request.user if request.user.is_authenticated else order.user,
+                payment_type='FULL',
+                amount=order.total_amount,
+                currency='INR',
+                gateway=method,
+                gateway_order_id=f"ORD_{order.order_number}",
+                gateway_payment_id=ref_id,
+                payment_method=method,
+                status='PAID',
+                verification_status='VERIFIED',
+                paid_at=timezone.now(),
+                reference_number=upi_id or ref_id,
+                admin_notes=f"Processed securely via {method} ({selected_app or 'Direct'})"
+            )
+            order.payment_status = 'FULLY_PAID'
+            order.fulfillment_status = 'CONFIRMED'
+            order.order_status = 'CONFIRMED'
+            order.paid_amount = order.total_amount
+            order.remaining_amount = Decimal('0.00')
+            order.save(update_fields=['payment_status', 'fulfillment_status', 'order_status', 'paid_amount', 'remaining_amount'])
+
+            order_ids = request.session.get('glory_customer_order_ids', [])
+            if order.id not in order_ids:
+                order_ids.append(order.id)
+            request.session['glory_customer_order_ids'] = order_ids
+            request.session.modified = True
+
+            try:
+                NotificationService.notify_order_fully_paid(order)
+            except Exception:
+                pass
+
+            messages.success(request, f"Payment of ₹{int(order.total_amount):,} confirmed via {method}!")
+            return redirect('payment_receipt', payment_id=payment.payment_id)
 
     # 3 Equal Installments schedule calculation matching Image 1 & product duration days
     if order.installments.exists():

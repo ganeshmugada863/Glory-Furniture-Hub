@@ -1,392 +1,148 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Order & Booking Summary — {{ product.name }} | Glory Furniture Hub{% endblock %}
+{% block title %}Order Summary — Glory Furniture Hub{% endblock %}
 
 {% block extra_head %}
-<!-- Google Fonts for Stitch Luxury Design System -->
+<!-- Google Fonts & Tailwind -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          primary: "#140804",
-          "primary-container": "#2d1e18",
-          "primary-fixed": "#ffdbcd",
-          secondary: "#8c4f20",
-          "secondary-container": "#fcac74",
-          "secondary-fixed": "#ffe08e",
-          "on-secondary-container": "#773e0f",
-          surface: "#fbf9f6",
-          "surface-container-lowest": "#ffffff",
-          "surface-container-low": "#f5f3f0",
-          "surface-container": "#efeeeb",
-          "surface-container-high": "#eae8e5",
-          "on-surface": "#1b1c1a",
-          "on-surface-variant": "#4f4440",
-          outline: "#817470",
-          "outline-variant": "#d2c3be",
-        },
-        fontFamily: {
-          serif: ['"Playfair Display"', 'Georgia', 'serif'],
-          sans: ['"Plus Jakarta Sans"', '"Poppins"', 'sans-serif'],
-        }
-      }
-    }
-  };
-</script>
 <style>
   body {
-    background-color: #fbf9f6;
-    color: #1b1c1a;
-    font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+    background-color: #FAFAF9;
+    color: #1C1917;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
-  .font-display { font-family: 'Playfair Display', Georgia, serif; }
-  .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined' !important;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] py-6 sm:py-10 selection:bg-[#fcac74] selection:text-[#140804]">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+<div class="min-h-screen bg-[#FAFAF9] text-[#1C1917] py-6 sm:py-10 px-4 sm:px-6">
+  <div class="max-w-xl mx-auto space-y-6">
 
-    <!-- Top Navigation Bar -->
-    <div class="flex items-center justify-between pb-4 border-b border-[#d2c3be]/40">
-      <div class="flex items-center gap-3">
-        <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'cart' %}';" class="w-10 h-10 rounded-full bg-[#efeeeb] flex items-center justify-center text-[#1b1c1a] hover:bg-[#eae8e5] transition-colors shadow-2xs cursor-pointer" type="button" aria-label="Go back">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
-        </button>
-        <div>
-          <h1 class="font-display text-xl sm:text-2xl font-bold text-[#140804] leading-tight">Order & Booking Summary</h1>
-          <p class="text-[11px] sm:text-xs text-[#4f4440] uppercase tracking-wider font-semibold">
-            Review Architectural Credentials & Investment Ledger
-          </p>
-        </div>
+    <!-- 1. LUXURY PILL STEPPER (Screen 2: ORDER SUMMARY ACTIVE) -->
+    <div class="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-stone-100/90 max-w-fit mx-auto border border-stone-200/80 shadow-2xs">
+      <!-- Step 1: CHECK ADDRESS (Completed/Navigable) -->
+      <a href="{% url 'checkout_address' %}" class="bg-white border border-stone-200 text-stone-500 hover:text-stone-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase transition-colors">
+        <span>1. CHECK ADDRESS</span>
+      </a>
+      <!-- Step 2: ORDER SUMMARY (Active) -->
+      <div class="bg-[#18110E] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-[11px] sm:text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
+        <span>2. ORDER SUMMARY</span>
       </div>
-      <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-        <span class="material-symbols-outlined text-[16px] text-emerald-700">verified</span>
-        <span class="hidden sm:inline">100% Solid Burma Teak Guarantee</span>
+      <!-- Step 3: PAYMENT (Inactive) -->
+      <div class="bg-white border border-stone-200 text-stone-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
+        <span>3. PAYMENT</span>
       </div>
     </div>
 
-    <!-- Stepper Progress Bar (Stitch Signature) -->
-    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-[#d2c3be]/50 shadow-2xs">
-      <div class="flex items-center justify-between relative max-w-md mx-auto">
-        <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[2px] bg-[#efeeeb] z-0"></div>
-        
-        <!-- Step 1: Cart Completed -->
-        <a href="{% url 'cart' %}" class="relative z-10 flex flex-col items-center gap-1 group">
-          <div class="w-8 h-8 rounded-full bg-[#8c4f20] text-white flex items-center justify-center shadow-xs">
-            <span class="material-symbols-outlined text-[18px]">done</span>
-          </div>
-          <span class="text-[10px] font-bold text-[#8c4f20] uppercase tracking-wider">1. Cart</span>
-        </a>
-
-        <!-- Step 2: Logistics & Summary (Active) -->
-        <div class="relative z-10 flex flex-col items-center gap-1">
-          <div class="w-9 h-9 rounded-full bg-[#140804] text-[#ffdbcd] flex items-center justify-center shadow-md ring-4 ring-[#ffe08e]/40">
-            <span class="material-symbols-outlined text-[18px]">description</span>
-          </div>
-          <span class="text-[10px] font-black text-[#140804] uppercase tracking-wider">2. Summary</span>
-        </div>
-
-        <!-- Step 3: Payment -->
-        <div class="relative z-10 flex flex-col items-center gap-1">
-          <div class="w-8 h-8 rounded-full bg-[#efeeeb] text-[#817470] flex items-center justify-center">
-            <span class="material-symbols-outlined text-[18px]">payments</span>
-          </div>
-          <span class="text-[10px] font-semibold text-[#817470] uppercase tracking-wider">3. Payment</span>
-        </div>
+    <!-- 2. SECTION 1: SELECTED PRODUCT -->
+    <div class="space-y-2 pt-2">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">Selected product</h2>
+        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+          {{ quantity|stringformat:"02d"|default:"01" }} PRODUCT(S)
+        </span>
       </div>
-    </div>
 
-    <!-- Form Container -->
-    <form method="POST" id="checkout-booking-form" class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-      {% csrf_token %}
-
-      <!-- Hidden Technical Fields -->
-      <input type="hidden" name="product_id" value="{{ product.id }}">
-      <input type="hidden" name="selected_size" id="form-selected-size" value="{{ selected_size }}">
-      <input type="hidden" name="selected_wood" id="form-selected-wood" value="{{ selected_wood }}">
-      <input type="hidden" name="unit_price" id="form-unit-price" value="{{ unit_price }}">
-      <input type="hidden" name="quantity" id="form-quantity" value="{{ quantity|default:1 }}">
-      <input type="hidden" name="payment_plan" id="form-payment-plan" value="FULL_PAYMENT">
-
-      <!-- LEFT COLUMN: Order Piece & Delivery Site Credentials (7 Cols) -->
-      <div class="lg:col-span-7 space-y-6">
-
-        <!-- 1. Curated Order Snippet Card -->
-        <div class="bg-[#f5f3f0] p-4 sm:p-5 rounded-3xl border border-[#d2c3be]/60 flex items-center gap-4 sm:gap-5 shadow-2xs">
-          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shrink-0 bg-[#efeeeb] border border-[#d2c3be]/40 shadow-inner">
-            {% if product.primary_image %}
+      <!-- Product Card -->
+      <div class="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5 sm:gap-4 min-w-0">
+          <!-- Thumbnail -->
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-stone-100 border border-stone-200/60 shrink-0 overflow-hidden flex items-center justify-center">
+            {% if product and product.primary_image %}
               <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
             {% else %}
-              <div class="w-full h-full flex items-center justify-center text-3xl">🪑</div>
+              <span class="text-3xl">🪵</span>
             {% endif %}
           </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-1.5 text-[#8c4f20] text-[11px] font-bold uppercase tracking-wider">
-              <span class="material-symbols-outlined text-[15px]">verified</span>
-              <span>Heirloom Custom Order</span>
-            </div>
-            <h2 class="font-display text-base sm:text-lg font-bold text-[#140804] truncate mt-0.5">
-              {{ product.name }}
-            </h2>
-            <p class="text-xs text-[#4f4440] truncate mt-0.5">
-              {{ selected_wood|default:"Solid CP Teak" }} • {{ selected_size|default:"Hand-Rubbed Walnut Finish" }} • Qty: {{ quantity|default:1 }}
+
+          <!-- Product Meta -->
+          <div class="min-w-0">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-stone-400 block truncate">
+              {{ product.category.name|default:"SCULPTURAL ACCENT"|upper }}
+            </span>
+            <h3 class="font-bold text-sm sm:text-base text-stone-900 leading-snug truncate mt-0.5">
+              {{ product.name|default:"Monolith Roman Travertine Teapoy" }}
+            </h3>
+            <p class="text-stone-500 text-xs mt-0.5 truncate">
+              {{ selected_wood|default:"Honed Roman Travertine" }} • {{ selected_size|default:"120 x 70 cm" }}
             </p>
-          </div>
-          <div class="text-right shrink-0">
-            <div class="font-display text-lg sm:text-xl font-extrabold text-[#140804]">
-              ₹{{ formatted_grand_total|default:grand_total }}
-            </div>
-            <span class="text-[10px] font-bold text-[#8c4f20] bg-[#ffe08e]/60 px-2 py-0.5 rounded-full">
-              GST 18% Incl.
-            </span>
-          </div>
-        </div>
-
-        <!-- 2. Product Measurements Verification Module -->
-        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-3">
-          <div class="flex items-center justify-between">
-            <label class="text-xs sm:text-sm font-bold text-[#140804] flex items-center gap-2" for="custom_measurements_input">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">square_foot</span>
-              <span>Architectural Dimensions & Custom Specifications</span>
-            </label>
-            <span class="text-[10px] font-bold uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              Mandatory
-            </span>
-          </div>
-          <p class="text-xs text-[#4f4440] leading-snug">
-            Please confirm your required dimensions (Length × Width × Height) or select a standard workshop sizing preset:
-          </p>
-          <div class="relative">
-            <input 
-              type="text" 
-              name="custom_measurements" 
-              id="custom_measurements_input" 
-              required
-              value="{{ default_measurements|default:product.dimensions|default:'72\" × 40\" × 30\" (Standard 6-Seater)' }}" 
-              placeholder="e.g. 78 x 72 inches King Size or 6ft x 3ft Dining"
-              class="w-full px-4 py-3 bg-[#f5f3f0] rounded-xl text-xs sm:text-sm text-[#140804] font-semibold border border-[#d2c3be]/40 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8c4f20]">
-          </div>
-          {% if quick_presets %}
-          <div class="flex items-center gap-2 pt-1 flex-wrap">
-            <span class="text-[11px] font-bold text-[#817470]">Presets:</span>
-            {% for preset in quick_presets %}
-            <button type="button" onclick="document.getElementById('custom_measurements_input').value='{{ preset }}'" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#efeeeb] hover:bg-[#eae8e5] text-[#140804] transition-colors cursor-pointer">
-              {{ preset }}
-            </button>
-            {% endfor %}
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- 3. Client & Site Delivery Credentials Card -->
-        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-[#efeeeb]">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[22px]">person_pin_circle</span>
-              <h3 class="font-display text-base sm:text-lg font-bold text-[#140804]">Client & Site Credentials</h3>
-            </div>
-            <a href="{% url 'address' %}" class="text-xs font-bold text-[#8c4f20] hover:underline flex items-center gap-0.5">
-              <span class="material-symbols-outlined text-[14px]">edit</span>
-              <span>Edit Address</span>
-            </a>
-          </div>
-
-          <div class="space-y-3">
-            <div>
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Patron / Recipient Full Name</label>
-              <input type="text" name="customer_name" required value="{{ saved_address.name|default:user_name|default:'Valued Patron' }}" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm focus:outline-none focus:bg-white border border-[#d2c3be]/40">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Primary Mobile Number</label>
-                <div class="relative flex items-center">
-                  <span class="absolute left-3.5 text-[#4f4440] text-xs font-semibold">+91</span>
-                  <input type="tel" name="phone" required value="{{ saved_address.phone|default:user_phone|default:'' }}" class="w-full bg-[#f5f3f0] pl-12 pr-10 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm focus:outline-none focus:bg-white border border-[#d2c3be]/40" placeholder="10-digit mobile">
-                  <span class="material-symbols-outlined absolute right-3 text-emerald-600 text-[18px]">check_circle</span>
-                </div>
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Email for Invoicing & Updates</label>
-                <input type="email" name="email" value="{{ saved_address.email|default:user_email|default:'' }}" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm focus:outline-none focus:bg-white border border-[#d2c3be]/40" placeholder="patron@gloryfurniture.com">
-              </div>
-            </div>
-
-            <div class="pt-1">
-              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#4f4440] mb-1">Architectural Destination</label>
-              <input type="text" name="flat" required value="{{ saved_address.flat|default:'Villa #42, Aditya Empress Towers' }}" placeholder="Villa / Flat / House No., Gated Community Name" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm mb-2 border border-[#d2c3be]/40">
-              <input type="text" name="street" value="{{ saved_address.street|default:'Road No. 36 Ext, Jubilee Hills' }}" placeholder="Street / Avenue / Road Details" class="w-full bg-[#f5f3f0] px-4 py-3 rounded-xl text-[#140804] font-medium text-xs sm:text-sm mb-2 border border-[#d2c3be]/40">
-              <div class="grid grid-cols-2 gap-2 mb-2">
-                <input type="text" name="landmark" value="{{ saved_address.landmark|default:'' }}" placeholder="Landmark (Optional)" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs border border-[#d2c3be]/40">
-                <input type="text" name="pincode" required value="{{ saved_address.pincode|default:'500033' }}" placeholder="Pincode" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs font-bold border border-[#d2c3be]/40">
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <input type="text" name="city" value="{{ saved_address.city|default:'Hyderabad' }}" placeholder="City" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs border border-[#d2c3be]/40">
-                <input type="text" name="state" value="{{ saved_address.state|default:'Telangana' }}" placeholder="State" class="w-full bg-[#f5f3f0] px-4 py-2.5 rounded-xl text-[#140804] font-medium text-xs border border-[#d2c3be]/40">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Solid Timber Feasibility (Signature Stitch) -->
-        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
-          <div class="flex items-center gap-2 text-xs font-bold text-[#140804]">
-            <span class="material-symbols-outlined text-[#8c4f20] text-[20px]">forklift</span>
-            <span class="font-display text-sm sm:text-base font-bold">Solid Timber Feasibility</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div class="p-3 bg-[#f5f3f0] rounded-xl border border-[#d2c3be]/30 flex items-start gap-2.5">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">elevator</span>
-              <div>
-                <strong class="text-[#140804] block">Service Elevator Access</strong>
-                <span class="text-[11px] text-[#4f4440]">Suitable for 7ft+ freight transit</span>
-              </div>
-            </div>
-            <div class="p-3 bg-[#f5f3f0] rounded-xl border border-[#d2c3be]/30 flex items-start gap-2.5">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[18px] shrink-0 mt-0.5">handyman</span>
-              <div>
-                <strong class="text-[#140804] block">Master Carpenter Assembly</strong>
-                <span class="text-[11px] text-[#4f4440]">Complimentary site buffing</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- RIGHT COLUMN: Summary Ledger & Progression (5 Cols) -->
-      <div class="lg:col-span-5 space-y-4">
-
-        <!-- Investment Ledger Summary -->
-        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-[#d2c3be]/60 shadow-xs space-y-4">
-          <h3 class="font-display text-base sm:text-lg font-bold text-[#140804] pb-2 border-b border-[#efeeeb]">
-            Investment Ledger
-          </h3>
-
-          <div class="space-y-2.5 text-xs sm:text-sm text-[#4f4440]">
-            <div class="flex justify-between items-center">
-              <span>Artisan Crafted Value</span>
-              <span class="font-bold text-[#140804]">₹{{ formatted_subtotal|default:item_subtotal|default:formatted_grand_total }}</span>
-            </div>
-            <div class="flex justify-between items-center text-[#8c4f20] font-semibold">
-              <span class="flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">redeem</span>
-                Instant Studio Privilege (2%)
+            <div class="mt-2">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 text-stone-700 border border-stone-200">
+                Qty: {{ quantity|stringformat:"02d"|default:"01" }}
               </span>
-              <span>-₹3,130</span>
-            </div>
-            <div class="flex justify-between items-center">
-              <span>Architectural Transit & White-Glove Fitting</span>
-              <span class="font-bold text-emerald-700">FREE</span>
-            </div>
-            <div class="flex justify-between items-center text-xs text-[#817470]">
-              <span>Integrated GST (18% included in rate)</span>
-              <span>(₹{{ formatted_gst|default:gst_included|default:'23,872' }})</span>
             </div>
           </div>
-
-          <div class="h-px bg-[#efeeeb] my-2"></div>
-
-          <!-- Total Net Payable -->
-          <div class="flex justify-between items-baseline pt-1">
-            <div>
-              <span class="font-display text-base sm:text-lg font-bold text-[#140804]">Total Net Payable</span>
-              <span class="block text-[10px] text-[#817470]">Inclusive of all timber taxes & road transit e-way</span>
-            </div>
-            <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#140804]">
-              ₹{{ formatted_grand_total|default:grand_total }}
-            </span>
-          </div>
-
-          <!-- Payment Plan Options (20% Advance vs 100% Full Payment) -->
-          <div class="bg-[#f5f3f0] rounded-2xl p-3.5 space-y-3 border border-[#d2c3be]/40">
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input checked class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" name="summary_payment_plan" onchange="updateSummaryPaymentPlan('FULL_PAYMENT')" type="radio" value="FULL_PAYMENT">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-bold text-[#140804]">100% Full Payment</span>
-                  <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-black uppercase">INSTANT BENEFIT</span>
-                </div>
-                <p class="text-[11px] text-[#4f4440] mt-0.5 leading-relaxed">
-                  Save 2% extra privilege discount and receive a complimentary Teak Care Kit.
-                </p>
-              </div>
-            </label>
-
-            <div class="h-px bg-[#d2c3be]/30"></div>
-
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input class="mt-1 accent-[#8c4f20] w-4 h-4 cursor-pointer" name="summary_payment_plan" onchange="updateSummaryPaymentPlan('THREE_INSTALLMENTS')" type="radio" value="THREE_INSTALLMENTS">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-bold text-[#140804]">Artisan 3-Installments (20% Token)</span>
-                  <span class="px-2 py-0.5 rounded bg-[#8c4f20] text-white text-[9px] font-bold uppercase">POPULAR</span>
-                </div>
-                <p class="text-[11px] text-[#4f4440] mt-0.5 leading-relaxed">
-                  Pay only 20% today. Balance payable after live workshop video inspection before crate dispatch.
-                </p>
-              </div>
-            </label>
-          </div>
-
-          <!-- Proceed to Payment CTA Button -->
-          <div class="pt-2">
-            <button type="submit" id="summary-submit-btn" class="w-full min-h-[50px] py-4 px-4 rounded-xl bg-[#140804] hover:bg-[#2d1e18] text-[#ffdbcd] font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-between shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px] text-[#fcac74]">lock</span>
-                <span>Confirm & Proceed to Payment</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <span class="font-display font-bold">₹{{ formatted_grand_total|default:grand_total }}</span>
-                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-              </div>
-            </button>
-          </div>
-
-          <!-- Glory Assurance Card -->
-          <div class="bg-[#f5f3f0] p-3 rounded-xl border border-[#d2c3be]/40 flex items-center justify-between text-center pt-2">
-            <div class="flex-1">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">lock</span>
-              <span class="text-[10px] font-bold text-[#140804] block">256-Bit</span>
-              <span class="text-[9px] text-[#817470] block">RBI Safe</span>
-            </div>
-            <div class="h-6 w-px bg-[#d2c3be]"></div>
-            <div class="flex-1">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">receipt_long</span>
-              <span class="text-[10px] font-bold text-[#140804] block">GST B2B</span>
-              <span class="text-[9px] text-[#817470] block">Full ITC</span>
-            </div>
-            <div class="h-6 w-px bg-[#d2c3be]"></div>
-            <div class="flex-1">
-              <span class="material-symbols-outlined text-[#8c4f20] text-[18px]">supervised_user_circle</span>
-              <span class="text-[10px] font-bold text-[#140804] block">Dedicated</span>
-              <span class="text-[9px] text-[#817470] block">Concierge</span>
-            </div>
-          </div>
-
         </div>
 
+        <!-- Price Meta -->
+        <div class="text-right shrink-0">
+          <div class="text-base sm:text-lg font-bold text-stone-900">
+            {{ formatted_grand_total|default:"₹24,900" }}
+          </div>
+          <span class="text-[9px] font-bold tracking-wider uppercase text-stone-400 block mt-0.5">
+            TAXES & SHIPPING INCL.
+          </span>
+        </div>
       </div>
+    </div>
 
+    <!-- 3. SECTION 2: SUMMARY OF PRODUCT -->
+    <div class="space-y-2">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">Summary of product</h2>
+
+      <!-- Summary Breakdown Card -->
+      <div class="bg-white rounded-2xl border border-stone-200/90 p-5 shadow-xs space-y-3.5">
+        <div class="flex items-center justify-between text-sm text-stone-600">
+          <span>Subtotal ({{ quantity|default:1 }} Atelier Piece)</span>
+          <span class="font-semibold text-stone-900">{{ formatted_subtotal|default:formatted_grand_total }}</span>
+        </div>
+
+        <div class="flex items-center justify-between text-sm text-stone-600">
+          <span>Storage / Delivery</span>
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            FREE / EXPRESS
+          </span>
+        </div>
+
+        <div class="border-t border-stone-200 pt-3 flex items-baseline justify-between">
+          <span class="text-xs uppercase font-bold text-stone-500 tracking-wider">TOTAL PAYABLE (INR)</span>
+          <span class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
+            {{ formatted_grand_total|default:"₹1,73,389" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SUBMIT FORM: PROCEED TO PAYMENT -->
+    <form method="POST" action="" class="space-y-4 pt-2">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ product.id|default:'' }}">
+      <input type="hidden" name="selected_size" value="{{ selected_size|default:'' }}">
+      <input type="hidden" name="selected_wood" value="{{ selected_wood|default:'' }}">
+      <input type="hidden" name="quantity" value="{{ quantity|default:1 }}">
+      <input type="hidden" name="custom_measurements" value="{{ default_measurements|default:'' }}">
+
+      <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#18110E] hover:bg-[#2A1D18] text-white font-bold text-sm sm:text-base tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99]">
+        <span>PROCEED TO PAYMENT</span>
+        <span class="text-lg">→</span>
+      </button>
+
+      <div class="text-center pt-2">
+        <a href="{% url 'checkout_address' %}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-stone-500 hover:text-stone-900 transition-colors">
+          <span>←</span>
+          <span>BACK TO ADDRESS</span>
+        </a>
+      </div>
     </form>
 
   </div>
 </div>
-
-<script>
-  function updateSummaryPaymentPlan(plan) {
-    const hiddenPlan = document.getElementById('form-payment-plan');
-    if (hiddenPlan) hiddenPlan.value = plan;
-  }
-</script>
 {% endblock %}

@@ -2,7 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('checkout/', views.booking_summary_view, name='checkout'),
+    path('checkout/', views.booking_address_step_view, name='checkout'),
+    path('checkout/address/', views.booking_address_step_view, name='checkout_address'),
+    path('checkout/summary/', views.booking_summary_view, name='checkout_summary'),
     path('booking/summary/', views.booking_summary_view, name='booking_summary'),
     path('booking/payment/<str:booking_id>/', views.booking_payment_view, name='booking_payment'),
     path('booking/pay-installment/<int:installment_id>/', views.pay_installment_direct_view, name='pay_installment_direct'),
