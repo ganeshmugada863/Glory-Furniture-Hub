@@ -1707,16 +1707,108 @@ def admin_page_cms_view(request):
     return render(request, 'admin_portal/admin_page_cms.html', context)
 
 
+from apps.core.models import HomeMediaCMS
+
+def _save_cms_media_file(upload_file):
+    """
+    Safely and rapidly optimizes and saves an uploaded image file for Home Media CMS.
+    1. EXIF orientation correction, downscale to max 1200px, high-efficiency JPEG compression.
+    2. Primary: If Cloudinary is enabled, uploads to Cloudinary and returns secure URL.
+    3. Secondary: Attempts persistent default_storage.
+    4. Ultimate resilient fallback (e.g. read-only serverless Vercel filesystem):
+       Returns a self-contained Base64 data URL (data:image/jpeg;base64,...) which
+       renders instantly in all browsers with zero file storage dependencies!
+    """
+    import os, uuid, io, base64
+    import logging
+    from django.conf import settings
+    from django.core.files.base import ContentFile
+    from PIL import Image, ImageOps
+
+    logger = logging.getLogger(__name__)
+    if not upload_file:
+        return ''
+
+    data_bytes = None
+    try:
+        if hasattr(upload_file, 'seek'):
+            upload_file.seek(0)
+        with Image.open(upload_file) as img:
+            img = ImageOps.exif_transpose(img)
+            max_dim = 1200
+            if img.width > max_dim or img.height > max_dim:
+                img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+
+            buf = io.BytesIO()
+            if img.mode in ('RGBA', 'LA', 'P'):
+                bg = Image.new('RGB', img.size, (255, 255, 255))
+                mask = img.split()[-1] if img.mode in ('RGBA', 'LA') else None
+                bg.paste(img, mask=mask)
+                bg.save(buf, format='JPEG', quality=82, optimize=True)
+            else:
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                img.save(buf, format='JPEG', quality=82, optimize=True)
+
+            buf.seek(0)
+            data_bytes = buf.getvalue()
+    except Exception as e:
+        logger.warning("Pillow processing failed in _save_cms_media_file: %s", e)
+        if hasattr(upload_file, 'seek'):
+            upload_file.seek(0)
+        data_bytes = upload_file.read()
+
+    if not data_bytes:
+        return ''
+
+    # 1. Cloudinary upload if configured
+    if getattr(settings, 'USE_CLOUDINARY', False):
+        try:
+            import cloudinary
+            import cloudinary.uploader
+            cloudinary.config(
+                cloud_name=getattr(settings, 'CLOUDINARY_CLOUD_NAME', None),
+                api_key=getattr(settings, 'CLOUDINARY_API_KEY', None),
+                api_secret=getattr(settings, 'CLOUDINARY_API_SECRET', None),
+                secure=True
+            )
+            public_id = f"cms/{uuid.uuid4().hex[:12]}"
+            upload_result = cloudinary.uploader.upload(
+                io.BytesIO(data_bytes),
+                public_id=public_id,
+                resource_type="image",
+                overwrite=True,
+                timeout=5
+            )
+            secure_url = upload_result.get('secure_url')
+            if secure_url:
+                return secure_url
+        except Exception as e:
+            logger.warning("Cloudinary upload failed in _save_cms_media_file: %s", e)
+
+    # 2. Try default_storage (works in local dev where filesystem is writable)
+    try:
+        from django.core.files.storage import default_storage
+        filename = f"cms/{uuid.uuid4().hex[:10]}.jpg"
+        saved_path = default_storage.save(filename, ContentFile(data_bytes))
+        url = default_storage.url(saved_path)
+        if url:
+            return url
+    except Exception as e:
+        logger.warning("default_storage.save skipped or failed (e.g. read-only filesystem): %s", e)
+
+    # 3. Resilient Base64 Data URL fallback (guaranteed to persist in TextField without disk access)
+    b64_str = base64.b64encode(data_bytes).decode('ascii')
+    return f"data:image/jpeg;base64,{b64_str}"
+
+
 def admin_media_cms_view(request):
     """
-    Dedicated CMS Manager for Home Hero Showcase Cards, Categories, and Video Banners.
-    Allows administrators to upload new image files or specify image URLs for:
-    1. 4 Hero Showcase 3D Cards
-    2. 8 Replacement Category Circles (Beds, Sofa, Diwan, Dining, Dressing, Doors, Teapoy, Podiums)
-    3. Atelier Video Showcase Banner
+    Dedicated Content Management System for Homepage Visual Assets:
+    1. Hero Section Showcase (Top 4-6 Cards)
+    2. Category Navigation Circles (8 Categories)
+    3. Video Showcase Banner
     """
-    from apps.core.models import HomeMediaCMS
-
     is_admin = request.session.get('glory_role') == 'admin' or (
         request.user.is_authenticated and (
             request.user.is_staff or request.user.is_superuser or
@@ -1739,13 +1831,13 @@ def admin_media_cms_view(request):
 
             if file_key in request.FILES and request.FILES[file_key]:
                 try:
-                    saved_url = _save_product_image_file(request.FILES[file_key])
-                    setattr(media_cms, url_key, saved_url)
-                    setattr(media_cms, file_key, None)
+                    saved_url = _save_cms_media_file(request.FILES[file_key])
+                    if saved_url:
+                        setattr(media_cms, url_key, saved_url)
+                        setattr(media_cms, file_key, None)
                 except Exception as e:
                     import logging
                     logging.getLogger(__name__).warning("Failed to save hero card image %s: %s", i, e)
-                    setattr(media_cms, file_key, request.FILES[file_key])
             elif request.POST.get(url_key) is not None:
                 posted_url = request.POST.get(url_key, '').strip()
                 if posted_url:
@@ -1770,13 +1862,13 @@ def admin_media_cms_view(request):
         for img_field, url_field in cat_fields:
             if img_field in request.FILES and request.FILES[img_field]:
                 try:
-                    saved_url = _save_product_image_file(request.FILES[img_field])
-                    setattr(media_cms, url_field, saved_url)
-                    setattr(media_cms, img_field, None)
+                    saved_url = _save_cms_media_file(request.FILES[img_field])
+                    if saved_url:
+                        setattr(media_cms, url_field, saved_url)
+                        setattr(media_cms, img_field, None)
                 except Exception as e:
                     import logging
                     logging.getLogger(__name__).warning("Failed to save cat image %s: %s", img_field, e)
-                    setattr(media_cms, img_field, request.FILES[img_field])
             elif request.POST.get(url_field) is not None:
                 posted_url = request.POST.get(url_field, '').strip()
                 if posted_url:
@@ -1784,7 +1876,17 @@ def admin_media_cms_view(request):
 
         # --- 3. VIDEO SHOWCASE BANNER ---
         if 'video_showcase_file' in request.FILES and request.FILES['video_showcase_file']:
-            media_cms.video_showcase_file = request.FILES['video_showcase_file']
+            v_file = request.FILES['video_showcase_file']
+            try:
+                from django.core.files.storage import default_storage
+                import uuid
+                v_name = f"cms/videos/{uuid.uuid4().hex[:10]}_{v_file.name}"
+                saved_v_path = default_storage.save(v_name, v_file)
+                media_cms.video_showcase_url = default_storage.url(saved_v_path)
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning("Video file save note: %s", e)
+
         if request.POST.get('video_showcase_url') is not None:
             posted_v_url = request.POST.get('video_showcase_url', '').strip()
             if posted_v_url:

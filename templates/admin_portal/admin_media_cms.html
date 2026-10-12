@@ -74,7 +74,7 @@
           </div>
 
           <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
-            <img src="{{ media_cms.hero_1 }}" alt="Hero 1 Preview" class="w-full h-full object-cover" />
+            <img id="preview-hero-1" src="{{ media_cms.hero_1 }}" alt="Hero 1 Preview" class="w-full h-full object-cover transition-opacity duration-300" />
             <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
               <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_1_title }}</p>
               <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_1_subtitle }}</p>
@@ -84,7 +84,7 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
-              <input type="file" name="hero_card_1_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+              <input type="file" name="hero_card_1_image" accept="image/*" onchange="previewCmsImage(this, 'preview-hero-1')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
@@ -114,7 +114,7 @@
           </div>
 
           <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
-            <img src="{{ media_cms.hero_2 }}" alt="Hero 2 Preview" class="w-full h-full object-cover" />
+            <img id="preview-hero-2" src="{{ media_cms.hero_2 }}" alt="Hero 2 Preview" class="w-full h-full object-cover transition-opacity duration-300" />
             <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
               <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_2_title }}</p>
               <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_2_subtitle }}</p>
@@ -124,7 +124,7 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
-              <input type="file" name="hero_card_2_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+              <input type="file" name="hero_card_2_image" accept="image/*" onchange="previewCmsImage(this, 'preview-hero-2')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
@@ -154,7 +154,7 @@
           </div>
 
           <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
-            <img src="{{ media_cms.hero_3 }}" alt="Hero 3 Preview" class="w-full h-full object-cover" />
+            <img id="preview-hero-3" src="{{ media_cms.hero_3 }}" alt="Hero 3 Preview" class="w-full h-full object-cover transition-opacity duration-300" />
             <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
               <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_3_title }}</p>
               <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_3_subtitle }}</p>
@@ -164,7 +164,7 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
-              <input type="file" name="hero_card_3_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+              <input type="file" name="hero_card_3_image" accept="image/*" onchange="previewCmsImage(this, 'preview-hero-3')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
@@ -194,7 +194,7 @@
           </div>
 
           <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
-            <img src="{{ media_cms.hero_4 }}" alt="Hero 4 Preview" class="w-full h-full object-cover" />
+            <img id="preview-hero-4" src="{{ media_cms.hero_4 }}" alt="Hero 4 Preview" class="w-full h-full object-cover transition-opacity duration-300" />
             <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
               <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_4_title }}</p>
               <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_4_subtitle }}</p>
@@ -204,7 +204,7 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
-              <input type="file" name="hero_card_4_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+              <input type="file" name="hero_card_4_image" accept="image/*" onchange="previewCmsImage(this, 'preview-hero-4')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
@@ -234,7 +234,7 @@
           </div>
 
           <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
-            <img src="{{ media_cms.hero_5 }}" alt="Hero 5 Preview" class="w-full h-full object-cover" />
+            <img id="preview-hero-5" src="{{ media_cms.hero_5 }}" alt="Hero 5 Preview" class="w-full h-full object-cover transition-opacity duration-300" />
             <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
               <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_5_title }}</p>
               <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_5_subtitle }}</p>
@@ -244,7 +244,7 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
-              <input type="file" name="hero_card_5_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+              <input type="file" name="hero_card_5_image" accept="image/*" onchange="previewCmsImage(this, 'preview-hero-5')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
@@ -274,7 +274,7 @@
           </div>
 
           <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
-            <img src="{{ media_cms.hero_6 }}" alt="Hero 6 Preview" class="w-full h-full object-cover" />
+            <img id="preview-hero-6" src="{{ media_cms.hero_6 }}" alt="Hero 6 Preview" class="w-full h-full object-cover transition-opacity duration-300" />
             <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
               <p class="text-xs font-bold leading-tight">{{ media_cms.hero_card_6_title }}</p>
               <p class="text-[10px] text-stone-200">{{ media_cms.hero_card_6_subtitle }}</p>
@@ -284,7 +284,7 @@
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">Upload New Image File</label>
-              <input type="file" name="hero_card_6_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
+              <input type="file" name="hero_card_6_image" accept="image/*" onchange="previewCmsImage(this, 'preview-hero-6')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Image URL Fallback</label>
@@ -581,5 +581,34 @@
       }
     });
   }
+
+  function previewCmsImage(input, previewId) {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const previewEl = document.getElementById(previewId);
+        if (previewEl) {
+          previewEl.src = e.target.result;
+          previewEl.classList.add('ring-2', 'ring-emerald-500');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const cmsForm = document.querySelector('form');
+    if (cmsForm) {
+      cmsForm.addEventListener('submit', function() {
+        const btn = cmsForm.querySelector('button[type="submit"]');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<span>⏳ Saving &amp; Publishing Media...</span>';
+          btn.classList.add('opacity-75', 'cursor-wait');
+        }
+      });
+    }
+  });
 </script>
 {% endblock %}
