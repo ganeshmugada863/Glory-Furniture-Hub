@@ -1842,6 +1842,7 @@ def admin_media_cms_view(request):
                 posted_url = request.POST.get(url_key, '').strip()
                 if posted_url:
                     setattr(media_cms, url_key, posted_url)
+                    setattr(media_cms, file_key, None)
 
             if request.POST.get(title_key) is not None:
                 setattr(media_cms, title_key, request.POST.get(title_key, '').strip())
@@ -1873,6 +1874,7 @@ def admin_media_cms_view(request):
                 posted_url = request.POST.get(url_field, '').strip()
                 if posted_url:
                     setattr(media_cms, url_field, posted_url)
+                    setattr(media_cms, img_field, None)
 
         # --- 3. VIDEO SHOWCASE BANNER ---
         if 'video_showcase_file' in request.FILES and request.FILES['video_showcase_file']:
