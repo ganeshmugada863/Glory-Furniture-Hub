@@ -350,16 +350,24 @@
             </div>
           </a>
 
-          <!-- Add to Cart Button -->
-          <div class="px-1 pb-0.5 pt-2">
+          <!-- Add to Cart & Book Now Buttons -->
+          <div class="grid grid-cols-2 gap-1.5 px-1 pb-0.5 pt-2">
             <button 
               type="button"
-              class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-[11px] sm:text-xs py-2 px-2.5 rounded-full flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" 
+              class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-[11px] py-1.5 px-1 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" 
               onclick="event.stopPropagation(); quickAddToCart('{{ product.name|escapejs }}', '{{ product.formatted_price|escapejs }}', {{ product.id }});"
             >
-              <span class="material-symbols-outlined text-[15px]">shopping_cart</span>
-              <span>Add to Cart</span>
+              <span class="material-symbols-outlined text-[14px]">shopping_cart</span>
+              <span>Cart</span>
             </button>
+            <a 
+              href="{% url 'checkout_address' %}?product={{ product.id }}" 
+              class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-[11px] py-1.5 px-1 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" 
+              onclick="event.stopPropagation();"
+            >
+              <span class="material-symbols-outlined text-[14px]">bolt</span>
+              <span>Book Now</span>
+            </a>
           </div>
 
         </div>

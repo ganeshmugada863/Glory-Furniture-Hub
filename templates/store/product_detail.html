@@ -603,34 +603,44 @@
           </div>
 
           <!-- =============================================================== -->
-          <!-- Primary CTA: Add to Cart with Default Quantity Selector         -->
+          <!-- Primary CTAs: Add to Cart & Book Now with Quantity Selector     -->
           <!-- =============================================================== -->
-          <div class="flex items-center gap-2.5 mt-2">
-            <!-- Add to Cart (Main action) -->
+          <div class="flex items-center gap-2 mt-2">
+            <!-- Add to Cart (Secondary/Shopping Bag action) -->
             <button 
               type="button" 
               onclick="handleAddCurrentProductToCart()" 
-              class="flex-1 bg-[#2C1B10] hover:bg-[#8C4F20] text-white py-3 px-5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer"
+              class="flex-1 bg-white hover:bg-stone-50 text-[#2C1B10] border-2 border-[#2C1B10] py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-2xs hover:shadow-xs transition-all active:scale-[0.98] cursor-pointer"
             >
-              <span class="material-symbols-outlined text-[19px]">shopping_bag</span>
+              <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
               <span>Add to Cart</span>
             </button>
 
-            <!-- Quantity Selector beside Add to Cart -->
-            <div class="flex items-center border border-outline-variant/60 rounded-xl bg-surface-container-low px-2 py-1.5 shrink-0">
-              <button type="button" onclick="changeQuantity(-1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-sm text-primary hover:bg-amber-50 cursor-pointer transition-colors">-</button>
-              <span id="productQuantityDisplay" class="w-8 text-center text-xs font-bold text-primary">1</span>
-              <button type="button" onclick="changeQuantity(1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-sm text-primary hover:bg-amber-50 cursor-pointer transition-colors">+</button>
+            <!-- Book Now (Direct Checkout action to Step 1 Check Address) -->
+            <button 
+              type="button" 
+              onclick="handleBookNowCurrentProduct()" 
+              class="flex-1 bg-[#18110E] hover:bg-[#8C4F20] text-white py-3 px-3 sm:px-4 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-[18px]">bolt</span>
+              <span>Book Now</span>
+            </button>
+
+            <!-- Quantity Selector beside CTAs -->
+            <div class="flex items-center border border-outline-variant/60 rounded-xl bg-surface-container-low px-1.5 py-1.5 shrink-0">
+              <button type="button" onclick="changeQuantity(-1)" class="w-6 h-6 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-xs text-primary hover:bg-amber-50 cursor-pointer transition-colors">-</button>
+              <span id="productQuantityDisplay" class="w-6 text-center text-xs font-bold text-primary">1</span>
+              <button type="button" onclick="changeQuantity(1)" class="w-6 h-6 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-xs text-primary hover:bg-amber-50 cursor-pointer transition-colors">+</button>
             </div>
 
             <!-- Wishlist Heart Button beside Quantity -->
             <button 
               type="button" 
               onclick="toggleProductWishlist(this, {{ product.id }})" 
-              class="w-11 h-11 rounded-xl border border-outline-variant/60 bg-surface-container-low hover:bg-red-50 text-stone-700 hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" 
+              class="w-10 h-10 rounded-xl border border-outline-variant/60 bg-surface-container-low hover:bg-red-50 text-stone-700 hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" 
               title="Save to Favorites"
             >
-              <span class="material-symbols-outlined text-[20px]">favorite_border</span>
+              <span class="material-symbols-outlined text-[19px]">favorite_border</span>
             </button>
           </div>
 
@@ -773,19 +783,29 @@
     <!-- =============================================================== -->
     <!-- Sticky Mobile CTA Bar                                           -->
     <!-- =============================================================== -->
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3 border-t border-surface-container">
-      <div class="flex flex-col">
-        <span id="mobileStickyPrice" class="font-black text-base text-primary leading-tight">{{ product.formatted_price }}</span>
-        <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wide">Free White-Glove Setup</span>
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md px-3 py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-2 border-t border-surface-container">
+      <div class="flex flex-col shrink-0">
+        <span id="mobileStickyPrice" class="font-black text-sm text-primary leading-tight">{{ product.formatted_price }}</span>
+        <span class="text-[9px] text-emerald-700 font-bold uppercase tracking-wide">White-Glove Setup</span>
       </div>
-      <button 
-        type="button" 
-        onclick="handleAddCurrentProductToCart()" 
-        class="bg-[#2C1B10] hover:bg-[#8C4F20] text-white px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider shadow-sm active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
-      >
-        <span class="material-symbols-outlined text-[17px]">shopping_bag</span>
-        <span>Add to Cart</span>
-      </button>
+      <div class="flex items-center gap-1.5 flex-1 justify-end">
+        <button 
+          type="button" 
+          onclick="handleAddCurrentProductToCart()" 
+          class="bg-white text-[#2C1B10] border border-[#2C1B10] px-3 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider shadow-2xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-[15px]">shopping_bag</span>
+          <span>Cart</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="handleBookNowCurrentProduct()" 
+          class="bg-[#18110E] hover:bg-[#8C4F20] text-white px-4 py-2 rounded-full font-bold text-[11px] uppercase tracking-wider shadow-sm active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+        >
+          <span class="material-symbols-outlined text-[15px]">bolt</span>
+          <span>Book Now</span>
+        </button>
+      </div>
     </div>
 
     <!-- =============================================================== -->
@@ -1429,6 +1449,14 @@
         showToast(`"{{ product.name|escapejs }}" (${currentQuantity}) added to cart!`, 'shopping_bag');
         triggerCartFlyout();
       });
+    }
+
+    function handleBookNowCurrentProduct() {
+      const size = encodeURIComponent(currentSizeName || 'Standard');
+      const wood = encodeURIComponent(currentStorageName || 'Natural Burma Teak');
+      const qty = currentQuantity || 1;
+      const unitPrice = Math.max(1000, basePrice + (sizePriceAdjustment || 0) + (storagePriceAdjustment || 0));
+      window.location.href = "{% url 'checkout_address' %}?product={{ product.id }}&size=" + size + "&wood=" + wood + "&qty=" + qty + "&price=" + unitPrice;
     }
 
     function toggleProductWishlist(btn, productId) {

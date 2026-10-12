@@ -61,7 +61,7 @@
         <div class="flex items-center justify-between pt-1">
           <span class="text-sm font-black text-gray-950">{{ product.formatted_price }}</span>
           <div class="flex items-center gap-1.5">
-            <a href="{% url 'booking_summary' %}?product={{ product.id }}" class="px-3 py-1.5 rounded-full bg-[#1E140F] hover:bg-black text-white text-xs font-black transition-colors shadow-xs" style="background-color: #1E140F !important; color: #FFFFFF !important;">
+            <a href="{% url 'checkout_address' %}?product={{ product.id }}" class="px-3 py-1.5 rounded-full bg-[#1E140F] hover:bg-black text-white text-xs font-black transition-colors shadow-xs" style="background-color: #1E140F !important; color: #FFFFFF !important;">
               Book Now
             </a>
             <button onclick="addToCart({{ product.id }})" class="px-2.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-[#5C3D2E] border border-amber-300 text-xs font-bold transition-colors cursor-pointer">

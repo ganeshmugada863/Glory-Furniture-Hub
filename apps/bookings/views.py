@@ -153,6 +153,14 @@ def booking_summary_view(request):
     - Primary CTA: "PROCEED TO PAYMENT →"
     - Link: "← BACK TO ADDRESS"
     """
+    # Step 1: Ensure Delivery Address is chosen before viewing Summary
+    if request.method == 'GET' and not request.session.get('glory_checkout_address'):
+        query_str = request.META.get('QUERY_STRING')
+        redirect_url = '/checkout/address/'
+        if query_str:
+            redirect_url += f'?{query_str}'
+        return redirect(redirect_url)
+
     # Check product or load from cart
     product_id = request.GET.get('product') or request.POST.get('product_id')
     user = request.user if request.user.is_authenticated else None
@@ -668,10 +676,10 @@ def booking_view(request):
     Renders templates/bookings/booking.html and processes appointment requests.
     Supports Showroom Visit, In-Home Site Measurement, and Video Consultation.
     """
-    # If a product_id was explicitly passed, redirect to checkout summary
+    # If a product_id was explicitly passed, redirect to Step 1 checkout address
     product_id = request.GET.get('productId') or request.GET.get('product')
     if product_id and request.method != 'POST':
-        return redirect(f"/booking/summary/?product={product_id}")
+        return redirect(f"/checkout/address/?product={product_id}")
 
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
