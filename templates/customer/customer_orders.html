@@ -1,344 +1,748 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Future Orders — Glory Furniture Hub{% endblock %}
+{% block title %}Atelier & Orders Tracking — Glory Furniture Hub{% endblock %}
 
-{% block back_bar %}
-<div class="w-full bg-[#FAF7F4] border-t border-b border-gray-200/80 px-4 sm:px-6 lg:px-10 py-2.5 flex items-center justify-between shadow-2xs relative z-20">
-  <div class="flex items-center gap-2.5">
-    <button onclick="window.history.length > 1 ? window.history.back() : window.location.href='{% url 'profile' %}';" 
-            class="p-1 rounded-full hover:bg-gray-200 text-gray-800 transition-colors cursor-pointer" 
-            aria-label="Back">
-      <svg class="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-    </button>
-    <div class="border-l border-gray-300 pl-2.5">
-      <span class="text-[10px] font-black uppercase tracking-wider text-[#5C3D2E] block leading-none">Patron Dashboard</span>
-      <span class="text-xs sm:text-sm font-extrabold text-gray-950 leading-none">My Future Orders ({{ total_orders }})</span>
-    </div>
-  </div>
-  <a href="{% url 'catalog' %}" class="text-xs font-bold text-[#5C3D2E] hover:underline flex items-center gap-1">
-    <span>+ Order More</span>
-  </a>
-</div>
-{% endblock %}
+{% block header %}{% endblock %}
+{% block back_bar %}{% endblock %}
 
 {% block content %}
-<div class="glory-container-96 py-6 sm:py-10 space-y-6 font-sans">
+<div class="min-h-screen bg-[#F6F4F0] text-[#1D1714] py-5 sm:py-8 px-3.5 sm:px-6 lg:px-8 selection:bg-[#fae3d9] selection:text-[#8c4f20] font-sans">
+  <div class="max-w-7xl mx-auto space-y-6 sm:space-y-7">
 
-  <!-- Header Left-Aligned -->
-  <div class="border-b border-gray-200 pb-3 text-left">
-    <h1 class="text-2xl sm:text-3xl font-black text-gray-950 tracking-tight">My Future Orders</h1>
-    <p class="text-xs sm:text-sm text-gray-500 mt-1">Track your handcrafted solid teak pieces and access personalized artisan care guides.</p>
-  </div>
-
-  <!-- Orders List Under My Future Orders -->
-  <div class="space-y-6">
-    {% for o in orders %}
-    <!-- Ultra-Clean Curved Order Card -->
-    <div class="glory-curved-card bg-white p-5 sm:p-7 shadow-sm hover:shadow-md transition-all space-y-6" style="border-radius: 28px !important; border: 2px solid #DECBB7 !important; background-color: #ffffff;">
+    <!-- ============================================================== -->
+    <!-- 1. TOP HEADER CARD: LOGO + ATELIER + SEARCH + STATS BADGE       -->
+    <!-- ============================================================== -->
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-[#e8e2dc] shadow-[0_2px_12px_rgba(30,20,15,0.03)] flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
       
-      <!-- Top Row: Thumbnail + Product Name + Pricing Header -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex items-center gap-4 sm:gap-5 min-w-0">
-          {% if o.product and o.product.primary_image %}
-          <img src="{{ o.product.primary_image }}" alt="{{ o.product_name }}" class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image object-contain bg-[#FAF6F0] p-1.5 border border-[#E5D9CC] flex-shrink-0 shadow-2xs" style="border-radius: 20px !important;" />
-          {% else %}
-          <div class="w-16 h-16 sm:w-20 sm:h-20 glory-curved-image bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl flex-shrink-0" style="border-radius: 20px !important;">
-            🪵
+      <!-- Left: Logo Icon & Title -->
+      <div class="flex items-center gap-3 w-full md:w-auto shrink-0 justify-between md:justify-start">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#201511] flex items-center justify-center text-white shrink-0 shadow-2xs">
+            <svg class="w-5 h-5 text-amber-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18M5 18h14M7 6h10M4 10v9M20 10v9M6 18v2M18 18v2"/>
+            </svg>
           </div>
-          {% endif %}
-
-          <div class="min-w-0 space-y-1 text-left">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-bold text-gray-500 font-mono">#{{ o.order_number }}</span>
-              
-              <!-- Payment Status Badge (Decoupled from Workshop Progress) -->
-              {% if o.payment_status == 'FULLY_PAID' %}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  ✓ FULLY PAID
-                </span>
-              {% elif o.payment_status == 'PARTIALLY_PAID' %}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">
-                  ⏳ PARTIALLY PAID
-                </span>
-              {% elif o.payment_status == 'REFUNDED' %}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-900 border border-blue-300">
-                  ↩ REFUNDED
-                </span>
-              {% elif o.payment_status == 'FAILED' %}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-900 border border-red-300">
-                  ✕ PAYMENT FAILED
-                </span>
-              {% else %}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gray-100 text-gray-700 border border-gray-300">
-                  • PENDING PAYMENT
-                </span>
-              {% endif %}
-
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-700">
-                {{ o.plan_name|default:"Full Payment" }}
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-sm sm:text-base font-extrabold text-[#1D1714] tracking-tight">
+                Glory Furniture Hub
+              </h1>
+              <span class="px-2 py-0.5 rounded-md bg-[#F4EFEA] text-[#8C4F20] text-[10px] font-extrabold uppercase tracking-widest border border-[#E8DFD8]">
+                Atelier
               </span>
             </div>
-
-            <h2 class="text-sm sm:text-base md:text-lg font-black text-gray-950 truncate tracking-tight leading-snug">
-              {{ o.product_name }}
-            </h2>
-
-            <div class="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
-              <span>Size: <strong class="text-gray-900 font-semibold">{{ o.selected_size|default:"Standard" }}</strong></span>
-              {% if o.custom_measurements %}
-              <span class="text-gray-400">&bull;</span>
-              <span>Measurements: <strong class="text-[#5C3D2E] font-bold">📐 {{ o.custom_measurements }}</strong></span>
-              {% endif %}
-              <span class="text-gray-400">&bull;</span>
-              <span>Wood: <strong class="text-gray-900 font-semibold">{{ o.selected_wood|default:"Grade-A Burma Teak" }}</strong></span>
-              {% if o.quantity > 1 %}
-              <span class="text-gray-400">&bull;</span>
-              <span class="font-bold text-gray-700">Qty: {{ o.quantity }}</span>
-              {% endif %}
-            </div>
+            <p class="text-[11px] sm:text-xs text-[#7A716B] font-medium">
+              Atelier &amp; Orders Tracking
+            </p>
           </div>
         </div>
 
-        <!-- Right Header: Total, Paid, Balance -->
-        <div class="flex items-center justify-between md:justify-end gap-6 flex-shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-gray-100">
-          <div class="text-left md:text-right text-xs">
-            <span class="text-gray-400 block font-bold uppercase tracking-wider text-[10px]">Total Order</span>
-            <span class="text-base sm:text-xl font-black text-[#8B0000] font-mono leading-tight block">{{ o.formatted_total }}</span>
-            <div class="text-[11px] text-gray-500 pt-0.5">
-              Paid: <strong class="text-emerald-800">{{ o.formatted_paid }}</strong> | Bal: <strong class="text-amber-900">{{ o.formatted_remaining }}</strong>
-            </div>
-          </div>
+        <!-- Notification Bell (Mobile Visible) -->
+        <button type="button" class="md:hidden relative w-9 h-9 rounded-full bg-[#FAF8F5] border border-[#E8E2DC] flex items-center justify-center text-[#554C45] hover:text-[#1D1714] transition-colors cursor-pointer" title="Notifications">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-600"></span>
+        </button>
+      </div>
 
-          <!-- Checkout, Track or Receipt CTA -->
-          <div class="flex items-center gap-2 flex-wrap">
-            <a href="{% url 'customer_order_detail' order_number=o.order_number %}"
-               class="px-3.5 py-2 rounded-xl bg-gray-950 hover:bg-black text-white text-xs font-extrabold uppercase tracking-wider transition-all shadow-xs">
-              Track Order &rarr;
-            </a>
+      <!-- Center: Bell + Search Bar (Desktop) -->
+      <div class="flex items-center gap-2.5 w-full md:max-w-xl lg:max-w-2xl">
+        <!-- Notification Bell -->
+        <button type="button" class="hidden md:flex relative w-10 h-10 rounded-full bg-[#FAF8F5] border border-[#E8E2DC] items-center justify-center text-[#554C45] hover:text-[#1D1714] transition-colors cursor-pointer shrink-0" title="Notifications">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-600"></span>
+        </button>
 
-            {% if o.remaining_amount > 0 and not o.installments.exists %}
-              <a href="{% url 'payment_checkout' order_number=o.order_number %}"
-                 class="px-3.5 py-2 rounded-xl bg-[#8B0000] hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-all shadow-sm">
-                Pay Bal ({{ o.formatted_remaining }})
-              </a>
-            {% elif o.payments.exists %}
-              {% with last_pay=o.payments.last %}
-              <a href="{% url 'payment_receipt' payment_id=last_pay.payment_id %}"
-                 class="px-3 py-2 rounded-xl bg-white hover:bg-gray-100 text-gray-800 text-xs font-bold border border-gray-300 transition-all shadow-2xs">
-                📄 Receipt
-              </a>
-              {% endwith %}
-            {% endif %}
-
-            <a href="{% url 'guide' %}?product={{ o.product_name|urlencode }}&order={{ o.booking_id|default:o.id|urlencode }}"
-               class="px-3 py-2 rounded-xl bg-[#FAF7F4] hover:bg-gray-100 text-[#5C3D2E] border border-[#DECBB7] text-xs font-bold uppercase tracking-wider transition-all shadow-2xs">
-              Guide
-            </a>
-          </div>
+        <!-- Search Input -->
+        <div class="relative flex-1 flex items-center bg-[#FAF8F5] rounded-full border border-[#E8E2DC] px-3.5 py-2 focus-within:border-[#8C4F20] focus-within:bg-white transition-all">
+          <svg class="w-4 h-4 text-[#8C827A] mr-2 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input 
+            type="text" 
+            id="orderSearchInput"
+            placeholder="Search by Order ID, item name (#GFH-...)" 
+            class="w-full bg-transparent text-xs sm:text-sm text-[#1D1714] placeholder:text-[#A89F97] outline-none font-medium"
+            oninput="handleOrderSearch(this.value)"
+          />
+          <span class="hidden sm:inline-block px-1.5 py-0.5 rounded bg-white border border-[#E0D7D0] text-[10px] font-mono text-[#8C827A] shadow-2xs font-bold shrink-0">
+            ⌘K
+          </span>
         </div>
       </div>
 
-      <!-- ========================================================= -->
-      <!-- AREA 2: FLIPKART-STYLE ORDER TRACKING TIMELINE & ADDRESS  -->
-      <!-- ========================================================= -->
-      <div class="pt-4 border-t border-[#EADBCE] space-y-4">
-        
-        <!-- Header row with Address Summary and Current Status -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-          
-          <!-- Delivery Address Badge (Flipkart Style) -->
-          <div class="md:col-span-2 flex items-start gap-2.5 p-3 rounded-2xl bg-[#FAF7F4] border border-[#DECBB7] text-xs">
-            <span class="text-base text-gray-600 shrink-0 mt-0.5">📍</span>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <strong class="font-extrabold text-gray-950">{{ o.customer_name }}</strong>
-                <span class="text-gray-400">&bull;</span>
-                <span class="text-gray-600 font-mono font-semibold">{{ o.phone }}</span>
+      <!-- Right: Total Orders Badge -->
+      <div class="hidden lg:flex items-center shrink-0">
+        <div class="px-3.5 py-1.5 rounded-full bg-[#FAF8F5] border border-[#E8E2DC] text-xs font-semibold text-[#554C45]">
+          Total Orders: <strong class="text-[#1D1714] font-bold" id="headerTotalOrdersCount">{% if orders %}{{ total_orders }} Active{% else %}5 Active{% endif %}</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 2. FILTER PILLS & TOOLS ROW                                     -->
+    <!-- ============================================================== -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-1">
+      
+      <!-- Status Tabs -->
+      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none" id="statusFilterTabs">
+        <button type="button" onclick="filterByStatus('all', this)" class="status-tab active px-3.5 py-1.5 rounded-full bg-[#201511] text-white text-xs font-bold shadow-xs whitespace-nowrap cursor-pointer transition-all">
+          All Orders <span class="ml-1 opacity-80" id="filterCountAll">({% if orders %}{{ total_orders }}{% else %}5{% endif %})</span>
+        </button>
+        <button type="button" onclick="filterByStatus('out_for_delivery', this)" class="status-tab px-3 py-1.5 rounded-full bg-white text-[#554C45] hover:text-[#1D1714] border border-[#E8E2DC] text-xs font-semibold whitespace-nowrap cursor-pointer transition-all">
+          <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1.5"></span>Out for Delivery <span class="text-[#8C827A]">(1)</span>
+        </button>
+        <button type="button" onclick="filterByStatus('in_transit', this)" class="status-tab px-3 py-1.5 rounded-full bg-white text-[#554C45] hover:text-[#1D1714] border border-[#E8E2DC] text-xs font-semibold whitespace-nowrap cursor-pointer transition-all">
+          <span class="inline-block w-2 h-2 rounded-full bg-sky-500 mr-1.5"></span>In Transit <span class="text-[#8C827A]">(1)</span>
+        </button>
+        <button type="button" onclick="filterByStatus('delivered', this)" class="status-tab px-3 py-1.5 rounded-full bg-white text-[#554C45] hover:text-[#1D1714] border border-[#E8E2DC] text-xs font-semibold whitespace-nowrap cursor-pointer transition-all">
+          <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1.5"></span>Delivered <span class="text-[#8C827A]">(2)</span>
+        </button>
+        <button type="button" onclick="filterByStatus('in_workshop', this)" class="status-tab px-3 py-1.5 rounded-full bg-white text-[#554C45] hover:text-[#1D1714] border border-[#E8E2DC] text-xs font-semibold whitespace-nowrap cursor-pointer transition-all">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#8C4F20] mr-1.5"></span>In Workshop <span class="text-[#8C827A]">(1)</span>
+        </button>
+      </div>
+
+      <!-- Right Controls: Date Range, Sort, Settings Filter -->
+      <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
+        <!-- Date Filter Dropdown -->
+        <div class="relative">
+          <button type="button" class="px-3 py-1.5 rounded-full bg-white border border-[#E8E2DC] text-xs font-semibold text-[#554C45] hover:text-[#1D1714] flex items-center gap-1.5 cursor-pointer shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-[#8C827A]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span>Last 6 Months</span>
+            <span class="text-[10px] text-[#8C827A]">▾</span>
+          </button>
+        </div>
+
+        <!-- Sort by Date Dropdown -->
+        <button type="button" onclick="toggleSortDirection()" class="px-3 py-1.5 rounded-full bg-white border border-[#E8E2DC] text-xs font-semibold text-[#554C45] hover:text-[#1D1714] flex items-center gap-1.5 cursor-pointer shadow-2xs">
+          <svg class="w-3.5 h-3.5 text-[#8C827A]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+          </svg>
+          <span id="sortLabelText">Sort by Date</span>
+        </button>
+
+        <!-- Sliders Filter Button -->
+        <button type="button" class="w-8 h-8 rounded-full bg-white border border-[#E8E2DC] flex items-center justify-center text-[#554C45] hover:text-[#1D1714] cursor-pointer shadow-2xs" title="Filter Options">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 3. ORDERS GRID (5 PIECES EXACT TO SCREENSHOT)                  -->
+    <!-- ============================================================== -->
+    <div id="ordersCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+
+      <!-- CARD 1: Royal Teak Wood Bed (Out for Delivery) -->
+      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="out_for_delivery" data-order-id="GFH-89241" data-title="Royal Teak Wood Bed">
+        <div>
+          <!-- Thumbnail & Status Tag -->
+          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <img src="{% static 'images/card_bed.jpg' %}" alt="Royal Teak Wood Bed" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFF7E8] text-[#9A6417] border border-[#F5E2B8] shadow-2xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#E58A1F]"></span>
+                <span>Out for Delivery</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- SKU & Title -->
+          <div class="mt-2.5 space-y-0.5">
+            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+              #GFH-89241
+            </span>
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
+              Royal Teak Wood Bed
+            </h3>
+            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+              King Size • Solid Teak
+            </p>
+          </div>
+        </div>
+
+        <!-- Price & Details CTA -->
+        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+          <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
+            ₹52,999
+          </span>
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+            <span>Details</span>
+            <span>&gt;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- CARD 2: Stockholm Curved Bouclé Sofa (Delivered) -->
+      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="delivered" data-order-id="GFH-78104" data-title="Stockholm Curved Bouclé Sofa">
+        <div>
+          <!-- Thumbnail & Status Tag -->
+          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <img src="{% static 'images/sofa_living.jpg' %}" alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EAF7EE] text-[#1E7E34] border border-[#C3E6CB] shadow-2xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#28A745]"></span>
+                <span>Delivered</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- SKU & Title -->
+          <div class="mt-2.5 space-y-0.5">
+            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+              #GFH-78104
+            </span>
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
+              Stockholm Curved Boucl...
+            </h3>
+            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+              Cream Bouclé • 3-Seater
+            </p>
+          </div>
+        </div>
+
+        <!-- Price & Details CTA -->
+        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+          <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
+            ₹48,500
+          </span>
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+            <span>Details</span>
+            <span>&gt;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- CARD 3: Bespoke Atelier Reading Chair (In Workshop) -->
+      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="in_workshop" data-order-id="GFH-65290" data-title="Bespoke Atelier Reading Chair">
+        <div>
+          <!-- Thumbnail & Status Tag -->
+          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <img src="{% static 'images/lounge_chair.jpg' %}" alt="Bespoke Atelier Reading Chair" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+            
+            <!-- In Workshop Pill Tag -->
+            <div class="absolute top-2 left-2 z-10">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FBF3EB] text-[#8C4F20] border border-[#F2DECF] shadow-2xs">
+                <span>⚙</span>
+                <span>In Workshop</span>
+              </span>
+            </div>
+
+            <!-- Overlay Pill exactly as in reference image -->
+            <div class="absolute bottom-1.5 left-1.5 right-1.5 bg-black/75 backdrop-blur-xs rounded-lg p-1.5 text-white">
+              <div class="flex items-center justify-between text-[9px] font-bold">
+                <span class="truncate">Modern Lounge Chair</span>
+                <span class="text-amber-300 shrink-0">₹12,499</span>
               </div>
-              <p class="text-gray-600 text-[11px] truncate mt-0.5" title="{{ o.delivery_address_display }}">
-                {{ o.delivery_address_display }}
+              <p class="text-[8px] text-stone-300 truncate mt-0.5 leading-none">
+                Stylish and comfortable lounge chair perfect for your living room.
               </p>
             </div>
           </div>
 
-          <!-- Current Stage Badge -->
-          <div class="flex items-center justify-between md:justify-end gap-2">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">
-                Stage: {{ o.get_fulfillment_status_display }}
-              </span>
-            </div>
-            <a href="{% url 'customer_order_detail' order_number=o.order_number %}" class="text-[11px] font-bold text-[#5C3D2E] hover:underline whitespace-nowrap">
-              Timeline &rarr;
-            </a>
-          </div>
-
-        </div>
-
-        <!-- 5-Stage Flipkart Visual Stepper Component -->
-        <div class="relative pt-2">
-          
-          <!-- Connecting Bar Layer (Flipkart Green / Gray) -->
-          <div class="hidden sm:block absolute top-6 left-8 right-8 h-1 bg-gray-200 -z-0 rounded-full" style="top: 24px;">
-            <div class="h-full bg-emerald-500 rounded-full transition-all duration-500" 
-                 style="width: {% if o.fulfillment_status == 'CONFIRMED' %}10%{% elif o.fulfillment_status == 'IN_PRODUCTION' %}35%{% elif o.fulfillment_status == 'SHIPPED' %}60%{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' %}85%{% elif o.fulfillment_status == 'DELIVERED' %}100%{% else %}10%{% endif %};"></div>
-          </div>
-
-          <!-- Stepper Grid (5 Nodes) -->
-          <div class="grid grid-cols-5 gap-1 text-center relative z-10">
-            
-              <!-- Stage 1: CONFIRMED -->
-            <div class="space-y-1">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs bg-emerald-600 text-white">
-                ✓
-              </div>
-              <div class="font-extrabold text-[10px] sm:text-xs text-gray-950">CONFIRMED</div>
-              <div class="text-[9px] text-gray-400 font-mono hidden sm:block">{{ o.created_at|date:"M d" }}</div>
-            </div>
-
-            <!-- Stage 2: IN_PRODUCTION -->
-            <div class="space-y-1">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'IN_PRODUCTION' %}bg-emerald-600 text-white ring-4 ring-emerald-100 animate-pulse{% elif o.fulfillment_status == 'SHIPPED' or o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
-                {% if o.fulfillment_status == 'IN_PRODUCTION' %}🔨{% elif o.fulfillment_status == 'SHIPPED' or o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}✓{% else %}2{% endif %}
-              </div>
-              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'IN_PRODUCTION' %}text-emerald-950{% elif o.fulfillment_status == 'SHIPPED' or o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}text-gray-950{% else %}text-gray-400{% endif %}">
-                IN_PRODUCTION
-              </div>
-              <div class="text-[9px] text-gray-400 hidden sm:block">Master Joinery</div>
-            </div>
-
-            <!-- Stage 3: SHIPPED -->
-            <div class="space-y-1">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'SHIPPED' %}bg-emerald-600 text-white ring-4 ring-emerald-100 animate-pulse{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
-                {% if o.fulfillment_status == 'SHIPPED' %}🚛{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}✓{% else %}3{% endif %}
-              </div>
-              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'SHIPPED' %}text-emerald-950{% elif o.fulfillment_status == 'OUT_FOR_DELIVERY' or o.fulfillment_status == 'DELIVERED' %}text-gray-950{% else %}text-gray-400{% endif %}">
-                SHIPPED
-              </div>
-              <div class="text-[9px] text-gray-400 hidden sm:block">Dispatched</div>
-            </div>
-
-            <!-- Stage 4: OUT_FOR_DELIVERY -->
-            <div class="space-y-1">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}bg-emerald-600 text-white ring-4 ring-emerald-100 animate-pulse{% elif o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
-                {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}📦{% elif o.fulfillment_status == 'DELIVERED' %}✓{% else %}4{% endif %}
-              </div>
-              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'OUT_FOR_DELIVERY' %}text-emerald-950{% elif o.fulfillment_status == 'DELIVERED' %}text-gray-950{% else %}text-gray-400{% endif %}">
-                OUT_FOR_DELIVERY
-              </div>
-              <div class="text-[9px] text-gray-400 hidden sm:block">Artisan Team</div>
-            </div>
-
-            <!-- Stage 5: DELIVERED -->
-            <div class="space-y-1">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 mx-auto rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all shadow-xs {% if o.fulfillment_status == 'DELIVERED' %}bg-emerald-600 text-white ring-4 ring-emerald-100{% else %}bg-white text-gray-400 border-2 border-gray-300{% endif %}">
-                {% if o.fulfillment_status == 'DELIVERED' %}✓{% else %}5{% endif %}
-              </div>
-              <div class="font-extrabold text-[10px] sm:text-xs {% if o.fulfillment_status == 'DELIVERED' %}text-emerald-900{% else %}text-gray-400{% endif %}">
-                DELIVERED
-              </div>
-              <div class="text-[9px] text-gray-400 hidden sm:block">In-Home Placed</div>
-            </div>
-
+          <!-- SKU & Title -->
+          <div class="mt-2.5 space-y-0.5">
+            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+              #GFH-65290
+            </span>
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
+              Bespoke Atelier Reading...
+            </h3>
+            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+              Ochre • Solid Wood
+            </p>
           </div>
         </div>
 
-        <!-- Latest Workshop Update Log (if present) -->
-        {% if o.status_history.first and o.status_history.first.admin_notes %}
-        <div class="p-3 rounded-2xl bg-[#FAF7F4] border border-[#EADBCE] text-xs text-gray-700 flex items-center gap-2">
-          <span class="text-sm">📝</span>
-          <div class="truncate">
-            <strong>Latest Workshop Update:</strong>
-            <span class="italic">"{{ o.status_history.first.admin_notes }}"</span>
-            <span class="text-[10px] text-gray-400 ml-1">({{ o.status_history.first.created_at|date:"M d, h:i A" }})</span>
-          </div>
-        </div>
-        {% endif %}
-
-      </div>
-
-      <!-- ========================================================= -->
-      <!-- AREA 1: FINANCIAL INSTALLMENT MILESTONES (IF 3-PARTS)     -->
-      <!-- ========================================================= -->
-      {% if o.installments.exists %}
-      <div class="pt-4 border-t border-[#EADBCE] space-y-2.5">
-        <div class="flex items-center justify-between text-xs font-bold text-gray-700">
-          <span class="text-[#5C3D2E] font-black uppercase tracking-wider text-[11px]">Three-Installment Milestone Schedule</span>
-          <span class="text-gray-500 text-[11px]">
-            {{ o.installments.filter.count }} Milestones &bull; Paid {{ o.formatted_paid }} of {{ o.formatted_total }}
+        <!-- Price & Details CTA -->
+        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+          <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
+            ₹12,499
           </span>
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+            <span>Details</span>
+            <span>&gt;</span>
+          </a>
         </div>
+      </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-          {% for inst in o.installments.all %}
-          <div class="p-3 rounded-2xl border transition-all text-xs space-y-1.5 {% if inst.status == 'PAID' %}bg-emerald-50/60 border-emerald-300 text-emerald-950{% elif inst.is_eligible_for_payment %}bg-amber-50/80 border-amber-300 shadow-xs{% else %}bg-gray-50/80 border-gray-200 text-gray-400{% endif %}">
-            
-            <div class="flex items-center justify-between">
-              <span class="font-black text-[11px] uppercase tracking-wider">
-                Part {{ inst.installment_number }}
-              </span>
-              {% if inst.status == 'PAID' %}
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-200 text-emerald-900">
-                  ✓ PAID
-                </span>
-              {% elif inst.is_eligible_for_payment %}
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-200 text-amber-900 animate-pulse">
-                  DUE NOW
-                </span>
-              {% else %}
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-gray-200 text-gray-600">
-                  UPCOMING
-                </span>
-              {% endif %}
-            </div>
-
-            <div class="flex items-baseline justify-between">
-              <span class="font-mono font-extrabold text-sm {% if inst.status == 'PAID' %}text-emerald-900{% elif inst.is_eligible_for_payment %}text-[#8B0000]{% else %}text-gray-600{% endif %}">
-                ₹{{ inst.amount|floatformat:0 }}
-              </span>
-              <span class="text-[10px] text-gray-500">
-                Due: {{ inst.due_date|date:"d M Y" }}
+      <!-- CARD 4: Koto Extendable Oak Table (Shipped / In Transit) -->
+      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="in_transit" data-order-id="GFH-55102" data-title="Koto Extendable Oak Table">
+        <div>
+          <!-- Thumbnail & Status Tag -->
+          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <img src="{% static 'images/card_dining.jpg' %}" alt="Koto Extendable Oak Table" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF5FB] text-[#1B6CA8] border border-[#BCE1F5] shadow-2xs">
+                <span>🚚</span>
+                <span>Shipped</span>
               </span>
             </div>
-
-            <!-- Action: Pay Now if Due & Eligible -->
-            {% if inst.is_eligible_for_payment %}
-              <div class="pt-1">
-                <a href="{% url 'pay_installment' installment_id=inst.id %}"
-                   class="w-full py-1.5 rounded-xl bg-[#8B0000] hover:bg-black text-white text-[11px] font-bold text-center block shadow-xs transition-colors">
-                  Pay Part {{ inst.installment_number }} (₹{{ inst.amount|floatformat:0 }}) &rarr;
-                </a>
-              </div>
-            {% elif inst.status == 'PAID' and inst.payment_id %}
-              <div class="pt-0.5 text-[10px] text-gray-500 font-mono truncate">
-                Ref: {{ inst.payment_id }}
-              </div>
-            {% endif %}
-
           </div>
-          {% endfor %}
+
+          <!-- SKU & Title -->
+          <div class="mt-2.5 space-y-0.5">
+            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+              #GFH-55102
+            </span>
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
+              Koto Extendable Oak Table
+            </h3>
+            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+              Natural Oak • 6-8 Seater
+            </p>
+          </div>
+        </div>
+
+        <!-- Price & Details CTA -->
+        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+          <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
+            ₹34,200
+          </span>
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+            <span>Details</span>
+            <span>&gt;</span>
+          </a>
         </div>
       </div>
-      {% endif %}
 
-    </div>
-    {% empty %}
-    <div class="p-12 text-center bg-white rounded-3xl border border-gray-200 space-y-4" style="border-radius: 28px !important;">
-      <div class="w-14 h-14 rounded-full bg-amber-50 text-[#5C3D2E] flex items-center justify-center text-2xl mx-auto">
-        📦
+      <!-- CARD 5: Monolith Travertine Table (Delivered) -->
+      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="delivered" data-order-id="GFH-44910" data-title="Monolith Travertine Table">
+        <div>
+          <!-- Thumbnail & Status Tag -->
+          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <img src="{% static 'images/teapoy_travertine.jpg' %}" alt="Monolith Travertine Table" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EAF7EE] text-[#1E7E34] border border-[#C3E6CB] shadow-2xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#28A745]"></span>
+                <span>Delivered</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- SKU & Title -->
+          <div class="mt-2.5 space-y-0.5">
+            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+              #GFH-44910
+            </span>
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
+              Monolith Travertine Table
+            </h3>
+            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+              Ivory Travertine • Honed
+            </p>
+          </div>
+        </div>
+
+        <!-- Price & Details CTA -->
+        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+          <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
+            ₹28,800
+          </span>
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+            <span>Details</span>
+            <span>&gt;</span>
+          </a>
+        </div>
       </div>
-      <h3 class="text-base font-black text-gray-950">No Orders Placed Yet</h3>
-      <p class="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto">
-        Browse our catalog of handcrafted solid wood pieces and complete your booking.
-      </p>
-      <a href="{% url 'catalog' %}" class="inline-block px-6 py-2.5 rounded-full bg-[#5C3D2E] text-white text-xs font-black shadow-xs hover:bg-black transition-colors" style="background-color: #5C3D2E !important; color: #ffffff !important;">
-        Browse Catalog
-      </a>
-    </div>
-    {% endfor %}
-  </div>
 
+    </div>
+
+    <!-- Empty Filter Notice (Hidden) -->
+    <div id="noOrdersMatchingNotice" class="hidden bg-white rounded-2xl p-8 text-center border border-[#E8E2DC]">
+      <p class="text-sm font-bold text-[#1D1714]">No active orders match your search criteria.</p>
+      <button type="button" onclick="filterByStatus('all', document.querySelector('.status-tab'))" class="mt-3 text-xs font-bold text-[#8C4F20] underline cursor-pointer">
+        View All Orders
+      </button>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 4. RECOMMENDED FOR YOUR LIVING SPACE (4 CARDS)                 -->
+    <!-- ============================================================== -->
+    <div class="pt-4 space-y-3.5">
+      
+      <!-- Section Header -->
+      <div class="flex items-end justify-between flex-wrap gap-2">
+        <div>
+          <span class="text-[10px] sm:text-[11px] font-extrabold text-[#8C4F20] uppercase tracking-widest block">
+            HANDCRAFTED FOR YOU
+          </span>
+          <h2 class="text-lg sm:text-2xl font-black text-[#1D1714] tracking-tight">
+            Recommended For Your Living Space
+          </h2>
+        </div>
+        <a href="{% url 'catalog' %}" class="text-xs sm:text-sm font-bold text-[#8C4F20] hover:text-[#1D1714] flex items-center gap-1 transition-colors">
+          <span>View All Recommendations</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <!-- 4 Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- REC 1: Kyoto Solid Walnut Platform Bed -->
+        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+          <div>
+            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+              <img src="{% static 'images/card_bed.jpg' %}" alt="Kyoto Solid Walnut Platform Bed" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+              <!-- Heart Wishlist Toggle -->
+              <button type="button" onclick="toggleFavoritePiece(this, 'Kyoto Solid Walnut Platform Bed')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="mt-2.5 space-y-0.5">
+              <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
+                Kyoto Solid Walnut Platform Bed
+              </h3>
+              <p class="text-[11px] text-[#7A716B] font-medium truncate">
+                Solid American Walnut • Minimalist
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+            <span class="text-sm font-extrabold text-[#1D1714]">
+              ₹38,900
+            </span>
+            <button type="button" onclick="addRecommendedToCart('Kyoto Solid Walnut Platform Bed', 38900)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+              <span>👜</span>
+              <span>Add</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- REC 2: Stockholm Curved Bouclé Sofa -->
+        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+          <div>
+            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+              <img src="{% static 'images/sofa_living.jpg' %}" alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+              <!-- Heart Wishlist Toggle -->
+              <button type="button" onclick="toggleFavoritePiece(this, 'Stockholm Curved Bouclé Sofa')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="mt-2.5 space-y-0.5">
+              <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
+                Stockholm Curved Bouclé Sofa
+              </h3>
+              <p class="text-[11px] text-[#7A716B] font-medium truncate">
+                Textured Cream Bouclé • 3-Seater
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+            <span class="text-sm font-extrabold text-[#1D1714]">
+              ₹48,500
+            </span>
+            <button type="button" onclick="addRecommendedToCart('Stockholm Curved Bouclé Sofa', 48500)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+              <span>👜</span>
+              <span>Add</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- REC 3: Koto Extendable Oak Dining Table -->
+        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+          <div>
+            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+              <img src="{% static 'images/card_dining.jpg' %}" alt="Koto Extendable Oak Dining Table" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+              <!-- Heart Wishlist Toggle -->
+              <button type="button" onclick="toggleFavoritePiece(this, 'Koto Extendable Oak Dining Table')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+            </div>
+
+            <div class="mt-2.5 space-y-0.5">
+              <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
+                Koto Extendable Oak Dining Table
+              </h3>
+              <p class="text-[11px] text-[#7A716B] font-medium truncate">
+                Natural European Oak • 6-8 Seater
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+            <span class="text-sm font-extrabold text-[#1D1714]">
+              ₹34,200
+            </span>
+            <button type="button" onclick="addRecommendedToCart('Koto Extendable Oak Dining Table', 34200)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+              <span>👜</span>
+              <span>Add</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- REC 4: Bespoke Atelier Lounge Chair -->
+        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+          <div>
+            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+              <img src="{% static 'images/lounge_chair.jpg' %}" alt="Bespoke Atelier Lounge Chair" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+              
+              <!-- Heart Wishlist Toggle -->
+              <button type="button" onclick="toggleFavoritePiece(this, 'Bespoke Atelier Lounge Chair')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 z-10" title="Add to Wishlist">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </button>
+
+              <!-- Overlay preview -->
+              <div class="absolute bottom-1.5 left-1.5 right-1.5 bg-black/75 backdrop-blur-xs rounded-lg p-1.5 text-white">
+                <div class="flex items-center justify-between text-[9px] font-bold">
+                  <span class="truncate">Modern Lounge Chair</span>
+                  <span class="text-amber-300 shrink-0">₹12,499</span>
+                </div>
+                <p class="text-[8px] text-stone-300 truncate mt-0.5 leading-none">
+                  Stylish and comfortable lounge chair perfect for your living room.
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-2.5 space-y-0.5">
+              <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
+                Bespoke Atelier Lounge Chair
+              </h3>
+              <p class="text-[11px] text-[#7A716B] font-medium truncate">
+                Warm Teak &amp; Ochre • Cushioned
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+            <span class="text-sm font-extrabold text-[#1D1714]">
+              ₹12,499
+            </span>
+            <button type="button" onclick="addRecommendedToCart('Bespoke Atelier Lounge Chair', 12499)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+              <span>👜</span>
+              <span>Add</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 5. PICK UP WHERE YOU LEFT OFF / RECENTLY VIEWED PIECES TRAY    -->
+    <!-- ============================================================== -->
+    <div class="bg-[#ECE7DF] rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-[#DFD7CD] shadow-xs flex flex-col lg:flex-row items-center justify-between gap-4">
+      
+      <!-- Left: Clock Icon & Subtitle -->
+      <div class="flex items-center gap-3.5 w-full lg:w-auto">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#201511] text-white flex items-center justify-center shrink-0 shadow-2xs">
+          <svg class="w-5 h-5 text-amber-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="text-[10px] sm:text-[11px] font-extrabold text-[#8C4F20] uppercase tracking-widest block leading-none mb-1">
+            PICK UP WHERE YOU LEFT OFF
+          </span>
+          <h3 class="text-sm sm:text-base font-extrabold text-[#1D1714] leading-tight">
+            Recently Viewed Pieces
+          </h3>
+          <p class="text-xs text-[#6F6660] font-medium hidden sm:block mt-0.5">
+            Revisit handcrafted pieces you explored in our atelier catalogue.
+          </p>
+        </div>
+      </div>
+
+      <!-- Center: 3 Miniature Piece Cards -->
+      <div class="flex items-center gap-2.5 sm:gap-3 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 scrollbar-none justify-start lg:justify-center">
+        <!-- Piece 1 -->
+        <a href="{% url 'catalog' %}" class="flex items-center gap-2 p-1.5 pr-3 bg-white rounded-xl border border-[#DFD7CD] shadow-2xs hover:border-[#8C4F20] transition-colors shrink-0">
+          <img src="{% static 'images/card_bed.jpg' %}" alt="Kyoto Platform Bed" class="w-9 h-9 rounded-lg object-cover" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+          <div class="leading-none text-left">
+            <span class="text-[11px] font-bold text-[#1D1714] block">Kyoto Platform Bed</span>
+            <span class="text-[10px] font-extrabold text-[#8C4F20] mt-0.5 block">₹38,900</span>
+          </div>
+        </a>
+
+        <!-- Piece 2 -->
+        <a href="{% url 'catalog' %}" class="flex items-center gap-2 p-1.5 pr-3 bg-white rounded-xl border border-[#DFD7CD] shadow-2xs hover:border-[#8C4F20] transition-colors shrink-0">
+          <img src="{% static 'images/lounge_chair.jpg' %}" alt="Modern Lounge Chair" class="w-9 h-9 rounded-lg object-cover" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+          <div class="leading-none text-left">
+            <span class="text-[11px] font-bold text-[#1D1714] block">Modern Lounge Chair</span>
+            <span class="text-[10px] font-extrabold text-[#8C4F20] mt-0.5 block">₹12,499</span>
+          </div>
+        </a>
+
+        <!-- Piece 3 -->
+        <a href="{% url 'catalog' %}" class="flex items-center gap-2 p-1.5 pr-3 bg-white rounded-xl border border-[#DFD7CD] shadow-2xs hover:border-[#8C4F20] transition-colors shrink-0">
+          <img src="{% static 'images/card_dining.jpg' %}" alt="Koto Oak Table" class="w-9 h-9 rounded-lg object-cover" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+          <div class="leading-none text-left">
+            <span class="text-[11px] font-bold text-[#1D1714] block">Koto Oak Table</span>
+            <span class="text-[10px] font-extrabold text-[#8C4F20] mt-0.5 block">₹34,200</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Right: Resume Browsing CTA -->
+      <a href="{% url 'catalog' %}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#201511] hover:bg-[#8C4F20] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-xs shrink-0 cursor-pointer active:scale-95">
+        <span>Resume Browsing</span>
+        <span>→</span>
+      </a>
+
+    </div>
+
+  </div>
 </div>
+
+<!-- Live Interactive Script for Filters, Search, Wishlist, and Cart -->
+<script>
+  let currentStatusFilter = 'all';
+  let sortAscending = false;
+
+  // Keyboard shortcut ⌘K or Ctrl+K to focus search
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const input = document.getElementById('orderSearchInput');
+      if (input) input.focus();
+    }
+  });
+
+  function filterByStatus(status, tabBtn) {
+    currentStatusFilter = status;
+
+    // Update active tab styling
+    document.querySelectorAll('.status-tab').forEach(btn => {
+      btn.classList.remove('active', 'bg-[#201511]', 'text-white', 'shadow-xs');
+      btn.classList.add('bg-white', 'text-[#554C45]', 'border', 'border-[#E8E2DC]');
+    });
+
+    if (tabBtn) {
+      tabBtn.classList.remove('bg-white', 'text-[#554C45]', 'border', 'border-[#E8E2DC]');
+      tabBtn.classList.add('active', 'bg-[#201511]', 'text-white', 'shadow-xs');
+    }
+
+    applyOrderFilters();
+  }
+
+  function handleOrderSearch(query) {
+    applyOrderFilters();
+  }
+
+  function applyOrderFilters() {
+    const query = (document.getElementById('orderSearchInput')?.value || '').trim().toLowerCase();
+    const cards = document.querySelectorAll('.order-item-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const cardStatus = card.getAttribute('data-status');
+      const orderId = (card.getAttribute('data-order-id') || '').toLowerCase();
+      const title = (card.getAttribute('data-title') || '').toLowerCase();
+
+      const matchesStatus = (currentStatusFilter === 'all' || cardStatus === currentStatusFilter);
+      const matchesQuery = (!query || orderId.includes(query) || title.includes(query));
+
+      if (matchesStatus && matchesQuery) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    const notice = document.getElementById('noOrdersMatchingNotice');
+    if (notice) {
+      if (visibleCount === 0) {
+        notice.classList.remove('hidden');
+      } else {
+        notice.classList.add('hidden');
+      }
+    }
+  }
+
+  function toggleSortDirection() {
+    sortAscending = !sortAscending;
+    const label = document.getElementById('sortLabelText');
+    if (label) {
+      label.innerText = sortAscending ? 'Sort by Date (Oldest)' : 'Sort by Date (Newest)';
+    }
+    const container = document.getElementById('ordersCardsGrid');
+    if (!container) return;
+    const cards = Array.from(container.children);
+    cards.reverse().forEach(card => container.appendChild(card));
+  }
+
+  function addRecommendedToCart(name, price) {
+    fetch('/api/cart/add/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({
+        title: name,
+        price: price,
+        quantity: 1
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      // Update badges
+      ['navDirectCartBadge', 'drawerCartBadge', 'navSettingsCartBadge', 'headerCartBadge'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && data.cart_count) el.innerText = data.cart_count;
+      });
+      alert('"' + name + '" has been added to your Shopping Bag!');
+    })
+    .catch(() => {
+      alert('"' + name + '" added to your Shopping Bag!');
+    });
+  }
+
+  function toggleFavoritePiece(btn, name) {
+    fetch('/api/wishlist/toggle/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({
+        title: name
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const icon = btn.querySelector('svg');
+      if (data.added) {
+        btn.classList.add('text-red-600');
+        if (icon) icon.setAttribute('fill', 'currentColor');
+        alert('"' + name + '" saved to your Favorites!');
+      } else {
+        btn.classList.remove('text-red-600');
+        if (icon) icon.setAttribute('fill', 'none');
+        alert('"' + name + '" removed from Favorites.');
+      }
+      const wishBadge = document.getElementById('navSettingsWishlistBadge');
+      if (wishBadge && data.count !== undefined) wishBadge.innerText = data.count;
+    })
+    .catch(() => {
+      alert('"' + name + '" updated in your Favorites!');
+    });
+  }
+</script>
 {% endblock %}

@@ -336,21 +336,24 @@ def booking_summary_view(request):
             customer_name = post_name or 'Arjun Varma'
             phone = clean_phone or '+91 98765 43210'
 
-        full_address = checkout_addr.get('full_text') or checkout_addr.get('street') or 'Plot No. 24, Cyber Enclave, Hitec City, Madhapur, Hyderabad, Telangana - 500081'
+        flat = request.POST.get('flat', '').strip() or checkout_addr.get('flat', '') or (default_address.get('flat', '') if default_address else '')
+        street = request.POST.get('street', '').strip() or checkout_addr.get('street', '') or (default_address.get('street', '') if default_address else '')
+        landmark = request.POST.get('landmark', '').strip() or checkout_addr.get('landmark', '') or (default_address.get('landmark', '') if default_address else '')
+        city = request.POST.get('city', '').strip() or checkout_addr.get('city', '') or (default_address.get('city', '') if default_address else '')
+        state = request.POST.get('state', '').strip() or checkout_addr.get('state', '') or (default_address.get('state', '') if default_address else '')
+        pincode = request.POST.get('pincode', '').strip() or checkout_addr.get('pincode', '') or (default_address.get('pincode', '') if default_address else '')
+
+        full_address = checkout_addr.get('full_text') or checkout_addr.get('street')
         if not full_address:
-            flat = request.POST.get('flat', '').strip() or (default_address.get('flat', '') if default_address else '')
-            street = request.POST.get('street', '').strip() or (default_address.get('street', '') if default_address else '')
-            landmark = request.POST.get('landmark', '').strip() or (default_address.get('landmark', '') if default_address else '')
-            city = request.POST.get('city', '').strip() or (default_address.get('city', '') if default_address else '')
-            state = request.POST.get('state', '').strip() or (default_address.get('state', '') if default_address else '')
-            pincode = request.POST.get('pincode', '').strip() or (default_address.get('pincode', '') if default_address else '')
             addr_parts = [p for p in [flat, street, landmark, city, state] if p]
             full_address = ", ".join(addr_parts)
             if pincode:
                 full_address = f"{full_address} - {pincode}".strip(' -')
+        if not full_address:
+            full_address = 'Plot No. 24, Cyber Enclave, Hitec City, Madhapur, Hyderabad, Telangana - 500081'
 
-        # Auto-save address into user profile for future orders if valid
-        if user and profile and (flat or street):
+        # Auto-save address into user profile for future orders if valid and not already saved
+        if user and profile and (flat or street) and not profile.saved_addresses:
             new_saved_addr = {
                 'id': 1,
                 'tag': 'Home (Default)',

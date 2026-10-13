@@ -23,143 +23,18 @@
       </a>
     </div>
 
-    <!-- Heading: Your Shopping Cart (2 Items) -->
+    <!-- Heading: Your Shopping Cart -->
     <div class="flex items-center gap-2.5 sm:gap-4 mb-4 sm:mb-6">
       <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight text-[#140804]">
         Your Shopping Cart
       </h1>
       <span class="px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-full bg-[#fae3d9] text-[#8c4f20] text-xs font-bold tracking-wide" id="cart-badge-count">
-        (2 Items)
+        ({{ cart_count|default:0 }} Item{% if cart_count != 1 %}s{% endif %})
       </span>
     </div>
 
-    <!-- CART ITEMS CONTAINER -->
-    <div id="cart-items-list" class="space-y-3.5 sm:space-y-4">
-
-      <!-- ITEM 1: Serah Premium Sheesham Wood Bed -->
-      <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-[#e8e2dc] shadow-[0_2px_10px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-1">
-        <div class="flex flex-row items-center gap-3.5 sm:gap-5">
-          <!-- Thumbnail Image (Vertically centered, compact, sharp) -->
-          <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] self-center shadow-2xs">
-            <img src="{% static 'images/card_bed.jpg' %}" alt="Serah Premium Sheesham Wood Bed" class="w-full h-full object-cover object-center" />
-          </div>
-
-          <!-- Content Details -->
-          <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
-            <!-- Top Details Row -->
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0 pr-1">
-                <span class="text-[10px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
-                  MASTER SUITE COLLECTION
-                </span>
-                <h2 class="text-sm sm:text-lg font-bold text-[#140804] leading-snug truncate">
-                  Serah Premium Sheesham Wood Bed
-                </h2>
-                <p class="text-xs text-[#736a64] mt-0.5">
-                  King Size • Natural Teak Finish
-                </p>
-              </div>
-
-              <!-- Price at Top Right -->
-              <div class="text-right shrink-0">
-                <span class="text-base sm:text-xl font-extrabold text-[#140804] tracking-tight">
-                  ₹99,989
-                </span>
-              </div>
-            </div>
-
-            <!-- Bottom Controls: Qty Stepper & Actions Row -->
-            <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-[#f7f5f2]">
-              <!-- Stepper -->
-              <div class="flex items-center gap-2">
-                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-lg bg-white">
-                  <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-xs sm:text-sm cursor-pointer" onclick="updateQty(1, -1)">−</button>
-                  <span class="w-6 sm:w-7 text-center font-bold text-xs text-[#140804]" id="qty-val-1">1</span>
-                  <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-xs sm:text-sm cursor-pointer" onclick="updateQty(1, 1)">+</button>
-                </div>
-                <span class="text-xs text-[#736a64] font-medium">Qty: <span id="qty-lbl-1">1</span></span>
-              </div>
-
-              <!-- Save for Later & Remove -->
-              <div class="flex items-center gap-3 sm:gap-4 text-xs font-semibold text-[#524b45]">
-                <button type="button" onclick="handleSaveLater('Serah Premium Sheesham Wood Bed')" class="inline-flex items-center gap-1 hover:text-[#140804] transition-colors cursor-pointer">
-                  <svg class="w-3.5 h-3.5 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                  <span>Save for Later</span>
-                </button>
-                <button type="button" onclick="handleRemoveItem(1)" class="inline-flex items-center gap-1 hover:text-red-700 transition-colors cursor-pointer">
-                  <svg class="w-3.5 h-3.5 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                  <span>Remove</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ITEM 2: Royal Teak Bedside Table -->
-      <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-[#e8e2dc] shadow-[0_2px_10px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-2">
-        <div class="flex flex-row items-center gap-3.5 sm:gap-5">
-          <!-- Thumbnail Image (Vertically centered, compact, sharp) -->
-          <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] self-center shadow-2xs">
-            <img src="{% static 'images/cart_royal_bedside.png' %}" alt="Royal Teak Bedside Table" class="w-full h-full object-cover object-center" />
-          </div>
-
-          <!-- Content Details -->
-          <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
-            <!-- Top Details Row -->
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0 pr-1">
-                <span class="text-[10px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block">
-                  COMPANION ACCENT
-                </span>
-                <h2 class="text-sm sm:text-lg font-bold text-[#140804] leading-snug truncate">
-                  Royal Teak Bedside Table
-                </h2>
-                <p class="text-xs text-[#736a64] mt-0.5">
-                  Solid Teak • Companion Piece
-                </p>
-              </div>
-
-              <!-- Price at Top Right -->
-              <div class="text-right shrink-0">
-                <span class="text-base sm:text-xl font-extrabold text-[#140804] tracking-tight">
-                  ₹14,999
-                </span>
-              </div>
-            </div>
-
-            <!-- Bottom Controls: Qty Stepper & Actions Row -->
-            <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-[#f7f5f2]">
-              <!-- Stepper -->
-              <div class="flex items-center gap-2">
-                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-lg bg-white">
-                  <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-xs sm:text-sm cursor-pointer" onclick="updateQty(2, -1)">−</button>
-                  <span class="w-6 sm:w-7 text-center font-bold text-xs text-[#140804]" id="qty-val-2">1</span>
-                  <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-xs sm:text-sm cursor-pointer" onclick="updateQty(2, 1)">+</button>
-                </div>
-                <span class="text-xs text-[#736a64] font-medium">Qty: <span id="qty-lbl-2">1</span></span>
-              </div>
-
-              <!-- Save for Later & Remove -->
-              <div class="flex items-center gap-3 sm:gap-4 text-xs font-semibold text-[#524b45]">
-                <button type="button" onclick="handleSaveLater('Royal Teak Bedside Table')" class="inline-flex items-center gap-1 hover:text-[#140804] transition-colors cursor-pointer">
-                  <svg class="w-3.5 h-3.5 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                  <span>Save for Later</span>
-                </button>
-                <button type="button" onclick="handleRemoveItem(2)" class="inline-flex items-center gap-1 hover:text-red-700 transition-colors cursor-pointer">
-                  <svg class="w-3.5 h-3.5 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                  <span>Remove</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Empty State (Hidden initially) -->
-    <div id="cart-empty-state" class="hidden bg-white rounded-2xl p-8 sm:p-12 text-center border border-[#e8e2dc] shadow-sm my-4">
+    <!-- Empty State -->
+    <div id="cart-empty-state" class="{% if cart_items %}hidden{% endif %} bg-white rounded-2xl p-8 sm:p-12 text-center border border-[#e8e2dc] shadow-sm my-4">
       <div class="w-14 h-14 rounded-full bg-[#f5f3f0] flex items-center justify-center text-2xl mx-auto text-[#8c4f20] mb-3">
         🛍️
       </div>
@@ -171,19 +46,103 @@
       </a>
     </div>
 
+    <!-- CART ITEMS CONTAINER -->
+    <div id="cart-items-list" class="space-y-3.5 sm:space-y-4 {% if not cart_items %}hidden{% endif %}">
+      {% for item in cart_items %}
+      <div class="bg-white rounded-2xl p-3.5 sm:p-5 border border-[#e8e2dc] shadow-[0_2px_10px_rgba(43,24,16,0.04)] transition-all hover:border-[#d2c3be]" id="cart-card-{{ item.id }}-{{ forloop.counter }}">
+        <div class="flex flex-row items-center gap-3.5 sm:gap-5">
+          <!-- Thumbnail Image -->
+          <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden shrink-0 bg-[#f5f3f0] border border-[#e8e2dc] self-center shadow-2xs">
+            <img src="{{ item.image }}" alt="{{ item.name }}" class="w-full h-full object-cover object-center" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
+          </div>
+
+          <!-- Content Details -->
+          <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+            <!-- Top Details Row -->
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 pr-1">
+                <span class="text-[10px] sm:text-xs font-bold text-[#8c4f20] tracking-wider uppercase block truncate">
+                  ATELIER CRAFTED PIECE
+                </span>
+                <a href="/product/{{ item.id }}/" class="hover:underline">
+                  <h2 class="text-sm sm:text-lg font-bold text-[#140804] leading-snug truncate">
+                    {{ item.name }}
+                  </h2>
+                </a>
+                <p class="text-xs text-[#736a64] mt-0.5 truncate">
+                  {{ item.size|default:"Standard" }}{% if item.material %} • {{ item.material }}{% endif %}{% if item.measurements %} • {{ item.measurements }}{% endif %}
+                </p>
+              </div>
+
+              <!-- Price at Top Right -->
+              <div class="text-right shrink-0">
+                <span class="text-base sm:text-xl font-extrabold text-[#140804] tracking-tight" id="item-price-{{ item.id }}-{{ forloop.counter }}">
+                  {{ item.formatted_item_total }}
+                </span>
+                <div class="text-[11px] text-[#736a64] font-medium" id="unit-price-{{ item.id }}-{{ forloop.counter }}">
+                  ({{ item.formatted_price }} each)
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Controls: Qty Stepper & Actions Row -->
+            <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-[#f7f5f2]">
+              <!-- Stepper -->
+              <div class="flex items-center gap-2">
+                <div class="inline-flex items-center border border-[#d2c3be]/80 rounded-lg bg-white">
+                  <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-xs sm:text-sm cursor-pointer" onclick="updateCartItemQty({{ item.id }}, '{{ item.size|escapejs }}', -1, '{{ item.id }}-{{ forloop.counter }}')">−</button>
+                  <span class="w-6 sm:w-7 text-center font-bold text-xs text-[#140804]" id="qty-val-{{ item.id }}-{{ forloop.counter }}">{{ item.quantity }}</span>
+                  <button type="button" class="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-[#736a64] hover:text-[#140804] hover:bg-[#f5f3f0] rounded transition-colors font-bold text-xs sm:text-sm cursor-pointer" onclick="updateCartItemQty({{ item.id }}, '{{ item.size|escapejs }}', 1, '{{ item.id }}-{{ forloop.counter }}')">+</button>
+                </div>
+                <span class="text-xs text-[#736a64] font-medium">Qty: <span id="qty-lbl-{{ item.id }}-{{ forloop.counter }}">{{ item.quantity }}</span></span>
+              </div>
+
+              <!-- Save for Later & Remove -->
+              <div class="flex items-center gap-3 sm:gap-4 text-xs font-semibold text-[#524b45]">
+                <button type="button" onclick="handleSaveLater({{ item.id }}, '{{ item.name|escapejs }}')" class="inline-flex items-center gap-1 hover:text-[#140804] transition-colors cursor-pointer">
+                  <svg class="w-3.5 h-3.5 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                  <span>Save for Later</span>
+                </button>
+                <button type="button" onclick="handleRemoveItem({{ item.id }}, '{{ item.size|escapejs }}', '{{ item.id }}-{{ forloop.counter }}')" class="inline-flex items-center gap-1 hover:text-red-700 transition-colors cursor-pointer">
+                  <svg class="w-3.5 h-3.5 text-[#736a64]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>Remove</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
     <!-- TOTAL AMOUNT & PROCEED TO CHECKOUT CARD -->
-    <div class="bg-white rounded-2xl p-4 sm:p-6 border border-[#e8e2dc] shadow-[0_2px_10px_rgba(43,24,16,0.04)] mt-4 sm:mt-6" id="cart-summary-card">
-      <div class="flex items-center justify-between pb-4 border-b border-[#f5f3f0]">
+    <div class="bg-white rounded-2xl p-4 sm:p-6 border border-[#e8e2dc] shadow-[0_2px_10px_rgba(43,24,16,0.04)] mt-4 sm:mt-6 {% if not cart_items %}hidden{% endif %}" id="cart-summary-card">
+      <div class="space-y-2 pb-4 border-b border-[#f5f3f0]">
+        <div class="flex items-center justify-between text-xs sm:text-sm text-[#736a64]">
+          <span>Subtotal</span>
+          <span class="font-bold text-[#140804]" id="cart-subtotal">{{ formatted_subtotal|default:"₹0" }}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs sm:text-sm text-[#736a64]">
+          <span>White-Glove Delivery &amp; Assembly</span>
+          <span class="font-bold text-emerald-700">FREE</span>
+        </div>
+        <div class="flex items-center justify-between text-xs sm:text-sm text-[#736a64]">
+          <span>GST (18% Included)</span>
+          <span class="font-medium text-[#736a64]" id="cart-gst">{{ formatted_gst|default:"₹0" }}</span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 pb-2">
         <span class="text-sm sm:text-base font-bold text-[#140804]">
           Total Amount
         </span>
         <span class="text-xl sm:text-2xl font-extrabold text-[#140804] tracking-tight" id="cart-total-amount">
-          ₹1,14,988
+          {{ formatted_total|default:"₹0" }}
         </span>
       </div>
 
-      <!-- Proceed to Checkout Button: Rich Dark Timber Button with Crisp White Text -->
-      <a href="{% url 'checkout' %}" style="background-color: #251812 !important; color: #ffffff !important;" class="w-full mt-4 py-3.5 sm:py-4 px-6 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] tracking-wide hover:opacity-95 cursor-pointer">
+      <!-- Proceed to Checkout Button: Directs to Step 1 Check Address -->
+      <a href="{% url 'checkout_address' %}" style="background-color: #251812 !important; color: #ffffff !important;" class="w-full mt-4 py-3.5 sm:py-4 px-6 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] tracking-wide hover:opacity-95 cursor-pointer">
         <span style="color: #ffffff !important;">Proceed to Checkout</span>
         <span style="color: #ffffff !important;" class="text-base sm:text-lg">→</span>
       </a>
@@ -193,69 +152,139 @@
 </div>
 
 <script>
-  const itemPrices = {
-    1: 99989,
-    2: 14999
-  };
-  const itemQuantities = {
-    1: 1,
-    2: 1
-  };
-  let activeItemCount = 2;
+  function updateHeaderBadges(count) {
+    const badges = ['navDirectCartBadge', 'drawerCartBadge', 'navSettingsCartBadge', 'headerCartBadge'];
+    badges.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = count;
+    });
+  }
 
-  function recalculateTotal() {
-    let total = 0;
-    let totalItems = 0;
-    for (const id in itemQuantities) {
-      if (document.getElementById('cart-card-' + id)) {
-        total += itemPrices[id] * itemQuantities[id];
-        totalItems += itemQuantities[id];
+  function updateCartItemQty(productId, size, delta, cardKey) {
+    const valEl = document.getElementById('qty-val-' + cardKey);
+    const lblEl = document.getElementById('qty-lbl-' + cardKey);
+    let currentQty = parseInt(valEl ? valEl.innerText : '1') || 1;
+    let targetQty = currentQty + delta;
+    if (targetQty < 1) targetQty = 1;
+    if (targetQty > 50) targetQty = 50;
+
+    fetch('/api/cart/update/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({
+        product_id: productId,
+        size: size,
+        quantity: targetQty
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        if (valEl) valEl.innerText = data.item_quantity;
+        if (lblEl) lblEl.innerText = data.item_quantity;
+        
+        const priceEl = document.getElementById('item-price-' + cardKey);
+        if (priceEl && data.formatted_item_total) {
+          priceEl.innerText = data.formatted_item_total;
+        }
+
+        const subtotalEl = document.getElementById('cart-subtotal');
+        if (subtotalEl && data.formatted_subtotal) subtotalEl.innerText = data.formatted_subtotal;
+
+        const gstEl = document.getElementById('cart-gst');
+        if (gstEl && data.formatted_gst) gstEl.innerText = data.formatted_gst;
+
+        const totalEl = document.getElementById('cart-total-amount');
+        if (totalEl && data.formatted_total) totalEl.innerText = data.formatted_total;
+
+        const badgeEl = document.getElementById('cart-badge-count');
+        if (badgeEl) {
+          badgeEl.innerText = '(' + data.cart_count + (data.cart_count === 1 ? ' Item)' : ' Items)');
+        }
+
+        updateHeaderBadges(data.cart_count);
       }
-    }
-    const totalEl = document.getElementById('cart-total-amount');
-    if (totalEl) {
-      totalEl.innerText = '₹' + total.toLocaleString('en-IN');
-    }
-    const badgeEl = document.getElementById('cart-badge-count');
-    if (badgeEl) {
-      badgeEl.innerText = '(' + totalItems + (totalItems === 1 ? ' Item)' : ' Items)');
-    }
+    })
+    .catch(err => {
+      console.error('Failed to update cart qty:', err);
+    });
   }
 
-  function updateQty(id, change) {
-    let current = itemQuantities[id] || 1;
-    let next = current + change;
-    if (next < 1) next = 1;
-    if (next > 10) next = 10;
-    itemQuantities[id] = next;
-
-    const valEl = document.getElementById('qty-val-' + id);
-    const lblEl = document.getElementById('qty-lbl-' + id);
-    if (valEl) valEl.innerText = next;
-    if (lblEl) lblEl.innerText = next;
-
-    recalculateTotal();
-  }
-
-  function handleRemoveItem(id) {
-    const card = document.getElementById('cart-card-' + id);
-    if (!card) return;
+  function handleRemoveItem(productId, size, cardKey) {
     if (!confirm('Remove this piece from your shopping cart?')) return;
-    
-    card.remove();
-    activeItemCount--;
 
-    if (activeItemCount <= 0) {
-      document.getElementById('cart-empty-state').classList.remove('hidden');
-      document.getElementById('cart-summary-card').classList.add('hidden');
-      document.getElementById('cart-badge-count').innerText = '(0 Items)';
-    } else {
-      recalculateTotal();
-    }
+    fetch('/api/cart/remove/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({
+        product_id: productId,
+        size: size
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        const card = document.getElementById('cart-card-' + cardKey);
+        if (card) card.remove();
+
+        const badgeEl = document.getElementById('cart-badge-count');
+        if (badgeEl) {
+          badgeEl.innerText = '(' + data.cart_count + (data.cart_count === 1 ? ' Item)' : ' Items)');
+        }
+
+        updateHeaderBadges(data.cart_count);
+
+        if (data.cart_count <= 0) {
+          const emptyState = document.getElementById('cart-empty-state');
+          const summaryCard = document.getElementById('cart-summary-card');
+          const itemsList = document.getElementById('cart-items-list');
+          if (emptyState) emptyState.classList.remove('hidden');
+          if (summaryCard) summaryCard.classList.add('hidden');
+          if (itemsList) itemsList.classList.add('hidden');
+        } else {
+          const subtotalEl = document.getElementById('cart-subtotal');
+          if (subtotalEl && data.formatted_subtotal) subtotalEl.innerText = data.formatted_subtotal;
+
+          const gstEl = document.getElementById('cart-gst');
+          if (gstEl && data.formatted_gst) gstEl.innerText = data.formatted_gst;
+
+          const totalEl = document.getElementById('cart-total-amount');
+          if (totalEl && data.formatted_total) totalEl.innerText = data.formatted_total;
+        }
+      }
+    })
+    .catch(err => {
+      console.error('Failed to remove cart item:', err);
+    });
   }
 
-  function handleSaveLater(name) {
-    alert('"' + name + '" has been saved to your Curations & Favorites!');
+  function handleSaveLater(productId, name) {
+    fetch('/api/wishlist/toggle/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({
+        product_id: productId,
+        title: name
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const wishBadge = document.getElementById('navSettingsWishlistBadge');
+      if (wishBadge && data.count !== undefined) wishBadge.innerText = data.count;
+      alert('"' + name + '" has been saved to your Curations & Favorites!');
+    })
+    .catch(() => {
+      alert('"' + name + '" saved to your Curations & Favorites!');
+    });
   }
 </script>
 {% endblock %}

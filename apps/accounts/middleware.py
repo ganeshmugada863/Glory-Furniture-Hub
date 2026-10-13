@@ -82,6 +82,10 @@ class RoleBasedAccessMiddleware:
             path.startswith('/shop') or
             path.startswith('/product/') or
             path.startswith('/search') or
+            path.startswith('/cart') or
+            path.startswith('/wishlist') or
+            path.startswith('/checkout') or
+            path.startswith('/orders') or
             path in ['/about/', '/contact/', '/faq/', '/guide/', '/splash/', '/onboarding/']
         )
 

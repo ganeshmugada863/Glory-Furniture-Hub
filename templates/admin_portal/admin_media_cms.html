@@ -39,7 +39,13 @@
       🎴 4 Hero Showcase Cards
     </button>
     <button type="button" onclick="switchMediaTab('categories')" id="tab-btn-categories" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0">
-      ⭕ 8 Category Circles
+      ⏹️ 8 Categories (Squares)
+    </button>
+    <button type="button" onclick="switchMediaTab('banner')" id="tab-btn-banner" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0">
+      🖼️ Atelier &amp; Craft Banner
+    </button>
+    <button type="button" onclick="switchMediaTab('coverflow')" id="tab-btn-coverflow" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0">
+      🎠 2nd Carousel: Immersive Spaces (5 Cards)
     </button>
     <button type="button" onclick="switchMediaTab('video')" id="tab-btn-video" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0">
       🎬 Video Showcase Banner
@@ -586,6 +592,269 @@
       </div>
     </div>
 
+    <!-- ============================================================= -->
+    <!-- 4. ATELIER & CRAFT SHOWCASE BANNER                            -->
+    <!-- ============================================================= -->
+    <div id="section-banner" class="media-section space-y-5 hidden">
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-xs text-amber-900 flex items-start gap-2.5">
+        <span class="text-lg shrink-0">🖼️</span>
+        <div>
+          <strong class="font-bold">Atelier &amp; Craft Showcase Banner:</strong>
+          Customize the prominent cinematic banner image and headlines on the storefront. Upload a high-resolution local photo or enter an image URL.
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-5 sm:p-6 space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">★</span>
+            <h3 class="text-xs font-black uppercase text-gray-900 tracking-wider">Cinematic Banner Image</h3>
+          </div>
+          <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Live on Home</span>
+        </div>
+
+        <div class="relative w-full aspect-[21/9] sm:aspect-[24/9] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+          <img id="preview-craft-banner" src="{{ media_cms.craft_banner }}" alt="Banner Preview" class="w-full h-full object-cover transition-opacity duration-300" />
+          <div class="absolute bottom-3 left-4 text-white pointer-events-none drop-shadow-sm">
+            <p class="text-sm font-bold leading-tight">{{ media_cms.craft_banner_title }}</p>
+            <p class="text-xs text-stone-200">{{ media_cms.craft_banner_subtitle }}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[11px] font-bold text-gray-700">Upload New Banner Image File</label>
+              <span id="status-craft-banner" class="text-[10px] font-bold"></span>
+            </div>
+            <input type="file" accept="image/*" onchange="handleCmsImagePick(this, 'preview-craft-banner', 'craft_banner_url', 'status-craft-banner')" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-700 mb-1">OR Banner Image URL Fallback</label>
+            <input type="text" id="craft_banner_url" name="craft_banner_url" value="{{ media_cms.craft_banner_url }}" placeholder="/static/images/... or https://..." class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#5C3D2E]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Banner Headline Title</label>
+            <input type="text" name="craft_banner_title" value="{{ media_cms.craft_banner_title }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Banner Subtitle / Description</label>
+            <input type="text" name="craft_banner_subtitle" value="{{ media_cms.craft_banner_subtitle }}" class="w-full px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 5. 2ND CAROUSEL: IMMERSIVE SPACES & SHOWCASES (5 CARDS)       -->
+    <!-- ============================================================= -->
+    <div id="section-coverflow" class="media-section space-y-5 hidden">
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-4 text-xs text-amber-900 flex items-start gap-2.5">
+        <span class="text-lg shrink-0">🎠</span>
+        <div>
+          <strong class="font-bold">2nd Carousel — "Immersive Spaces &amp; Showcases":</strong>
+          These 5 cards animate in a 3D coverflow carousel on the home page. Upload local images or enter image URLs to change each showcase card.
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        
+        <!-- Coverflow Card 1 -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+            <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">1</span>
+            <span class="text-[10px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full">Card 1</span>
+          </div>
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img id="preview-coverflow-1" src="{{ media_cms.coverflow_1 }}" alt="Coverflow 1" class="w-full h-full object-cover transition-opacity duration-300" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <span class="text-[9px] uppercase tracking-wider bg-black/40 px-1.5 py-0.5 rounded">{{ media_cms.coverflow_card_1_tag }}</span>
+              <p class="text-xs font-bold mt-1 leading-tight">{{ media_cms.coverflow_card_1_title }}</p>
+            </div>
+          </div>
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-bold text-gray-700">Upload Image File</label>
+                <span id="status-coverflow-1" class="text-[10px] font-bold"></span>
+              </div>
+              <input type="file" accept="image/*" onchange="handleCmsImagePick(this, 'preview-coverflow-1', 'coverflow_card_1_url', 'status-coverflow-1')" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-600 mb-0.5">OR Image URL</label>
+              <input type="text" id="coverflow_card_1_url" name="coverflow_card_1_url" value="{{ media_cms.coverflow_card_1_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Title</label>
+                <input type="text" name="coverflow_card_1_title" value="{{ media_cms.coverflow_card_1_title }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Category Tag</label>
+                <input type="text" name="coverflow_card_1_tag" value="{{ media_cms.coverflow_card_1_tag }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coverflow Card 2 -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+            <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">2</span>
+            <span class="text-[10px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full">Card 2</span>
+          </div>
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img id="preview-coverflow-2" src="{{ media_cms.coverflow_2 }}" alt="Coverflow 2" class="w-full h-full object-cover transition-opacity duration-300" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <span class="text-[9px] uppercase tracking-wider bg-black/40 px-1.5 py-0.5 rounded">{{ media_cms.coverflow_card_2_tag }}</span>
+              <p class="text-xs font-bold mt-1 leading-tight">{{ media_cms.coverflow_card_2_title }}</p>
+            </div>
+          </div>
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-bold text-gray-700">Upload Image File</label>
+                <span id="status-coverflow-2" class="text-[10px] font-bold"></span>
+              </div>
+              <input type="file" accept="image/*" onchange="handleCmsImagePick(this, 'preview-coverflow-2', 'coverflow_card_2_url', 'status-coverflow-2')" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-600 mb-0.5">OR Image URL</label>
+              <input type="text" id="coverflow_card_2_url" name="coverflow_card_2_url" value="{{ media_cms.coverflow_card_2_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Title</label>
+                <input type="text" name="coverflow_card_2_title" value="{{ media_cms.coverflow_card_2_title }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Category Tag</label>
+                <input type="text" name="coverflow_card_2_tag" value="{{ media_cms.coverflow_card_2_tag }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coverflow Card 3 -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+            <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">3</span>
+            <span class="text-[10px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full">Card 3</span>
+          </div>
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img id="preview-coverflow-3" src="{{ media_cms.coverflow_3 }}" alt="Coverflow 3" class="w-full h-full object-cover transition-opacity duration-300" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <span class="text-[9px] uppercase tracking-wider bg-black/40 px-1.5 py-0.5 rounded">{{ media_cms.coverflow_card_3_tag }}</span>
+              <p class="text-xs font-bold mt-1 leading-tight">{{ media_cms.coverflow_card_3_title }}</p>
+            </div>
+          </div>
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-bold text-gray-700">Upload Image File</label>
+                <span id="status-coverflow-3" class="text-[10px] font-bold"></span>
+              </div>
+              <input type="file" accept="image/*" onchange="handleCmsImagePick(this, 'preview-coverflow-3', 'coverflow_card_3_url', 'status-coverflow-3')" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-600 mb-0.5">OR Image URL</label>
+              <input type="text" id="coverflow_card_3_url" name="coverflow_card_3_url" value="{{ media_cms.coverflow_card_3_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Title</label>
+                <input type="text" name="coverflow_card_3_title" value="{{ media_cms.coverflow_card_3_title }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Category Tag</label>
+                <input type="text" name="coverflow_card_3_tag" value="{{ media_cms.coverflow_card_3_tag }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coverflow Card 4 -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+            <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">4</span>
+            <span class="text-[10px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full">Card 4</span>
+          </div>
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img id="preview-coverflow-4" src="{{ media_cms.coverflow_4 }}" alt="Coverflow 4" class="w-full h-full object-cover transition-opacity duration-300" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <span class="text-[9px] uppercase tracking-wider bg-black/40 px-1.5 py-0.5 rounded">{{ media_cms.coverflow_card_4_tag }}</span>
+              <p class="text-xs font-bold mt-1 leading-tight">{{ media_cms.coverflow_card_4_title }}</p>
+            </div>
+          </div>
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-bold text-gray-700">Upload Image File</label>
+                <span id="status-coverflow-4" class="text-[10px] font-bold"></span>
+              </div>
+              <input type="file" accept="image/*" onchange="handleCmsImagePick(this, 'preview-coverflow-4', 'coverflow_card_4_url', 'status-coverflow-4')" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-600 mb-0.5">OR Image URL</label>
+              <input type="text" id="coverflow_card_4_url" name="coverflow_card_4_url" value="{{ media_cms.coverflow_card_4_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Title</label>
+                <input type="text" name="coverflow_card_4_title" value="{{ media_cms.coverflow_card_4_title }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Category Tag</label>
+                <input type="text" name="coverflow_card_4_tag" value="{{ media_cms.coverflow_card_4_tag }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coverflow Card 5 -->
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-2xs p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+            <span class="w-6 h-6 rounded-full bg-[#5C3D2E] text-white flex items-center justify-center text-xs font-bold">5</span>
+            <span class="text-[10px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full">Card 5</span>
+          </div>
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-stone-900 border border-gray-200">
+            <img id="preview-coverflow-5" src="{{ media_cms.coverflow_5 }}" alt="Coverflow 5" class="w-full h-full object-cover transition-opacity duration-300" />
+            <div class="absolute bottom-2 left-3 text-white pointer-events-none drop-shadow-sm">
+              <span class="text-[9px] uppercase tracking-wider bg-black/40 px-1.5 py-0.5 rounded">{{ media_cms.coverflow_card_5_tag }}</span>
+              <p class="text-xs font-bold mt-1 leading-tight">{{ media_cms.coverflow_card_5_title }}</p>
+            </div>
+          </div>
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[11px] font-bold text-gray-700">Upload Image File</label>
+                <span id="status-coverflow-5" class="text-[10px] font-bold"></span>
+              </div>
+              <input type="file" accept="image/*" onchange="handleCmsImagePick(this, 'preview-coverflow-5', 'coverflow_card_5_url', 'status-coverflow-5')" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-amber-50 file:text-[#5C3D2E] hover:file:bg-amber-100 cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-gray-600 mb-0.5">OR Image URL</label>
+              <input type="text" id="coverflow_card_5_url" name="coverflow_card_5_url" value="{{ media_cms.coverflow_card_5_url }}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-semibold" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Title</label>
+                <input type="text" name="coverflow_card_5_title" value="{{ media_cms.coverflow_card_5_title }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-600 mb-0.5">Category Tag</label>
+                <input type="text" name="coverflow_card_5_tag" value="{{ media_cms.coverflow_card_5_tag }}" class="w-full px-2.5 py-1 rounded-lg border border-gray-300 text-xs font-semibold" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- Sticky Save Actions Bar -->
     <div class="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 p-4 shadow-lg flex items-center justify-between">
       <div class="flex items-center gap-2 text-xs text-gray-500">
@@ -608,7 +877,7 @@
 
 <script>
   function switchMediaTab(tab) {
-    const tabs = ['hero', 'categories', 'video'];
+    const tabs = ['hero', 'categories', 'banner', 'coverflow', 'video'];
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);
       const sec = document.getElementById(`section-${t}`);

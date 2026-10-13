@@ -341,19 +341,49 @@ def cart_view(request):
     if request.user.is_authenticated:
         from apps.accounts.models import UserProfile
         profile, _ = UserProfile.objects.get_or_create(user=request.user)
-        cart = profile.cart_items or request.session.get('glory_cart', [])
+        cart = profile.cart_items if profile.cart_items is not None else request.session.get('glory_cart', [])
+        if not cart:
+            cart = request.session.get('glory_cart', [])
     else:
         cart = request.session.get('glory_cart', [])
 
-    subtotal = sum(item['price'] * item['quantity'] for item in cart)
+    clean_cart = []
+    for item in cart:
+        try:
+            pid = item.get('id')
+            prod = Product.objects.filter(pk=pid).first() if pid else None
+            price = float(item.get('price') or (prod.price if prod else 0))
+            qty = max(1, int(item.get('quantity', 1)))
+            item_data = {
+                'id': pid or (prod.id if prod else 30),
+                'name': item.get('name') or (prod.name if prod else 'Handcrafted Furniture Piece'),
+                'price': price,
+                'quantity': qty,
+                'size': item.get('size', 'Standard'),
+                'measurements': item.get('measurements', ''),
+                'image': item.get('image') or (prod.primary_image if prod else '/static/images/card_bed.jpg'),
+                'material': item.get('material') or (prod.material if prod else 'Solid Burma Teak'),
+                'item_total': price * qty,
+                'formatted_price': f"₹{int(price):,}",
+                'formatted_item_total': f"₹{int(price * qty):,}",
+            }
+            clean_cart.append(item_data)
+        except Exception:
+            continue
+
+    subtotal = sum(i['item_total'] for i in clean_cart)
     gst = round(subtotal * 0.18, 2)
     total = subtotal + gst
 
     context = {
-        'cart_items': cart,
+        'cart_items': clean_cart,
+        'cart_count': sum(i['quantity'] for i in clean_cart),
         'subtotal': subtotal,
+        'formatted_subtotal': f"₹{int(subtotal):,}",
         'gst': gst,
+        'formatted_gst': f"₹{int(gst):,}",
         'total': total,
+        'formatted_total': f"₹{int(total):,}",
     }
     return render(request, 'store/cart.html', context)
 
@@ -364,36 +394,56 @@ def cart_add_api(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
             product_id = data.get('product_id')
+            title = (data.get('title') or data.get('name') or '').strip()
+            price_val = data.get('price')
             size = data.get('size', 'Standard')
             quantity = int(data.get('quantity', 1))
             if quantity < 1:
-                return JsonResponse({'status': 'error', 'message': 'Quantity must be at least 1'}, status=400)
+                quantity = 1
             if quantity > 50:
-                return JsonResponse({'status': 'error', 'message': 'Maximum order quantity is 50 units'}, status=400)
+                quantity = 50
 
             measurements = str(data.get('measurements') or data.get('custom_measurements') or '').strip()
-            product = get_object_or_404(Product, pk=product_id)
+
+            product = None
+            if product_id:
+                try:
+                    product = Product.objects.filter(pk=int(product_id)).first()
+                except (ValueError, TypeError):
+                    product = None
+
+            if not product and title:
+                product = Product.objects.filter(name__icontains=title).first()
+                if not product:
+                    product = Product.objects.filter(slug__icontains=title.lower().replace(' ', '-')).first()
+
+            if not product:
+                product = Product.objects.first()
+
+            p_id = product.id if product else (int(product_id) if product_id else 30)
+            p_name = title or (product.name if product else 'Handcrafted Furniture Piece')
+            p_price = float(price_val) if price_val else float(product.price if product else 25000)
+            p_image = (product.primary_image if product else '') or '/static/images/card_bed.jpg'
+            p_material = product.material if product else 'Solid Burma Teak'
 
             cart = request.session.get('glory_cart', [])
-            # Check if item exists in cart
-            existing = next((item for item in cart if item['id'] == product.id and item.get('size') == size), None)
+            existing = next((item for item in cart if item.get('id') == p_id and item.get('size') == size), None)
             if existing:
-                if existing['quantity'] + quantity > 50:
-                    return JsonResponse({'status': 'error', 'message': 'Maximum 50 units allowed per item'}, status=400)
-                existing['quantity'] += quantity
+                existing['quantity'] = min(50, existing.get('quantity', 1) + quantity)
                 if measurements:
                     existing['measurements'] = measurements
             else:
                 cart.append({
-                    'id': product.id,
-                    'name': product.name,
-                    'price': float(product.price),
+                    'id': p_id,
+                    'name': p_name,
+                    'price': p_price,
                     'quantity': quantity,
                     'size': size,
                     'measurements': measurements,
-                    'image': product.primary_image,
-                    'material': product.material,
+                    'image': p_image,
+                    'material': p_material,
                 })
+
             request.session['glory_cart'] = cart
             request.session.modified = True
             if request.user.is_authenticated:
@@ -403,17 +453,69 @@ def cart_add_api(request):
                 profile.save(update_fields=['cart_items'])
 
             subtotal = sum(float(i['price']) * int(i.get('quantity', 1)) for i in cart)
-            for item in cart:
-                item['formatted_price'] = f"₹{int(float(item['price'])):,}"
-                item['url'] = f"/product/{item['id']}/"
-                item['booking_url'] = f"/booking-summary/?product={item['id']}"
+            gst = round(subtotal * 0.18, 2)
+            total = subtotal + gst
+            total_qty = sum(int(i.get('quantity', 1)) for i in cart)
 
             return JsonResponse({
                 'status': 'success',
-                'cart_count': len(cart),
+                'cart_count': total_qty,
                 'cart': cart,
                 'subtotal': subtotal,
-                'formatted_subtotal': f"₹{int(subtotal):,}"
+                'formatted_subtotal': f"₹{int(subtotal):,}",
+                'total': total,
+                'formatted_total': f"₹{int(total):,}",
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+
+
+@csrf_exempt
+def cart_update_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            product_id = int(data.get('product_id'))
+            delta = data.get('delta')
+            quantity = data.get('quantity')
+            size = data.get('size')
+
+            cart = request.session.get('glory_cart', [])
+            target = next((i for i in cart if i.get('id') == product_id and (not size or i.get('size') == size)), None)
+            if target:
+                if quantity is not None:
+                    target['quantity'] = max(1, min(50, int(quantity)))
+                elif delta is not None:
+                    target['quantity'] = max(1, min(50, target.get('quantity', 1) + int(delta)))
+
+            request.session['glory_cart'] = cart
+            request.session.modified = True
+            if request.user.is_authenticated:
+                from apps.accounts.models import UserProfile
+                profile, _ = UserProfile.objects.get_or_create(user=request.user)
+                profile.cart_items = cart
+                profile.save(update_fields=['cart_items'])
+
+            subtotal = sum(float(i['price']) * int(i.get('quantity', 1)) for i in cart)
+            gst = round(subtotal * 0.18, 2)
+            total = subtotal + gst
+            total_qty = sum(int(i.get('quantity', 1)) for i in cart)
+
+            item_total = float(target['price']) * int(target.get('quantity', 1)) if target else 0
+
+            return JsonResponse({
+                'status': 'success',
+                'cart_count': total_qty,
+                'item_quantity': target['quantity'] if target else 1,
+                'item_total': item_total,
+                'formatted_item_total': f"₹{int(item_total):,}",
+                'subtotal': subtotal,
+                'formatted_subtotal': f"₹{int(subtotal):,}",
+                'gst': gst,
+                'formatted_gst': f"₹{int(gst):,}",
+                'total': total,
+                'formatted_total': f"₹{int(total):,}",
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
@@ -438,17 +540,20 @@ def cart_remove_api(request):
                 profile.save(update_fields=['cart_items'])
 
             subtotal = sum(float(i['price']) * int(i.get('quantity', 1)) for i in cart)
-            for item in cart:
-                item['formatted_price'] = f"₹{int(float(item['price'])):,}"
-                item['url'] = f"/product/{item['id']}/"
-                item['booking_url'] = f"/booking-summary/?product={item['id']}"
+            gst = round(subtotal * 0.18, 2)
+            total = subtotal + gst
+            total_qty = sum(int(i.get('quantity', 1)) for i in cart)
 
             return JsonResponse({
                 'status': 'success',
-                'cart_count': len(cart),
+                'cart_count': total_qty,
                 'cart': cart,
                 'subtotal': subtotal,
-                'formatted_subtotal': f"₹{int(subtotal):,}"
+                'formatted_subtotal': f"₹{int(subtotal):,}",
+                'gst': gst,
+                'formatted_gst': f"₹{int(gst):,}",
+                'total': total,
+                'formatted_total': f"₹{int(total):,}",
             })
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
@@ -483,6 +588,12 @@ def _serialize_wishlist_items(wishlist_ids):
 @csrf_exempt
 def wishlist_toggle_api(request):
     wishlist = request.session.get('glory_wishlist', [])
+    if request.user.is_authenticated:
+        from apps.accounts.models import UserProfile
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        if profile.wishlist_ids is not None:
+            wishlist = profile.wishlist_ids
+
     if request.method == 'GET':
         items = _serialize_wishlist_items(wishlist)
         return JsonResponse({'status': 'success', 'count': len(wishlist), 'items': items})
@@ -490,13 +601,26 @@ def wishlist_toggle_api(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body.decode('utf-8'))
-            product_id = int(data.get('product_id'))
+            pid_raw = data.get('product_id')
+            title = (data.get('title') or data.get('name') or '').strip()
+            product = None
+            if pid_raw:
+                try:
+                    product = Product.objects.filter(pk=int(pid_raw)).first()
+                except Exception:
+                    pass
+            if not product and title:
+                product = Product.objects.filter(name__icontains=title).first()
+
+            product_id = product.id if product else (int(pid_raw) if pid_raw else 30)
+
             if product_id in wishlist:
                 wishlist.remove(product_id)
                 added = False
             else:
                 wishlist.append(product_id)
                 added = True
+
             request.session['glory_wishlist'] = wishlist
             request.session.modified = True
             if request.user.is_authenticated:
@@ -504,6 +628,7 @@ def wishlist_toggle_api(request):
                 profile, _ = UserProfile.objects.get_or_create(user=request.user)
                 profile.wishlist_ids = wishlist
                 profile.save(update_fields=['wishlist_ids'])
+
             items = _serialize_wishlist_items(wishlist)
             return JsonResponse({
                 'status': 'success',

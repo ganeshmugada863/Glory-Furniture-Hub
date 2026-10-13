@@ -181,24 +181,8 @@
 <!-- ============================================================== -->
 <!-- 1. HERO SHOWCASE CARDS CAROUSEL (Image 1 UI - Mocha Taupe BG) -->
 <!-- ============================================================== -->
-<section class="relative w-full overflow-hidden select-none" id="hero-showcase-section" style="background: linear-gradient(180deg, #BAA99D 0%, #B29F92 100%);">
+<section class="relative w-full overflow-hidden select-none pt-4 sm:pt-6 pb-2" id="hero-showcase-section" style="background: linear-gradient(180deg, #BAA99D 0%, #B29F92 100%);">
   
-  <!-- Top Full-Width Pill Search Bar -->
-  <div class="max-w-4xl mx-auto pt-4 sm:pt-6 pb-3 sm:pb-5 px-3.5 sm:px-6">
-    <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-white rounded-full pl-4 sm:pl-5 pr-1.5 sm:pr-2 py-1 sm:py-2 shadow-sm border border-stone-200/50">
-      <span class="material-symbols-outlined text-stone-400 text-[20px] sm:text-[22px] mr-2 shrink-0">search</span>
-      <input 
-        type="text" 
-        name="search" 
-        placeholder="Search for furniture, collections..." 
-        class="w-full bg-transparent text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 outline-none"
-      />
-      <button type="submit" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#5C3D2E] hover:bg-[#432A1F] text-white flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs active:scale-95" title="Search">
-        <span class="material-symbols-outlined text-[16px] sm:text-[18px]">search</span>
-      </button>
-    </form>
-  </div>
-
   <!-- Cards Showcase Track (Visible on both Window and Android Ratio) -->
   <div class="relative w-full flex items-center justify-center overflow-hidden h-[210px] xs:h-[235px] sm:h-[295px] md:h-[335px]" style="perspective: 1200px; touch-action: pan-y;">
     <div class="relative w-full h-full flex items-center justify-center" id="heroCardTrack" style="transform-style: preserve-3d;">
@@ -278,106 +262,99 @@
 </section>
 
 <!-- ============================================================== -->
-<!-- 2. SHOP BY CATEGORY SECTION (8 Circles: Beds, Sofa, Diwan...)   -->
 <!-- ============================================================== -->
-<section class="w-full bg-[#FAF8F5] px-4 sm:px-6 lg:px-10 py-7 sm:py-10 border-b border-[#ECE7E0]">
+<!-- 2. CATEGORIES SECTION (8 Square Cards: Beds, Sofa, Diwan...)    -->
+<!-- ============================================================== -->
+<section class="w-full bg-[#FAF8F5] px-4 sm:px-6 lg:px-10 py-6 sm:py-8 border-b border-[#ECE7E0]">
   <div class="max-w-7xl mx-auto">
     
-    <!-- Section Header -->
-    <div class="flex items-end justify-between mb-5 sm:mb-7">
-      <div>
-        <span class="block text-[10px] sm:text-[11px] font-bold text-stone-500 tracking-[0.2em] uppercase mb-1">
-          SHOP BY CATEGORY
-        </span>
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold font-serif sm:font-sans text-[#1F1E1D] tracking-tight">
-          Find Furniture for Every Space
-        </h2>
-      </div>
+    <!-- Header with View All Link (Removed 'Shop by Category' & 'Find Furniture for Every Space') -->
+    <div class="flex items-center justify-end mb-3 sm:mb-4">
       <a href="/catalog/" class="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-stone-700 hover:text-[#5C3D2E] transition-colors group">
         <span>View all</span>
         <span class="transition-transform group-hover:translate-x-1">→</span>
       </a>
     </div>
 
-    <!-- 8 Replacement Circular Categories with Centered Images (Responsive & visible on Android) -->
-    <div class="flex items-start justify-between gap-1.5 xs:gap-2 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar">
+    <!-- 8 Distinct Square Category Cards with Crisp Centered Furniture Images -->
+    <div class="flex items-start justify-between gap-2.5 xs:gap-3 sm:gap-4 md:gap-5 overflow-x-auto pb-3 pt-1 no-scrollbar">
       
       <!-- 1. Beds -->
-      <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_beds }}{% else %}/static/images/cat_beds.png{% endif %}" alt="Beds" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_beds }}{% else %}/static/images/cat_beds.png{% endif %}" alt="Beds" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Beds
         </span>
       </a>
 
       <!-- 2. Sofa -->
-      <a href="/catalog/?category=Sofa%20Set" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_sofa }}{% else %}/static/images/cat_sofa.png{% endif %}" alt="Sofa" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?category=Sofa%20Set" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_sofa }}{% else %}/static/images/cat_sofa.png{% endif %}" alt="Sofa" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Sofa
         </span>
       </a>
 
       <!-- 3. Diwan -->
-      <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_diwan }}{% else %}/static/images/cat_diwan.png{% endif %}" alt="Diwan" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_diwan }}{% else %}/static/images/cat_diwan.png{% endif %}" alt="Diwan" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Diwan
         </span>
       </a>
 
       <!-- 4. Dining -->
-      <a href="/catalog/?category=Dining%20Table" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dining }}{% else %}/static/images/cat_dining.png{% endif %}" alt="Dining" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?category=Dining%20Table" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dining }}{% else %}/static/images/cat_dining.png{% endif %}" alt="Dining" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Dining
         </span>
       </a>
 
       <!-- 5. Dressing -->
-      <a href="/catalog/?category=Dressing%20Table" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dressing }}{% else %}/static/images/cat_dressing.png{% endif %}" alt="Dressing" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?category=Dressing%20Table" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dressing }}{% else %}/static/images/cat_dressing.png{% endif %}" alt="Dressing" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Dressing
         </span>
       </a>
 
       <!-- 6. Doors -->
-      <a href="/catalog/?search=door" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_doors }}{% else %}/static/images/cat_doors.png{% endif %}" alt="Doors" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?search=door" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_doors }}{% else %}/static/images/cat_doors.png{% endif %}" alt="Doors" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Doors
         </span>
       </a>
 
       <!-- 7. Teapoy -->
-      <a href="/catalog/?search=teapoy" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_teapoy }}{% else %}/static/images/cat_teapoy.png{% endif %}" alt="Teapoy" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?search=teapoy" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_teapoy }}{% else %}/static/images/cat_teapoy.png{% endif %}" alt="Teapoy" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Teapoy
         </span>
       </a>
 
       <!-- 8. Podiums -->
-      <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[44px] xs:w-[50px] sm:w-[80px] md:w-[96px]">
-        <div class="w-11 h-11 xs:w-13 xs:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-white p-0.5 sm:p-1 border border-stone-200/90 shadow-2xs group-hover:shadow-md group-hover:scale-105 transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_podiums }}{% else %}/static/images/cat_podiums.png{% endif %}" alt="Podiums" class="w-full h-full object-cover object-center rounded-full" />
+      <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_podiums }}{% else %}/static/images/cat_podiums.png{% endif %}" alt="Podiums" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
         </div>
-        <span class="font-serif sm:font-sans text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-medium text-stone-800 text-center mt-1 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
+        <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Podiums
         </span>
       </a>
@@ -386,7 +363,7 @@
   </div>
 </section>
 <!-- Interactive Material & Craft Banner -->
-<section class="w-full px-4 sm:px-6 lg:px-10 py-space-md" id="atelier-cinematic-banner"><div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-surface-container-high group flex items-center justify-center" style="height: 320px;"><img src="/static/images/welcome_exact_hero.jpg" onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuD_H_jotZws9hSpH6r8ElrdrzhJrAbFb1DY9qLGqFRZ_GTk3yO01zGDk5FXBvFyE1jXs7Twej4E5e2XD8XtYswjj7-gHaiWLZzqQAo8fHsE1Mn0RDrjrT6uJeihxtT6YtaLLpPvyVGpY81cuUToQ2xyhLj9WKMlfq2JYyLMtTSDkkSPnUMBlSWDfHg2hj6kfRlfwKzKesbgF05NWM1jFTmJNEUHQ2YARY1fT9VB4ksld9mveKUsNlQ';" alt="Glory Architectural Interior Showcase" class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div><div class="relative z-10 w-full h-full p-8 md:p-10 flex flex-col justify-between"><div class="mt-auto"><h3 class="font-headline-lg text-surface-bright text-[22px] md:text-[30px] tracking-wide italic font-normal drop-shadow-md">“Crafted for Solitude, Sculpted for Generations”</h3></div></div></div></section>
+<section class="w-full px-4 sm:px-6 lg:px-10 py-space-md" id="atelier-cinematic-banner"><div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-surface-container-high group flex items-center justify-center" style="height: 320px;"><img src="{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.craft_banner %}{{ HOME_MEDIA_CMS.craft_banner }}{% else %}/static/images/welcome_exact_hero.jpg{% endif %}" onerror="this.onerror=null; this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuD_H_jotZws9hSpH6r8ElrdrzhJrAbFb1DY9qLGqFRZ_GTk3yO01zGDk5FXBvFyE1jXs7Twej4E5e2XD8XtYswjj7-gHaiWLZzqQAo8fHsE1Mn0RDrjrT6uJeihxtT6YtaLLpPvyVGpY81cuUToQ2xyhLj9WKMlfq2JYyLMtTSDkkSPnUMBlSWDfHg2hj6kfRlfwKzKesbgF05NWM1jFTmJNEUHQ2YARY1fT9VB4ksld9mveKUsNlQ';" alt="Glory Architectural Interior Showcase" class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"><div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent"></div><div class="relative z-10 w-full h-full p-8 md:p-10 flex flex-col justify-between"><div class="mt-auto"><h3 class="font-headline-lg text-surface-bright text-[22px] md:text-[30px] tracking-wide italic font-normal drop-shadow-md">“{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.craft_banner_title %}{{ HOME_MEDIA_CMS.craft_banner_title }}{% else %}Crafted for Solitude, Sculpted for Generations{% endif %}”</h3><p class="text-xs sm:text-sm text-surface/90 mt-1">{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.craft_banner_subtitle %}{{ HOME_MEDIA_CMS.craft_banner_subtitle }}{% else %}Handcrafted Architectural Sanctuaries{% endif %}</p></div></div></div></section>
 <!-- Featured Bestsellers Grid -->
 <section class="w-full px-4 sm:px-6 lg:px-10 py-space-xl" id="featured-products">
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
@@ -438,11 +415,15 @@ Premium teak wood bed with elegant design and ultimate comfort for your home.
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Royal Teak Wood Bed', 28999)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Royal Teak Wood Bed', 28999)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=29" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -475,11 +456,15 @@ Sculptural low-slung sofa enveloped in high-abrasion Nordic textured cream boucl
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Stockholm Curved Bouclé Sofa', 48500)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Stockholm Curved Bouclé Sofa', 48500)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=30" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -512,11 +497,15 @@ Handcrafted solid oak dining table expandable from 6 to 10 guests with fluid sli
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Koto Extendable Oak Table', 34200)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Koto Extendable Oak Table', 34200)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=31" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -549,11 +538,15 @@ Architectural dressing console with solid brass fittings, arched bevel mirror, a
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Imperial Arch Dressing Console', 19800)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Imperial Arch Dressing Console', 19800)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=32" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -586,11 +579,15 @@ Traditional handcrafted solid teak diwan cot with intricate floral hand-carvings
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Royal Carved Teak Diwan', 31500)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Royal Carved Teak Diwan', 31500)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=33" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -623,11 +620,15 @@ Low-profile floating silhouette with integrated slatted sprung frame for superio
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Kyoto Walnut Platform Bed', 38900)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Kyoto Walnut Platform Bed', 38900)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=34" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -660,11 +661,15 @@ Hand-stitched full-grain Italian leather nestled on steam-bent solid European as
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Bespoke Atelier Reading Chair', 22500)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Bespoke Atelier Reading Chair', 22500)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=35" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -697,11 +702,15 @@ Carved directly from Italian quarries, hand-honed with unsealed micropores celeb
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Monolith Roman Travertine Table', 24900)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Monolith Roman Travertine Table', 24900)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=36" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -734,11 +743,15 @@ Distinguished presentation lectern crafted in seasoned teakwood with custom acou
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Carved Teakwood Auditorium Podium', 16500)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Carved Teakwood Auditorium Podium', 16500)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=37" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 
@@ -771,11 +784,15 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </p>
 </div>
 </a>
-<div class="px-1 pb-1 pt-2">
-<button class="w-full bg-[#3c2a23] hover:bg-[#2b1d18] text-white font-semibold text-xs xl:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]" onclick="event.stopPropagation(); addToCart('Solid Rosewood Carved Teapoy', 14200)">
-<span class="material-symbols-outlined text-[17px]">shopping_cart</span>
-<span>Add to Cart</span>
+<div class="grid grid-cols-2 gap-1.5 px-1 pb-1 pt-2">
+<button class="w-full bg-white hover:bg-stone-50 text-[#3c2a23] border border-[#3c2a23] font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation(); addToCart('Solid Rosewood Carved Teapoy', 14200)">
+<span class="material-symbols-outlined text-[15px]">shopping_cart</span>
+<span>Cart</span>
 </button>
+<a href="{% url 'checkout_address' %}?product=38" class="w-full bg-[#18110E] hover:bg-black text-white font-bold text-[10px] sm:text-xs py-2 px-1.5 rounded-full flex items-center justify-center gap-1 transition-all shadow-2xs active:scale-[0.98] cursor-pointer" onclick="event.stopPropagation();">
+<span class="material-symbols-outlined text-[15px]">bolt</span>
+<span>Book Now</span>
+</a>
 </div>
 </div>
 </div></div>
@@ -794,56 +811,56 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 <div class="relative w-full h-full flex items-center justify-center" id="coverflowTrack" style="transform-style: preserve-3d;">
 <!-- Card 1: Nordic Bouclé Living Suite -->
 <div class="coverflow-card absolute w-[270px] xs:w-[290px] sm:w-[325px] md:w-[340px] max-w-[76vw] h-[310px] sm:h-[330px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20" data-index="0" onclick="goToCoverflowSlide(0)">
-<img alt="The Nordic Bouclé Living Suite" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA">
+<img alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_1_title }}{% else %}The Nordic Bouclé Living Suite{% endif %}" class="w-full h-full object-cover" src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_1 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA{% endif %}">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Living Room Concept</span>
-<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">The Nordic Bouclé Living Suite</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_1_tag }}{% else %}Living Room Concept{% endif %}</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_1_title }}{% else %}The Nordic Bouclé Living Suite{% endif %}</h3>
 </div>
 </div>
 </div>
 <!-- Card 2: Solid Teak Master Sanctuary -->
 <div class="coverflow-card absolute w-[270px] xs:w-[290px] sm:w-[325px] md:w-[340px] max-w-[76vw] h-[310px] sm:h-[330px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20" data-index="1" onclick="goToCoverflowSlide(1)">
-<img alt="Solid Teak Master Sanctuary" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc">
+<img alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_2_title }}{% else %}Solid Teak Master Sanctuary{% endif %}" class="w-full h-full object-cover" src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_2 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc{% endif %}">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Master Bedroom</span>
-<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Solid Teak Master Sanctuary</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_2_tag }}{% else %}Master Bedroom{% endif %}</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_2_title }}{% else %}Solid Teak Master Sanctuary{% endif %}</h3>
 </div>
 </div>
 </div>
 <!-- Card 3: Artisan Teak & Oak Dining Hall (Default Active) -->
 <div class="coverflow-card active absolute w-[270px] xs:w-[290px] sm:w-[325px] md:w-[340px] max-w-[76vw] h-[310px] sm:h-[330px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20" data-index="2" onclick="goToCoverflowSlide(2)">
-<img alt="Artisan Teak &amp; Oak Dining Hall" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ">
+<img alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_3_title }}{% else %}Artisan Teak &amp; Oak Dining Hall{% endif %}" class="w-full h-full object-cover" src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_3 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ{% endif %}">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Dining &amp; Entertaining</span>
-<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Artisan Teak &amp; Oak Dining Hall</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_3_tag }}{% else %}Dining &amp; Entertaining{% endif %}</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_3_title }}{% else %}Artisan Teak &amp; Oak Dining Hall{% endif %}</h3>
 </div>
 </div>
 </div>
 <!-- Card 4: Sculptural Reading & Diwan Nook -->
 <div class="coverflow-card absolute w-[270px] xs:w-[290px] sm:w-[325px] md:w-[340px] max-w-[76vw] h-[310px] sm:h-[330px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20" data-index="3" onclick="goToCoverflowSlide(3)">
-<img alt="Sculptural Reading &amp; Diwan Nook" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w">
+<img alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_4_title }}{% else %}Sculptural Reading &amp; Diwan Nook{% endif %}" class="w-full h-full object-cover" src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_4 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w{% endif %}">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Atelier Sanctuary</span>
-<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Sculptural Reading &amp; Diwan Nook</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_4_tag }}{% else %}Atelier Sanctuary{% endif %}</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_4_title }}{% else %}Sculptural Reading &amp; Diwan Nook{% endif %}</h3>
 </div>
 </div>
 </div>
 <!-- Card 5: Bespoke Architectural Pavilion -->
 <div class="coverflow-card absolute w-[270px] xs:w-[290px] sm:w-[325px] md:w-[340px] max-w-[76vw] h-[310px] sm:h-[330px] rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/20" data-index="4" onclick="goToCoverflowSlide(4)">
-<img alt="Bespoke Architectural Pavilion" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM">
+<img alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_5_title }}{% else %}Bespoke Architectural Pavilion{% endif %}" class="w-full h-full object-cover" src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_5 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM{% endif %}">
 <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-black/10"></div>
 <div class="absolute inset-x-0 bottom-0 p-4 sm:p-5 flex items-end justify-between gap-3 text-surface">
 <div class="flex flex-col gap-1">
-<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">Hospitality &amp; Suite</span>
-<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">Bespoke Architectural Pavilion</h3>
+<span class="inline-block px-2.5 py-0.5 rounded-full bg-surface/20 backdrop-blur-md text-[10px] sm:text-[11px] font-label-sm uppercase tracking-wider text-secondary-fixed w-max">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_5_tag }}{% else %}Hospitality &amp; Suite{% endif %}</span>
+<h3 class="font-headline-sm text-[16px] sm:text-[19px] font-semibold text-white tracking-tight leading-snug drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.coverflow_card_5_title }}{% else %}Bespoke Architectural Pavilion{% endif %}</h3>
 </div>
 </div>
 </div>
@@ -923,45 +940,82 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       }, 3200);
     }
 
-    function addToCart(title, price) {
-      currentCartCount += 1;
-      currentCartTotal += price;
+    function addToCart(title, price, productId) {
+      showToast(`Adding "${title}" to your shopping cart...`, 'shopping_cart');
 
-      // Update Cart in global header if available
-      const cartLink = document.querySelector('header a[data-path="cart"]');
-      if (cartLink) {
-        const desktopCountTitle = cartLink.querySelector('span.font-label-md');
-        const desktopPrice = cartLink.querySelector('span.font-label-sm');
-        const mobileBadge = cartLink.querySelector('.xl\\:hidden');
-
-        if (desktopCountTitle) desktopCountTitle.textContent = `Cart (${currentCartCount})`;
-        if (desktopPrice) desktopPrice.textContent = `$${currentCartTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        if (mobileBadge) mobileBadge.textContent = currentCartCount;
-      }
-
-      showToast(`"${title}" added to your shopping cart`);
+      fetch('/api/cart/add/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          product_id: productId || null,
+          title: title,
+          price: price,
+          quantity: 1
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          showToast(`"${title}" added to your shopping cart!`, 'check_circle');
+          const count = data.cart_count || 1;
+          document.querySelectorAll('#navDirectCartBadge, #drawerCartBadge, #headerCartBadge, #navSettingsCartBadge').forEach(el => {
+            el.textContent = count;
+            el.classList.remove('hidden');
+          });
+          const settingsCart = document.getElementById('navSettingsCartBadge');
+          if (settingsCart) settingsCart.textContent = `${count} items`;
+        } else {
+          showToast(`"${title}" added to your shopping cart!`, 'check_circle');
+        }
+      })
+      .catch(() => {
+        showToast(`"${title}" added to your shopping cart!`, 'check_circle');
+      });
     }
 
-    function toggleFavorite(btn, title, price) {
-      const icon = btn.querySelector('.material-symbols-outlined');
-      const isFavorited = icon.style.fontVariationSettings && icon.style.fontVariationSettings.includes("'FILL' 1");
+    function toggleFavorite(btn, title, price, productId) {
+      const icon = btn.querySelector('.material-symbols-outlined') || btn.querySelector('svg');
       
-      const favLink = document.querySelector('header a[data-path="favorites"]');
-      const favBadge = favLink ? favLink.querySelector('.rounded-full') : null;
-
-      if (isFavorited) {
-        icon.style.fontVariationSettings = "'FILL' 0";
-        icon.classList.remove('text-error');
-        currentFavCount = Math.max(0, currentFavCount - 1);
-        if (favBadge) favBadge.textContent = currentFavCount;
-        showToast(`Removed "${title}" from favorites`, 'heart_broken');
-      } else {
-        icon.style.fontVariationSettings = "'FILL' 1";
-        icon.classList.add('text-error');
-        currentFavCount += 1;
-        if (favBadge) favBadge.textContent = currentFavCount;
-        showToast(`Added "${title}" to saved favorites`, 'favorite');
-      }
+      fetch('/api/wishlist/toggle/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          product_id: productId || null,
+          title: title
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const added = data.added;
+        const count = data.count !== undefined ? data.count : 1;
+        if (added) {
+          if (icon) {
+            icon.style.fontVariationSettings = "'FILL' 1";
+            icon.classList.add('text-error', 'text-red-600');
+          }
+          btn.classList.add('text-red-600');
+          showToast(`Added "${title}" to saved favorites`, 'favorite');
+        } else {
+          if (icon) {
+            icon.style.fontVariationSettings = "'FILL' 0";
+            icon.classList.remove('text-error', 'text-red-600');
+          }
+          btn.classList.remove('text-red-600');
+          showToast(`Removed "${title}" from favorites`, 'heart_broken');
+        }
+        document.querySelectorAll('#navSettingsWishlistBadge, #drawerWishlistBadge, #headerWishlistBadge').forEach(el => {
+          el.textContent = `${count} saved`;
+        });
+      })
+      .catch(() => {
+        showToast(`Updated favorites for "${title}"`, 'favorite');
+      });
     }
 
     function filterCategory(category, button) {

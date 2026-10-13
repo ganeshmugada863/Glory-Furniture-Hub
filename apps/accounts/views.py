@@ -1876,7 +1876,53 @@ def admin_media_cms_view(request):
                     setattr(media_cms, url_field, posted_url)
                     setattr(media_cms, img_field, None)
 
-        # --- 3. VIDEO SHOWCASE BANNER ---
+        # --- 3. CRAFT & ATELIER SHOWCASE BANNER ---
+        if 'craft_banner_image' in request.FILES and request.FILES['craft_banner_image']:
+            try:
+                saved_url = _save_cms_media_file(request.FILES['craft_banner_image'])
+                if saved_url:
+                    media_cms.craft_banner_url = saved_url
+                    media_cms.craft_banner_image = None
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning("Failed to save craft banner image: %s", e)
+        elif request.POST.get('craft_banner_url') is not None:
+            posted_url = request.POST.get('craft_banner_url', '').strip()
+            if posted_url:
+                media_cms.craft_banner_url = posted_url
+        if request.POST.get('craft_banner_title') is not None:
+            media_cms.craft_banner_title = request.POST.get('craft_banner_title', '').strip()
+        if request.POST.get('craft_banner_subtitle') is not None:
+            media_cms.craft_banner_subtitle = request.POST.get('craft_banner_subtitle', '').strip()
+
+        # --- 4. 2ND CAROUSEL: COVERFLOW CARDS (1 TO 5) ---
+        for i in range(1, 6):
+            file_key = f'coverflow_card_{i}_image'
+            url_key = f'coverflow_card_{i}_url'
+            title_key = f'coverflow_card_{i}_title'
+            tag_key = f'coverflow_card_{i}_tag'
+
+            if file_key in request.FILES and request.FILES[file_key]:
+                try:
+                    saved_url = _save_cms_media_file(request.FILES[file_key])
+                    if saved_url:
+                        setattr(media_cms, url_key, saved_url)
+                        setattr(media_cms, file_key, None)
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning("Failed to save coverflow image %s: %s", i, e)
+            elif request.POST.get(url_key) is not None:
+                posted_url = request.POST.get(url_key, '').strip()
+                if posted_url:
+                    setattr(media_cms, url_key, posted_url)
+                    setattr(media_cms, file_key, None)
+
+            if request.POST.get(title_key) is not None:
+                setattr(media_cms, title_key, request.POST.get(title_key, '').strip())
+            if request.POST.get(tag_key) is not None:
+                setattr(media_cms, tag_key, request.POST.get(tag_key, '').strip())
+
+        # --- 5. VIDEO SHOWCASE BANNER ---
         if 'video_showcase_file' in request.FILES and request.FILES['video_showcase_file']:
             v_file = request.FILES['video_showcase_file']
             try:

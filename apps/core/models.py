@@ -243,6 +243,38 @@ class HomeMediaCMS(models.Model):
     cat_podiums_image = models.ImageField(upload_to='cms/', blank=True, null=True)
     cat_podiums_url = models.TextField(blank=True, default='/static/images/cat_podiums.png')
 
+    # Craft / Atelier Showcase Banner
+    craft_banner_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    craft_banner_url = models.TextField(blank=True, default='')
+    craft_banner_title = models.CharField(max_length=200, default='The Living Space & Atelier', blank=True)
+    craft_banner_subtitle = models.CharField(max_length=255, default='Handcrafted architectural sanctuaries', blank=True)
+
+    # Second Carousel: 3D Coverflow Showcase ("Immersive Spaces & Showcases" - 5 Cards)
+    coverflow_card_1_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    coverflow_card_1_url = models.TextField(blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA')
+    coverflow_card_1_title = models.CharField(max_length=200, default='The Nordic Bouclé Living Suite')
+    coverflow_card_1_tag = models.CharField(max_length=100, default='Living Room Concept')
+
+    coverflow_card_2_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    coverflow_card_2_url = models.TextField(blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc')
+    coverflow_card_2_title = models.CharField(max_length=200, default='Solid Teak Master Sanctuary')
+    coverflow_card_2_tag = models.CharField(max_length=100, default='Master Bedroom')
+
+    coverflow_card_3_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    coverflow_card_3_url = models.TextField(blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ')
+    coverflow_card_3_title = models.CharField(max_length=200, default='Artisan Teak & Oak Dining Hall')
+    coverflow_card_3_tag = models.CharField(max_length=100, default='Dining & Entertaining')
+
+    coverflow_card_4_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    coverflow_card_4_url = models.TextField(blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w')
+    coverflow_card_4_title = models.CharField(max_length=200, default='Sculptural Reading & Diwan Nook')
+    coverflow_card_4_tag = models.CharField(max_length=100, default='Atelier Sanctuary')
+
+    coverflow_card_5_image = models.ImageField(upload_to='cms/', blank=True, null=True)
+    coverflow_card_5_url = models.TextField(blank=True, default='https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM')
+    coverflow_card_5_title = models.CharField(max_length=200, default='Bespoke Architectural Pavilion')
+    coverflow_card_5_tag = models.CharField(max_length=100, default='Hospitality & Suite')
+
     # Showcase Video Banner
     video_showcase_file = models.FileField(upload_to='cms/videos/', blank=True, null=True)
     video_showcase_url = models.TextField(blank=True, default='/static/videos/product_1.mp4')
@@ -431,5 +463,72 @@ class HomeMediaCMS(models.Model):
             except Exception:
                 pass
         return '/static/videos/product_1.mp4'
+
+    @property
+    def craft_banner(self):
+        if self.craft_banner_url and self.craft_banner_url.strip():
+            return self.craft_banner_url.strip()
+        if self.craft_banner_image:
+            try:
+                return self.craft_banner_image.url
+            except Exception:
+                pass
+        return '/static/images/hero_card_living_clean.jpg'
+
+    @property
+    def coverflow_1(self):
+        if self.coverflow_card_1_url and self.coverflow_card_1_url.strip():
+            return self.coverflow_card_1_url.strip()
+        if self.coverflow_card_1_image:
+            try:
+                return self.coverflow_card_1_image.url
+            except Exception:
+                pass
+        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA'
+
+    @property
+    def coverflow_2(self):
+        if self.coverflow_card_2_url and self.coverflow_card_2_url.strip():
+            return self.coverflow_card_2_url.strip()
+        if self.coverflow_card_2_image:
+            try:
+                return self.coverflow_card_2_image.url
+            except Exception:
+                pass
+        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuCNPj-zu7tcX6-s8dGzgXSL1uMOkEDNA2AwG9ID-NEX-GKmqi2oaVuN6NKut8NAgm1jCG815bCJkw2DaSdQc2A8pwV-YV1fXakGxuxYJ2fPAw6C33SSpYh2kg__h_lzOhVcFtEZM4ZkW3qBGehNHsspih6lTcN9bbQj5oVZpFvOUwJJHDabdHDBN-DCf-EqoFDrxCJwh6EdiiA6JRJfXTpNysOAjYnksA8BZaFyOyIY7euJH7_FWcc'
+
+    @property
+    def coverflow_3(self):
+        if self.coverflow_card_3_url and self.coverflow_card_3_url.strip():
+            return self.coverflow_card_3_url.strip()
+        if self.coverflow_card_3_image:
+            try:
+                return self.coverflow_card_3_image.url
+            except Exception:
+                pass
+        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuCpWLaMHEgbC4_C1cno63yFYn-ZAiwq8fhl_WCgfjafYjSBRmnsvWc8XXTN5QNSqiPtxF7VAdcBKVyNRN8D44uF-XYX1CSN1pZSBPXuh5c8oUx2ijEbNIZsE2r5Zi2Rx70rL6pEeykovA6XKXsR9384MuJJkSHITcWe9-YQU4C9Ptr6384CaR1zkWzPsa1Mw-RkjfFuB4jN7dmo-7OiTf7C_LJBBawCwqaruN5scXLPhLkONk_ZGpQ'
+
+    @property
+    def coverflow_4(self):
+        if self.coverflow_card_4_url and self.coverflow_card_4_url.strip():
+            return self.coverflow_card_4_url.strip()
+        if self.coverflow_card_4_image:
+            try:
+                return self.coverflow_card_4_image.url
+            except Exception:
+                pass
+        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w'
+
+    @property
+    def coverflow_5(self):
+        if self.coverflow_card_5_url and self.coverflow_card_5_url.strip():
+            return self.coverflow_card_5_url.strip()
+        if self.coverflow_card_5_image:
+            try:
+                return self.coverflow_card_5_image.url
+            except Exception:
+                pass
+        return 'https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM'
+
 
 
