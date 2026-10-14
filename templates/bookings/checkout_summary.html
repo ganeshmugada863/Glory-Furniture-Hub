@@ -42,6 +42,21 @@
       </div>
     </div>
 
+    {% if messages or error_message %}
+    <div class="space-y-2">
+      {% if error_message %}
+        <div class="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl">
+          {{ error_message }}
+        </div>
+      {% endif %}
+      {% for msg in messages %}
+        <div class="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl">
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- 2. SECTION 1: SELECTED PRODUCT -->
     <div class="space-y-2 pt-2">
       <div class="flex items-center justify-between">

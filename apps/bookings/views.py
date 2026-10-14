@@ -148,6 +148,25 @@ def booking_address_step_view(request):
                 chosen_addr = next((a for a in addresses if a.get('id') == chosen_id), addresses[0])
                 request.session['glory_checkout_address'] = chosen_addr
                 request.session.modified = True
+            else:
+                default_name = request.POST.get('name', '').strip() or user_default_name or 'Valued Customer'
+                default_phone = request.POST.get('phone', '').strip() or user_default_phone or ''
+                fallback_addr = {
+                    'id': 1,
+                    'tag': 'HOME',
+                    'is_default': True,
+                    'name': default_name,
+                    'phone': default_phone,
+                    'flat': 'Delivery Address',
+                    'street': 'Main Road',
+                    'city': 'Hyderabad',
+                    'state': 'Telangana',
+                    'pincode': '500001',
+                    'full_text': 'Main Road, Hyderabad, Telangana - 500001'
+                }
+                request.session['glory_checkout_address'] = fallback_addr
+                request.session['glory_selected_address_id'] = 1
+                request.session.modified = True
 
             redirect_url = '/checkout/summary/'
             query_string = request.META.get('QUERY_STRING')
@@ -178,11 +197,19 @@ def booking_summary_view(request):
     """
     # Step 1: Ensure Delivery Address is chosen before viewing Summary
     if request.method == 'GET' and not request.session.get('glory_checkout_address'):
-        query_str = request.META.get('QUERY_STRING')
-        redirect_url = '/checkout/address/'
-        if query_str:
-            redirect_url += f'?{query_str}'
-        return redirect(redirect_url)
+        u = request.user if request.user.is_authenticated else None
+        p = getattr(u, 'profile', None) if u else None
+        existing_addrs = (p.saved_addresses if p else None) or request.session.get('glory_addresses', [])
+        if existing_addrs:
+            default_addr = next((a for a in existing_addrs if a.get('is_default')), existing_addrs[0])
+            request.session['glory_checkout_address'] = default_addr
+            request.session.modified = True
+        else:
+            query_str = request.META.get('QUERY_STRING')
+            redirect_url = '/checkout/address/'
+            if query_str:
+                redirect_url += f'?{query_str}'
+            return redirect(redirect_url)
 
     # Check product or load from cart
     product_id = request.GET.get('product') or request.POST.get('product_id')
@@ -332,6 +359,45 @@ def booking_summary_view(request):
     initial_measurements = (request.GET.get('measurements') or (primary_item.get('measurements') if not product_id and cart else '') or '').strip()
 
     if request.method == 'POST':
+        raw_custom_meas = request.POST.get('custom_measurements')
+        if raw_custom_meas is not None and not raw_custom_meas.strip():
+            messages.error(request, 'Product measurements are mandatory before booking.')
+            default_delivery_date = str(timezone.now().date() + timedelta(days=5))
+            err_context = {
+                'product': product,
+                'selected_size': selected_size,
+                'selected_wood': selected_wood,
+                'quantity': quantity,
+                'unit_price': unit_price,
+                'mrp': mrp,
+                'total_mrp': total_mrp,
+                'total_savings': total_savings,
+                'item_subtotal': item_subtotal,
+                'delivery_charge': delivery_charge,
+                'gst_included': gst_included,
+                'grand_total': grand_total,
+                'formatted_grand_total': f"₹{int(grand_total):,}",
+                'formatted_unit_price': f"₹{int(unit_price):,}",
+                'formatted_mrp': f"₹{int(mrp):,}",
+                'formatted_subtotal': f"₹{int(item_subtotal):,}",
+                'formatted_savings': f"₹{int(total_savings):,}",
+                'formatted_gst': f"₹{int(gst_included):,}",
+                'default_delivery_date': default_delivery_date,
+                'saved_address': default_address,
+                'has_saved_address': has_saved_address,
+                'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address else '') or 'Valued Patron',
+                'user_email': (user.email if user else None) or (default_address.get('email') if default_address else '') or '',
+                'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address else '') or '',
+                'item_type': item_type,
+                'measurement_label': measurement_label,
+                'measurement_placeholder': measurement_placeholder,
+                'measurement_hint': measurement_hint,
+                'quick_presets': quick_presets,
+                'default_measurements': '',
+                'error_message': 'Product measurements are mandatory before booking.'
+            }
+            return render(request, 'bookings/checkout_summary.html', err_context)
+
         custom_measurements = (
             request.POST.get('custom_measurements') or 
             request.POST.get('measurements') or 
@@ -358,6 +424,11 @@ def booking_summary_view(request):
             email = request.POST.get('email', '').strip().lower() or checkout_addr.get('email', '') or 'patron@gloryfurniturehub.com'
             customer_name = post_name or 'Valued Patron'
             phone = clean_phone
+
+        if not phone:
+            s_phone = request.session.get('glory_user_phone', '')
+            if s_phone and '98765' not in s_phone:
+                phone = s_phone
 
         flat = request.POST.get('flat', '').strip() or checkout_addr.get('flat', '') or (default_address.get('flat', '') if default_address else '')
         street = request.POST.get('street', '').strip() or checkout_addr.get('street', '') or (default_address.get('street', '') if default_address else '')

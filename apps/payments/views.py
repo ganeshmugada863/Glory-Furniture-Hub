@@ -174,8 +174,10 @@ def checkout_payment_view(request, order_number):
     if installment_id:
         target_installment = order.installments.filter(id=installment_id, status__in=['PENDING', 'OVERDUE']).first()
 
+    user_phone = order.phone or request.session.get('glory_user_phone', '')
     context = {
         'order': order,
+        'user_phone': user_phone,
         'product': order.product,
         'product_days': product_days,
         'installment_schedule': installment_schedule,

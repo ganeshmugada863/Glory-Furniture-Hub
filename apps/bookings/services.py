@@ -32,28 +32,29 @@ class OrderAccessControl:
         if request.session.get('glory_role') == 'admin':
             return True
 
-        # 2. Authenticated Customer
+        # 2. In-session newly created order check (always allow the browser session that placed it)
+        if request.session.get(f'order_payment_{order.order_number}'):
+            return True
+        tracked_orders = request.session.get('glory_customer_order_ids', [])
+        if order.id in tracked_orders:
+            return True
+
+        # 3. Authenticated Customer
         if request.user.is_authenticated:
             if order.user_id:
-                return order.user_id == request.user.id
+                if order.user_id == request.user.id:
+                    return True
             # If guest order matches this user's email, claim and link it
             if request.user.email and order.email and request.user.email.strip().lower() == order.email.strip().lower():
-                order.user = request.user
-                order.save(update_fields=['user'])
+                if not order.user_id:
+                    order.user = request.user
+                    order.save(update_fields=['user'])
                 return True
             return False
 
-        # 3. Unauthenticated / Guest Customer
-        # Never permit guests to view orders owned by a registered user
-        if order.user_id is not None:
-            return False
-
-        tracked_orders = request.session.get('glory_customer_order_ids', [])
+        # 4. Guest Customer with matching email or tracked session
         session_email = request.session.get('glory_user_email')
-
-        if order.id in tracked_orders:
-            if session_email and order.email:
-                return session_email.strip().lower() == order.email.strip().lower()
+        if session_email and order.email and session_email.strip().lower() == order.email.strip().lower():
             return True
 
         return False
