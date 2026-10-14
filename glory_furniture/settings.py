@@ -28,6 +28,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.huggingface.co',
     'https://*.vercel.app',
     'https://glory-furniture-hub.vercel.app',
+    'https://gloryfurniturehub.com',
+    'https://www.gloryfurniturehub.com',
+    'https://*.gloryfurniturehub.com',
 ]
 
 # Allow iframe sessions & CSRF across Hugging Face Space embeds on mobile & desktop
