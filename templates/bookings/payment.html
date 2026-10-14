@@ -104,7 +104,7 @@
               <!-- Verification Success Pill -->
               <div id="upi-verify-badge" class="hidden text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl items-center gap-1.5">
                 <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
-                <span id="upi-verify-name">Verified: {{ booking.customer_name|default:"Arjun Varma" }} (Ready to Pay)</span>
+                <span id="upi-verify-name">Verified: {{ booking.customer_name|default:"Valued Patron" }} (Ready to Pay)</span>
               </div>
             </div>
 
@@ -261,7 +261,7 @@
         input.value = 'arjun.varma@okaxis';
       }
       if (badge && badgeName) {
-        badgeName.textContent = `Verified: {{ booking.customer_name|default:"Arjun Varma" }} (Ready to Pay)`;
+        badgeName.textContent = `Verified: {{ booking.customer_name|default:"Valued Patron" }} (Ready to Pay)`;
         badge.classList.remove('hidden');
         badge.classList.add('flex');
       }

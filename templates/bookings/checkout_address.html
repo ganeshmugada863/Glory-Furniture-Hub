@@ -61,9 +61,9 @@
             <input type="radio" name="selected_address_id" value="{{ addr.id }}" id="addr-radio-{{ addr.id }}" class="w-4 h-4 text-stone-900 border-stone-300 focus:ring-stone-900 accent-stone-900 cursor-pointer" {% if addr.id == selected_addr_id or forloop.first and not selected_addr_id %}checked{% endif %}>
             
             <div class="flex items-center gap-2">
-              <span class="font-bold text-base text-stone-900">{{ addr.name|default:"Arjun Varma" }}</span>
+              <span class="font-bold text-base text-stone-900">{{ addr.name|default:USER_NAME|default:"Customer" }}</span>
               <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-stone-100 text-stone-700 border border-stone-200">
-                {{ addr.tag|default:"HOME • DEFAULT" }}
+                {{ addr.tag|default:"DELIVERY ADDRESS" }}
               </span>
             </div>
           </div>
@@ -82,14 +82,16 @@
 
         <!-- Address Body -->
         <p class="text-stone-600 text-sm leading-relaxed mt-3 ml-7">
-          {{ addr.full_text|default:"Plot No. 24, Cyber Enclave, Hitec City, Madhapur, Hyderabad, Telangana - 500081" }}
+          {{ addr.full_text|default:addr.street }}
         </p>
 
         <!-- Phone Number -->
+        {% if addr.phone %}
         <div class="flex items-center gap-1.5 text-stone-800 text-sm font-semibold mt-2.5 ml-7">
           <span class="text-stone-500 font-normal">Contact:</span>
-          <span>{{ addr.phone|default:"+91 98765 43210" }}</span>
+          <span>{{ addr.phone }}</span>
         </div>
+        {% endif %}
       </div>
       {% endfor %}
 
@@ -133,36 +135,36 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Full Name</label>
-          <input type="text" name="name" id="modal_name" value="Arjun Varma" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <input type="text" name="name" id="modal_name" value="{{ USER_NAME|default:'' }}" placeholder="Your Full Name" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Contact Phone</label>
-          <input type="tel" name="phone" id="modal_phone" value="+91 98765 43210" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <input type="tel" name="phone" id="modal_phone" value="{{ USER_PHONE|default:'' }}" placeholder="10-digit mobile number" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
         </div>
       </div>
 
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Flat / Building / House No.</label>
-        <input type="text" name="flat" id="modal_flat" placeholder="e.g. Plot No. 24, Cyber Enclave" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+        <input type="text" name="flat" id="modal_flat" placeholder="e.g. Flat 101, Apartment / Building" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
       </div>
 
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Street / Locality / Area</label>
-        <input type="text" name="street" id="modal_street" placeholder="e.g. Hitec City, Madhapur" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+        <input type="text" name="street" id="modal_street" placeholder="e.g. Main Road, Landmark" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
       </div>
 
       <div class="grid grid-cols-3 gap-3">
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">City</label>
-          <input type="text" name="city" id="modal_city" value="Hyderabad" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <input type="text" name="city" id="modal_city" value="" placeholder="City" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">State</label>
-          <input type="text" name="state" id="modal_state" value="Telangana" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <input type="text" name="state" id="modal_state" value="" placeholder="State" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Pincode</label>
-          <input type="text" name="pincode" id="modal_pincode" value="500081" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <input type="text" name="pincode" id="modal_pincode" value="" placeholder="Pincode" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
         </div>
       </div>
 
@@ -212,8 +214,13 @@
     document.getElementById('modal-title').textContent = 'Add New Delivery Address';
     document.getElementById('modal_action').value = 'add_address';
     document.getElementById('modal_edit_id').value = '';
+    document.getElementById('modal_name').value = '{{ USER_NAME|default:""|escapejs }}';
+    document.getElementById('modal_phone').value = '{{ USER_PHONE|default:""|escapejs }}';
     document.getElementById('modal_flat').value = '';
     document.getElementById('modal_street').value = '';
+    document.getElementById('modal_city').value = '';
+    document.getElementById('modal_state').value = '';
+    document.getElementById('modal_pincode').value = '';
     document.getElementById('address-modal').classList.remove('hidden');
     document.getElementById('address-modal').classList.add('flex');
   }
@@ -222,13 +229,13 @@
     document.getElementById('modal-title').textContent = 'Edit Delivery Address';
     document.getElementById('modal_action').value = 'add_address';
     document.getElementById('modal_edit_id').value = id;
-    document.getElementById('modal_name').value = name || 'Arjun Varma';
-    document.getElementById('modal_phone').value = phone || '+91 98765 43210';
+    document.getElementById('modal_name').value = name || '';
+    document.getElementById('modal_phone').value = phone || '';
     document.getElementById('modal_flat').value = flat || '';
     document.getElementById('modal_street').value = street || '';
-    document.getElementById('modal_city').value = city || 'Hyderabad';
-    document.getElementById('modal_state').value = state || 'Telangana';
-    document.getElementById('modal_pincode').value = pincode || '500081';
+    document.getElementById('modal_city').value = city || '';
+    document.getElementById('modal_state').value = state || '';
+    document.getElementById('modal_pincode').value = pincode || '';
     document.getElementById('modal_tag').value = tag ? tag.split(' ')[0] : 'HOME';
     document.getElementById('address-modal').classList.remove('hidden');
     document.getElementById('address-modal').classList.add('flex');

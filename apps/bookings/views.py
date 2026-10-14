@@ -31,100 +31,123 @@ def booking_address_step_view(request):
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
 
-    # Load addresses from profile or session
-    addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
-    if not addresses:
-        default_name = (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or request.session.get('glory_user_name') or 'Arjun Varma'
-        default_phone = (profile.phone if profile and profile.phone else None) or request.session.get('glory_user_phone') or '+91 98765 43210'
-        default_addr_obj = {
-            'id': 1,
-            'tag': 'HOME • DEFAULT',
-            'is_default': True,
-            'name': default_name,
-            'phone': default_phone,
-            'flat': 'Plot No. 24, Cyber Enclave',
-            'street': 'Hitec City, Madhapur',
-            'city': 'Hyderabad',
-            'state': 'Telangana',
-            'pincode': '500081',
-            'full_text': 'Plot No. 24, Cyber Enclave, Hitec City, Madhapur, Hyderabad, Telangana - 500081'
-        }
-        addresses = [default_addr_obj]
-        if profile:
-            profile.saved_addresses = addresses
-            profile.save(update_fields=['saved_addresses'])
-        request.session['glory_addresses'] = addresses
-        request.session.modified = True
+    # Load addresses from profile or session, filtering out any legacy dummy records
+    raw_addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+    addresses = []
+    for a in raw_addresses:
+        a_str = str(a)
+        if '98765' in a_str or 'Plot No. 24' in a_str or 'Aditya Empress' in a_str or 'Arjun Varma' in a_str:
+            continue
+        addresses.append(a)
 
-    selected_addr_id = request.session.get('glory_selected_address_id', addresses[0].get('id', 1))
+    user_default_name = (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else '')) or request.session.get('glory_user_name') or ''
+    user_default_phone = (profile.phone if profile and profile.phone and '98765' not in profile.phone else '') or request.session.get('glory_user_phone') or ''
+
+    # If user has an address on profile but not in saved_addresses list, use it
+    if not addresses and profile and profile.address and 'Plot 42' not in profile.address:
+        profile_addr_obj = {
+            'id': 1,
+            'tag': 'HOME',
+            'is_default': True,
+            'name': user_default_name or 'Valued Customer',
+            'phone': user_default_phone,
+            'flat': '',
+            'street': profile.address,
+            'city': profile.city or 'Hyderabad',
+            'state': profile.state or 'Telangana',
+            'pincode': profile.pincode or '',
+            'full_text': profile.address
+        }
+        addresses = [profile_addr_obj]
+        profile.saved_addresses = addresses
+        profile.save(update_fields=['saved_addresses'])
+
+    selected_addr_id = request.session.get('glory_selected_address_id', addresses[0].get('id', 1) if addresses else 1)
 
     if request.method == 'POST':
         action = request.POST.get('action', 'select_and_continue')
         if action == 'add_address':
             new_id = len(addresses) + 1
-            new_name = request.POST.get('name', '').strip() or 'Arjun Varma'
-            new_phone = request.POST.get('phone', '').strip() or '+91 98765 43210'
+            new_name = request.POST.get('name', '').strip() or user_default_name or 'Valued Customer'
+            new_phone = request.POST.get('phone', '').strip() or user_default_phone
             new_flat = request.POST.get('flat', '').strip()
             new_street = request.POST.get('street', '').strip()
             new_city = request.POST.get('city', 'Hyderabad').strip()
             new_state = request.POST.get('state', 'Telangana').strip()
-            new_pincode = request.POST.get('pincode', '500081').strip()
+            new_pincode = request.POST.get('pincode', '').strip()
             parts = [p for p in [new_flat, new_street, new_city, new_state] if p]
             full_text = ", ".join(parts)
             if new_pincode:
                 full_text += f" - {new_pincode}"
 
-            new_addr = {
-                'id': new_id,
-                'tag': request.POST.get('tag', 'HOME'),
-                'is_default': False,
-                'name': new_name,
-                'phone': new_phone,
-                'flat': new_flat,
-                'street': new_street,
-                'city': new_city,
-                'state': new_state,
-                'pincode': new_pincode,
-                'full_text': full_text
-            }
-            addresses.append(new_addr)
+            edit_id = request.POST.get('edit_id')
+            if edit_id:
+                try:
+                    eid = int(edit_id)
+                    for a in addresses:
+                        if a.get('id') == eid:
+                            a.update({
+                                'name': new_name,
+                                'phone': new_phone,
+                                'flat': new_flat,
+                                'street': new_street,
+                                'city': new_city,
+                                'state': new_state,
+                                'pincode': new_pincode,
+                                'full_text': full_text,
+                                'tag': request.POST.get('tag', 'HOME')
+                            })
+                            break
+                except (ValueError, TypeError):
+                    pass
+            else:
+                new_addr = {
+                    'id': new_id,
+                    'tag': request.POST.get('tag', 'HOME'),
+                    'is_default': len(addresses) == 0,
+                    'name': new_name,
+                    'phone': new_phone,
+                    'flat': new_flat,
+                    'street': new_street,
+                    'city': new_city,
+                    'state': new_state,
+                    'pincode': new_pincode,
+                    'full_text': full_text
+                }
+                addresses.append(new_addr)
+
             if profile:
                 profile.saved_addresses = addresses
                 profile.save(update_fields=['saved_addresses'])
             request.session['glory_addresses'] = addresses
-            request.session['glory_selected_address_id'] = new_id
+            request.session['glory_selected_address_id'] = int(edit_id) if edit_id else new_id
             request.session.modified = True
             return redirect('checkout_address')
 
         elif action == 'delete_address':
             try:
-                addr_id_to_del = int(request.POST.get('address_id', 0))
+                addr_id_to_del = int(request.POST.get('delete_id') or request.POST.get('address_id', 0))
                 addresses = [a for a in addresses if a.get('id') != addr_id_to_del]
             except (ValueError, TypeError):
                 pass
-            if not addresses:
-                addresses = [{
-                    'id': 1, 'tag': 'HOME • DEFAULT', 'is_default': True,
-                    'name': 'Arjun Varma', 'phone': '+91 98765 43210',
-                    'full_text': 'Plot No. 24, Cyber Enclave, Hitec City, Madhapur, Hyderabad, Telangana - 500081'
-                }]
             if profile:
                 profile.saved_addresses = addresses
                 profile.save(update_fields=['saved_addresses'])
             request.session['glory_addresses'] = addresses
-            request.session['glory_selected_address_id'] = addresses[0].get('id', 1)
+            request.session['glory_selected_address_id'] = addresses[0].get('id', 1) if addresses else 1
             request.session.modified = True
             return redirect('checkout_address')
 
         else:  # 'select_and_continue'
-            try:
-                chosen_id = int(request.POST.get('selected_address_id', selected_addr_id))
-            except (ValueError, TypeError):
-                chosen_id = addresses[0].get('id', 1)
-            request.session['glory_selected_address_id'] = chosen_id
-            chosen_addr = next((a for a in addresses if a.get('id') == chosen_id), addresses[0])
-            request.session['glory_checkout_address'] = chosen_addr
-            request.session.modified = True
+            if addresses:
+                try:
+                    chosen_id = int(request.POST.get('selected_address_id', selected_addr_id))
+                except (ValueError, TypeError):
+                    chosen_id = addresses[0].get('id', 1)
+                request.session['glory_selected_address_id'] = chosen_id
+                chosen_addr = next((a for a in addresses if a.get('id') == chosen_id), addresses[0])
+                request.session['glory_checkout_address'] = chosen_addr
+                request.session.modified = True
 
             redirect_url = '/checkout/summary/'
             query_string = request.META.get('QUERY_STRING')
@@ -132,7 +155,7 @@ def booking_address_step_view(request):
                 redirect_url += f'?{query_string}'
             return redirect(redirect_url)
 
-    active_address = next((a for a in addresses if a.get('id') == selected_addr_id), addresses[0])
+    active_address = next((a for a in addresses if a.get('id') == selected_addr_id), addresses[0] if addresses else None)
 
     context = {
         'addresses': addresses,
@@ -324,17 +347,17 @@ def booking_summary_view(request):
             clean_phone = clean_phone[2:]
         if len(clean_phone) > 10:
             clean_phone = clean_phone[-10:]
-        if not clean_phone or clean_phone in ['9876543210', '09876543210'] or len(clean_phone) < 10:
-            clean_phone = '+91 98765 43210'
+        if clean_phone in ['9876543210', '09876543210']:
+            clean_phone = ''
 
         if user:
-            email = user.email or checkout_addr.get('email', 'patron@gloryfurniture.com')
-            customer_name = post_name or (profile.full_name if profile and profile.full_name else user.get_full_name()) or 'Arjun Varma'
-            phone = clean_phone or (profile.phone if profile and profile.phone else '+91 98765 43210')
+            email = user.email or checkout_addr.get('email', '') or 'patron@gloryfurniturehub.com'
+            customer_name = post_name or (profile.full_name if profile and profile.full_name else user.get_full_name()) or user.username or 'Valued Patron'
+            phone = clean_phone or (profile.phone if profile and profile.phone and '98765' not in profile.phone else '')
         else:
-            email = request.POST.get('email', '').strip().lower() or checkout_addr.get('email', 'patron@gloryfurniture.com')
-            customer_name = post_name or 'Arjun Varma'
-            phone = clean_phone or '+91 98765 43210'
+            email = request.POST.get('email', '').strip().lower() or checkout_addr.get('email', '') or 'patron@gloryfurniturehub.com'
+            customer_name = post_name or 'Valued Patron'
+            phone = clean_phone
 
         flat = request.POST.get('flat', '').strip() or checkout_addr.get('flat', '') or (default_address.get('flat', '') if default_address else '')
         street = request.POST.get('street', '').strip() or checkout_addr.get('street', '') or (default_address.get('street', '') if default_address else '')
@@ -350,7 +373,7 @@ def booking_summary_view(request):
             if pincode:
                 full_address = f"{full_address} - {pincode}".strip(' -')
         if not full_address:
-            full_address = 'Plot No. 24, Cyber Enclave, Hitec City, Madhapur, Hyderabad, Telangana - 500081'
+            full_address = 'Standard Doorstep Delivery'
 
         # Auto-save address into user profile for future orders if valid and not already saved
         if user and profile and (flat or street) and not profile.saved_addresses:

@@ -276,13 +276,13 @@
       </a>
     </div>
 
-    <!-- 8 Distinct Square Category Cards with Crisp Centered Furniture Images -->
+    <!-- 8 Distinct Square Category Cards with Edge-to-Edge Solid Furniture Images (No White Borders, No Circles) -->
     <div class="flex items-start justify-between gap-2.5 xs:gap-3 sm:gap-4 md:gap-5 overflow-x-auto pb-3 pt-1 no-scrollbar">
       
       <!-- 1. Beds -->
       <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_beds }}{% else %}/static/images/cat_beds.png{% endif %}" alt="Beds" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_beds }}{% else %}/static/images/cat_beds.png{% endif %}" alt="Beds" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Beds
@@ -291,8 +291,8 @@
 
       <!-- 2. Sofa -->
       <a href="/catalog/?category=Sofa%20Set" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_sofa }}{% else %}/static/images/cat_sofa.png{% endif %}" alt="Sofa" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_sofa }}{% else %}/static/images/cat_sofa.png{% endif %}" alt="Sofa" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Sofa
@@ -301,8 +301,8 @@
 
       <!-- 3. Diwan -->
       <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_diwan }}{% else %}/static/images/cat_diwan.png{% endif %}" alt="Diwan" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_diwan }}{% else %}/static/images/cat_diwan.png{% endif %}" alt="Diwan" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Diwan
@@ -311,8 +311,8 @@
 
       <!-- 4. Dining -->
       <a href="/catalog/?category=Dining%20Table" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dining }}{% else %}/static/images/cat_dining.png{% endif %}" alt="Dining" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dining }}{% else %}/static/images/cat_dining.png{% endif %}" alt="Dining" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Dining
@@ -321,8 +321,8 @@
 
       <!-- 5. Dressing -->
       <a href="/catalog/?category=Dressing%20Table" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dressing }}{% else %}/static/images/cat_dressing.png{% endif %}" alt="Dressing" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_dressing }}{% else %}/static/images/cat_dressing.png{% endif %}" alt="Dressing" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Dressing
@@ -331,8 +331,8 @@
 
       <!-- 6. Doors -->
       <a href="/catalog/?search=door" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_doors }}{% else %}/static/images/cat_doors.png{% endif %}" alt="Doors" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_doors }}{% else %}/static/images/cat_doors.png{% endif %}" alt="Doors" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Doors
@@ -341,8 +341,8 @@
 
       <!-- 7. Teapoy -->
       <a href="/catalog/?search=teapoy" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_teapoy }}{% else %}/static/images/cat_teapoy.png{% endif %}" alt="Teapoy" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_teapoy }}{% else %}/static/images/cat_teapoy.png{% endif %}" alt="Teapoy" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Teapoy
@@ -351,8 +351,8 @@
 
       <!-- 8. Podiums -->
       <a href="/catalog/?category=Podimes" class="flex flex-col items-center group shrink-0 w-[72px] xs:w-[82px] sm:w-[100px] md:w-[115px]">
-        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden bg-white p-2 sm:p-2.5 border border-stone-200/90 shadow-xs hover:shadow-md group-hover:scale-105 group-hover:border-[#5C3D2E] transition-all flex items-center justify-center">
-          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_podiums }}{% else %}/static/images/cat_podiums.png{% endif %}" alt="Podiums" class="w-full h-full object-contain object-center rounded-xl transition-transform duration-300 group-hover:scale-105" />
+        <div class="w-[72px] h-[72px] xs:w-[82px] xs:h-[82px] sm:w-[100px] sm:h-[100px] md:w-[115px] md:h-[115px] aspect-square rounded-2xl overflow-hidden shadow-xs hover:shadow-md group-hover:scale-105 transition-all relative">
+          <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.cat_podiums }}{% else %}/static/images/cat_podiums.png{% endif %}" alt="Podiums" class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-110" />
         </div>
         <span class="font-medium text-xs sm:text-sm text-stone-800 text-center mt-1.5 sm:mt-2 group-hover:text-[#5C3D2E] transition-colors whitespace-nowrap">
           Podiums

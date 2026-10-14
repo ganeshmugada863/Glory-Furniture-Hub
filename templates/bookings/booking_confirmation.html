@@ -78,7 +78,7 @@
         <div>
           <span class="text-[10px] text-[#817470] font-bold uppercase tracking-wider block">Workshop Reference</span>
           <span class="font-display text-base sm:text-lg font-black text-[#140804]">
-            #{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif booking and booking.booking_id %}{{ booking.booking_id }}{% else %}GFH-2024-8902{% endif %}
+            #{% if order and order.order_number %}{{ order.order_number }}{% elif order_number %}{{ order_number }}{% elif booking and booking.booking_id %}{{ booking.booking_id }}{% else %}CONFIRMED{% endif %}
           </span>
         </div>
         <span class="px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black uppercase tracking-wide flex items-center gap-1">
@@ -123,7 +123,7 @@
         <div class="flex justify-between items-center">
           <span class="font-medium text-[#817470]">Master Piece:</span>
           <span class="font-bold text-[#140804] text-right">
-            {% if order and order.product_name %}{{ order.product_name }}{% elif product_name %}{{ product_name }}{% else %}The Royal Nizam Solid Teakwood Set{% endif %}
+            {% if order and order.product_name %}{{ order.product_name }}{% elif product_name %}{{ product_name }}{% else %}Master Handcrafted Furniture{% endif %}
           </span>
         </div>
 
@@ -142,7 +142,7 @@
         <div class="flex justify-between items-center">
           <span class="font-medium text-[#817470]">Total Investment:</span>
           <span class="font-display font-black text-base text-[#140804]">
-            {% if formatted_total %}{{ formatted_total }}{% elif order and order.formatted_total %}{{ order.formatted_total }}{% else %}₹1,53,370{% endif %}
+            {% if formatted_total %}{{ formatted_total }}{% elif order and order.total_amount %}₹{{ order.total_amount|floatformat:2 }}{% else %}Paid in Full{% endif %}
           </span>
         </div>
 
@@ -156,7 +156,7 @@
         <div class="pt-2 border-t border-[#efeeeb]">
           <span class="font-medium text-[#817470] block mb-0.5">Delivering to Architectural Site:</span>
           <p class="font-semibold text-[#140804] text-xs">
-            {% if shipping_address %}{{ shipping_address }}{% elif order and order.shipping_address %}{{ order.shipping_address }}{% elif booking and booking.address %}{{ booking.address }}{% else %}Villa #42, Aditya Empress Towers, Road No. 36 Ext, Jubilee Hills, Hyderabad{% endif %}
+            {% if shipping_address %}{{ shipping_address }}{% elif order and order.shipping_address %}{{ order.shipping_address }}{% elif booking and booking.address %}{{ booking.address }}{% else %}Standard Doorstep Delivery{% endif %}
           </p>
         </div>
       </div>
