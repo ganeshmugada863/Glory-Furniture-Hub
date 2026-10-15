@@ -6,7 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#5C3D2E" />
   <meta name="csrf-token" content="{{ csrf_token }}" />
-  <title>{% block title %}Glory Furniture Hub — Handcrafted Elegance{% endblock %}</title>
+  <title>{% block title %}Glory Furniture Hub | Quality Furniture for Your Home{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Explore quality wooden furniture, beds, sofas, dining tables, and home furnishings at Glory Furniture Hub. Discover stylish furniture for your home.{% endblock %}" />
+  <link rel="canonical" href="{% block canonical_url %}{{ CANONICAL_URL|default:'https://gloryfurniturehub.com/' }}{% endblock %}" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
+  <meta property="og:site_name" content="Glory Furniture Hub" />
+  <meta property="og:url" content="{% block og_url %}{{ CANONICAL_URL|default:'https://gloryfurniturehub.com/' }}{% endblock %}" />
+  <meta property="og:title" content="{% block og_title %}Glory Furniture Hub | Quality Furniture for Your Home{% endblock %}" />
+  <meta property="og:description" content="{% block og_description %}Explore quality wooden furniture, beds, sofas, dining tables, and home furnishings at Glory Furniture Hub. Discover stylish furniture for your home.{% endblock %}" />
+  <meta property="og:image" content="{% block og_image %}{{ SITE_URL|default:'https://gloryfurniturehub.com' }}/static/images/card_bed.jpg{% endblock %}" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{% block twitter_title %}Glory Furniture Hub | Quality Furniture for Your Home{% endblock %}" />
+  <meta name="twitter:description" content="{% block twitter_description %}Explore quality wooden furniture, beds, sofas, dining tables, and home furnishings at Glory Furniture Hub. Discover stylish furniture for your home.{% endblock %}" />
+  <meta name="twitter:image" content="{% block twitter_image %}{{ SITE_URL|default:'https://gloryfurniturehub.com' }}/static/images/card_bed.jpg{% endblock %}" />
+
+  {% block structured_data %}{% endblock %}
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,11 +40,11 @@
         var hash = window.location.hash || '';
         var host = window.location.hostname || '';
         if (hash.includes('access_token=')) {
-          window.location.replace('https://glory-furniture-hub.vercel.app/accounts/supabase-callback/' + hash);
+          window.location.replace('https://gloryfurniturehub.com/accounts/supabase-callback/' + hash);
           return;
         }
-        if (host.includes('onrender.com')) {
-          window.location.replace('https://glory-furniture-hub.vercel.app' + window.location.pathname + window.location.search + hash);
+        if (host.includes('onrender.com') || host.includes('hf.space')) {
+          window.location.replace('https://gloryfurniturehub.com' + window.location.pathname + window.location.search + hash);
           return;
         }
       } catch(e) {}

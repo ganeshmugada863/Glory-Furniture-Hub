@@ -18,6 +18,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-glory-furniture-hub-luxury
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 
 ALLOWED_HOSTS = ['*']
+
+# Canonical Production Domain for SEO & Structured Data
+SITE_URL = os.getenv('SITE_URL', 'https://gloryfurniturehub.com').rstrip('/')
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost:8000',

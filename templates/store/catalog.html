@@ -4,8 +4,46 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta content="web_standard" name="shell-type">
-  <title>{% if selected_category and selected_category != 'All' %}{{ selected_category }} — Collection{% else %}Collections — Handcrafted Teak Furniture{% endif %} | Glory Furniture Hub</title>
+  <title>{% if selected_category and selected_category != 'All' %}{{ selected_category }} — Collection | Glory Furniture Hub{% else %}Catalog & Collections | Glory Furniture Hub{% endif %}</title>
   <meta name="description" content="Explore handcrafted solid teak wood furniture by Glory Furniture Hub. Master tenon joinery, custom beds, dining tables, diwans, sofas, and vanities.">
+  <link rel="canonical" href="{% if selected_category and selected_category != 'All' %}https://gloryfurniturehub.com/catalog/?category={{ selected_category|urlencode }}{% else %}https://gloryfurniturehub.com/catalog/{% endif %}">
+
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Glory Furniture Hub">
+  <meta property="og:url" content="{% if selected_category and selected_category != 'All' %}https://gloryfurniturehub.com/catalog/?category={{ selected_category|urlencode }}{% else %}https://gloryfurniturehub.com/catalog/{% endif %}">
+  <meta property="og:title" content="{% if selected_category and selected_category != 'All' %}{{ selected_category }} — Collection | Glory Furniture Hub{% else %}Catalog & Collections | Glory Furniture Hub{% endif %}">
+  <meta property="og:description" content="Explore handcrafted solid teak wood furniture by Glory Furniture Hub. Master tenon joinery, custom beds, dining tables, diwans, sofas, and vanities.">
+  <meta property="og:image" content="https://gloryfurniturehub.com/static/images/card_bed.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if selected_category and selected_category != 'All' %}{{ selected_category }} — Collection | Glory Furniture Hub{% else %}Catalog & Collections | Glory Furniture Hub{% endif %}">
+  <meta name="twitter:description" content="Explore handcrafted solid teak wood furniture by Glory Furniture Hub. Master tenon joinery, custom beds, dining tables, diwans, sofas, and vanities.">
+  <meta name="twitter:image" content="https://gloryfurniturehub.com/static/images/card_bed.jpg">
+
+  <!-- BreadcrumbList Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://gloryfurniturehub.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "{% if selected_category and selected_category != 'All' %}{{ selected_category|escapejs }}{% else %}Catalog{% endif %}",
+        "item": "{% if selected_category and selected_category != 'All' %}https://gloryfurniturehub.com/catalog/?category={{ selected_category|urlencode }}{% else %}https://gloryfurniturehub.com/catalog/{% endif %}"
+      }
+    ]
+  }
+  </script>
+
   <meta name="csrf-token" content="{{ csrf_token }}">
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 

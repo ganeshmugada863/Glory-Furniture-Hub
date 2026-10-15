@@ -94,10 +94,11 @@ class CashfreeService:
             raise ValueError("A valid 10-digit customer phone number is required to initiate a Cashfree payment session.")
 
         # URLs
+        site_url = getattr(settings, 'SITE_URL', 'https://gloryfurniturehub.com').rstrip('/')
         if not return_url:
-            return_url = f"https://glory-furniture-hub.vercel.app/payments/return/?order_id={cf_order_id}"
+            return_url = f"{site_url}/payments/return/?order_id={cf_order_id}"
         if not notify_url:
-            notify_url = "https://glory-furniture-hub.vercel.app/payments/webhook/cashfree/"
+            notify_url = f"{site_url}/payments/webhook/cashfree/"
 
         cust_details = {
             "customer_id": customer_id,

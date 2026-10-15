@@ -586,3 +586,109 @@ def reverse_geocode_api(request):
         })
 
 
+from django.http import HttpResponse
+from django.conf import settings
+import urllib.parse
+
+
+def robots_txt_view(request):
+    """Serve SEO-optimized robots.txt pointing to the canonical sitemap."""
+    site_url = getattr(settings, 'SITE_URL', 'https://gloryfurniturehub.com').rstrip('/')
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        "Disallow: /admin-portal/",
+        "Disallow: /django-admin/",
+        "Disallow: /accounts/",
+        "Disallow: /checkout/",
+        "Disallow: /booking/",
+        "Disallow: /payments/",
+        "Disallow: /api/",
+        "",
+        f"Sitemap: {site_url}/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain; charset=utf-8")
+
+
+def sitemap_xml_view(request):
+    """
+    Dynamic XML Sitemap conforming to sitemaps.org 0.9 schema.
+    Includes canonical, public, indexable URLs with priorities and change frequencies.
+    """
+    from apps.store.models import Product, Category
+    site_url = getattr(settings, 'SITE_URL', 'https://gloryfurniturehub.com').rstrip('/')
+    
+    urls = []
+    
+    # 1. Homepage (highest priority)
+    urls.append({
+        'loc': f"{site_url}/",
+        'changefreq': 'daily',
+        'priority': '1.0'
+    })
+    
+    # 2. Main Store Catalog
+    urls.append({
+        'loc': f"{site_url}/catalog/",
+        'changefreq': 'daily',
+        'priority': '0.9'
+    })
+
+    # 3. Informational public pages
+    for page in ['about', 'contact', 'faq', 'guide']:
+        urls.append({
+            'loc': f"{site_url}/{page}/",
+            'changefreq': 'monthly',
+            'priority': '0.6'
+        })
+    
+    # 4. Category Pages
+    try:
+        categories = Category.objects.all().order_by('order', 'name')
+        for cat in categories:
+            cat_query = urllib.parse.quote(cat.name)
+            urls.append({
+                'loc': f"{site_url}/catalog/?category={cat_query}",
+                'changefreq': 'weekly',
+                'priority': '0.8'
+            })
+    except Exception:
+        pass
+        
+    # 5. Product Detail Pages
+    try:
+        products = Product.objects.all()
+        for prod in products:
+            lastmod = None
+            if hasattr(prod, 'created_at') and prod.created_at:
+                lastmod = prod.created_at.strftime('%Y-%m-%d')
+            entry = {
+                'loc': f"{site_url}/product/{prod.id}/",
+                'changefreq': 'weekly',
+                'priority': '0.8'
+            }
+            if lastmod:
+                entry['lastmod'] = lastmod
+            urls.append(entry)
+    except Exception:
+        pass
+
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    ]
+    for u in urls:
+        xml_lines.append('  <url>')
+        xml_lines.append(f'    <loc>{u["loc"]}</loc>')
+        if 'lastmod' in u:
+            xml_lines.append(f'    <lastmod>{u["lastmod"]}</lastmod>')
+        xml_lines.append(f'    <changefreq>{u["changefreq"]}</changefreq>')
+        xml_lines.append(f'    <priority>{u["priority"]}</priority>')
+        xml_lines.append('  </url>')
+    xml_lines.append('</urlset>')
+
+    return HttpResponse("\n".join(xml_lines), content_type="application/xml; charset=utf-8")
+
+
+

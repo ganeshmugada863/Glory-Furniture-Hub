@@ -3,7 +3,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from apps.core.views import robots_txt_view, sitemap_xml_view
+
 urlpatterns = [
+    path('robots.txt', robots_txt_view, name='robots_txt'),
+    path('sitemap.xml', sitemap_xml_view, name='sitemap_xml'),
     path('django-admin/', admin.site.urls),
     path('', include('apps.core.urls')),
     path('', include('apps.store.urls')),

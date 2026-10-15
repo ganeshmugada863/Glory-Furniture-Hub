@@ -16,22 +16,22 @@ REDIRECT_HTML = """<!DOCTYPE html>
       var path = window.location.pathname || '/';
       var search = window.location.search || '';
       
-      // If access_token hash is present from Supabase OAuth, forward to Vercel supabase-callback
+      // If access_token hash is present from Supabase OAuth, forward to supabase-callback
       if (hash.includes('access_token=')) {
-        window.location.replace('https://glory-furniture-hub.vercel.app/accounts/supabase-callback/' + hash);
+        window.location.replace('https://gloryfurniturehub.com/accounts/supabase-callback/' + hash);
         return;
       }
       
-      // Forward all other routes to Vercel
-      window.location.replace('https://glory-furniture-hub.vercel.app' + path + search + hash);
+      // Forward all other routes to production domain
+      window.location.replace('https://gloryfurniturehub.com' + path + search + hash);
     })();
   </script>
 </head>
 <body style="background:#140D09;color:#EADBCE;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;padding:20px;text-align:center;">
   <div style="max-width:400px;background:#1E140F;border:1px solid #5C3D2E;border-radius:24px;padding:32px;box-shadow:0 20px 40px rgba(0,0,0,0.5);">
     <h2 style="color:#C9963F;margin:0 0 12px;font-size:20px;font-weight:800;">Glory Furniture Hub</h2>
-    <p style="color:#A89F91;font-size:13px;line-height:1.5;margin:0 0 20px;">Moving you to the official storefront on Vercel...</p>
-    <a href="https://glory-furniture-hub.vercel.app/" style="display:inline-block;background:#C9963F;color:#140D09;padding:10px 24px;border-radius:12px;text-decoration:none;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Continue to Store &rarr;</a>
+    <p style="color:#A89F91;font-size:13px;line-height:1.5;margin:0 0 20px;">Moving you to the official storefront at gloryfurniturehub.com...</p>
+    <a href="https://gloryfurniturehub.com/" style="display:inline-block;background:#C9963F;color:#140D09;padding:10px 24px;border-radius:12px;text-decoration:none;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Continue to Store &rarr;</a>
   </div>
 </body>
 </html>"""
@@ -54,10 +54,10 @@ class InstantRedirectHandler(http.server.BaseHTTPRequestHandler):
 
     def log_message(self, format, *args):
         # Concise logging
-        print(f"[Render->Vercel Forward] {self.path}")
+        print(f"[Redirect Forwarder] {self.path}")
 
 if __name__ == "__main__":
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("0.0.0.0", PORT), InstantRedirectHandler) as httpd:
-        print(f"[Redirect Bridge] Listening on port {PORT} -> Redirecting to glory-furniture-hub.vercel.app")
+        print(f"[Redirect Bridge] Listening on port {PORT} -> Redirecting to gloryfurniturehub.com")
         httpd.serve_forever()

@@ -479,7 +479,7 @@
         if (spinner) spinner.classList.remove('hidden');
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const targetOrigin = isLocal ? window.location.origin : 'https://glory-furniture-hub.vercel.app';
+        const targetOrigin = isLocal ? window.location.origin : (window.location.origin.includes('hf.space') ? 'https://gloryfurniturehub.com' : window.location.origin);
 
         try {
           localStorage.setItem('glory_auth_return_url', targetOrigin + '/');

@@ -46,10 +46,10 @@
   </div>
 
   <script>
-    // Fail-safe redirect: If callback landed on Render, bounce immediately to Vercel with all parameters
-    if (window.location.hostname.includes('onrender.com')) {
-      const vercelTarget = 'https://glory-furniture-hub.vercel.app' + window.location.pathname + window.location.search + window.location.hash;
-      window.location.replace(vercelTarget);
+    // Fail-safe redirect: If callback landed on Render or old host, bounce immediately to gloryfurniturehub.com
+    if (window.location.hostname.includes('onrender.com') || window.location.hostname.includes('hf.space')) {
+      const prodTarget = 'https://gloryfurniturehub.com' + window.location.pathname + window.location.search + window.location.hash;
+      window.location.replace(prodTarget);
     }
 
     const SUPABASE_URL = 'https://qxxrghelhlrafdkveeqo.supabase.co';
@@ -109,8 +109,8 @@
         if (result.status === 'success') {
           document.getElementById('status-msg').innerText = "Success! Redirecting to Glory Furniture Home...";
           let returnUrl = localStorage.getItem('glory_auth_return_url') || result.redirect_url || '/';
-          if (returnUrl.includes('onrender.com')) {
-            returnUrl = 'https://glory-furniture-hub.vercel.app/';
+          if (returnUrl.includes('onrender.com') || returnUrl.includes('hf.space')) {
+            returnUrl = 'https://gloryfurniturehub.com/';
           }
           try { localStorage.removeItem('glory_auth_return_url'); } catch (e) {}
           setTimeout(() => {

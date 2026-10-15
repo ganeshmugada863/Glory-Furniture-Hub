@@ -43,7 +43,14 @@ def global_furniture_context(request):
     except Exception:
         home_media_cms = None
 
+    from django.conf import settings
+    site_url = getattr(settings, 'SITE_URL', 'https://gloryfurniturehub.com').rstrip('/')
+    req_path = getattr(request, 'path', '/')
+    canonical_url = f"{site_url}{req_path}"
+
     return {
+        'SITE_URL': site_url,
+        'CANONICAL_URL': canonical_url,
         'SITE_NAME': site_settings.website_name if site_settings else 'Glory Furniture Hub',
         'SITE_TAGLINE': (site_settings.tagline if site_settings and site_settings.tagline else 'Fine Teak Craftsmanship'),
         'WEBSITE_SETTINGS': site_settings,
