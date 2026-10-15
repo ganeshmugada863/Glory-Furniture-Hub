@@ -136,28 +136,41 @@ def root_view(request):
     """
     Intelligent Root Router (/):
     - Admins: Directly routed to /admin/dashboard/.
-    - Storefront: Displays the newly exported Glory Furniture Hub Stitch home page.
+    - Registered / Authenticated customers: Directly routed to home_view.
+    - First-time / Unauthenticated visitors: Routed to welcome_view.
     """
     role = request.session.get('glory_role')
 
     if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
         return redirect('admin_dashboard')
 
-    return home_view(request)
+    user_email = request.session.get('glory_user_email')
+    user_name = request.session.get('glory_user_name')
+    is_registered = bool(
+        request.user.is_authenticated or 
+        user_email or 
+        (role == 'customer' and user_name) or
+        request.session.get('glory_is_registered')
+    )
+    if is_registered:
+        return home_view(request)
+
+    return welcome_view(request)
 
 
 def welcome_view(request):
     """
     Dedicated Modern, Minimal & Premium Welcome / Get Started entrance page.
     - Admins: Directly routed to /admin/dashboard/.
-    - If user is already authenticated, intelligently routes them to existing Home flow.
+    - If user is already authenticated/registered, intelligently routes them to existing Home flow.
     - Otherwise renders the dedicated Welcome / Get Started entrance screen.
     """
     role = request.session.get('glory_role')
     user_email = request.session.get('glory_user_email')
+    user_name = request.session.get('glory_user_name')
     if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
         return redirect('admin_dashboard')
-    if request.user.is_authenticated or user_email or role:
+    if request.user.is_authenticated or user_email or (role == 'customer' and user_name) or request.session.get('glory_is_registered'):
         return redirect('home')
 
     from apps.core.models import PageCMSContent

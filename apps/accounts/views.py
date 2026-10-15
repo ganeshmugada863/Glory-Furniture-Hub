@@ -179,6 +179,7 @@ def customer_register_view(request):
             # Log user in
             auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             sync_user_session(request, user)
+            request.session['glory_is_registered'] = True
             messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
             return redirect('home')
 

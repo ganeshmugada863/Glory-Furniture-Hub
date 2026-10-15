@@ -12,8 +12,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body {
-    background-color: #FAFAF9;
-    color: #1C1917;
+    background-color: #FBF9F6;
+    color: #140804;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
   .material-symbols-outlined {
@@ -23,29 +23,29 @@
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#FAFAF9] text-[#1C1917] py-6 sm:py-10 px-4 sm:px-6">
+<div class="min-h-screen bg-[#FBF9F6] text-[#140804] py-6 sm:py-10 px-4 sm:px-6">
   <div class="max-w-xl mx-auto space-y-6">
 
     <!-- 1. LUXURY PILL STEPPER (Screen 1: CHECK ADDRESS ACTIVE) -->
-    <div class="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-stone-100/90 max-w-fit mx-auto border border-stone-200/80 shadow-2xs">
+    <div class="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-[#FAF5EE] max-w-fit mx-auto border border-[#E8DAC9] shadow-2xs">
       <!-- Step 1: CHECK ADDRESS (Active) -->
-      <div class="bg-[#18110E] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-[11px] sm:text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
+      <div class="bg-[#140804] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-[11px] sm:text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
         <span>1. CHECK ADDRESS</span>
       </div>
       <!-- Step 2: ORDER SUMMARY (Inactive) -->
-      <div class="bg-white border border-stone-200 text-stone-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
+      <div class="bg-white border border-[#E8DAC9] text-[#817470] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
         <span>2. ORDER SUMMARY</span>
       </div>
       <!-- Step 3: PAYMENT (Inactive) -->
-      <div class="bg-white border border-stone-200 text-stone-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
+      <div class="bg-white border border-[#E8DAC9] text-[#817470] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
         <span>3. PAYMENT</span>
       </div>
     </div>
 
     <!-- 2. SECTION HEADER -->
     <div class="text-left pt-2">
-      <h1 class="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight">Select Delivery Address</h1>
-      <p class="text-xs sm:text-sm text-stone-500 font-medium mt-1">Choose a saved address for shipping your order.</p>
+      <h1 class="text-xl sm:text-2xl font-bold text-[#140804] tracking-tight">Select Delivery Address</h1>
+      <p class="text-xs sm:text-sm text-[#7A6E65] font-medium mt-1">Choose a saved address for shipping your order.</p>
     </div>
 
     <!-- 3. ADDRESS SELECTION FORM -->
@@ -54,26 +54,26 @@
       <input type="hidden" name="action" value="select_and_continue">
 
       {% for addr in addresses %}
-      <div class="relative bg-white rounded-2xl p-5 cursor-pointer transition-all duration-150 {% if addr.id == selected_addr_id or forloop.first and not selected_addr_id %}border-2 border-stone-900 shadow-xs ring-1 ring-stone-900/5{% else %}border border-stone-200 hover:border-stone-400{% endif %}" onclick="selectAddress('{{ addr.id }}')">
+      <div class="relative bg-white rounded-2xl p-5 cursor-pointer transition-all duration-150 {% if addr.id == selected_addr_id or forloop.first and not selected_addr_id %}border-2 border-[#8C4F20] shadow-xs ring-1 ring-[#8C4F20]/15{% else %}border border-[#E8DAC9] hover:border-[#8C4F20]{% endif %}" onclick="selectAddress('{{ addr.id }}')">
         <div class="flex items-start justify-between gap-3">
           <div class="flex items-center gap-3">
             <!-- Radio Selector -->
-            <input type="radio" name="selected_address_id" value="{{ addr.id }}" id="addr-radio-{{ addr.id }}" class="w-4 h-4 text-stone-900 border-stone-300 focus:ring-stone-900 accent-stone-900 cursor-pointer" {% if addr.id == selected_addr_id or forloop.first and not selected_addr_id %}checked{% endif %}>
+            <input type="radio" name="selected_address_id" value="{{ addr.id }}" id="addr-radio-{{ addr.id }}" class="w-4 h-4 text-[#8C4F20] border-[#DECBB7] focus:ring-[#8C4F20] accent-[#8C4F20] cursor-pointer" {% if addr.id == selected_addr_id or forloop.first and not selected_addr_id %}checked{% endif %}>
             
             <div class="flex items-center gap-2">
-              <span class="font-bold text-base text-stone-900">{{ addr.name|default:USER_NAME|default:"Customer" }}</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-stone-100 text-stone-700 border border-stone-200">
+              <span class="font-bold text-base text-[#140804]">{{ addr.name|default:USER_NAME|default:"Customer" }}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#FAF5EE] text-[#8C4F20] border border-[#E8DAC9]">
                 {{ addr.tag|default:"DELIVERY ADDRESS" }}
               </span>
             </div>
           </div>
 
           <!-- Edit & Delete Action Buttons -->
-          <div class="flex items-center gap-2 text-xs font-semibold text-stone-500">
-            <button type="button" onclick="event.stopPropagation(); editAddress('{{ addr.id }}', '{{ addr.name|escapejs }}', '{{ addr.phone|escapejs }}', '{{ addr.flat|escapejs }}', '{{ addr.street|escapejs }}', '{{ addr.city|escapejs }}', '{{ addr.state|escapejs }}', '{{ addr.pincode|escapejs }}', '{{ addr.tag|escapejs }}')" class="hover:text-stone-900 uppercase text-[11px] tracking-wider py-1 px-1.5 transition-colors">
+          <div class="flex items-center gap-2 text-xs font-semibold text-[#7A6E65]">
+            <button type="button" onclick="event.stopPropagation(); editAddress('{{ addr.id }}', '{{ addr.name|escapejs }}', '{{ addr.phone|escapejs }}', '{{ addr.flat|escapejs }}', '{{ addr.street|escapejs }}', '{{ addr.city|escapejs }}', '{{ addr.state|escapejs }}', '{{ addr.pincode|escapejs }}', '{{ addr.tag|escapejs }}')" class="hover:text-[#8C4F20] uppercase text-[11px] tracking-wider py-1 px-1.5 transition-colors">
               EDIT
             </button>
-            <span class="text-stone-300">|</span>
+            <span class="text-[#DECBB7]">|</span>
             <button type="button" onclick="event.stopPropagation(); deleteAddress('{{ addr.id }}')" class="hover:text-red-700 uppercase text-[11px] tracking-wider py-1 px-1.5 transition-colors">
               DELETE
             </button>
@@ -81,14 +81,14 @@
         </div>
 
         <!-- Address Body -->
-        <p class="text-stone-600 text-sm leading-relaxed mt-3 ml-7">
+        <p class="text-[#5A4D46] text-sm leading-relaxed mt-3 ml-7">
           {{ addr.full_text|default:addr.street }}
         </p>
 
         <!-- Phone Number -->
         {% if addr.phone %}
-        <div class="flex items-center gap-1.5 text-stone-800 text-sm font-semibold mt-2.5 ml-7">
-          <span class="text-stone-500 font-normal">Contact:</span>
+        <div class="flex items-center gap-1.5 text-[#140804] text-sm font-semibold mt-2.5 ml-7">
+          <span class="text-[#7A6E65] font-normal">Contact:</span>
           <span>{{ addr.phone }}</span>
         </div>
         {% endif %}
@@ -96,13 +96,13 @@
       {% endfor %}
 
       <!-- Primary Action: Deliver to this Address -->
-      <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#18110E] hover:bg-[#2A1D18] text-white font-bold text-sm sm:text-base tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] mt-6">
+      <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#140804] hover:bg-[#8C4F20] text-white font-bold text-sm sm:text-base tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] mt-6">
         <span>Deliver to this Address</span>
         <span class="text-lg">→</span>
       </button>
 
       <!-- Secondary Action: + Add New Address -->
-      <button type="button" onclick="openAddModal()" class="w-full py-3.5 px-6 rounded-xl bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 font-semibold text-sm tracking-wide shadow-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-[0.99]">
+      <button type="button" onclick="openAddModal()" class="w-full py-3.5 px-6 rounded-xl bg-white hover:bg-[#FAF5EE] border border-[#DECBB7] text-[#140804] font-semibold text-sm tracking-wide shadow-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-[0.99]">
         <span>+ Add New Address</span>
       </button>
     </form>
@@ -121,10 +121,10 @@
 <!-- ADD / EDIT ADDRESS MODAL                   -->
 <!-- ========================================== -->
 <div id="address-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4">
-  <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative animate-fade-in border border-stone-200">
-    <div class="flex items-center justify-between pb-3 border-b border-stone-100">
-      <h2 id="modal-title" class="text-lg sm:text-xl font-bold text-stone-900">Add New Delivery Address</h2>
-      <button type="button" onclick="closeModal()" class="w-8 h-8 rounded-full bg-stone-100 text-stone-500 hover:text-stone-900 flex items-center justify-center text-sm">✕</button>
+  <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative animate-fade-in border border-[#E8DAC9]">
+    <div class="flex items-center justify-between pb-3 border-b border-[#FAF5EE]">
+      <h2 id="modal-title" class="text-lg sm:text-xl font-bold text-[#140804]">Add New Delivery Address</h2>
+      <button type="button" onclick="closeModal()" class="w-8 h-8 rounded-full bg-[#FAF5EE] text-[#7A6E65] hover:text-[#140804] flex items-center justify-center text-sm">✕</button>
     </div>
 
     <form method="POST" id="modal-address-form" class="space-y-4">
@@ -134,43 +134,43 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Full Name</label>
-          <input type="text" name="name" id="modal_name" value="{{ USER_NAME|default:'' }}" placeholder="Your Full Name" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">Full Name</label>
+          <input type="text" name="name" id="modal_name" value="{{ USER_NAME|default:'' }}" placeholder="Your Full Name" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Contact Phone</label>
-          <input type="tel" name="phone" id="modal_phone" value="{{ USER_PHONE|default:'' }}" placeholder="10-digit mobile number" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">Contact Phone</label>
+          <input type="tel" name="phone" id="modal_phone" value="{{ USER_PHONE|default:'' }}" placeholder="10-digit mobile number" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
         </div>
       </div>
 
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Flat / Building / House No.</label>
-        <input type="text" name="flat" id="modal_flat" placeholder="e.g. Flat 101, Apartment / Building" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">Flat / Building / House No.</label>
+        <input type="text" name="flat" id="modal_flat" placeholder="e.g. Flat 101, Apartment / Building" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
       </div>
 
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Street / Locality / Area</label>
-        <input type="text" name="street" id="modal_street" placeholder="e.g. Main Road, Landmark" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">Street / Locality / Area</label>
+        <input type="text" name="street" id="modal_street" placeholder="e.g. Main Road, Landmark" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
       </div>
 
       <div class="grid grid-cols-3 gap-3">
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">City</label>
-          <input type="text" name="city" id="modal_city" value="" placeholder="City" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">City</label>
+          <input type="text" name="city" id="modal_city" value="" placeholder="City" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">State</label>
-          <input type="text" name="state" id="modal_state" value="" placeholder="State" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">State</label>
+          <input type="text" name="state" id="modal_state" value="" placeholder="State" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Pincode</label>
-          <input type="text" name="pincode" id="modal_pincode" value="" placeholder="Pincode" required class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm">
+          <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">Pincode</label>
+          <input type="text" name="pincode" id="modal_pincode" value="" placeholder="Pincode" required class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm">
         </div>
       </div>
 
       <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-stone-600 mb-1">Address Label</label>
-        <select name="tag" id="modal_tag" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 text-sm bg-white">
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#7A6E65] mb-1">Address Label</label>
+        <select name="tag" id="modal_tag" class="w-full px-3.5 py-2.5 rounded-xl border border-[#DECBB7] focus:border-[#8C4F20] focus:ring-1 focus:ring-[#8C4F20] text-sm bg-white">
           <option value="HOME">HOME</option>
           <option value="WORK">WORK</option>
           <option value="OTHER">OTHER</option>
@@ -178,8 +178,8 @@
       </div>
 
       <div class="pt-2 flex gap-3">
-        <button type="button" onclick="closeModal()" class="w-1/2 py-3 rounded-xl border border-stone-300 text-stone-700 font-bold text-sm hover:bg-stone-50">Cancel</button>
-        <button type="submit" class="w-1/2 py-3 rounded-xl bg-[#18110E] hover:bg-[#2A1D18] text-white font-bold text-sm shadow-md">Save Address</button>
+        <button type="button" onclick="closeModal()" class="w-1/2 py-3 rounded-xl border border-[#DECBB7] text-[#5A4D46] font-bold text-sm hover:bg-[#FAF5EE]">Cancel</button>
+        <button type="submit" class="w-1/2 py-3 rounded-xl bg-[#140804] hover:bg-[#8C4F20] text-white font-bold text-sm shadow-md">Save Address</button>
       </div>
     </form>
   </div>
@@ -193,13 +193,13 @@
     }
     // Update border highlights
     document.querySelectorAll('#address-selection-form > div[onclick]').forEach(el => {
-      el.classList.remove('border-2', 'border-stone-900', 'ring-1', 'ring-stone-900/5');
-      el.classList.add('border', 'border-stone-200');
+      el.classList.remove('border-2', 'border-[#8C4F20]', 'ring-1', 'ring-[#8C4F20]/15');
+      el.classList.add('border', 'border-[#E8DAC9]');
     });
     const clickedCard = event ? event.currentTarget : null;
     if (clickedCard) {
-      clickedCard.classList.remove('border', 'border-stone-200');
-      clickedCard.classList.add('border-2', 'border-stone-900', 'ring-1', 'ring-stone-900/5');
+      clickedCard.classList.remove('border', 'border-[#E8DAC9]');
+      clickedCard.classList.add('border-2', 'border-[#8C4F20]', 'ring-1', 'ring-[#8C4F20]/15');
     }
   }
 

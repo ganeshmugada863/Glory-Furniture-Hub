@@ -12,8 +12,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body {
-    background-color: #FAFAF9;
-    color: #1C1917;
+    background-color: #FBF9F6;
+    color: #140804;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
   .material-symbols-outlined {
@@ -23,21 +23,21 @@
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[#FAFAF9] text-[#1C1917] py-6 sm:py-10 px-4 sm:px-6">
+<div class="min-h-screen bg-[#FBF9F6] text-[#140804] py-6 sm:py-10 px-4 sm:px-6">
   <div class="max-w-xl mx-auto space-y-6">
 
     <!-- 1. LUXURY PILL STEPPER (Screen 2: ORDER SUMMARY ACTIVE) -->
-    <div class="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-stone-100/90 max-w-fit mx-auto border border-stone-200/80 shadow-2xs">
+    <div class="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-[#FAF5EE] max-w-fit mx-auto border border-[#E8DAC9] shadow-2xs">
       <!-- Step 1: CHECK ADDRESS (Completed/Navigable) -->
-      <a href="{% url 'checkout_address' %}" class="bg-white border border-stone-200 text-stone-500 hover:text-stone-900 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase transition-colors">
+      <a href="{% url 'checkout_address' %}" class="bg-white border border-[#E8DAC9] text-[#7A6E65] hover:text-[#140804] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase transition-colors">
         <span>1. CHECK ADDRESS</span>
       </a>
       <!-- Step 2: ORDER SUMMARY (Active) -->
-      <div class="bg-[#18110E] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-[11px] sm:text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
+      <div class="bg-[#140804] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-[11px] sm:text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
         <span>2. ORDER SUMMARY</span>
       </div>
       <!-- Step 3: PAYMENT (Inactive) -->
-      <div class="bg-white border border-stone-200 text-stone-400 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
+      <div class="bg-white border border-[#E8DAC9] text-[#817470] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
         <span>3. PAYMENT</span>
       </div>
     </div>
@@ -45,12 +45,12 @@
     {% if messages or error_message %}
     <div class="space-y-2">
       {% if error_message %}
-        <div class="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl">
+        <div class="p-3.5 bg-amber-50 border border-amber-200 text-[#8C4F20] text-xs font-semibold rounded-xl">
           {{ error_message }}
         </div>
       {% endif %}
       {% for msg in messages %}
-        <div class="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl">
+        <div class="p-3.5 bg-amber-50 border border-amber-200 text-[#8C4F20] text-xs font-semibold rounded-xl">
           {{ msg }}
         </div>
       {% endfor %}
@@ -60,17 +60,17 @@
     <!-- 2. SECTION 1: SELECTED PRODUCT -->
     <div class="space-y-2 pt-2">
       <div class="flex items-center justify-between">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">Selected product</h2>
-        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-[#7A6E65]">Selected product</h2>
+        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5EE] text-[#8C4F20] border border-[#E8DAC9]">
           {{ quantity|stringformat:"02d"|default:"01" }} PRODUCT(S)
         </span>
       </div>
 
       <!-- Product Card -->
-      <div class="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4">
+      <div class="bg-white rounded-2xl border border-[#E8DAC9] p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4">
         <div class="flex items-center gap-3.5 sm:gap-4 min-w-0">
           <!-- Thumbnail -->
-          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-stone-100 border border-stone-200/60 shrink-0 overflow-hidden flex items-center justify-center">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-[#FAF5EE] border border-[#E8DAC9] shrink-0 overflow-hidden flex items-center justify-center">
             {% if product and product.primary_image %}
               <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
             {% else %}
@@ -80,17 +80,17 @@
 
           <!-- Product Meta -->
           <div class="min-w-0">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-stone-400 block truncate">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-[#8C4F20] block truncate">
               {{ product.category.name|default:"SCULPTURAL ACCENT"|upper }}
             </span>
-            <h3 class="font-bold text-sm sm:text-base text-stone-900 leading-snug truncate mt-0.5">
+            <h3 class="font-bold text-sm sm:text-base text-[#140804] leading-snug truncate mt-0.5">
               {{ product.name|default:"Monolith Roman Travertine Teapoy" }}
             </h3>
-            <p class="text-stone-500 text-xs mt-0.5 truncate">
+            <p class="text-[#7A6E65] text-xs mt-0.5 truncate">
               {{ selected_wood|default:"Honed Roman Travertine" }} • {{ selected_size|default:"120 x 70 cm" }}
             </p>
             <div class="mt-2">
-              <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 text-stone-700 border border-stone-200">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FAF5EE] text-[#8C4F20] border border-[#E8DAC9]">
                 Qty: {{ quantity|stringformat:"02d"|default:"01" }}
               </span>
             </div>
@@ -99,10 +99,10 @@
 
         <!-- Price Meta -->
         <div class="text-right shrink-0">
-          <div class="text-base sm:text-lg font-bold text-stone-900">
+          <div class="text-base sm:text-lg font-bold text-[#140804]">
             {{ formatted_grand_total|default:"₹24,900" }}
           </div>
-          <span class="text-[9px] font-bold tracking-wider uppercase text-stone-400 block mt-0.5">
+          <span class="text-[9px] font-bold tracking-wider uppercase text-[#817470] block mt-0.5">
             TAXES & SHIPPING INCL.
           </span>
         </div>
@@ -111,25 +111,25 @@
 
     <!-- 3. SECTION 2: SUMMARY OF PRODUCT -->
     <div class="space-y-2">
-      <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">Summary of product</h2>
+      <h2 class="text-xs font-bold uppercase tracking-wider text-[#7A6E65]">Summary of product</h2>
 
       <!-- Summary Breakdown Card -->
-      <div class="bg-white rounded-2xl border border-stone-200/90 p-5 shadow-xs space-y-3.5">
-        <div class="flex items-center justify-between text-sm text-stone-600">
+      <div class="bg-white rounded-2xl border border-[#E8DAC9] p-5 shadow-xs space-y-3.5">
+        <div class="flex items-center justify-between text-sm text-[#7A6E65]">
           <span>Subtotal ({{ quantity|default:1 }} Atelier Piece)</span>
-          <span class="font-semibold text-stone-900">{{ formatted_subtotal|default:formatted_grand_total }}</span>
+          <span class="font-semibold text-[#140804]">{{ formatted_subtotal|default:formatted_grand_total }}</span>
         </div>
 
-        <div class="flex items-center justify-between text-sm text-stone-600">
+        <div class="flex items-center justify-between text-sm text-[#7A6E65]">
           <span>Storage / Delivery</span>
-          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
             FREE / EXPRESS
           </span>
         </div>
 
-        <div class="border-t border-stone-200 pt-3 flex items-baseline justify-between">
-          <span class="text-xs uppercase font-bold text-stone-500 tracking-wider">TOTAL PAYABLE (INR)</span>
-          <span class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
+        <div class="border-t border-[#E8DAC9] pt-3 flex items-baseline justify-between">
+          <span class="text-xs uppercase font-bold text-[#7A6E65] tracking-wider">TOTAL PAYABLE (INR)</span>
+          <span class="text-2xl sm:text-3xl font-black text-[#140804] tracking-tight">
             {{ formatted_grand_total|default:"₹1,73,389" }}
           </span>
         </div>
@@ -143,15 +143,15 @@
       <input type="hidden" name="selected_size" value="{{ selected_size|default:'' }}">
       <input type="hidden" name="selected_wood" value="{{ selected_wood|default:'' }}">
       <input type="hidden" name="quantity" value="{{ quantity|default:1 }}">
-      <input type="hidden" name="custom_measurements" value="{{ default_measurements|default:'' }}">
+      <input type="hidden" name="custom_measurements" value="{{ default_measurements|default:selected_wood|default:'Standard Dimensions' }}">
 
-      <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#18110E] hover:bg-[#2A1D18] text-white font-bold text-sm sm:text-base tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99]">
+      <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#140804] hover:bg-[#8C4F20] text-white font-bold text-sm sm:text-base tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99]">
         <span>PROCEED TO PAYMENT</span>
         <span class="text-lg">→</span>
       </button>
 
       <div class="text-center pt-2">
-        <a href="{% url 'checkout_address' %}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-stone-500 hover:text-stone-900 transition-colors">
+        <a href="{% url 'checkout_address' %}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8C4F20] hover:text-[#140804] transition-colors">
           <span>←</span>
           <span>BACK TO ADDRESS</span>
         </a>
