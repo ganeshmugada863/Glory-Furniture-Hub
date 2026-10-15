@@ -1,12 +1,7 @@
----
-title: Glory Furniture Hub
-emoji: 👑
-colorFrom: yellow
-colorTo: red
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # Glory Furniture Hub — Handcrafted Solid Burma Teak E-Commerce Platform
-Powered by Django 5.x & Gunicorn on Hugging Face Docker Cloud Infrastructure.
+
+Official Production Storefront: [https://gloryfurniturehub.com/](https://gloryfurniturehub.com/)  
+Hosting & Serverless Infrastructure: **Vercel**
+
+## Overview
+Glory Furniture Hub is a luxury solid teak wood furniture e-commerce platform featuring an interactive 3D/photorealistic catalog, direct Cashfree payment gateway integration, custom order bookings, and full technical SEO optimization.
