@@ -24,7 +24,7 @@
           window.location.replace('https://gloryfurniturehub.com/accounts/supabase-callback/' + hash);
           return;
         }
-        if (host.includes('onrender.com') || host.includes('hf.space')) {
+        if (host.includes('onrender.com') || host.includes('hf.space') || (host.includes('vercel.app') && !host.includes('gloryfurniturehub.com'))) {
           window.location.replace('https://gloryfurniturehub.com' + window.location.pathname + window.location.search + hash);
           return;
         }

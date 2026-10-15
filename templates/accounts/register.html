@@ -504,7 +504,14 @@
 
     let supabaseClient = null;
     try {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          flowType: 'implicit',
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
     } catch (e) {
       console.error("Supabase init error:", e);
     }
@@ -525,7 +532,7 @@
         if (spinner) spinner.classList.remove('hidden');
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const targetOrigin = isLocal ? window.location.origin : (window.location.origin.includes('hf.space') ? 'https://gloryfurniturehub.com' : window.location.origin);
+        const targetOrigin = isLocal ? window.location.origin : 'https://gloryfurniturehub.com';
 
         try {
           localStorage.setItem('glory_auth_return_url', targetOrigin + '/');
@@ -537,20 +544,11 @@
           provider: 'google',
           options: {
             redirectTo: callbackUrl,
-            skipBrowserRedirect: true,
             queryParams: { prompt: 'select_account' }
           }
         });
 
         if (error) throw error;
-
-        if (data && data.url) {
-          if (window.top !== window.self) {
-            try { window.top.location.href = data.url; } catch(frameErr) { window.location.href = data.url; }
-          } else {
-            window.location.href = data.url;
-          }
-        }
       } catch (err) {
         console.error("Google Auth error:", err);
         if (btn) btn.disabled = false;

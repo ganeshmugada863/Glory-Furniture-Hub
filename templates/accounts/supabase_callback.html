@@ -46,8 +46,8 @@
   </div>
 
   <script>
-    // Fail-safe redirect: If callback landed on Render or old host, bounce immediately to gloryfurniturehub.com
-    if (window.location.hostname.includes('onrender.com') || window.location.hostname.includes('hf.space')) {
+    // Fail-safe redirect: If callback landed on Render, Hugging Face, or old Vercel host, bounce immediately to gloryfurniturehub.com
+    if (window.location.hostname.includes('onrender.com') || window.location.hostname.includes('hf.space') || window.location.hostname.includes('vercel.app')) {
       const prodTarget = 'https://gloryfurniturehub.com' + window.location.pathname + window.location.search + window.location.hash;
       window.location.replace(prodTarget);
     }
@@ -57,7 +57,14 @@
 
     let supabaseClient = null;
     try {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: {
+          flowType: 'implicit',
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
     } catch (e) {
       console.error("Supabase client init error:", e);
     }
