@@ -9,26 +9,33 @@ def global_furniture_context(request):
     user = request.user if (hasattr(request, 'user') and request.user.is_authenticated) else None
     profile = getattr(user, 'profile', None) if user else None
 
+    session = getattr(request, 'session', None) or {}
+
     if user:
         user_name = (profile.full_name if profile and profile.full_name else user.get_full_name()) or user.username
-        user_email = user.email
+        user_email = user.email or ''
         user_phone = profile.phone if profile else ''
         current_role = profile.role if profile else ('admin' if (user.is_staff or user.is_superuser) else 'customer')
-        cart = (profile.cart_items if profile and profile.cart_items else None) or request.session.get('glory_cart', [])
-        wishlist = (profile.wishlist_ids if profile and profile.wishlist_ids else None) or request.session.get('glory_wishlist', [])
+        cart = (profile.cart_items if profile and profile.cart_items is not None else None) or (session.get('glory_cart', []) if hasattr(session, 'get') else [])
+        wishlist = (profile.wishlist_ids if profile and profile.wishlist_ids is not None else None) or (session.get('glory_wishlist', []) if hasattr(session, 'get') else [])
     else:
-        current_role = request.session.get('glory_role', 'customer')
-        user_name = request.session.get('glory_user_name', '')
-        user_email = request.session.get('glory_user_email', '')
-        user_phone = request.session.get('glory_user_phone', '')
-        cart = request.session.get('glory_cart', [])
-        wishlist = request.session.get('glory_wishlist', [])
+        current_role = session.get('glory_role', 'customer') if hasattr(session, 'get') else 'customer'
+        user_name = session.get('glory_user_name', '') if hasattr(session, 'get') else ''
+        user_email = session.get('glory_user_email', '') if hasattr(session, 'get') else ''
+        user_phone = session.get('glory_user_phone', '') if hasattr(session, 'get') else ''
+        cart = session.get('glory_cart', []) if hasattr(session, 'get') else []
+        wishlist = session.get('glory_wishlist', []) if hasattr(session, 'get') else []
+
+    cart_list = cart if isinstance(cart, list) else []
+    wishlist_list = wishlist if isinstance(wishlist, list) else []
 
     wishlist_products = []
-    if wishlist:
+    if wishlist_list:
         try:
-            prods = {p.id: p for p in Product.objects.filter(id__in=wishlist).select_related('category')}
-            wishlist_products = [prods[pid] for pid in wishlist if pid in prods]
+            clean_wishlist = [int(x) for x in wishlist_list if str(x).isdigit()]
+            if clean_wishlist:
+                prods = {p.id: p for p in Product.objects.filter(id__in=clean_wishlist).select_related('category')}
+                wishlist_products = [prods[pid] for pid in clean_wishlist if pid in prods]
         except Exception:
             wishlist_products = []
 
@@ -60,10 +67,10 @@ def global_furniture_context(request):
         'USER_NAME': user_name,
         'USER_EMAIL': user_email,
         'USER_PHONE': user_phone,
-        'CART_ITEMS': cart,
-        'CART_COUNT': len(cart),
-        'WISHLIST_COUNT': len(wishlist),
+        'CART_ITEMS': cart_list,
+        'CART_COUNT': len(cart_list),
+        'WISHLIST_COUNT': len(wishlist_list),
         'WISHLIST_PRODUCTS': wishlist_products,
-        'WISHLIST_IDS': wishlist,
+        'WISHLIST_IDS': wishlist_list,
     }
 

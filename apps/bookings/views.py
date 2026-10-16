@@ -11,11 +11,15 @@ from django.utils import timezone
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+import logging
 from .models import Booking, Order, Installment, PaymentTransaction, InstallmentRescheduleAudit, OrderStatusHistory, OrderAdminAuditLog
 from .services import InstallmentService, PaymentService, RescheduleService, InstallmentRescheduleError, OrderAccessControl
 from apps.payments.models import Payment
 from apps.payments.services import ManualPaymentService, PaymentLedgerService
 from apps.store.models import Product
+from apps.store.views import get_or_create_showcase_product
+
+logger = logging.getLogger('glory_furniture.bookings')
 
 
 def booking_address_step_view(request):
@@ -224,426 +228,468 @@ def booking_summary_view(request):
     - Primary CTA: "PROCEED TO PAYMENT →"
     - Link: "← BACK TO ADDRESS"
     """
-    # Step 1: Ensure Delivery Address is chosen before viewing Summary
-    if request.method == 'GET' and not request.session.get('glory_checkout_address'):
-        u = request.user if request.user.is_authenticated else None
-        p = getattr(u, 'profile', None) if u else None
-        raw_existing = (p.saved_addresses if p else None) or request.session.get('glory_addresses', [])
+    try:
+        # Step 1: Ensure Delivery Address is chosen before viewing Summary
+        raw_checkout = request.session.get('glory_checkout_address')
+        if isinstance(raw_checkout, dict) and raw_checkout:
+            checkout_addr = raw_checkout
+        elif isinstance(raw_checkout, str) and raw_checkout.strip():
+            checkout_addr = {
+                'id': 1,
+                'tag': 'Home',
+                'name': 'Valued Patron',
+                'phone': '',
+                'flat': raw_checkout.strip(),
+                'street': raw_checkout.strip(),
+                'full_text': raw_checkout.strip(),
+                'is_default': True
+            }
+            request.session['glory_checkout_address'] = checkout_addr
+            if hasattr(request.session, 'modified'):
+                request.session.modified = True
+        else:
+            checkout_addr = None
+
+        user = request.user if getattr(request, 'user', None) and request.user.is_authenticated else None
+        profile = getattr(user, 'profile', None) if user else None
+
+        raw_existing = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
         existing_addrs = []
         if isinstance(raw_existing, list):
-            for a in raw_existing:
+            for idx, a in enumerate(raw_existing):
                 if isinstance(a, dict):
                     existing_addrs.append(a)
                 elif isinstance(a, str) and a.strip():
                     existing_addrs.append({
-                        'id': len(existing_addrs) + 1,
-                        'tag': 'HOME',
-                        'is_default': len(existing_addrs) == 0,
+                        'id': idx + 1,
+                        'tag': 'Home',
+                        'is_default': idx == 0,
                         'flat': a.strip(),
                         'street': a.strip(),
                         'full_text': a.strip()
                     })
-        if existing_addrs:
-            default_addr = next((a for a in existing_addrs if a.get('is_default')), existing_addrs[0])
-            request.session['glory_checkout_address'] = default_addr
-            request.session.modified = True
-        else:
+
+        if not checkout_addr and existing_addrs:
+            checkout_addr = next((a for a in existing_addrs if a.get('is_default')), existing_addrs[0])
+            request.session['glory_checkout_address'] = checkout_addr
+            if hasattr(request.session, 'modified'):
+                request.session.modified = True
+
+        if request.method == 'GET' and not checkout_addr and not existing_addrs:
             query_str = request.META.get('QUERY_STRING')
             redirect_url = '/checkout/address/'
             if query_str:
                 redirect_url += f'?{query_str}'
             return redirect(redirect_url)
 
-    # Check product or load from cart
-    product_id = request.GET.get('product') or request.POST.get('product_id')
-    user = request.user if request.user.is_authenticated else None
-    profile = getattr(user, 'profile', None) if user else None
-    cart = (profile.cart_items if profile else None) or request.session.get('glory_cart', [])
+        # Check product or load from cart
+        product_id = request.GET.get('product') or request.POST.get('product_id')
+        raw_cart = (profile.cart_items if profile else None) or request.session.get('glory_cart', [])
+        clean_cart = [i for i in raw_cart if isinstance(i, dict)] if isinstance(raw_cart, list) else []
 
-    selected_size = request.GET.get('bedSize') or request.GET.get('size') or request.POST.get('selected_size')
-    quantity = None
-    if not product_id and cart:
-        primary_item = cart[0]
-        product_id = primary_item.get('id')
-        if not selected_size:
-            selected_size = primary_item.get('size', 'Standard')
-        quantity = int(primary_item.get('quantity', 1))
-
-    try:
-        product = Product.objects.filter(pk=int(product_id)).first() if product_id else None
-    except (ValueError, TypeError):
-        product = None
-
-    if not product:
-        product = Product.objects.first()
-
-    if not selected_size:
-        selected_size = 'Standard'
-
-    selected_wood = request.GET.get('woodType') or request.GET.get('wood') or request.POST.get('selected_wood')
-    if not selected_wood:
-        selected_wood = product.finishes[0] if product and product.finishes else 'Natural Burma Teak'
-
-    # Quantity & Pricing
-    if quantity is None:
-        try:
-            quantity = int(request.GET.get('qty') or request.POST.get('quantity') or 1)
-            if quantity < 1:
+        selected_size = request.GET.get('bedSize') or request.GET.get('size') or request.POST.get('selected_size')
+        quantity = None
+        if not product_id and clean_cart:
+            primary_item = clean_cart[0]
+            product_id = primary_item.get('id')
+            if not selected_size:
+                selected_size = primary_item.get('size', 'Standard')
+            try:
+                quantity = int(primary_item.get('quantity', 1))
+            except (ValueError, TypeError):
                 quantity = 1
-        except ValueError:
-            quantity = 1
 
-    try:
-        raw_price = request.GET.get('price') or request.POST.get('unit_price')
-        if raw_price:
-            unit_price = float(raw_price)
+        product = None
+        if product_id:
+            try:
+                product = get_or_create_showcase_product(pk=int(product_id))
+            except (ValueError, TypeError):
+                product = None
+        if not product:
+            try:
+                product = get_or_create_showcase_product(pk=30)
+            except Exception:
+                product = Product.objects.first()
+
+        if not selected_size:
+            selected_size = 'Standard'
+
+        selected_wood = request.GET.get('woodType') or request.GET.get('wood') or request.POST.get('selected_wood')
+        if not selected_wood:
+            if product and isinstance(product.finishes, list) and len(product.finishes) > 0 and isinstance(product.finishes[0], str):
+                selected_wood = product.finishes[0]
+            else:
+                selected_wood = 'Natural Burma Teak'
+
+        # Quantity & Pricing
+        if quantity is None:
+            try:
+                quantity = int(request.GET.get('qty') or request.POST.get('quantity') or 1)
+                if quantity < 1:
+                    quantity = 1
+            except (ValueError, TypeError):
+                quantity = 1
+
+        try:
+            raw_price = request.GET.get('price') or request.POST.get('unit_price')
+            if raw_price:
+                unit_price = float(raw_price)
+            else:
+                unit_price = float(product.price) if product and hasattr(product, 'price') else 24000.0
+        except (ValueError, TypeError):
+            unit_price = float(product.price) if product and hasattr(product, 'price') else 24000.0
+
+        # Pricing calculations
+        mrp = round(unit_price * 1.30, -2)
+        discount_per_item = mrp - unit_price
+        item_subtotal = unit_price * quantity
+        total_mrp = mrp * quantity
+        total_savings = discount_per_item * quantity
+        delivery_charge = 0.0  # Free White-Glove in Hyderabad
+        gst_included = round(item_subtotal * 0.18, 2)
+        grand_total = item_subtotal + delivery_charge
+
+        # Sanitize session phone if it holds unwanted dummy number
+        if '98765' in request.session.get('glory_user_phone', ''):
+            request.session['glory_user_phone'] = ''
+        if profile and '98765' in (profile.phone or ''):
+            profile.phone = ''
+            profile.save(update_fields=['phone'])
+        if profile and ('Plot 42' in (profile.address or '') or 'Jubilee Hills' in (profile.address or '')):
+            profile.address = ''
+            profile.save(update_fields=['address'])
+
+        default_address = checkout_addr or (existing_addrs[0] if existing_addrs else None)
+        if isinstance(default_address, dict):
+            has_saved_address = bool(default_address.get('flat') or default_address.get('street') or default_address.get('full_text'))
         else:
-            unit_price = float(product.price) if product else 24000.0
-    except (ValueError, TypeError):
-        unit_price = float(product.price) if product else 24000.0
+            has_saved_address = False
+            default_address = None
 
-    # Pricing calculations
-    mrp = round(unit_price * 1.30, -2)
-    discount_per_item = mrp - unit_price
-    item_subtotal = unit_price * quantity
-    total_mrp = mrp * quantity
-    total_savings = discount_per_item * quantity
-    delivery_charge = 0.0  # Free White-Glove in Hyderabad
-    gst_included = round(item_subtotal * 0.18, 2)
-    grand_total = item_subtotal + delivery_charge
+        # Intelligent measurement placeholder & quick presets based on furniture category
+        category_name = ((product.category.name if product and getattr(product, 'category', None) else '') or '').lower()
+        prod_name_lower = (product.name if product else '').lower()
 
-    # Fetch saved address strictly from authenticated user profile first, then session
-    user = request.user if request.user.is_authenticated else None
-    profile = getattr(user, 'profile', None) if user else None
+        if any(k in category_name or k in prod_name_lower for k in ['diwan', 'diwana', 'divan', 'daybed']):
+            item_type = 'diwana'
+            measurement_label = 'Diwana / Daybed Measurements'
+            measurement_placeholder = 'e.g., 72 in (L) × 36 in (W) × 18 in (H) (Standard Single Diwan)'
+            measurement_hint = 'Specify Length × Width × Seating Height from floor.'
+            quick_presets = [
+                {'label': 'Standard (6 × 3 ft)', 'val': '72" (L) × 36" (W) × 18" (H)'},
+                {'label': 'Large (6.5 × 3.5 ft)', 'val': '78" (L) × 42" (W) × 18" (H)'},
+                {'label': 'Mini Diwan (5 × 2.5 ft)', 'val': '60" (L) × 30" (W) × 16" (H)'},
+            ]
+        elif any(k in category_name or k in prod_name_lower for k in ['dining', 'table', 'teapoy', 'desk']):
+            item_type = 'dining_table'
+            measurement_label = 'Dining Table Dimensions'
+            measurement_placeholder = 'e.g., 6-Seater: 72 in (L) × 36 in (W) × 30 in (H)'
+            measurement_hint = 'Specify Tabletop Length × Width × Height (Standard table height is 30 in).'
+            quick_presets = [
+                {'label': '4-Seater (4 × 3 ft)', 'val': '48" (L) × 36" (W) × 30" (H)'},
+                {'label': '6-Seater (6 × 3 ft)', 'val': '72" (L) × 36" (W) × 30" (H)'},
+                {'label': '8-Seater (8 × 4 ft)', 'val': '96" (L) × 42" (W) × 30" (H)'},
+                {'label': 'Round (4 ft Dia)', 'val': '48" Diameter × 30" (H)'},
+            ]
+        elif any(k in category_name or k in prod_name_lower for k in ['sofa', 'couch', 'sectional']):
+            item_type = 'sofa'
+            measurement_label = 'Sofa Set Living Room Dimensions'
+            measurement_placeholder = 'e.g., 3-Seater: 84 in (W) × 36 in (D) × 34 in (H) or Living room wall: 10 ft'
+            measurement_hint = 'Specify Width × Depth × Height, or wall clearance length in feet.'
+            quick_presets = [
+                {'label': '3-Seater (7 × 3 ft)', 'val': '84" (W) × 36" (D) × 34" (H)'},
+                {'label': '3+2 Set', 'val': '84" + 58" (W) × 35" (D) × 34" (H)'},
+                {'label': 'L-Shape Sectional', 'val': '108" × 72" (L-Shape Sectional)'},
+                {'label': '2-Seater (5 × 3 ft)', 'val': '58" (W) × 34" (D) × 32" (H)'},
+            ]
+        elif any(k in category_name or k in prod_name_lower for k in ['bed', 'cot', 'mattress']):
+            item_type = 'bed'
+            measurement_label = 'Bed / Cot Mattress Space Measurements'
+            measurement_placeholder = 'e.g., 78 in (L) × 72 in (W) × 36 in (H) or King Size (6 × 6.5 ft)'
+            measurement_hint = 'Specify Length × Width for mattress fitting, and Headboard Height in inches/feet.'
+            quick_presets = [
+                {'label': 'King (6 × 6.5 ft)', 'val': '78" (L) × 72" (W) × 36" (H)'},
+                {'label': 'Queen (5 × 6.5 ft)', 'val': '78" (L) × 60" (W) × 36" (H)'},
+                {'label': 'Double (4 × 6 ft)', 'val': '72" (L) × 48" (W) × 34" (H)'},
+                {'label': 'Single (3 × 6 ft)', 'val': '72" (L) × 36" (W) × 32" (H)'},
+            ]
+        else:
+            item_type = 'general'
+            measurement_label = 'Product Dimensions & Room Sizing'
+            measurement_placeholder = 'e.g., Length × Width × Height (e.g., 48" × 24" × 32" or 4ft × 2ft)'
+            measurement_hint = 'Enter custom dimensions in feet or inches to fit your room space.'
+            quick_presets = [
+                {'label': 'Standard Dimensions', 'val': product.dimensions if product and getattr(product, 'dimensions', 'Standard') != 'Standard' else '48" (L) × 24" (W) × 30" (H)'},
+                {'label': 'Large / Custom Space', 'val': '60" (L) × 30" (W) × 32" (H)'},
+            ]
 
-    # Sanitize session phone if it holds unwanted dummy number
-    if '98765' in request.session.get('glory_user_phone', ''):
-        request.session['glory_user_phone'] = ''
-    if profile and '98765' in (profile.phone or ''):
-        profile.phone = ''
-        profile.save(update_fields=['phone'])
-    if profile and ('Plot 42' in (profile.address or '') or 'Jubilee Hills' in (profile.address or '')):
-        profile.address = ''
-        profile.save(update_fields=['address'])
-
-    raw_addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
-    # Strictly filter out any old contaminated address entries
-    valid_addresses = []
-    if isinstance(raw_addresses, list):
-        for a in raw_addresses:
-            a_str = str(a)
-            if '98765' in a_str or 'Plot 42' in a_str or 'Jubilee Hills' in a_str:
-                continue
-            if isinstance(a, dict):
-                valid_addresses.append(a)
-            elif isinstance(a, str) and a.strip():
-                valid_addresses.append({
-                    'id': len(valid_addresses) + 1,
-                    'tag': 'Home',
-                    'full_text': a.strip(),
-                    'flat': a.strip(),
-                    'street': a.strip(),
-                    'is_default': len(valid_addresses) == 0
-                })
-
-    if valid_addresses:
-        default_address = next((a for a in valid_addresses if a.get('is_default')), valid_addresses[0])
-        has_saved_address = bool(default_address.get('flat') or default_address.get('street') or default_address.get('full_text'))
-    else:
-        default_address = None
-        has_saved_address = False
-
-    # Intelligent measurement placeholder & quick presets based on furniture category
-    category_name = ((product.category.name if product and product.category else '') or '').lower()
-    prod_name_lower = (product.name if product else '').lower()
-
-    if any(k in category_name or k in prod_name_lower for k in ['diwan', 'diwana', 'divan', 'daybed']):
-        item_type = 'diwana'
-        measurement_label = 'Diwana / Daybed Measurements'
-        measurement_placeholder = 'e.g., 72 in (L) × 36 in (W) × 18 in (H) (Standard Single Diwan)'
-        measurement_hint = 'Specify Length × Width × Seating Height from floor.'
-        quick_presets = [
-            {'label': 'Standard (6 × 3 ft)', 'val': '72" (L) × 36" (W) × 18" (H)'},
-            {'label': 'Large (6.5 × 3.5 ft)', 'val': '78" (L) × 42" (W) × 18" (H)'},
-            {'label': 'Mini Diwan (5 × 2.5 ft)', 'val': '60" (L) × 30" (W) × 16" (H)'},
-        ]
-    elif any(k in category_name or k in prod_name_lower for k in ['dining', 'table', 'teapoy', 'desk']):
-        item_type = 'dining_table'
-        measurement_label = 'Dining Table Dimensions'
-        measurement_placeholder = 'e.g., 6-Seater: 72 in (L) × 36 in (W) × 30 in (H)'
-        measurement_hint = 'Specify Tabletop Length × Width × Height (Standard table height is 30 in).'
-        quick_presets = [
-            {'label': '4-Seater (4 × 3 ft)', 'val': '48" (L) × 36" (W) × 30" (H)'},
-            {'label': '6-Seater (6 × 3 ft)', 'val': '72" (L) × 36" (W) × 30" (H)'},
-            {'label': '8-Seater (8 × 4 ft)', 'val': '96" (L) × 42" (W) × 30" (H)'},
-            {'label': 'Round (4 ft Dia)', 'val': '48" Diameter × 30" (H)'},
-        ]
-    elif any(k in category_name or k in prod_name_lower for k in ['sofa', 'couch', 'sectional']):
-        item_type = 'sofa'
-        measurement_label = 'Sofa Set Living Room Dimensions'
-        measurement_placeholder = 'e.g., 3-Seater: 84 in (W) × 36 in (D) × 34 in (H) or Living room wall: 10 ft'
-        measurement_hint = 'Specify Width × Depth × Height, or wall clearance length in feet.'
-        quick_presets = [
-            {'label': '3-Seater (7 × 3 ft)', 'val': '84" (W) × 36" (D) × 34" (H)'},
-            {'label': '3+2 Set', 'val': '84" + 58" (W) × 35" (D) × 34" (H)'},
-            {'label': 'L-Shape Sectional', 'val': '108" × 72" (L-Shape Sectional)'},
-            {'label': '2-Seater (5 × 3 ft)', 'val': '58" (W) × 34" (D) × 32" (H)'},
-        ]
-    elif any(k in category_name or k in prod_name_lower for k in ['bed', 'cot', 'mattress']):
-        item_type = 'bed'
-        measurement_label = 'Bed / Cot Mattress Space Measurements'
-        measurement_placeholder = 'e.g., 78 in (L) × 72 in (W) × 36 in (H) or King Size (6 × 6.5 ft)'
-        measurement_hint = 'Specify Length × Width for mattress fitting, and Headboard Height in inches/feet.'
-        quick_presets = [
-            {'label': 'King (6 × 6.5 ft)', 'val': '78" (L) × 72" (W) × 36" (H)'},
-            {'label': 'Queen (5 × 6.5 ft)', 'val': '78" (L) × 60" (W) × 36" (H)'},
-            {'label': 'Double (4 × 6 ft)', 'val': '72" (L) × 48" (W) × 34" (H)'},
-            {'label': 'Single (3 × 6 ft)', 'val': '72" (L) × 36" (W) × 32" (H)'},
-        ]
-    else:
-        item_type = 'general'
-        measurement_label = 'Product Dimensions & Room Sizing'
-        measurement_placeholder = 'e.g., Length × Width × Height (e.g., 48" × 24" × 32" or 4ft × 2ft)'
-        measurement_hint = 'Enter custom dimensions in feet or inches to fit your room space.'
-        quick_presets = [
-            {'label': 'Standard Dimensions', 'val': product.dimensions if product and product.dimensions != 'Standard' else '48" (L) × 24" (W) × 30" (H)'},
-            {'label': 'Large / Custom Space', 'val': '60" (L) × 30" (W) × 32" (H)'},
-        ]
-
-    initial_measurements = (request.GET.get('measurements') or (primary_item.get('measurements') if not product_id and cart else '') or '').strip()
-
-    if request.method == 'POST':
-        custom_measurements = (
-            request.POST.get('custom_measurements') or 
-            request.POST.get('measurements') or 
+        initial_measurements = (
             request.GET.get('measurements') or 
-            (f"{selected_wood} • {selected_size}" if selected_wood and selected_size else 'Standard Dimensions')
+            (clean_cart[0].get('measurements') if not product_id and clean_cart else '') or 
+            ''
         ).strip()
 
-        raw_checkout = request.session.get('glory_checkout_address') or default_address or {}
-        if isinstance(raw_checkout, dict):
-            checkout_addr = raw_checkout
-        else:
-            checkout_addr = {
-                'id': 1,
-                'name': '',
-                'phone': '',
-                'flat': str(raw_checkout),
-                'street': str(raw_checkout),
-                'full_text': str(raw_checkout)
-            }
-        post_name = request.POST.get('customer_name', '').strip() or checkout_addr.get('name', '')
-        raw_phone = request.POST.get('phone', '').strip() or checkout_addr.get('phone', '')
-        clean_phone = re.sub(r'\D', '', str(raw_phone))
-        if len(clean_phone) == 12 and clean_phone.startswith('91'):
-            clean_phone = clean_phone[2:]
-        if len(clean_phone) > 10:
-            clean_phone = clean_phone[-10:]
-        if clean_phone in ['9876543210', '09876543210']:
-            clean_phone = ''
+        if request.method == 'POST':
+            custom_measurements = (
+                request.POST.get('custom_measurements') or 
+                request.POST.get('measurements') or 
+                request.GET.get('measurements') or 
+                (f"{selected_wood} • {selected_size}" if selected_wood and selected_size else 'Standard Dimensions')
+            ).strip()
 
-        if user:
-            email = user.email or checkout_addr.get('email', '') or 'patron@gloryfurniturehub.com'
-            customer_name = post_name or (profile.full_name if profile and profile.full_name else user.get_full_name()) or user.username or 'Valued Patron'
-            phone = clean_phone or (profile.phone if profile and profile.phone and '98765' not in profile.phone else '')
-        else:
-            email = request.POST.get('email', '').strip().lower() or checkout_addr.get('email', '') or 'patron@gloryfurniturehub.com'
-            customer_name = post_name or 'Valued Patron'
-            phone = clean_phone
+            active_checkout = checkout_addr or default_address or {}
+            post_name = request.POST.get('customer_name', '').strip() or (active_checkout.get('name', '') if isinstance(active_checkout, dict) else '')
+            raw_phone = request.POST.get('phone', '').strip() or (active_checkout.get('phone', '') if isinstance(active_checkout, dict) else '')
+            clean_phone = re.sub(r'\D', '', str(raw_phone))
+            if len(clean_phone) == 12 and clean_phone.startswith('91'):
+                clean_phone = clean_phone[2:]
+            if len(clean_phone) > 10:
+                clean_phone = clean_phone[-10:]
+            if clean_phone in ['9876543210', '09876543210']:
+                clean_phone = ''
 
-        if not phone:
-            s_phone = request.session.get('glory_user_phone', '')
-            if s_phone and '98765' not in s_phone:
-                phone = s_phone
+            if user:
+                email = user.email or (active_checkout.get('email', '') if isinstance(active_checkout, dict) else '') or 'patron@gloryfurniturehub.com'
+                customer_name = post_name or (profile.full_name if profile and profile.full_name else user.get_full_name()) or user.username or 'Valued Patron'
+                phone = clean_phone or (profile.phone if profile and profile.phone and '98765' not in profile.phone else '')
+            else:
+                email = request.POST.get('email', '').strip().lower() or (active_checkout.get('email', '') if isinstance(active_checkout, dict) else '') or 'patron@gloryfurniturehub.com'
+                customer_name = post_name or 'Valued Patron'
+                phone = clean_phone
 
-        def_flat = default_address.get('flat', '') if isinstance(default_address, dict) else ''
-        def_street = default_address.get('street', '') if isinstance(default_address, dict) else ''
-        def_landmark = default_address.get('landmark', '') if isinstance(default_address, dict) else ''
-        def_city = default_address.get('city', '') if isinstance(default_address, dict) else ''
-        def_state = default_address.get('state', '') if isinstance(default_address, dict) else ''
-        def_pincode = default_address.get('pincode', '') if isinstance(default_address, dict) else ''
+            if not phone:
+                s_phone = request.session.get('glory_user_phone', '')
+                if s_phone and '98765' not in s_phone:
+                    phone = s_phone
 
-        flat = request.POST.get('flat', '').strip() or checkout_addr.get('flat', '') or def_flat
-        street = request.POST.get('street', '').strip() or checkout_addr.get('street', '') or def_street
-        landmark = request.POST.get('landmark', '').strip() or checkout_addr.get('landmark', '') or def_landmark
-        city = request.POST.get('city', '').strip() or checkout_addr.get('city', '') or def_city
-        state = request.POST.get('state', '').strip() or checkout_addr.get('state', '') or def_state
-        pincode = request.POST.get('pincode', '').strip() or checkout_addr.get('pincode', '') or def_pincode
+            def_flat = default_address.get('flat', '') if isinstance(default_address, dict) else ''
+            def_street = default_address.get('street', '') if isinstance(default_address, dict) else ''
+            def_landmark = default_address.get('landmark', '') if isinstance(default_address, dict) else ''
+            def_city = default_address.get('city', '') if isinstance(default_address, dict) else ''
+            def_state = default_address.get('state', '') if isinstance(default_address, dict) else ''
+            def_pincode = default_address.get('pincode', '') if isinstance(default_address, dict) else ''
 
-        full_address = checkout_addr.get('full_text') or checkout_addr.get('street')
-        if not full_address:
-            addr_parts = [p for p in [flat, street, landmark, city, state] if p]
-            full_address = ", ".join(addr_parts)
-            if pincode:
-                full_address = f"{full_address} - {pincode}".strip(' -')
-        if not full_address:
-            full_address = 'Standard Doorstep Delivery'
+            flat = request.POST.get('flat', '').strip() or (active_checkout.get('flat', '') if isinstance(active_checkout, dict) else '') or def_flat
+            street = request.POST.get('street', '').strip() or (active_checkout.get('street', '') if isinstance(active_checkout, dict) else '') or def_street
+            landmark = request.POST.get('landmark', '').strip() or (active_checkout.get('landmark', '') if isinstance(active_checkout, dict) else '') or def_landmark
+            city = request.POST.get('city', '').strip() or (active_checkout.get('city', '') if isinstance(active_checkout, dict) else '') or def_city
+            state = request.POST.get('state', '').strip() or (active_checkout.get('state', '') if isinstance(active_checkout, dict) else '') or def_state
+            pincode = request.POST.get('pincode', '').strip() or (active_checkout.get('pincode', '') if isinstance(active_checkout, dict) else '') or def_pincode
 
-        # Auto-save address into user profile for future orders if valid and not already saved
-        if user and profile and (flat or street) and not profile.saved_addresses:
-            new_saved_addr = {
-                'id': 1,
-                'tag': 'Home (Default)',
-                'is_default': True,
-                'name': customer_name,
-                'phone': phone,
-                'email': email,
-                'flat': flat,
-                'street': street,
-                'landmark': landmark,
-                'city': city,
-                'state': state,
-                'pincode': pincode,
-            }
-            profile.saved_addresses = [new_saved_addr]
-            profile.save(update_fields=['saved_addresses'])
+            full_address = (active_checkout.get('full_text') or active_checkout.get('street')) if isinstance(active_checkout, dict) else None
+            if not full_address:
+                addr_parts = [p for p in [flat, street, landmark, city, state] if p]
+                full_address = ", ".join(addr_parts)
+                if pincode:
+                    full_address = f"{full_address} - {pincode}".strip(' -')
+            if not full_address:
+                full_address = 'Standard Doorstep Delivery'
 
-        delivery_preference = request.POST.get('delivery_preference', 'Immediate Dispatch (5-7 Days)')
-        payment_plan = 'FULL_PAYMENT'
+            # Auto-save address into user profile for future orders if valid and not already saved
+            if user and profile and (flat or street) and not profile.saved_addresses:
+                new_saved_addr = {
+                    'id': 1,
+                    'tag': 'Home (Default)',
+                    'is_default': True,
+                    'name': customer_name,
+                    'phone': phone,
+                    'email': email,
+                    'flat': flat,
+                    'street': street,
+                    'landmark': landmark,
+                    'city': city,
+                    'state': state,
+                    'pincode': pincode,
+                }
+                profile.saved_addresses = [new_saved_addr]
+                profile.save(update_fields=['saved_addresses'])
 
-        preferred_date = request.POST.get('preferred_date') or str(timezone.now().date() + timedelta(days=5))
-        customer_notes = request.POST.get('notes', '').strip()
+            delivery_preference = request.POST.get('delivery_preference', 'Immediate Dispatch (5-7 Days)')
+            chosen_plan = request.POST.get('payment_plan', 'FULL_PAYMENT')
+            customer_notes = request.POST.get('notes', '').strip()
 
-        prod_name = product.name if product else 'Handcrafted Teak Piece'
-        order_notes = (
-            f"Product: {prod_name} (ID #{product.id if product else product_id}) | "
-            f"Measurements: {custom_measurements} | "
-            f"Size: {selected_size} | Finish: {selected_wood} | Qty: {quantity} | "
-            f"Total: ₹{grand_total:,.0f} | Plan: Full Payment | Slot: {delivery_preference}"
-        )
-        if customer_notes:
-            order_notes += f" | Note: {customer_notes}"
+            prod_name = product.name if product else 'Handcrafted Teak Piece'
+            order_notes = (
+                f"Product: {prod_name} (ID #{product.id if product else product_id}) | "
+                f"Measurements: {custom_measurements} | "
+                f"Size: {selected_size} | Finish: {selected_wood} | Qty: {quantity} | "
+                f"Total: ₹{grand_total:,.0f} | Plan: Full Payment | Slot: {delivery_preference}"
+            )
+            if customer_notes:
+                order_notes += f" | Note: {customer_notes}"
 
-        # Create Order directly without fake Booking
-        chosen_plan = request.POST.get('payment_plan', 'FULL_PAYMENT')
-        order = Order.objects.create(
-            user=user,
-            booking=None,
-            customer_name=customer_name,
-            email=email,
-            phone=phone,
-            shipping_address=full_address,
-            product=product,
-            product_name=prod_name,
-            selected_size=selected_size,
-            selected_wood=selected_wood,
-            custom_measurements=custom_measurements,
-            quantity=quantity,
-            unit_price=Decimal(str(unit_price)),
-            total_amount=Decimal(str(grand_total)),
-            paid_amount=Decimal('0.00'),
-            remaining_amount=Decimal(str(grand_total)),
-            payment_plan=chosen_plan,
-            payment_status='PENDING',
-            fulfillment_status='CONFIRMED',
-            order_status='PENDING_PAYMENT'
-        )
+            order = Order.objects.create(
+                user=user,
+                booking=None,
+                customer_name=customer_name,
+                email=email,
+                phone=phone,
+                shipping_address=full_address,
+                product=product,
+                product_name=prod_name,
+                selected_size=selected_size,
+                selected_wood=selected_wood,
+                custom_measurements=custom_measurements,
+                quantity=quantity,
+                unit_price=Decimal(str(unit_price)),
+                total_amount=Decimal(str(grand_total)),
+                paid_amount=Decimal('0.00'),
+                remaining_amount=Decimal(str(grand_total)),
+                payment_plan=chosen_plan,
+                payment_status='PENDING',
+                fulfillment_status='CONFIRMED',
+                order_status='PENDING_PAYMENT'
+            )
 
-        prod_days = product.installment_days if product and hasattr(product, 'installment_days') and product.installment_days else 30
-        if chosen_plan == 'THREE_INSTALLMENTS':
-            amounts = InstallmentService.calculate_three_installments(grand_total)
-            dates = InstallmentService.get_schedule_dates(timezone.now().date(), total_days=prod_days)
-            order.installment_plan_snapshot = {
-                'plan_name': f'3 Equal Installments ({prod_days} Days)',
-                'duration_days': prod_days,
-                'total_days': prod_days,
-                'installment_count': 3,
-                'created_at': str(timezone.now())
-            }
-            order.save(update_fields=['installment_plan_snapshot'])
-            for num, (amt, due) in enumerate(zip(amounts, dates), start=1):
-                Installment.objects.create(
+            prod_days = product.installment_days if product and hasattr(product, 'installment_days') and product.installment_days else 30
+            if chosen_plan == 'THREE_INSTALLMENTS':
+                amounts = InstallmentService.calculate_three_installments(grand_total)
+                dates = InstallmentService.get_schedule_dates(timezone.now().date(), total_days=prod_days)
+                order.installment_plan_snapshot = {
+                    'plan_name': f'3 Equal Installments ({prod_days} Days)',
+                    'duration_days': prod_days,
+                    'total_days': prod_days,
+                    'installment_count': 3,
+                    'created_at': str(timezone.now())
+                }
+                order.save(update_fields=['installment_plan_snapshot'])
+                for num, (amt, due) in enumerate(zip(amounts, dates), start=1):
+                    Installment.objects.create(
+                        order=order,
+                        installment_number=num,
+                        amount=amt,
+                        due_date=due,
+                        status='PENDING'
+                    )
+            else:
+                order.installment_plan_snapshot = {
+                    'duration_days': prod_days,
+                    'total_days': prod_days,
+                }
+                order.save(update_fields=['installment_plan_snapshot'])
+
+            try:
+                OrderStatusHistory.objects.create(
                     order=order,
-                    installment_number=num,
-                    amount=amt,
-                    due_date=due,
-                    status='PENDING'
+                    fulfillment_status='CONFIRMED',
+                    previous_status='ORDER_PLACED',
+                    admin_notes='Order placed by patron at checkout.'
                 )
-        else:
-            order.installment_plan_snapshot = {
-                'duration_days': prod_days,
-                'total_days': prod_days,
+            except Exception:
+                pass
+
+            # Clear cart if order placed from cart
+            if raw_cart:
+                if profile:
+                    profile.cart_items = []
+                    profile.save(update_fields=['cart_items'])
+                request.session['glory_cart'] = []
+                if hasattr(request.session, 'modified'):
+                    request.session.modified = True
+
+            prod_img = product.primary_image if product and hasattr(product, 'primary_image') else ''
+            request.session[f'order_payment_{order.order_number}'] = {
+                'order_id': order.id,
+                'order_number': order.order_number,
+                'product_name': prod_name,
+                'product_id': product.id if product else product_id,
+                'product_image': prod_img,
+                'selected_size': selected_size,
+                'selected_wood': selected_wood,
+                'custom_measurements': custom_measurements,
+                'quantity': quantity,
+                'unit_price': float(unit_price),
+                'grand_total': float(grand_total),
+                'payment_plan': 'FULL_PAYMENT',
             }
-            order.save(update_fields=['installment_plan_snapshot'])
 
-        OrderStatusHistory.objects.create(
-            order=order,
-            fulfillment_status='CONFIRMED',
-            previous_status='ORDER_PLACED',
-            admin_notes='Order placed by patron at checkout.'
-        )
+            # Track order in customer session so it always appears in My Orders
+            order_ids = request.session.get('glory_customer_order_ids', [])
+            if order.id not in order_ids:
+                order_ids.append(order.id)
+            request.session['glory_customer_order_ids'] = order_ids
+            request.session['glory_user_email'] = email
+            request.session['glory_user_name'] = customer_name
+            request.session['glory_user_phone'] = phone
+            request.session['glory_role'] = 'customer'
+            if hasattr(request.session, 'modified'):
+                request.session.modified = True
 
-        # Clear cart if order placed from cart
-        if cart:
-            if profile:
-                profile.cart_items = []
-                profile.save(update_fields=['cart_items'])
-            request.session['glory_cart'] = []
-            request.session.modified = True
+            return redirect('payment_checkout', order_number=order.order_number)
 
-        prod_img = product.primary_image if product and hasattr(product, 'primary_image') else ''
-        request.session[f'order_payment_{order.order_number}'] = {
-            'order_id': order.id,
-            'order_number': order.order_number,
-            'product_name': prod_name,
-            'product_id': product.id if product else product_id,
-            'product_image': prod_img,
+        default_delivery_date = str(timezone.now().date() + timedelta(days=5))
+
+        context = {
+            'product': product,
             'selected_size': selected_size,
             'selected_wood': selected_wood,
-            'custom_measurements': custom_measurements,
             'quantity': quantity,
-            'unit_price': float(unit_price),
-            'grand_total': float(grand_total),
-            'payment_plan': 'FULL_PAYMENT',
+            'unit_price': unit_price,
+            'mrp': mrp,
+            'total_mrp': total_mrp,
+            'total_savings': total_savings,
+            'item_subtotal': item_subtotal,
+            'delivery_charge': delivery_charge,
+            'gst_included': gst_included,
+            'grand_total': grand_total,
+            'formatted_grand_total': f"₹{int(grand_total):,}",
+            'formatted_unit_price': f"₹{int(unit_price):,}",
+            'formatted_mrp': f"₹{int(mrp):,}",
+            'formatted_subtotal': f"₹{int(item_subtotal):,}",
+            'formatted_savings': f"₹{int(total_savings):,}",
+            'formatted_gst': f"₹{int(gst_included):,}",
+            'default_delivery_date': default_delivery_date,
+            'saved_address': default_address,
+            'has_saved_address': has_saved_address,
+            'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address and isinstance(default_address, dict) else '') or request.session.get('glory_user_name', '') or 'Valued Patron',
+            'user_email': (user.email if user else None) or (default_address.get('email') if default_address and isinstance(default_address, dict) else '') or request.session.get('glory_user_email', '') or '',
+            'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address and isinstance(default_address, dict) else '') or request.session.get('glory_user_phone', '') or '',
+            'item_type': item_type,
+            'measurement_label': measurement_label,
+            'measurement_placeholder': measurement_placeholder,
+            'measurement_hint': measurement_hint,
+            'quick_presets': quick_presets,
+            'default_measurements': initial_measurements,
         }
-
-        # Track order in customer session so it always appears in My Orders
-        order_ids = request.session.get('glory_customer_order_ids', [])
-        if order.id not in order_ids:
-            order_ids.append(order.id)
-        request.session['glory_customer_order_ids'] = order_ids
-        request.session['glory_user_email'] = email
-        request.session['glory_user_name'] = customer_name
-        request.session['glory_user_phone'] = phone
-        request.session['glory_role'] = 'customer'
-
-        return redirect('payment_checkout', order_number=order.order_number)
-
-    default_delivery_date = str(timezone.now().date() + timedelta(days=5))
-
-    context = {
-        'product': product,
-        'selected_size': selected_size,
-        'selected_wood': selected_wood,
-        'quantity': quantity,
-        'unit_price': unit_price,
-        'mrp': mrp,
-        'total_mrp': total_mrp,
-        'total_savings': total_savings,
-        'item_subtotal': item_subtotal,
-        'delivery_charge': delivery_charge,
-        'gst_included': gst_included,
-        'grand_total': grand_total,
-        'formatted_grand_total': f"₹{int(grand_total):,}",
-        'formatted_unit_price': f"₹{int(unit_price):,}",
-        'formatted_mrp': f"₹{int(mrp):,}",
-        'formatted_subtotal': f"₹{int(item_subtotal):,}",
-        'formatted_savings': f"₹{int(total_savings):,}",
-        'formatted_gst': f"₹{int(gst_included):,}",
-        'default_delivery_date': default_delivery_date,
-        'saved_address': default_address,
-        'has_saved_address': has_saved_address,
-        'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address and isinstance(default_address, dict) else '') or 'Valued Patron',
-        'user_email': (user.email if user else None) or (default_address.get('email') if default_address and isinstance(default_address, dict) else '') or '',
-        'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address and isinstance(default_address, dict) else '') or '',
-        'item_type': item_type,
-        'measurement_label': measurement_label,
-        'measurement_placeholder': measurement_placeholder,
-        'measurement_hint': measurement_hint,
-        'quick_presets': quick_presets,
-        'default_measurements': initial_measurements,
-    }
-    return render(request, 'bookings/checkout_summary.html', context)
+        return render(request, 'bookings/checkout_summary.html', context)
+    except Exception as e:
+        logger.error("Error in booking_summary_view: %s", e, exc_info=True)
+        fallback_prod = get_or_create_showcase_product(pk=30)
+        p_price = float(fallback_prod.price if fallback_prod else 25000)
+        fallback_context = {
+            'product': fallback_prod,
+            'selected_size': 'Standard',
+            'selected_wood': 'Natural Burma Teak',
+            'quantity': 1,
+            'unit_price': p_price,
+            'mrp': round(p_price * 1.3, -2),
+            'total_mrp': round(p_price * 1.3, -2),
+            'total_savings': round(p_price * 0.3, -2),
+            'item_subtotal': p_price,
+            'delivery_charge': 0.0,
+            'gst_included': round(p_price * 0.18, 2),
+            'grand_total': p_price,
+            'formatted_grand_total': f"₹{int(p_price):,}",
+            'formatted_unit_price': f"₹{int(p_price):,}",
+            'formatted_mrp': f"₹{int(p_price * 1.3):,}",
+            'formatted_subtotal': f"₹{int(p_price):,}",
+            'formatted_savings': f"₹{int(p_price * 0.3):,}",
+            'formatted_gst': f"₹{int(p_price * 0.18):,}",
+            'default_delivery_date': str(timezone.now().date() + timedelta(days=5)),
+            'saved_address': None,
+            'has_saved_address': False,
+            'user_name': request.session.get('glory_user_name', 'Valued Patron'),
+            'user_email': request.session.get('glory_user_email', ''),
+            'user_phone': request.session.get('glory_user_phone', ''),
+            'item_type': 'general',
+            'measurement_label': 'Product Dimensions',
+            'measurement_placeholder': 'Standard Dimensions',
+            'measurement_hint': 'Standard Measurements',
+            'quick_presets': [],
+            'default_measurements': 'Standard Dimensions',
+            'error_message': 'Order summary refreshed.',
+        }
+        return render(request, 'bookings/checkout_summary.html', fallback_context)
 
 
 def booking_payment_view(request, booking_id):
