@@ -704,4 +704,55 @@ def sitemap_xml_view(request):
     return HttpResponse("\n".join(xml_lines), content_type="application/xml; charset=utf-8")
 
 
+def policy_page_view(request, slug):
+    """
+    Renders public policy and information pages managed via Admin Footer CMS:
+    1. Contact Us (/contact-us)
+    2. Terms & Conditions (/terms-and-conditions)
+    3. Privacy Policy (/privacy-policy)
+    4. Refunds & Cancellations (/refunds-cancellations)
+    5. Shipping & Delivery Policy (/shipping-policy)
+    6. Payment & Installment Policy (/payment-installment-policy)
+    """
+    from apps.core.models import FooterPage
+    try:
+        FooterPage.seed_default_pages()
+    except Exception:
+        pass
+
+    is_admin = request.session.get('glory_role') == 'admin' or (
+        request.user.is_authenticated and (
+            request.user.is_staff or 
+            request.user.is_superuser or 
+            getattr(getattr(request.user, 'profile', None), 'role', '') == 'admin'
+        )
+    )
+    is_preview = is_admin and (request.GET.get('preview') == 'true')
+
+    page = FooterPage.objects.filter(slug=slug).first()
+    if not page:
+        from django.http import Http404
+        raise Http404("Policy page not found.")
+
+    if not page.is_published and not is_preview:
+        from django.http import Http404
+        raise Http404("This page is currently unpublished.")
+
+    sections = list(page.sections.filter(is_active=True).order_by('order', 'id'))
+
+    context = {
+        'page': page,
+        'sections': sections,
+        'is_preview': is_preview,
+        'is_admin': is_admin,
+        'active_title': page.draft_title if (is_preview and page.draft_title) else page.title,
+        'active_summary': page.draft_summary if (is_preview and page.draft_summary) else page.summary,
+    }
+    return render(request, 'core/policy_page.html', context)
+
+
+def policy_page_redirect(request, slug):
+    return redirect(f'/{slug}/', permanent=True)
+
+
 

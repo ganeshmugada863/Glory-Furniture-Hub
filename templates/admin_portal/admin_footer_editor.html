@@ -1,0 +1,423 @@
+{% extends 'admin_portal/admin_base.html' %}
+{% load static %}
+
+{% block title %}Editor: {{ page.title }} — Glory Studio Admin{% endblock %}
+
+{% block content %}
+<!-- FULL-WINDOW CONTENT EDITOR CONTAINER -->
+<div class="space-y-6 -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 bg-[#F4EFEB] min-h-[calc(100vh-64px)]">
+
+  <!-- TOP STICKY EDITOR HEADER BAR -->
+  <div class="sticky top-[64px] z-40 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/90 shadow-md p-4 sm:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all">
+    
+    <!-- Left: Navigation & Page Identity -->
+    <div class="flex items-center gap-3.5 min-w-0">
+      <a href="{% url 'admin_footer_cms' %}" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors flex items-center gap-1.5 flex-shrink-0" title="Back to Footer Management">
+        <span>&larr;</span>
+        <span class="hidden sm:inline">Footer Management</span>
+      </a>
+
+      <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
+
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="text-2xl flex-shrink-0">{{ page.icon|default:"📄" }}</span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-base sm:text-lg font-black text-gray-950 truncate leading-tight">
+              {{ page.title }}
+            </h1>
+            
+            <!-- Live Status Badge -->
+            {% if page.status == 'published' and page.is_published %}
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Published</span>
+              </span>
+            {% elif page.status == 'draft' %}
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                <span>Draft Edits</span>
+              </span>
+            {% else %}
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                <span>Unpublished</span>
+              </span>
+            {% endif %}
+          </div>
+          <span class="text-[11px] text-gray-500 block mt-0.5">
+            URL: <a href="/{{ page.slug }}/" target="_blank" class="font-mono text-[#5C3D2E] underline hover:text-black">/{{ page.slug }}/</a>
+            {% if page.published_at %}
+            &bull; Live since {{ page.published_at|date:"d M Y, h:i A" }}
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Action Buttons (Preview, Save Draft, Publish, Discard) -->
+    <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end flex-shrink-0">
+      
+      <!-- Preview Button (Draft preview for admin) -->
+      <a href="/{{ page.slug }}/?preview=true" target="_blank" class="px-3 sm:px-4 py-2 rounded-xl bg-white border border-gray-200 hover:border-gray-400 text-gray-700 hover:text-gray-950 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5">
+        <span>👁️</span>
+        <span>Preview</span>
+      </a>
+
+      <!-- Discard Unsaved Changes Button -->
+      <button type="button" onclick="confirmDiscard()" class="px-3 sm:px-4 py-2 rounded-xl bg-gray-100 hover:bg-rose-50 text-gray-700 hover:text-rose-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+        <span>↩️</span>
+        <span class="hidden sm:inline">Discard</span>
+      </button>
+
+      <!-- Save Draft Button -->
+      <button type="button" onclick="submitEditorForm('save_draft')" class="px-3.5 sm:px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+        <span>💾</span>
+        <span>Save Draft</span>
+      </button>
+
+      <!-- Publish Live Button -->
+      <button type="button" onclick="confirmPublish()" class="px-4 sm:px-5 py-2 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
+        <span>🚀</span>
+        <span>Publish Changes</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Messages Alert -->
+  {% if messages %}
+  <div class="space-y-2 max-w-5xl mx-auto">
+    {% for message in messages %}
+    <div class="p-4 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %} rounded-2xl text-xs flex items-center justify-between shadow-2xs">
+      <div class="flex items-center gap-2">
+        <span class="text-base">{% if message.tags == 'error' %}⚠️{% else %}✅{% endif %}</span>
+        <span class="font-bold">{{ message }}</span>
+      </div>
+      <button type="button" onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-700 font-bold">&times;</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- MAIN DOCUMENT FORM -->
+  <form id="editor-form" method="POST" action="" class="space-y-6 max-w-5xl mx-auto">
+    {% csrf_token %}
+    <input type="hidden" name="action" id="form-action" value="save_draft">
+    <input type="hidden" name="sections_json" id="sections-json-input" value="">
+
+    <!-- DOCUMENT METADATA CARD -->
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+        <h2 class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">Page Identity &amp; Meta</h2>
+        <span class="text-[11px] text-gray-400">Basic document metadata</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Page Title -->
+        <div class="md:col-span-2 space-y-1">
+          <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Page Title (H1)</label>
+          <input type="text" name="title" id="page-title-input" value="{{ page.draft_title|default:page.title }}" class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2.5 text-sm font-bold text-gray-950 focus:outline-none focus:border-[#5C3D2E]" required>
+        </div>
+
+        <!-- Footer Navigation Label -->
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Footer Nav Label</label>
+          <input type="text" name="nav_label" value="{{ page.draft_nav_label|default:page.nav_label }}" class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2.5 text-sm text-gray-950 focus:outline-none focus:border-[#5C3D2E]">
+        </div>
+      </div>
+
+      <!-- Introduction / Summary Text -->
+      <div class="space-y-1">
+        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Introduction / Executive Overview</label>
+        <textarea name="summary" rows="3" class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl p-3.5 text-xs text-gray-800 leading-relaxed focus:outline-none focus:border-[#5C3D2E]" placeholder="A concise summary of this document displayed prominently at the top of the public page...">{{ page.draft_summary|default:page.summary }}</textarea>
+      </div>
+    </div>
+
+    <!-- SECTIONS MANAGER (Editable Paragraphs & Sections) -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider">Document Sections &amp; Paragraphs</h2>
+          <p class="text-xs text-gray-500 mt-0.5">Edit individual sentences, paragraphs, or headings directly. You never have to rewrite the entire page.</p>
+        </div>
+        <button type="button" onclick="addNewSection()" class="px-3.5 py-1.5 rounded-xl bg-[#5C3D2E] hover:bg-[#3D2517] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer">
+          <span>➕ Add Section</span>
+        </button>
+      </div>
+
+      <!-- Container where sections are rendered & reordered -->
+      <div id="sections-container" class="space-y-5">
+        {% for sec in sections %}
+        <div class="section-card bg-white rounded-2xl border border-gray-200 hover:border-gray-300 p-5 sm:p-6 shadow-xs space-y-4 transition-all" data-sec-id="{{ sec.id }}">
+          
+          <!-- Section Card Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100 gap-3">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-6 h-6 rounded-lg bg-[#FAF5EE] border border-[#E8DAC9] text-[#5C3D2E] font-bold text-xs flex items-center justify-center section-number">
+                {{ forloop.counter }}
+              </span>
+              <span class="text-xs font-black uppercase tracking-wider text-gray-700">Section Clause</span>
+            </div>
+
+            <!-- Controls: Up, Down, Delete -->
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="moveSectionUp(this)" class="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs transition-colors" title="Move Section Up">
+                ▲
+              </button>
+              <button type="button" onclick="moveSectionDown(this)" class="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs transition-colors" title="Move Section Down">
+                ▼
+              </button>
+              <button type="button" onclick="deleteSection(this)" class="p-1.5 rounded-lg bg-gray-100 hover:bg-red-50 text-gray-500 hover:text-red-700 text-xs transition-colors ml-1" title="Delete This Section">
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <!-- Section Heading Input -->
+          <div class="space-y-1">
+            <label class="block text-[11px] font-bold text-gray-600 uppercase tracking-wider">Clause / Section Heading</label>
+            <input type="text" class="section-heading-input w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2 text-sm font-bold text-gray-900 focus:outline-none focus:border-[#5C3D2E]" value="{{ sec.draft_heading|default:sec.heading }}" placeholder="e.g., 1. Natural Wood Grain Nuances">
+          </div>
+
+          <!-- Rich-Text Toolbar -->
+          <div class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+            <div class="flex items-center gap-1 p-2 bg-gray-50/80 border-b border-gray-200 flex-wrap text-xs">
+              <button type="button" onclick="formatDoc(this, 'bold')" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-800 font-bold w-7 text-center" title="Bold">B</button>
+              <button type="button" onclick="formatDoc(this, 'italic')" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-800 italic w-7 text-center" title="Italic">I</button>
+              <button type="button" onclick="formatDoc(this, 'underline')" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-800 underline w-7 text-center" title="Underline">U</button>
+              <div class="w-px h-4 bg-gray-300 mx-1"></div>
+              <button type="button" onclick="formatBlock(this, 'h3')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 font-bold text-[11px]" title="Subheading (H3)">H3</button>
+              <button type="button" onclick="formatBlock(this, 'p')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 font-bold text-[11px]" title="Paragraph">¶</button>
+              <div class="w-px h-4 bg-gray-300 mx-1"></div>
+              <button type="button" onclick="formatDoc(this, 'insertUnorderedList')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 text-[11px]" title="Bullet List">• Bullet List</button>
+              <button type="button" onclick="formatDoc(this, 'insertOrderedList')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 text-[11px]" title="Numbered List">1. Number List</button>
+              <div class="w-px h-4 bg-gray-300 mx-1"></div>
+              <button type="button" onclick="createLink(this)" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 text-[11px]" title="Insert Link">🔗 Link</button>
+              <button type="button" onclick="formatDoc(this, 'removeFormat')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-500 text-[11px]" title="Clear Formatting">🧹 Clear</button>
+            </div>
+
+            <!-- Content Editable Workspace for Instant Paragraph Editing -->
+            <div class="section-content-editor p-4 min-h-[140px] max-h-[360px] overflow-y-auto text-xs sm:text-sm text-gray-800 leading-relaxed focus:outline-none" contenteditable="true" spellcheck="true" oninput="markDirty()">
+              {{ sec.draft_content|default:sec.content|safe }}
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Add Section Bottom Button -->
+      <div class="text-center pt-2">
+        <button type="button" onclick="addNewSection()" class="w-full py-4 border-2 border-dashed border-[#D8C7B5] hover:border-[#5C3D2E] rounded-2xl text-xs font-bold text-[#5C3D2E] hover:bg-white transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <span class="text-base font-bold">➕</span>
+          <span>Click to Add a New Document Clause or Section</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- BOTTOM FLOATING ACTION BAR -->
+    <div class="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-xs text-gray-500">
+        <span>Draft edits stay private. Public visitors see the live published version until you click Publish.</span>
+      </div>
+
+      <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <button type="button" onclick="submitEditorForm('save_draft')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer">
+          💾 Save Draft Edits
+        </button>
+        <button type="button" onclick="confirmPublish()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all cursor-pointer">
+          🚀 Publish Live to Website
+        </button>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+<!-- HIDDEN DISCARD FORM -->
+<form id="discard-form" method="POST" action="" class="hidden">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="discard">
+</form>
+
+<script>
+  let isDirty = false;
+
+  function markDirty() {
+    isDirty = true;
+  }
+
+  window.addEventListener('beforeunload', function(e) {
+    if (isDirty) {
+      e.preventDefault();
+      e.returnValue = 'You have unsaved changes in this document editor. Are you sure you want to leave?';
+    }
+  });
+
+  // Re-index section numbers
+  function updateSectionNumbers() {
+    const cards = document.querySelectorAll('.section-card');
+    cards.forEach((card, index) => {
+      const numSpan = card.querySelector('.section-number');
+      if (numSpan) numSpan.textContent = index + 1;
+    });
+  }
+
+  // Rich Text Formatting Tools
+  function formatDoc(btn, cmd, value = null) {
+    const card = btn.closest('.section-card');
+    const editor = card.querySelector('.section-content-editor');
+    editor.focus();
+    document.execCommand(cmd, false, value);
+    markDirty();
+  }
+
+  function formatBlock(btn, tag) {
+    const card = btn.closest('.section-card');
+    const editor = card.querySelector('.section-content-editor');
+    editor.focus();
+    document.execCommand('formatBlock', false, tag);
+    markDirty();
+  }
+
+  function createLink(btn) {
+    const url = prompt("Enter hyperlink URL (e.g. https://... or /catalog/):", "https://");
+    if (url) {
+      formatDoc(btn, 'createLink', url);
+    }
+  }
+
+  // Move Section Up
+  function moveSectionUp(btn) {
+    const card = btn.closest('.section-card');
+    const prev = card.previousElementSibling;
+    if (prev && prev.classList.contains('section-card')) {
+      card.parentNode.insertBefore(card, prev);
+      updateSectionNumbers();
+      markDirty();
+    }
+  }
+
+  // Move Section Down
+  function moveSectionDown(btn) {
+    const card = btn.closest('.section-card');
+    const next = card.nextElementSibling;
+    if (next && next.classList.contains('section-card')) {
+      card.parentNode.insertBefore(next, card);
+      updateSectionNumbers();
+      markDirty();
+    }
+  }
+
+  // Delete Section
+  function deleteSection(btn) {
+    if (confirm("Are you sure you want to delete this section? This change will be saved when you Save Draft or Publish.")) {
+      const card = btn.closest('.section-card');
+      card.remove();
+      updateSectionNumbers();
+      markDirty();
+    }
+  }
+
+  // Add New Section
+  function addNewSection() {
+    const container = document.getElementById('sections-container');
+    const newIdx = container.querySelectorAll('.section-card').length + 1;
+
+    const newCard = document.createElement('div');
+    newCard.className = "section-card bg-white rounded-2xl border border-gray-200 hover:border-gray-300 p-5 sm:p-6 shadow-xs space-y-4 transition-all";
+    newCard.setAttribute('data-sec-id', '');
+    newCard.innerHTML = `
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100 gap-3">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="w-6 h-6 rounded-lg bg-[#FAF5EE] border border-[#E8DAC9] text-[#5C3D2E] font-bold text-xs flex items-center justify-center section-number">
+            ${newIdx}
+          </span>
+          <span class="text-xs font-black uppercase tracking-wider text-gray-700">New Clause</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="moveSectionUp(this)" class="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs transition-colors">▲</button>
+          <button type="button" onclick="moveSectionDown(this)" class="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs transition-colors">▼</button>
+          <button type="button" onclick="deleteSection(this)" class="p-1.5 rounded-lg bg-gray-100 hover:bg-red-50 text-gray-500 hover:text-red-700 text-xs transition-colors ml-1">🗑️</button>
+        </div>
+      </div>
+      <div class="space-y-1">
+        <label class="block text-[11px] font-bold text-gray-600 uppercase tracking-wider">Clause / Section Heading</label>
+        <input type="text" class="section-heading-input w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2 text-sm font-bold text-gray-900 focus:outline-none focus:border-[#5C3D2E]" placeholder="e.g., Section Heading">
+      </div>
+      <div class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+        <div class="flex items-center gap-1 p-2 bg-gray-50/80 border-b border-gray-200 flex-wrap text-xs">
+          <button type="button" onclick="formatDoc(this, 'bold')" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-800 font-bold w-7 text-center">B</button>
+          <button type="button" onclick="formatDoc(this, 'italic')" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-800 italic w-7 text-center">I</button>
+          <button type="button" onclick="formatDoc(this, 'underline')" class="p-1.5 rounded-lg hover:bg-gray-200 text-gray-800 underline w-7 text-center">U</button>
+          <div class="w-px h-4 bg-gray-300 mx-1"></div>
+          <button type="button" onclick="formatBlock(this, 'h3')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 font-bold text-[11px]">H3</button>
+          <button type="button" onclick="formatBlock(this, 'p')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 font-bold text-[11px]">¶</button>
+          <div class="w-px h-4 bg-gray-300 mx-1"></div>
+          <button type="button" onclick="formatDoc(this, 'insertUnorderedList')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 text-[11px]">• Bullet List</button>
+          <button type="button" onclick="formatDoc(this, 'insertOrderedList')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 text-[11px]">1. Number List</button>
+          <div class="w-px h-4 bg-gray-300 mx-1"></div>
+          <button type="button" onclick="createLink(this)" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 text-[11px]">🔗 Link</button>
+          <button type="button" onclick="formatDoc(this, 'removeFormat')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-500 text-[11px]">🧹 Clear</button>
+        </div>
+        <div class="section-content-editor p-4 min-h-[140px] max-h-[360px] overflow-y-auto text-xs sm:text-sm text-gray-800 leading-relaxed focus:outline-none" contenteditable="true" spellcheck="true" oninput="markDirty()">
+          <p>Enter paragraph text here...</p>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(newCard);
+    updateSectionNumbers();
+    markDirty();
+
+    // Focus on new heading
+    newCard.querySelector('.section-heading-input').focus();
+  }
+
+  // Submit Form Helper: Collects all sections into JSON array
+  function submitEditorForm(actionName) {
+    const form = document.getElementById('editor-form');
+    document.getElementById('form-action').value = actionName;
+
+    const sections = [];
+    const cards = document.querySelectorAll('.section-card');
+
+    cards.forEach((card, idx) => {
+      const sId = card.getAttribute('data-sec-id');
+      const heading = card.querySelector('.section-heading-input').value.trim();
+      const editor = card.querySelector('.section-content-editor');
+      const content = editor.innerHTML.trim();
+
+      if (heading || content) {
+        sections.push({
+          id: sId || null,
+          heading: heading,
+          content: content,
+          order: idx + 1
+        });
+      }
+    });
+
+    document.getElementById('sections-json-input').value = JSON.stringify(sections);
+    isDirty = false;
+    form.submit();
+  }
+
+  // Confirm Publish
+  function confirmPublish() {
+    if (confirm("Are you ready to publish these changes live to https://gloryfurniturehub.com/{{ page.slug }}/?\n\nThis will instantly update the public website.")) {
+      submitEditorForm('publish');
+    }
+  }
+
+  // Confirm Discard
+  function confirmDiscard() {
+    if (confirm("Discard all unsaved draft edits and revert to the published version?")) {
+      isDirty = false;
+      document.getElementById('discard-form').submit();
+    }
+  }
+</script>
+{% endblock %}

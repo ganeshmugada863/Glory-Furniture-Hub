@@ -50,6 +50,12 @@ def global_furniture_context(request):
     except Exception:
         home_media_cms = None
 
+    try:
+        from apps.core.models import FooterPage
+        footer_pages = list(FooterPage.objects.filter(is_in_footer=True, is_published=True).order_by('footer_order', 'id'))
+    except Exception:
+        footer_pages = []
+
     from django.conf import settings
     site_url = getattr(settings, 'SITE_URL', 'https://gloryfurniturehub.com').rstrip('/')
     req_path = getattr(request, 'path', '/')
@@ -62,6 +68,7 @@ def global_furniture_context(request):
         'SITE_TAGLINE': (site_settings.tagline if site_settings and site_settings.tagline else 'Fine Teak Craftsmanship'),
         'WEBSITE_SETTINGS': site_settings,
         'HOME_MEDIA_CMS': home_media_cms,
+        'FOOTER_PAGES': footer_pages,
         'GLOBAL_CATEGORIES': categories,
         'CURRENT_ROLE': current_role,
         'USER_NAME': user_name,

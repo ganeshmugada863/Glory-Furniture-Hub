@@ -53,6 +53,10 @@ urlpatterns = [
     path('admin/settings/', views.admin_settings_view, name='admin_settings'),
     path('admin/page-cms/', views.admin_page_cms_view, name='admin_page_cms'),
     path('admin/media-cms/', views.admin_media_cms_view, name='admin_media_cms'),
+    path('admin/footer/', views.admin_footer_cms_view, name='admin_footer_cms'),
+    path('admin/footer/edit/<slug:slug>/', views.admin_footer_editor_view, name='admin_footer_editor'),
+    path('admin-portal/footer/', views.admin_footer_cms_view, name='admin_portal_footer_cms'),
+    path('admin-portal/footer/edit/<slug:slug>/', views.admin_footer_editor_view, name='admin_portal_footer_editor'),
     
     # Admin Alias for Backward Compatibility
     path('admin-portal/', views.admin_dashboard_view, name='admin_portal'),

@@ -89,8 +89,13 @@ class RoleBasedAccessMiddleware:
             path.startswith('/address') or
             path.startswith('/customer/address') or
             path.startswith('/booking') or
-            path.startswith('/orders') or
-            path in ['/about/', '/contact/', '/faq/', '/guide/', '/splash/', '/onboarding/']
+            path in ['/about/', '/contact/', '/faq/', '/guide/', '/splash/', '/onboarding/'] or
+            path in [
+                '/contact-us/', '/terms-and-conditions/', '/privacy-policy/',
+                '/refunds-cancellations/', '/shipping-policy/', '/payment-installment-policy/',
+                '/terms/', '/privacy/', '/shipping/', '/cancellations/'
+            ] or
+            path.startswith('/policy/')
         )
 
         # 1. ADMIN ROUTE GUARD

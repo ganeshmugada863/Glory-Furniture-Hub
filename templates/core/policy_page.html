@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ active_title }} — Glory Furniture Hub{% endblock %}
+
+{% block meta_description %}{{ active_summary|truncatewords:28|default:active_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .policy-content p {
+    margin-bottom: 1rem;
+    line-height: 1.75;
+    color: #374151;
+  }
+  .policy-content ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    space-y: 0.5rem;
+    color: #374151;
+  }
+  .policy-content ol {
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    space-y: 0.5rem;
+    color: #374151;
+  }
+  .policy-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.65;
+  }
+  .policy-content a {
+    color: #5C3D2E;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  .policy-content a:hover {
+    color: #140804;
+  }
+  .policy-content h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#FBF9F6] text-[#140804] pb-16">
+
+  {% if is_preview %}
+  <!-- ADMIN DRAFT PREVIEW MODE BANNER (Only visible to admin in preview mode) -->
+  <div class="sticky top-0 z-50 bg-amber-500 text-gray-950 px-4 py-2.5 text-xs font-bold shadow-md flex items-center justify-between flex-wrap gap-2">
+    <div class="flex items-center gap-2">
+      <span class="text-base">⚠️</span>
+      <span>DRAFT PREVIEW MODE: You are previewing unpublished draft content. Ordinary website visitors see the live published version.</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'admin_footer_editor' slug=page.slug %}" class="px-3 py-1 bg-gray-950 text-white rounded-lg text-xs font-bold hover:bg-[#5C3D2E] transition-colors">
+        ✏️ Return to Content Editor
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- HERO HEADER -->
+  <div class="bg-gradient-to-b from-[#FAF5EE] to-[#FBF9F6] border-b border-[#E8DAC9]/80 py-10 sm:py-14 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-5xl mx-auto space-y-4">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-[#7A6E65]">
+        <a href="{% url 'home' %}" class="hover:text-[#140804] transition-colors font-medium">Home</a>
+        <span>/</span>
+        <span class="font-bold text-[#8C4F20]">{{ active_title }}</span>
+      </nav>
+
+      <!-- Title & Icon -->
+      <div class="flex items-start sm:items-center gap-3.5">
+        <span class="text-3xl sm:text-4xl p-2.5 rounded-2xl bg-white border border-[#E8DAC9] shadow-2xs">
+          {{ page.icon|default:"📄" }}
+        </span>
+        <div>
+          <h1 class="text-2xl sm:text-4xl font-black text-[#140804] tracking-tight">
+            {{ active_title }}
+          </h1>
+          <p class="text-xs sm:text-sm text-[#7A6E65] mt-1">
+            Official policy document of Glory Furniture Hub, Hyderabad
+            {% if page.published_at %}
+            &bull; Updated on {{ page.published_at|date:"F d, Y" }}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAIN DOCUMENT CONTENT -->
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 pt-8 sm:pt-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+      
+      <!-- LEFT SIDEBAR: Table of Contents (Sticky on Desktop) -->
+      <aside class="hidden lg:block lg:col-span-4">
+        <div class="sticky top-24 bg-white rounded-2xl border border-[#E8DAC9] p-5 shadow-xs space-y-3">
+          <h2 class="text-xs font-black uppercase tracking-wider text-[#8C4F20]">Document Sections</h2>
+          <nav class="space-y-1 text-xs">
+            {% for sec in sections %}
+            <a href="#section-{{ forloop.counter }}" class="block px-3 py-2 rounded-xl text-[#7A6E65] hover:bg-[#FAF5EE] hover:text-[#140804] font-medium transition-colors truncate">
+              {{ sec.active_heading|default:"Section" }}
+            </a>
+            {% endfor %}
+          </nav>
+
+          {% if is_admin %}
+          <div class="pt-3 border-t border-[#E8DAC9]">
+            <a href="{% url 'admin_footer_editor' slug=page.slug %}" class="w-full py-2 px-3 rounded-xl bg-gray-100 hover:bg-[#5C3D2E] text-gray-700 hover:text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5">
+              <span>✏️</span>
+              <span>Edit Document in Admin</span>
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: Document Body & Sections -->
+      <main class="lg:col-span-8 space-y-6">
+        
+        <!-- Summary Callout Box -->
+        {% if active_summary %}
+        <div class="bg-[#FAF5EE] border border-[#E8DAC9] rounded-2xl p-5 sm:p-6 shadow-2xs">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-[#8C4F20] block mb-1">
+            EXECUTIVE OVERVIEW
+          </span>
+          <p class="text-xs sm:text-sm text-[#140804] font-medium leading-relaxed">
+            {{ active_summary }}
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- Individual Sections -->
+        <div class="space-y-6">
+          {% for sec in sections %}
+          <article id="section-{{ forloop.counter }}" class="bg-white rounded-2xl border border-[#E8DAC9] p-6 sm:p-8 shadow-xs space-y-3 scroll-mt-24">
+            
+            <h2 class="text-base sm:text-lg font-bold text-[#140804] pb-2 border-b border-[#FAF5EE]">
+              {{ sec.active_heading }}
+            </h2>
+
+            <div class="policy-content text-xs sm:text-sm leading-relaxed">
+              {{ sec.active_content|safe }}
+            </div>
+
+          </article>
+          {% empty %}
+          <div class="bg-white rounded-2xl border border-[#E8DAC9] p-8 text-center text-gray-500">
+            <p>This policy document is currently being updated by our master craftsmen.</p>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Support Concierge Box -->
+        <div class="bg-[#140804] text-white rounded-2xl p-6 sm:p-8 shadow-md flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div class="space-y-1 text-center sm:text-left">
+            <span class="text-xs font-bold text-[#C9963F] uppercase tracking-wider">Atelier Consultation</span>
+            <h3 class="text-base sm:text-lg font-bold">Have Questions About This Policy?</h3>
+            <p class="text-xs text-gray-300">
+              Our workshop team in Hyderabad is available to discuss custom dimensions, timber specs, and order commitments.
+            </p>
+          </div>
+          <a href="{% url 'contact_us' %}" class="px-5 py-3 rounded-xl bg-[#C9963F] hover:bg-[#b0802f] text-gray-950 font-bold text-xs shrink-0 transition-colors shadow-sm">
+            Contact Support &rarr;
+          </a>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

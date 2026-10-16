@@ -612,9 +612,10 @@
           <ul class="space-y-2 text-xs text-gray-600">
             <li><a href="{% url 'custom_request' %}" class="hover:text-gray-950 transition-colors">Custom Furniture Request</a></li>
             <li><a href="{% url 'my_bookings' %}" class="hover:text-gray-950 transition-colors">Track Your Booking</a></li>
-            <li><a href="{% url 'wishlist' %}" class="hover:text-gray-950 transition-colors">Saved Wishlist</a></li>
-            <li><a href="{% url 'profile' %}" class="hover:text-gray-950 transition-colors">My Profile & Orders</a></li>
-            <li><a href="{% url 'contact' %}" class="hover:text-gray-950 transition-colors">Customer Support</a></li>
+            <li><a href="{% url 'contact_us' %}" class="hover:text-gray-950 transition-colors">Contact Us &amp; Studio</a></li>
+            <li><a href="{% url 'shipping_policy' %}" class="hover:text-gray-950 transition-colors">Shipping &amp; Delivery</a></li>
+            <li><a href="{% url 'refunds_cancellations' %}" class="hover:text-gray-950 transition-colors">Returns &amp; Cancellations</a></li>
+            <li><a href="{% url 'payment_installment_policy' %}" class="hover:text-gray-950 transition-colors">Payment &amp; Installments</a></li>
           </ul>
         </div>
 
@@ -625,7 +626,8 @@
             <li><a href="{% url 'home' %}" class="hover:text-gray-950 transition-colors">Home</a></li>
             <li><a href="{% url 'catalog' %}" class="hover:text-gray-950 transition-colors">Full Catalog</a></li>
             <li><a href="{% url 'custom_request' %}" class="hover:text-gray-950 transition-colors">Bespoke Carpentry</a></li>
-            <li><a href="{% url 'contact' %}" class="hover:text-gray-950 transition-colors">Contact Workshop</a></li>
+            <li><a href="{% url 'contact_us' %}" class="hover:text-gray-950 transition-colors">Contact Workshop</a></li>
+            <li><a href="{% url 'terms_and_conditions' %}" class="hover:text-gray-950 transition-colors">Terms &amp; Conditions</a></li>
             <li><a href="{% url 'about' %}" class="hover:text-gray-950 transition-colors">About Glory</a></li>
           </ul>
         </div>
@@ -635,12 +637,23 @@
       <!-- Bottom Legal Bar -->
       <div class="mt-10 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-gray-500">
         <p>{{ WEBSITE_SETTINGS.copyright_text|default:'© 2026 Glory Furniture Hub. Handcrafted in Hyderabad, India.' }}</p>
-        <div class="flex items-center gap-4">
-          <span class="hover:text-gray-800 cursor-pointer">Privacy Policy</span>
-          <span>•</span>
-          <span class="hover:text-gray-800 cursor-pointer">Terms of Service</span>
-          <span>•</span>
-          <span class="hover:text-gray-800 cursor-pointer">Warranty Policy</span>
+        <div class="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-end">
+          {% if FOOTER_PAGES %}
+            {% for fp in FOOTER_PAGES %}
+              <a href="/{{ fp.slug }}/" class="hover:text-gray-950 transition-colors">{{ fp.nav_label|default:fp.title }}</a>
+              {% if not forloop.last %}<span>•</span>{% endif %}
+            {% endfor %}
+          {% else %}
+            <a href="{% url 'privacy_policy' %}" class="hover:text-gray-950 transition-colors">Privacy Policy</a>
+            <span>•</span>
+            <a href="{% url 'terms_and_conditions' %}" class="hover:text-gray-950 transition-colors">Terms &amp; Conditions</a>
+            <span>•</span>
+            <a href="{% url 'refunds_cancellations' %}" class="hover:text-gray-950 transition-colors">Refunds &amp; Cancellations</a>
+            <span>•</span>
+            <a href="{% url 'shipping_policy' %}" class="hover:text-gray-950 transition-colors">Shipping Policy</a>
+            <span>•</span>
+            <a href="{% url 'payment_installment_policy' %}" class="hover:text-gray-950 transition-colors">Payment &amp; Installments</a>
+          {% endif %}
         </div>
       </div>
     </div>

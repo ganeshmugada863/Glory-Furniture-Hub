@@ -531,4 +531,302 @@ class HomeMediaCMS(models.Model):
         return 'https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM'
 
 
+class FooterPage(models.Model):
+    """
+    Managed Content Page for Footer & Policies:
+    1. Contact Us (/contact-us)
+    2. Terms & Conditions (/terms-and-conditions)
+    3. Privacy Policy (/privacy-policy)
+    4. Refunds & Cancellations (/refunds-cancellations)
+    5. Shipping & Delivery Policy (/shipping-policy)
+    6. Payment & Installment Policy (/payment-installment-policy)
+    """
+    STATUS_CHOICES = [
+        ('published', 'Published'),
+        ('draft', 'Draft / Unsaved Revisions'),
+        ('unpublished', 'Unpublished'),
+    ]
+
+    slug = models.SlugField(max_length=100, unique=True, help_text="URL slug identifier")
+    title = models.CharField(max_length=200, help_text="Published page title")
+    nav_label = models.CharField(max_length=100, help_text="Label in footer navigation")
+    icon = models.CharField(max_length=50, default="📜", help_text="Emoji or icon symbol")
+    short_description = models.CharField(max_length=300, blank=True, default="", help_text="Admin description")
+    summary = models.TextField(blank=True, default="", help_text="Published page introduction")
+
+    # Draft / Work-in-progress content
+    draft_title = models.CharField(max_length=200, blank=True, default="")
+    draft_nav_label = models.CharField(max_length=100, blank=True, default="")
+    draft_summary = models.TextField(blank=True, default="")
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')
+    is_published = models.BooleanField(default=True)
+    is_in_footer = models.BooleanField(default=True, help_text="Show in public footer")
+    footer_order = models.PositiveIntegerField(default=1)
+
+    published_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    last_updated_by = models.CharField(max_length=150, blank=True, default="Master Admin")
+
+    class Meta:
+        ordering = ['footer_order', 'id']
+        verbose_name = 'Footer Content Page'
+        verbose_name_plural = 'Footer Content Pages'
+
+    def __str__(self):
+        return f"{self.title} (/{self.slug})"
+
+    def get_absolute_url(self):
+        return f"/{self.slug}/"
+
+    @property
+    def active_title(self):
+        return self.title or self.draft_title
+
+    @property
+    def active_summary(self):
+        return self.summary or self.draft_summary
+
+    @classmethod
+    def seed_default_pages(cls):
+        """
+        Seeds the exact six required content pages with professional, comprehensive,
+        real business content for Glory Furniture Hub if they don't already exist.
+        """
+        from django.utils import timezone
+        now = timezone.now()
+
+        pages_data = [
+            {
+                'slug': 'contact-us',
+                'title': 'Contact Us',
+                'nav_label': 'Contact Us',
+                'icon': '📞',
+                'footer_order': 1,
+                'short_description': 'Studio workshop address, direct customer support, phone, email & consultation hours.',
+                'summary': 'Connect directly with Glory Furniture Hub’s master craftsmen, customer care studio, and workshop consultants in Hyderabad for custom orders, measurements, and order tracking.',
+                'sections': [
+                    {
+                        'heading': '1. Workshop & Studio Location',
+                        'content': '<p>Our primary woodworking studio and atelier is based in Hyderabad, Telangana. We welcome patrons, architects, and interior designers by appointment for timber grain inspection, live carving observation, and bespoke consultations.</p><p><strong>Workshop Address:</strong> Glory Furniture Hub, Workshop & Atelier Suite, Hyderabad, Telangana, India.</p>'
+                    },
+                    {
+                        'heading': '2. Direct Support Channels',
+                        'content': '<p>For order inquiries, delivery coordination, or custom furniture quotations, you can reach our team via:</p><ul><li><strong>Support Email:</strong> support@gloryfurniturehub.com</li><li><strong>Direct Phone:</strong> +91 95159 12524</li><li><strong>WhatsApp Concierge:</strong> +91 95159 12524</li></ul><p>Our support lines are open Monday through Saturday, from 10:00 AM to 7:30 PM IST.</p>'
+                    },
+                    {
+                        'heading': '3. Custom Design Consultations',
+                        'content': '<p>If you have specific architectural blueprints or require custom-dimensioned pieces, you may submit your reference photos and room dimensions through our Custom Request portal or schedule an in-home measurement visit with our field carpenter.</p>'
+                    }
+                ]
+            },
+            {
+                'slug': 'terms-and-conditions',
+                'title': 'Terms & Conditions',
+                'nav_label': 'Terms & Conditions',
+                'icon': '📜',
+                'footer_order': 2,
+                'short_description': 'Terms of sale, solid wood characteristics, order commitments, warranty and legal conditions.',
+                'summary': 'These Terms & Conditions govern all purchases, custom joinery commissions, online orders, and customer relations with Glory Furniture Hub.',
+                'sections': [
+                    {
+                        'heading': '1. Craftsmanship & Natural Wood Characteristics',
+                        'content': '<p>All Glory Furniture Hub furniture is handcrafted from genuine, seasoned, kiln-dried Burma and CP Teak Wood. Because solid wood is an authentic organic material, subtle variations in natural grain patterns, knots, growth rings, and warm timber tone nuances are inherent signatures of genuine timber and are not defects.</p>'
+                    },
+                    {
+                        'heading': '2. Custom Commissions & Blueprint Approvals',
+                        'content': '<p>For bespoke orders with custom dimensions, fabric selection, or wood finishes, production commences once the customer confirms specifications. Customers are responsible for verifying room clearance and doorway access dimensions prior to dispatch.</p>'
+                    },
+                    {
+                        'heading': '3. Pricing, GST & Taxes',
+                        'content': '<p>All listed prices are denominated in Indian Rupees (INR) and are inclusive of 18% Goods & Services Tax (GST) as mandated by Indian law. Invoices with GST breakdown are provided upon order confirmation.</p>'
+                    },
+                    {
+                        'heading': '4. 10-Year Joinery & Anti-Termite Warranty',
+                        'content': '<p>Every Glory solid teak piece includes our structural warranty covering mortise-and-tenon frame integrity and kiln-treatment anti-borer protection. Warranty covers normal residential use and excludes accidental physical damage, improper outdoor exposure, or unauthorized structural modifications.</p>'
+                    }
+                ]
+            },
+            {
+                'slug': 'privacy-policy',
+                'title': 'Privacy Policy',
+                'nav_label': 'Privacy Policy',
+                'icon': '🛡️',
+                'footer_order': 3,
+                'short_description': 'Customer data protection, delivery address confidentiality, payment gateway security and rights.',
+                'summary': 'At Glory Furniture Hub, we treat your personal privacy and transactional security with the highest standard of care.',
+                'sections': [
+                    {
+                        'heading': '1. Information We Collect',
+                        'content': '<p>We collect personal information necessary to fulfill your orders, provide white-glove delivery, and maintain customer accounts. This includes your name, delivery address, phone number, email address, and order history.</p>'
+                    },
+                    {
+                        'heading': '2. Payment Security & Tokenization',
+                        'content': '<p>We do not store complete credit card numbers, debit card PINs, or UPI passwords on our servers. All online transactions are processed through Cashfree Payments India Private Limited using 256-bit SSL encryption and RBI-compliant tokenized gateway infrastructure.</p>'
+                    },
+                    {
+                        'heading': '3. Use of Delivery & Location Data',
+                        'content': '<p>Your delivery address and phone number are used strictly by our logistics team and white-glove transport partners to coordinate route dispatch and safe installation. We never sell, rent, or trade your personal information to third-party marketing companies.</p>'
+                    },
+                    {
+                        'heading': '4. Data Retention & Customer Rights',
+                        'content': '<p>You may view, update, or request deletion of your saved addresses and account data at any time through your Profile dashboard or by contacting support@gloryfurniturehub.com.</p>'
+                    }
+                ]
+            },
+            {
+                'slug': 'refunds-cancellations',
+                'title': 'Refunds & Cancellations',
+                'nav_label': 'Refunds & Cancellations',
+                'icon': '↩️',
+                'footer_order': 4,
+                'short_description': 'Cancellation windows, transit damage protocols, customized product terms and refund processing.',
+                'summary': 'Clear and transparent policies governing order cancellations, damaged-product claims, returns, and refund processing.',
+                'sections': [
+                    {
+                        'heading': '1. Order Cancellation Window',
+                        'content': '<p>Standard catalog orders may be cancelled within 24 hours of order placement for a full 100% refund without deduction, before raw timber cutting and preliminary joinery have begun.</p>'
+                    },
+                    {
+                        'heading': '2. Customized & Bespoke Furniture',
+                        'content': '<p>Custom orders built to non-standard dimensions, bespoke carvings, or custom upholstery fabrics cannot be cancelled after raw timber has been tailored and machined (after 48 hours of design sign-off). Partial refunds may be considered on a case-by-case basis subject to material recovery costs.</p>'
+                    },
+                    {
+                        'heading': '3. Damaged or Defective on Delivery Claims',
+                        'content': '<p>Our White-Glove delivery personnel unpack and assemble your furniture at your residence. Please inspect the piece upon arrival. In the rare event of transit damage or structural defect, report it immediately to the delivery team or within 48 hours with photographs. We will repair, replace the affected component, or provide a full replacement at our expense.</p>'
+                    },
+                    {
+                        'heading': '4. Refund Timelines & Mode of Payment',
+                        'content': '<p>Approved refunds are credited back to the original payment source (Bank Account, UPI, or Credit/Debit Card) via our payment gateway within 5 to 7 business days from approval date.</p>'
+                    }
+                ]
+            },
+            {
+                'slug': 'shipping-policy',
+                'title': 'Shipping & Delivery Policy',
+                'nav_label': 'Shipping & Delivery Policy',
+                'icon': '🚚',
+                'footer_order': 5,
+                'short_description': 'White-glove assembly in Hyderabad, pan-India insured freight, packaging and delivery timelines.',
+                'summary': 'Comprehensive guidelines on our white-glove delivery, pan-India transport packaging, delivery schedules, and home clearance requirements.',
+                'sections': [
+                    {
+                        'heading': '1. White-Glove In-Home Delivery (Hyderabad)',
+                        'content': '<p>For orders within the Hyderabad and Secunderabad metropolitan area, Glory Furniture Hub provides premium White-Glove delivery. Our trained delivery team transports, brings the furniture into your room of choice, unpacks, and performs complete assembly at zero additional charge.</p>'
+                    },
+                    {
+                        'heading': '2. Pan-India Delivery Coverage',
+                        'content': '<p>We ship securely across India to major cities and regional hubs. Furniture is encased in multi-layered heavy corrugated wrap, foam edge guards, and reinforced wooden crating to guarantee zero transit damage during freight transport.</p>'
+                    },
+                    {
+                        'heading': '3. Dispatch & Manufacturing Timelines',
+                        'content': '<p>Standard in-stock atelier pieces are dispatched within 5 to 7 business days. Custom architectural creations or large suites requiring custom seasoning and carving typically require 2 to 4 weeks for complete artisanal fabrication and curing.</p>'
+                    },
+                    {
+                        'heading': '4. Access & Dimension Verification',
+                        'content': '<p>Please ensure that doorways, hallways, stairwells, and service elevators have adequate clearance for large solid pieces such as king beds, 8-seater dining tables, and 3-seater sofas before delivery day.</p>'
+                    }
+                ]
+            },
+            {
+                'slug': 'payment-installment-policy',
+                'title': 'Payment & Installment Policy',
+                'nav_label': 'Payment & Installment Policy',
+                'icon': '💳',
+                'footer_order': 6,
+                'short_description': 'Cashfree gateway integration, UPI, cards, 3 Equal Installments schedule and payment milestones.',
+                'summary': 'Detailed explanation of our secure payment gateways, full upfront payment benefits, and flexible 3 Equal Installments plan.',
+                'sections': [
+                    {
+                        'heading': '1. Supported Payment Methods',
+                        'content': '<p>Glory Furniture Hub accepts all major digital payment options through our official Cashfree Payment Gateway:</p><ul><li><strong>UPI:</strong> Google Pay, PhonePe, Paytm, BHIM and direct VPA IDs.</li><li><strong>Cards:</strong> Visa, MasterCard, RuPay, and American Express debit and credit cards.</li><li><strong>Net Banking:</strong> Over 50 Indian commercial and private banks.</li><li><strong>Cash on Delivery (COD):</strong> Available for select verified orders with doorstep payment option.</li></ul>'
+                    },
+                    {
+                        'heading': '2. Option A: 100% Full Payment Upfront',
+                        'content': '<p>Settle the total order upfront in a single secure transaction. Benefits include immediate dispatch priority, expedited manufacturing queue, and zero future payment reminders or balance milestones.</p>'
+                    },
+                    {
+                        'heading': '3. Option B: 3 Equal Installments Plan',
+                        'content': '<p>To make fine solid wood furniture accessible, we offer an interest-free 3 Equal Installments option for eligible handcrafted pieces:</p><ul><li><strong>Installment 1 (Due Today):</strong> Exactly 33.33% paid at checkout to confirm and lock in your kiln timber batch.</li><li><strong>Installment 2 (Milestone 2):</strong> Exactly 33.33% due midway through the artisanal crafting schedule (typically day 15).</li><li><strong>Installment 3 (Final Milestone):</strong> Remaining 33.34% due upon dispatch or completion of polishing (day 30).</li></ul>'
+                    },
+                    {
+                        'heading': '4. Installment Reminders & Outstanding Balances',
+                        'content': '<p>Automated reminders with secure direct-payment links are sent via SMS and Email prior to each due date. Furniture dispatch is scheduled once all installment obligations are completed or as agreed upon in the order contract.</p>'
+                    }
+                ]
+            }
+        ]
+
+        for pdata in pages_data:
+            page, created = cls.objects.get_or_create(
+                slug=pdata['slug'],
+                defaults={
+                    'title': pdata['title'],
+                    'nav_label': pdata['nav_label'],
+                    'icon': pdata['icon'],
+                    'footer_order': pdata['footer_order'],
+                    'short_description': pdata['short_description'],
+                    'summary': pdata['summary'],
+                    'draft_title': pdata['title'],
+                    'draft_nav_label': pdata['nav_label'],
+                    'draft_summary': pdata['summary'],
+                    'status': 'published',
+                    'is_published': True,
+                    'is_in_footer': True,
+                    'published_at': now,
+                    'last_updated_by': 'Master Studio Admin',
+                }
+            )
+            # Seed sections if new page or no sections
+            if created or not page.sections.exists():
+                for s_idx, sec_data in enumerate(pdata['sections'], start=1):
+                    FooterPageSection.objects.create(
+                        page=page,
+                        heading=sec_data['heading'],
+                        content=sec_data['content'],
+                        draft_heading=sec_data['heading'],
+                        draft_content=sec_data['content'],
+                        order=s_idx,
+                        is_active=True
+                    )
+
+
+class FooterPageSection(models.Model):
+    """
+    Individual section/paragraph of a FooterPage.
+    Enables administrators to edit individual paragraphs, add/remove/reorder sections
+    with separate draft and published content.
+    """
+    page = models.ForeignKey(FooterPage, on_delete=models.CASCADE, related_name='sections')
+    heading = models.CharField(max_length=255, help_text="Published section heading")
+    content = models.TextField(help_text="Published section text/HTML paragraphs")
+
+    # Draft / Work-in-progress content
+    draft_heading = models.CharField(max_length=255, blank=True, default="")
+    draft_content = models.TextField(blank=True, default="")
+
+    order = models.PositiveIntegerField(default=1, help_text="Display order sequence")
+    is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+        verbose_name = 'Footer Page Section'
+        verbose_name_plural = 'Footer Page Sections'
+
+    def __str__(self):
+        return f"{self.page.slug} - Sec {self.order}: {self.heading[:40]}"
+
+    @property
+    def active_heading(self):
+        return self.heading or self.draft_heading
+
+    @property
+    def active_content(self):
+        return self.content or self.draft_content
+
+
 
