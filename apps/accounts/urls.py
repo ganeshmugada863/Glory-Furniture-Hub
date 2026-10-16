@@ -30,6 +30,7 @@ urlpatterns = [
     path('profile/', views.customer_profile_view, name='profile'),
     path('profile/edit/', views.edit_profile_view, name='edit_profile'),
     path('address/', views.address_view, name='address'),
+    path('accounts/address/', views.address_view, name='accounts_address'),
     path('accounts/api/save-address/', views.api_save_address, name='api_save_address'),
     path('api/address/save/', views.api_save_address, name='api_address_save'),
     path('notifications/', views.notifications_view, name='notifications'),

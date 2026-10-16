@@ -478,6 +478,47 @@ def customer_payments_view(request):
     })
 
 
+def _normalize_account_addresses(raw_list):
+    """
+    Guarantees every item in the address list is a well-formed dictionary.
+    Never throws AttributeError or TypeError when accessed by dict methods or templates.
+    """
+    if not isinstance(raw_list, list):
+        return []
+    clean = []
+    has_default = False
+    for idx, a in enumerate(raw_list):
+        if isinstance(a, dict):
+            item = dict(a)
+            if not item.get('id'):
+                item['id'] = idx + 1
+            if item.get('is_default'):
+                has_default = True
+            clean.append(item)
+        elif isinstance(a, str) and a.strip():
+            str_val = a.strip()
+            clean.append({
+                'id': idx + 1,
+                'tag': 'Home',
+                'is_default': False,
+                'name': 'Valued Patron',
+                'phone': '',
+                'email': '',
+                'flat': str_val,
+                'street': '',
+                'landmark': '',
+                'city': 'Hyderabad',
+                'state': 'Telangana',
+                'pincode': '500034',
+                'full_text': str_val,
+                'latitude': '',
+                'longitude': '',
+            })
+    if clean and not has_default:
+        clean[0]['is_default'] = True
+    return clean
+
+
 def customer_profile_view(request):
     """Customer profile and preferences with real user stats and orders matching Stitch design."""
     user = request.user if request.user.is_authenticated else None
@@ -486,7 +527,8 @@ def customer_profile_view(request):
     if request.method == 'POST':
         action = request.POST.get('action', '')
         if action == 'add_address':
-            addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+            raw_addrs = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+            addresses = _normalize_account_addresses(raw_addrs)
             new_id = max([a.get('id', 0) for a in addresses], default=0) + 1
             tag = request.POST.get('tag', 'Home').strip() or 'Home'
             is_default = request.POST.get('is_default') in ['1', 'true', 'on'] or len(addresses) == 0
@@ -530,21 +572,24 @@ def customer_profile_view(request):
                 profile.save(update_fields=['saved_addresses'])
             request.session['glory_addresses'] = addresses
             request.session['glory_checkout_address'] = new_addr
-            request.session.modified = True
+            if hasattr(request.session, 'modified'):
+                request.session.modified = True
             messages.success(request, 'Delivery address added successfully!')
             return redirect('/customer/profile/#addresses-section')
 
         elif action == 'set_default':
             try:
                 addr_id = int(request.POST.get('address_id', 0))
-                addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+                raw_addrs = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+                addresses = _normalize_account_addresses(raw_addrs)
                 for a in addresses:
                     a['is_default'] = (a.get('id') == addr_id)
                 if profile:
                     profile.saved_addresses = addresses
                     profile.save(update_fields=['saved_addresses'])
                 request.session['glory_addresses'] = addresses
-                request.session.modified = True
+                if hasattr(request.session, 'modified'):
+                    request.session.modified = True
                 messages.success(request, 'Primary delivery address updated!')
             except (ValueError, TypeError):
                 pass
@@ -553,7 +598,8 @@ def customer_profile_view(request):
         elif action == 'delete_address':
             try:
                 addr_id = int(request.POST.get('address_id', 0))
-                addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+                raw_addrs = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+                addresses = _normalize_account_addresses(raw_addrs)
                 addresses = [a for a in addresses if a.get('id') != addr_id]
                 if addresses and not any(a.get('is_default') for a in addresses):
                     addresses[0]['is_default'] = True
@@ -561,7 +607,8 @@ def customer_profile_view(request):
                     profile.saved_addresses = addresses
                     profile.save(update_fields=['saved_addresses'])
                 request.session['glory_addresses'] = addresses
-                request.session.modified = True
+                if hasattr(request.session, 'modified'):
+                    request.session.modified = True
                 messages.success(request, 'Address removed successfully!')
             except (ValueError, TypeError):
                 pass
@@ -631,7 +678,8 @@ def customer_profile_view(request):
     latest_order = orders.first() if orders.exists() else None
 
     wishlist_ids = (profile.wishlist_ids if profile else None) or request.session.get('glory_wishlist', [])
-    saved_addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+    raw_saved = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+    saved_addresses = _normalize_account_addresses(raw_saved)
 
     # Initials: AV or first 2 chars
     initials = (first_name[:1] + (last_name[:1] if last_name else '')).upper()
@@ -702,8 +750,8 @@ def address_view(request):
     profile = getattr(user, 'profile', None) if user else None
 
     # Load from profile first, then session
-    addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses')
-    if addresses is None:
+    raw_addrs = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses')
+    if raw_addrs is None:
         addresses = []
         if profile and profile.address:
             addresses.append({
@@ -719,16 +767,19 @@ def address_view(request):
                 'city': 'Hyderabad',
                 'state': 'Telangana',
                 'pincode': '500034',
+                'full_text': profile.address,
             })
         if profile:
             profile.saved_addresses = addresses
             profile.save(update_fields=['saved_addresses'])
         request.session['glory_addresses'] = addresses
+    else:
+        addresses = _normalize_account_addresses(raw_addrs)
 
     if request.method == 'POST':
         action = request.POST.get('action', 'add')
         if action == 'add':
-            new_id = max([a['id'] for a in addresses], default=0) + 1
+            new_id = max([a.get('id', 0) for a in addresses], default=0) + 1
             tag = request.POST.get('tag', 'Home').strip() or 'Home'
             is_default = request.POST.get('is_default') == '1' or len(addresses) == 0
             if is_default:
@@ -755,35 +806,38 @@ def address_view(request):
                 profile.saved_addresses = addresses
                 profile.save(update_fields=['saved_addresses'])
             request.session['glory_addresses'] = addresses
-            request.session.modified = True
+            if hasattr(request.session, 'modified'):
+                request.session.modified = True
             return redirect('address')
 
         elif action == 'set_default':
             try:
                 addr_id = int(request.POST.get('address_id', 0))
                 for a in addresses:
-                    a['is_default'] = (a['id'] == addr_id)
+                    a['is_default'] = (a.get('id') == addr_id)
                 if profile:
                     profile.saved_addresses = addresses
                     profile.save(update_fields=['saved_addresses'])
                 request.session['glory_addresses'] = addresses
-                request.session.modified = True
-            except ValueError:
+                if hasattr(request.session, 'modified'):
+                    request.session.modified = True
+            except (ValueError, TypeError):
                 pass
             return redirect('address')
 
         elif action == 'delete':
             try:
                 addr_id = int(request.POST.get('address_id', 0))
-                addresses = [a for a in addresses if a['id'] != addr_id]
+                addresses = [a for a in addresses if a.get('id') != addr_id]
                 if addresses and not any(a.get('is_default') for a in addresses):
                     addresses[0]['is_default'] = True
                 if profile:
                     profile.saved_addresses = addresses
                     profile.save(update_fields=['saved_addresses'])
                 request.session['glory_addresses'] = addresses
-                request.session.modified = True
-            except ValueError:
+                if hasattr(request.session, 'modified'):
+                    request.session.modified = True
+            except (ValueError, TypeError):
                 pass
             return redirect('address')
 
@@ -857,7 +911,8 @@ def api_save_address(request):
         full_text += f" - {pincode}"
 
     # Load existing addresses
-    addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+    raw_addrs = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+    addresses = _normalize_account_addresses(raw_addrs)
 
     # Check for existing address by ID or duplicate match (same pincode + same flat/street)
     edit_id = data.get('id') or data.get('address_id')

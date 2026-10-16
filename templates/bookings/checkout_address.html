@@ -93,6 +93,17 @@
         </div>
         {% endif %}
       </div>
+      {% empty %}
+      <div class="bg-white rounded-2xl p-6 border-2 border-dashed border-[#DECBB7] text-center space-y-3">
+        <div class="w-12 h-12 rounded-full bg-[#FAF5EE] text-[#8C4F20] flex items-center justify-center mx-auto text-xl">
+          📍
+        </div>
+        <h3 class="font-bold text-base text-[#140804]">No Saved Address Found</h3>
+        <p class="text-xs text-[#7A6E65]">Please add your delivery address below so our master artisans can schedule white-glove setup.</p>
+        <button type="button" onclick="openAddModal()" class="py-2.5 px-5 rounded-xl bg-[#140804] hover:bg-[#8C4F20] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all cursor-pointer">
+          + Add Delivery Address
+        </button>
+      </div>
       {% endfor %}
 
       <!-- Primary Action: Deliver to this Address -->
@@ -245,5 +256,18 @@
     document.getElementById('address-modal').classList.add('hidden');
     document.getElementById('address-modal').classList.remove('flex');
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('address-selection-form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const selectedRadio = document.querySelector('input[name="selected_address_id"]:checked');
+        if (!selectedRadio) {
+          e.preventDefault();
+          openAddModal();
+        }
+      });
+    }
+  });
 </script>
 {% endblock %}

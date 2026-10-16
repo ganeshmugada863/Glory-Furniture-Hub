@@ -228,7 +228,21 @@ def booking_summary_view(request):
     if request.method == 'GET' and not request.session.get('glory_checkout_address'):
         u = request.user if request.user.is_authenticated else None
         p = getattr(u, 'profile', None) if u else None
-        existing_addrs = (p.saved_addresses if p else None) or request.session.get('glory_addresses', [])
+        raw_existing = (p.saved_addresses if p else None) or request.session.get('glory_addresses', [])
+        existing_addrs = []
+        if isinstance(raw_existing, list):
+            for a in raw_existing:
+                if isinstance(a, dict):
+                    existing_addrs.append(a)
+                elif isinstance(a, str) and a.strip():
+                    existing_addrs.append({
+                        'id': len(existing_addrs) + 1,
+                        'tag': 'HOME',
+                        'is_default': len(existing_addrs) == 0,
+                        'flat': a.strip(),
+                        'street': a.strip(),
+                        'full_text': a.strip()
+                    })
         if existing_addrs:
             default_addr = next((a for a in existing_addrs if a.get('is_default')), existing_addrs[0])
             request.session['glory_checkout_address'] = default_addr
@@ -406,7 +420,18 @@ def booking_summary_view(request):
             (f"{selected_wood} • {selected_size}" if selected_wood and selected_size else 'Standard Dimensions')
         ).strip()
 
-        checkout_addr = request.session.get('glory_checkout_address') or default_address or {}
+        raw_checkout = request.session.get('glory_checkout_address') or default_address or {}
+        if isinstance(raw_checkout, dict):
+            checkout_addr = raw_checkout
+        else:
+            checkout_addr = {
+                'id': 1,
+                'name': '',
+                'phone': '',
+                'flat': str(raw_checkout),
+                'street': str(raw_checkout),
+                'full_text': str(raw_checkout)
+            }
         post_name = request.POST.get('customer_name', '').strip() or checkout_addr.get('name', '')
         raw_phone = request.POST.get('phone', '').strip() or checkout_addr.get('phone', '')
         clean_phone = re.sub(r'\D', '', str(raw_phone))
@@ -431,12 +456,19 @@ def booking_summary_view(request):
             if s_phone and '98765' not in s_phone:
                 phone = s_phone
 
-        flat = request.POST.get('flat', '').strip() or checkout_addr.get('flat', '') or (default_address.get('flat', '') if default_address else '')
-        street = request.POST.get('street', '').strip() or checkout_addr.get('street', '') or (default_address.get('street', '') if default_address else '')
-        landmark = request.POST.get('landmark', '').strip() or checkout_addr.get('landmark', '') or (default_address.get('landmark', '') if default_address else '')
-        city = request.POST.get('city', '').strip() or checkout_addr.get('city', '') or (default_address.get('city', '') if default_address else '')
-        state = request.POST.get('state', '').strip() or checkout_addr.get('state', '') or (default_address.get('state', '') if default_address else '')
-        pincode = request.POST.get('pincode', '').strip() or checkout_addr.get('pincode', '') or (default_address.get('pincode', '') if default_address else '')
+        def_flat = default_address.get('flat', '') if isinstance(default_address, dict) else ''
+        def_street = default_address.get('street', '') if isinstance(default_address, dict) else ''
+        def_landmark = default_address.get('landmark', '') if isinstance(default_address, dict) else ''
+        def_city = default_address.get('city', '') if isinstance(default_address, dict) else ''
+        def_state = default_address.get('state', '') if isinstance(default_address, dict) else ''
+        def_pincode = default_address.get('pincode', '') if isinstance(default_address, dict) else ''
+
+        flat = request.POST.get('flat', '').strip() or checkout_addr.get('flat', '') or def_flat
+        street = request.POST.get('street', '').strip() or checkout_addr.get('street', '') or def_street
+        landmark = request.POST.get('landmark', '').strip() or checkout_addr.get('landmark', '') or def_landmark
+        city = request.POST.get('city', '').strip() or checkout_addr.get('city', '') or def_city
+        state = request.POST.get('state', '').strip() or checkout_addr.get('state', '') or def_state
+        pincode = request.POST.get('pincode', '').strip() or checkout_addr.get('pincode', '') or def_pincode
 
         full_address = checkout_addr.get('full_text') or checkout_addr.get('street')
         if not full_address:
@@ -601,9 +633,9 @@ def booking_summary_view(request):
         'default_delivery_date': default_delivery_date,
         'saved_address': default_address,
         'has_saved_address': has_saved_address,
-        'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address else '') or 'Valued Patron',
-        'user_email': (user.email if user else None) or (default_address.get('email') if default_address else '') or '',
-        'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address else '') or '',
+        'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address and isinstance(default_address, dict) else '') or 'Valued Patron',
+        'user_email': (user.email if user else None) or (default_address.get('email') if default_address and isinstance(default_address, dict) else '') or '',
+        'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address and isinstance(default_address, dict) else '') or '',
         'item_type': item_type,
         'measurement_label': measurement_label,
         'measurement_placeholder': measurement_placeholder,

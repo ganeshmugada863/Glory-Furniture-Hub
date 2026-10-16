@@ -27,28 +27,34 @@
 <body class="bg-[#FAF7F2] text-gray-900 min-h-screen flex items-center justify-center p-4">
 
   <div class="w-full max-w-md bg-white rounded-3xl p-8 border border-amber-200/80 shadow-warm text-center space-y-6">
-    <!-- Brand Crest -->
-    <div class="w-16 h-16 rounded-2xl bg-[#5C3D2E] p-2 border border-amber-200/80 flex items-center justify-center mx-auto shadow-md">
-      <img src="{% static 'favicon.svg' %}" alt="Glory Furniture Hub" class="w-full h-full object-contain" />
+    <!-- Glory Furniture Brand Crest -->
+    <div class="w-20 h-20 rounded-2xl bg-[#5C3D2E] p-2.5 border-2 border-[#C9963F]/40 flex items-center justify-center mx-auto shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-full h-full">
+        <rect width="512" height="512" rx="128" fill="#5C3D2E"/>
+        <path d="M160 140 H352 C370 140 384 154 384 172 V240 H128 V172 C128 154 142 140 160 140 Z" fill="#C9963F"/>
+        <text x="256" y="320" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="210" fill="#FAF7F4" text-anchor="middle">G</text>
+        <circle cx="256" cy="410" r="16" fill="#C9963F"/>
+      </svg>
     </div>
 
-    <div class="space-y-2">
-      <h1 class="text-xl font-black text-gray-950 tracking-tight">Authenticating with Google</h1>
-      <p id="status-msg" class="text-xs text-gray-500 font-medium">Verifying your Google credentials with Glory Furniture Hub...</p>
+    <div class="space-y-1.5">
+      <h1 class="text-xl font-black text-gray-950 tracking-tight">Glory Furniture Hub</h1>
+      <p class="text-xs uppercase tracking-widest text-[#8C4F20] font-bold">Secure Client Authentication</p>
+      <p id="status-msg" class="text-xs text-gray-500 font-medium pt-1">Verifying your patron credentials...</p>
     </div>
 
     <!-- Spinner -->
-    <div class="flex justify-center items-center py-4">
-      <div class="w-10 h-10 border-3 border-amber-200 border-t-[#5C3D2E] rounded-full animate-spin"></div>
+    <div class="flex justify-center items-center py-2">
+      <div class="w-8 h-8 border-3 border-amber-200 border-t-[#8C4F20] rounded-full animate-spin"></div>
     </div>
 
-    <p class="text-[11px] text-gray-400">Please wait while we redirect you to the storefront...</p>
+    <p class="text-[11px] text-gray-400">Please wait while we establish your private session...</p>
   </div>
 
   <script>
-    // Fail-safe redirect: If callback landed on Render, Hugging Face, or old Vercel host, bounce immediately to gloryfurniturehub.com
-    if (window.location.hostname.includes('onrender.com') || window.location.hostname.includes('hf.space') || window.location.hostname.includes('vercel.app')) {
-      const prodTarget = 'https://gloryfurniturehub.com' + window.location.pathname + window.location.search + window.location.hash;
+    // Fail-safe redirect: If callback landed on old Render or Hugging Face host, bounce immediately to gloryfurniturehub.com
+    if (window.location.hostname.includes('onrender.com') || window.location.hostname.includes('hf.space')) {
+      const prodTarget = 'https://www.gloryfurniturehub.com' + window.location.pathname + window.location.search + window.location.hash;
       window.location.replace(prodTarget);
     }
 

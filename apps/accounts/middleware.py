@@ -64,6 +64,7 @@ class RoleBasedAccessMiddleware:
             path.startswith('/static/') or
             path.startswith('/media/') or
             path.startswith('/api/') or
+            '/api/' in path or
             path in ['/favicon.ico', '/favicon.svg', '/robots.txt', '/sitemap.xml']
         )
 
@@ -85,6 +86,8 @@ class RoleBasedAccessMiddleware:
             path.startswith('/cart') or
             path.startswith('/wishlist') or
             path.startswith('/checkout') or
+            path.startswith('/address') or
+            path.startswith('/customer/address') or
             path.startswith('/booking') or
             path.startswith('/orders') or
             path in ['/about/', '/contact/', '/faq/', '/guide/', '/splash/', '/onboarding/']
