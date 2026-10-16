@@ -273,8 +273,11 @@ def product_detail_view(request, pk=None, slug=None):
         product = get_or_create_showcase_product(pk=30)
 
     try:
-        related = list(Product.objects.filter(category=product.category).exclude(pk=product.pk)[:4])
-        if len(related) < 4:
+        if product and getattr(product, 'category', None) and getattr(product.category, 'pk', None):
+            related = list(Product.objects.filter(category=product.category).exclude(pk=product.pk)[:4])
+        else:
+            related = []
+        if len(related) < 4 and getattr(product, 'pk', None):
             others = list(Product.objects.exclude(pk=product.pk)[:8])
             for o in others:
                 if o not in related and len(related) < 4:
@@ -284,20 +287,35 @@ def product_detail_view(request, pk=None, slug=None):
         related_products = []
 
     try:
-        reviews = list(product.reviews.all().order_by('-created_at'))
+        reviews = list(product.reviews.all().order_by('-created_at')) if getattr(product, 'pk', None) else []
     except Exception:
         reviews = []
 
     user = request.user if request.user.is_authenticated else None
     profile = getattr(user, 'profile', None) if user else None
-    saved_addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+    raw_addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
+    saved_addresses = []
+    if isinstance(raw_addresses, list):
+        for a in raw_addresses:
+            if isinstance(a, dict):
+                saved_addresses.append(a)
+            elif isinstance(a, str) and a.strip():
+                saved_addresses.append({
+                    'id': len(saved_addresses) + 1,
+                    'tag': 'Home',
+                    'full_text': a.strip(),
+                    'flat': a.strip(),
+                    'street': a.strip(),
+                    'is_default': len(saved_addresses) == 0
+                })
+
     default_address = next((a for a in saved_addresses if a.get('is_default')), saved_addresses[0] if saved_addresses else None)
 
     context = {
         'product': product,
         'related_products': related_products,
         'reviews': reviews,
-        'page_title': product.name,
+        'page_title': product.name if product else 'Handcrafted Furniture',
         'saved_address': default_address,
     }
     return render(request, 'store/product_detail.html', context)

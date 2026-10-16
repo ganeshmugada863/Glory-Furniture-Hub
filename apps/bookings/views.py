@@ -34,11 +34,27 @@ def booking_address_step_view(request):
     # Load addresses from profile or session, filtering out any legacy dummy records
     raw_addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
     addresses = []
-    for a in raw_addresses:
-        a_str = str(a)
-        if '98765' in a_str or 'Plot No. 24' in a_str or 'Aditya Empress' in a_str or 'Arjun Varma' in a_str:
-            continue
-        addresses.append(a)
+    if isinstance(raw_addresses, list):
+        for a in raw_addresses:
+            a_str = str(a)
+            if '98765' in a_str or 'Plot No. 24' in a_str or 'Aditya Empress' in a_str or 'Arjun Varma' in a_str:
+                continue
+            if isinstance(a, dict):
+                addresses.append(a)
+            elif isinstance(a, str) and a.strip():
+                addresses.append({
+                    'id': len(addresses) + 1,
+                    'tag': 'HOME',
+                    'is_default': len(addresses) == 0,
+                    'name': '',
+                    'phone': '',
+                    'flat': a.strip(),
+                    'street': a.strip(),
+                    'city': 'Hyderabad',
+                    'state': 'Telangana',
+                    'pincode': '',
+                    'full_text': a.strip()
+                })
 
     user_default_name = (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else '')) or request.session.get('glory_user_name') or ''
     user_default_phone = (profile.phone if profile and profile.phone and '98765' not in profile.phone else '') or request.session.get('glory_user_phone') or ''
@@ -299,15 +315,26 @@ def booking_summary_view(request):
     raw_addresses = (profile.saved_addresses if profile else None) or request.session.get('glory_addresses', [])
     # Strictly filter out any old contaminated address entries
     valid_addresses = []
-    for a in raw_addresses:
-        a_str = str(a)
-        if '98765' in a_str or 'Plot 42' in a_str or 'Jubilee Hills' in a_str:
-            continue
-        valid_addresses.append(a)
+    if isinstance(raw_addresses, list):
+        for a in raw_addresses:
+            a_str = str(a)
+            if '98765' in a_str or 'Plot 42' in a_str or 'Jubilee Hills' in a_str:
+                continue
+            if isinstance(a, dict):
+                valid_addresses.append(a)
+            elif isinstance(a, str) and a.strip():
+                valid_addresses.append({
+                    'id': len(valid_addresses) + 1,
+                    'tag': 'Home',
+                    'full_text': a.strip(),
+                    'flat': a.strip(),
+                    'street': a.strip(),
+                    'is_default': len(valid_addresses) == 0
+                })
 
     if valid_addresses:
         default_address = next((a for a in valid_addresses if a.get('is_default')), valid_addresses[0])
-        has_saved_address = bool(default_address.get('flat') or default_address.get('street'))
+        has_saved_address = bool(default_address.get('flat') or default_address.get('street') or default_address.get('full_text'))
     else:
         default_address = None
         has_saved_address = False
@@ -620,11 +647,8 @@ def booking_payment_view(request, booking_id):
             order_status='PENDING_PAYMENT',
         )
 
-    payable_amount = order.total_amount
-    upi_vpa = 'gloryfurniture@okaxis'
-    payee_name = 'Glory Furniture Hub'
-    upi_intent_url = f"upi://pay?pa={upi_vpa}&pn=Glory%20Furniture%20Hub&am={payable_amount:.2f}&cu=INR&tn=Order%20{order.order_number}"
-    upi_qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=upi%3A%2F%2Fpay%3Fpa%3D{upi_vpa}%26pn%3DGlory%2BFurniture%2BHub%26am%3D{payable_amount:.2f}%26cu%3DINR%26tn%3DOrder%2B{order.order_number}"
+    # Redirect directly to the modern unified checkout payment page (Cashfree + 3 Installments)
+    return redirect('payment_checkout', order_number=order.order_number)
 
     if request.method == 'POST':
         payment_method = request.POST.get('payment_sub_method', 'WordPress UPI Gateway')

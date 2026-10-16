@@ -667,19 +667,37 @@
         return;
       }
 
-      // Initialize Cashfree Official Web SDK v3
-      if (typeof Cashfree !== 'undefined') {
-        const cashfree = Cashfree({
-          mode: "{{ cashfree_env }}" // "sandbox" or "production"
-        });
+      // Initialize Cashfree Official Web SDK v3 or fallback to direct hosted payment gateway
+      const isProd = ("{{ cashfree_env }}".toLowerCase() === 'production');
+      const hostedCheckoutUrl = isProd
+        ? `https://payments.cashfree.com/order/#${data.payment_session_id}`
+        : `https://payments-test.cashfree.com/order/#${data.payment_session_id}`;
 
-        cashfree.checkout({
-          paymentSessionId: data.payment_session_id,
-          redirectTarget: "_self", // Redirects back smoothly to /payments/return/
-        });
+      if (typeof Cashfree !== 'undefined') {
+        try {
+          const cashfree = Cashfree({
+            mode: isProd ? "production" : "sandbox"
+          });
+
+          cashfree.checkout({
+            paymentSessionId: data.payment_session_id,
+            redirectTarget: "_self",
+          }).then((result) => {
+            if (result && result.error) {
+              console.warn("Cashfree checkout error:", result.error);
+              window.location.href = hostedCheckoutUrl;
+            }
+          }).catch((sdkErr) => {
+            console.warn("Cashfree checkout promise rejected:", sdkErr);
+            window.location.href = hostedCheckoutUrl;
+          });
+        } catch (initErr) {
+          console.warn("Cashfree SDK initialization failed:", initErr);
+          window.location.href = hostedCheckoutUrl;
+        }
       } else {
-        // Fallback redirect
-        window.location.href = `/payments/return/?order_id=${data.order_id}`;
+        // Direct redirect to Cashfree Hosted Gateway (100% resilient across all browsers and adblockers)
+        window.location.href = hostedCheckoutUrl;
       }
 
     } catch (err) {
