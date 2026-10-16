@@ -46,6 +46,17 @@ def checkout_payment_view(request, order_number):
     if order.phone and '98765' in order.phone:
         order.phone = ''
         order_updated = True
+    if not order.phone:
+        up = (request.user.profile.phone if request.user.is_authenticated and hasattr(request.user, 'profile') and request.user.profile.phone else '') or request.session.get('glory_user_phone', '')
+        if up:
+            clean_p = re.sub(r'\D', '', str(up))
+            if len(clean_p) == 12 and clean_p.startswith('91'):
+                clean_p = clean_p[2:]
+            if len(clean_p) > 10:
+                clean_p = clean_p[-10:]
+            if clean_p and clean_p not in ['9876543210', '09876543210']:
+                order.phone = clean_p
+                order_updated = True
     if order.shipping_address and ('Plot 42' in order.shipping_address or 'Jubilee Hills' in order.shipping_address):
         parts = [p.strip() for p in order.shipping_address.split(',') if p.strip() and 'Plot 42' not in p and 'Jubilee Hills' not in p]
         order.shipping_address = ', '.join(parts)

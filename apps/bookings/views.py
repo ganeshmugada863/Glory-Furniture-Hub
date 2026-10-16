@@ -146,6 +146,19 @@ def booking_address_step_view(request):
                     chosen_id = addresses[0].get('id', 1)
                 request.session['glory_selected_address_id'] = chosen_id
                 chosen_addr = next((a for a in addresses if a.get('id') == chosen_id), addresses[0])
+                if not chosen_addr.get('phone') and user_default_phone:
+                    chosen_addr['phone'] = user_default_phone
+                if chosen_addr.get('phone'):
+                    clean_p = re.sub(r'\D', '', str(chosen_addr.get('phone')))
+                    if len(clean_p) == 12 and clean_p.startswith('91'):
+                        clean_p = clean_p[2:]
+                    if len(clean_p) > 10:
+                        clean_p = clean_p[-10:]
+                    if clean_p and clean_p not in ['9876543210', '09876543210']:
+                        request.session['glory_user_phone'] = clean_p
+                        if user and profile and not profile.phone:
+                            profile.phone = clean_p
+                            profile.save(update_fields=['phone'])
                 request.session['glory_checkout_address'] = chosen_addr
                 request.session.modified = True
             else:

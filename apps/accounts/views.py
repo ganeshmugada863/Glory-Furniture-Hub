@@ -484,6 +484,90 @@ def customer_profile_view(request):
     profile = getattr(user, 'profile', None) if user else None
     
     if request.method == 'POST':
+        action = request.POST.get('action', '')
+        if action == 'add_address':
+            addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+            new_id = max([a.get('id', 0) for a in addresses], default=0) + 1
+            tag = request.POST.get('tag', 'Home').strip() or 'Home'
+            is_default = request.POST.get('is_default') in ['1', 'true', 'on'] or len(addresses) == 0
+            name = request.POST.get('name', '').strip() or (profile.full_name if profile else '') or (user.get_full_name() if user else 'Valued Patron')
+            phone = request.POST.get('phone', '').strip() or (profile.phone if profile else '')
+            flat = request.POST.get('flat', '').strip()
+            street = request.POST.get('street', '').strip()
+            landmark = request.POST.get('landmark', '').strip()
+            city = request.POST.get('city', 'Hyderabad').strip()
+            state = request.POST.get('state', 'Telangana').strip()
+            pincode = request.POST.get('pincode', '').strip().replace(' ', '')
+            parts = [p for p in [flat, street, landmark, city, state] if p]
+            full_text = ", ".join(parts)
+            if pincode:
+                full_text += f" - {pincode}"
+
+            if is_default:
+                for a in addresses:
+                    a['is_default'] = False
+
+            new_addr = {
+                'id': new_id,
+                'tag': tag,
+                'is_default': is_default,
+                'name': name,
+                'phone': phone,
+                'email': (user.email if user else '') or request.session.get('glory_user_email', ''),
+                'flat': flat,
+                'street': street,
+                'landmark': landmark,
+                'city': city,
+                'state': state,
+                'pincode': pincode,
+                'full_text': full_text,
+                'latitude': request.POST.get('latitude', ''),
+                'longitude': request.POST.get('longitude', ''),
+            }
+            addresses.append(new_addr)
+            if profile:
+                profile.saved_addresses = addresses
+                profile.save(update_fields=['saved_addresses'])
+            request.session['glory_addresses'] = addresses
+            request.session['glory_checkout_address'] = new_addr
+            request.session.modified = True
+            messages.success(request, 'Delivery address added successfully!')
+            return redirect('/customer/profile/#addresses-section')
+
+        elif action == 'set_default':
+            try:
+                addr_id = int(request.POST.get('address_id', 0))
+                addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+                for a in addresses:
+                    a['is_default'] = (a.get('id') == addr_id)
+                if profile:
+                    profile.saved_addresses = addresses
+                    profile.save(update_fields=['saved_addresses'])
+                request.session['glory_addresses'] = addresses
+                request.session.modified = True
+                messages.success(request, 'Primary delivery address updated!')
+            except (ValueError, TypeError):
+                pass
+            return redirect('/customer/profile/#addresses-section')
+
+        elif action == 'delete_address':
+            try:
+                addr_id = int(request.POST.get('address_id', 0))
+                addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+                addresses = [a for a in addresses if a.get('id') != addr_id]
+                if addresses and not any(a.get('is_default') for a in addresses):
+                    addresses[0]['is_default'] = True
+                if profile:
+                    profile.saved_addresses = addresses
+                    profile.save(update_fields=['saved_addresses'])
+                request.session['glory_addresses'] = addresses
+                request.session.modified = True
+                messages.success(request, 'Address removed successfully!')
+            except (ValueError, TypeError):
+                pass
+            return redirect('/customer/profile/#addresses-section')
+
+        # Standard Profile Info Update
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
         full_name = f"{first_name} {last_name}".strip() or request.POST.get('name', '').strip()
@@ -547,7 +631,7 @@ def customer_profile_view(request):
     latest_order = orders.first() if orders.exists() else None
 
     wishlist_ids = (profile.wishlist_ids if profile else None) or request.session.get('glory_wishlist', [])
-    saved_addresses = (profile.saved_addresses if profile else None) or []
+    saved_addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
 
     # Initials: AV or first 2 chars
     initials = (first_name[:1] + (last_name[:1] if last_name else '')).upper()
@@ -570,7 +654,8 @@ def customer_profile_view(request):
         'customer_city': customer_city,
         'user_initial': initials,
         'wishlist_count': len(wishlist_ids),
-        'saved_addresses_count': len(saved_addresses) or 1,
+        'saved_addresses': saved_addresses,
+        'saved_addresses_count': len(saved_addresses),
         'auth_provider': getattr(profile, 'auth_provider', 'email') if profile else 'email',
     })
 
@@ -713,6 +798,153 @@ def address_view(request):
         'default_email': default_email,
     }
     return render(request, 'accounts/address.html', context)
+
+
+def api_save_address(request):
+    """
+    API endpoint to save/update customer delivery address & GPS location.
+    Works for authenticated users (persists directly to DB UserProfile.saved_addresses)
+    and guests (persists to request.session).
+    Guarantees:
+    - Association with authenticated user
+    - GPS latitude/longitude and 6-digit PIN code persistence
+    - Deduplication: updates existing matching address instead of creating duplicate records
+    - Returns updated address data in response
+    """
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST method required.'}, status=405)
+
+    try:
+        if request.content_type == 'application/json':
+            data = json.loads(request.body.decode('utf-8'))
+        else:
+            data = request.POST
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Invalid request data: {str(e)}'}, status=400)
+
+    pincode = str(data.get('pincode', '')).strip().replace(' ', '')
+    flat = str(data.get('flat', '')).strip()
+    street = str(data.get('street', '')).strip()
+    city = str(data.get('city', '')).strip() or 'Hyderabad'
+    state = str(data.get('state', '')).strip() or 'Telangana'
+    landmark = str(data.get('landmark', '')).strip()
+    tag = str(data.get('tag', 'Home')).strip() or 'Home'
+    name = str(data.get('name', '')).strip()
+    phone = str(data.get('phone', '')).strip()
+    latitude = data.get('latitude') or data.get('lat')
+    longitude = data.get('longitude') or data.get('lng')
+    is_default = data.get('is_default', True)
+    if isinstance(is_default, str):
+        is_default = is_default.lower() in ['true', '1', 'yes']
+
+    if not pincode or len(pincode) != 6 or not pincode.isdigit():
+        return JsonResponse({'status': 'error', 'message': 'Please enter a valid 6-digit PIN code.'}, status=400)
+
+    if not flat and not street:
+        return JsonResponse({'status': 'error', 'message': 'Please enter flat/house number or street address.'}, status=400)
+
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+
+    if not name:
+        name = (profile.full_name if profile and profile.full_name else '') or (user.get_full_name() if user else '') or request.session.get('glory_user_name', 'Valued Patron')
+    if not phone:
+        phone = (profile.phone if profile and profile.phone else '') or request.session.get('glory_user_phone', '')
+
+    parts = [p for p in [flat, street, landmark, city, state] if p]
+    full_text = ", ".join(parts)
+    if pincode:
+        full_text += f" - {pincode}"
+
+    # Load existing addresses
+    addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+
+    # Check for existing address by ID or duplicate match (same pincode + same flat/street)
+    edit_id = data.get('id') or data.get('address_id')
+    target_addr = None
+
+    if edit_id:
+        try:
+            eid = int(edit_id)
+            for a in addresses:
+                if a.get('id') == eid:
+                    target_addr = a
+                    break
+        except (ValueError, TypeError):
+            pass
+
+    if not target_addr:
+        norm_flat = flat.lower().strip()
+        for a in addresses:
+            if str(a.get('pincode', '')).strip() == pincode and norm_flat and norm_flat == str(a.get('flat', '')).lower().strip():
+                target_addr = a
+                break
+
+    if target_addr:
+        target_addr.update({
+            'name': name,
+            'phone': phone,
+            'flat': flat,
+            'street': street,
+            'landmark': landmark,
+            'city': city,
+            'state': state,
+            'pincode': pincode,
+            'full_text': full_text,
+            'tag': tag,
+            'latitude': latitude,
+            'longitude': longitude,
+        })
+    else:
+        new_id = max([a.get('id', 0) for a in addresses], default=0) + 1
+        target_addr = {
+            'id': new_id,
+            'tag': tag,
+            'is_default': is_default or len(addresses) == 0,
+            'name': name,
+            'phone': phone,
+            'email': (user.email if user else '') or request.session.get('glory_user_email', ''),
+            'flat': flat,
+            'street': street,
+            'landmark': landmark,
+            'city': city,
+            'state': state,
+            'pincode': pincode,
+            'full_text': full_text,
+            'latitude': latitude,
+            'longitude': longitude,
+        }
+        addresses.append(target_addr)
+
+    if is_default or len(addresses) == 1:
+        for a in addresses:
+            a['is_default'] = (a.get('id') == target_addr.get('id'))
+
+    # Persist to DB for authenticated user
+    if profile:
+        profile.saved_addresses = addresses
+        if phone and not profile.phone:
+            profile.phone = phone
+        if flat or street:
+            profile.address = full_text
+        profile.save(update_fields=['saved_addresses', 'phone', 'address'] if not profile.phone else ['saved_addresses', 'address'])
+
+    # Persist to Session
+    request.session['glory_addresses'] = addresses
+    request.session['glory_checkout_address'] = target_addr
+    request.session['glory_selected_address_id'] = target_addr.get('id')
+    if phone:
+        request.session['glory_user_phone'] = phone
+    if hasattr(request.session, 'modified'):
+        request.session.modified = True
+
+    return JsonResponse({
+        'status': 'success',
+        'message': 'Delivery address saved successfully.',
+        'address': target_addr,
+        'addresses': addresses,
+        'selected_address_id': target_addr.get('id')
+    })
 
 
 def forgot_password_view(request):

@@ -317,9 +317,9 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cashfree Payment Gateway Configuration
-CASHFREE_CLIENT_ID = os.getenv('CASHFREE_CLIENT_ID', '').strip()
-CASHFREE_CLIENT_SECRET = os.getenv('CASHFREE_CLIENT_SECRET', '').strip()
-CASHFREE_ENVIRONMENT = os.getenv('CASHFREE_ENVIRONMENT', 'SANDBOX').strip().upper()
+CASHFREE_CLIENT_ID = (os.getenv('CASHFREE_CLIENT_ID') or os.getenv('CASHFREE_APP_ID') or '').strip()
+CASHFREE_CLIENT_SECRET = (os.getenv('CASHFREE_CLIENT_SECRET') or os.getenv('CASHFREE_SECRET_KEY') or '').strip()
+CASHFREE_ENVIRONMENT = (os.getenv('CASHFREE_ENVIRONMENT') or os.getenv('CASHFREE_ENV') or 'SANDBOX').strip().upper()
 CASHFREE_API_VERSION = os.getenv('CASHFREE_API_VERSION', '2023-08-01').strip()
 CASHFREE_BASE_URL = 'https://api.cashfree.com' if CASHFREE_ENVIRONMENT == 'PRODUCTION' else 'https://sandbox.cashfree.com'
 

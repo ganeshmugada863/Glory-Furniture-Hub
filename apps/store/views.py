@@ -288,11 +288,17 @@ def product_detail_view(request, pk=None, slug=None):
     except Exception:
         reviews = []
 
+    user = request.user if request.user.is_authenticated else None
+    profile = getattr(user, 'profile', None) if user else None
+    saved_addresses = list((profile.saved_addresses if profile else None) or request.session.get('glory_addresses', []))
+    default_address = next((a for a in saved_addresses if a.get('is_default')), saved_addresses[0] if saved_addresses else None)
+
     context = {
         'product': product,
         'related_products': related_products,
         'reviews': reviews,
         'page_title': product.name,
+        'saved_address': default_address,
     }
     return render(request, 'store/product_detail.html', context)
 
