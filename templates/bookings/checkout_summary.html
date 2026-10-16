@@ -26,19 +26,24 @@
 <div class="min-h-screen bg-[#FBF9F6] text-[#140804] py-6 sm:py-10 px-4 sm:px-6">
   <div class="max-w-xl mx-auto space-y-6">
 
-    <!-- 1. LUXURY PILL STEPPER (Screen 2: ORDER SUMMARY ACTIVE) -->
-    <div class="flex items-center justify-center gap-1.5 sm:gap-2 p-1.5 rounded-full bg-[#FAF5EE] max-w-fit mx-auto border border-[#E8DAC9] shadow-2xs">
-      <!-- Step 1: CHECK ADDRESS (Completed/Navigable) -->
-      <a href="{% url 'checkout_address' %}" class="bg-white border border-[#E8DAC9] text-[#7A6E65] hover:text-[#140804] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase transition-colors">
-        <span>1. CHECK ADDRESS</span>
+    <!-- 1. STEPPER (Image 1 Style: 1. ADDRESS ✓ — 2. ORDER SUMMARY [Active] — 3. PAYMENT) -->
+    <div class="flex items-center justify-center gap-2 p-1.5 rounded-full bg-white max-w-fit mx-auto border border-[#E8DAC9] shadow-2xs">
+      <!-- Step 1: ADDRESS (Completed) -->
+      <a href="{% url 'checkout_address' %}" class="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-[#7A6E65] hover:text-[#140804] transition-colors">
+        <span class="text-emerald-700 font-bold text-sm">✓</span>
+        <span>1. ADDRESS</span>
       </a>
+      <span class="text-[#D8C7B5] select-none">—</span>
       <!-- Step 2: ORDER SUMMARY (Active) -->
-      <div class="bg-[#140804] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-[11px] sm:text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
-        <span>2. ORDER SUMMARY</span>
+      <div class="bg-[#140804] text-white px-3.5 py-1.5 rounded-full font-bold text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5">
+        <span class="w-4 h-4 rounded-full bg-white/20 text-[10px] flex items-center justify-center">2</span>
+        <span>ORDER SUMMARY</span>
       </div>
-      <!-- Step 3: PAYMENT (Inactive) -->
-      <div class="bg-white border border-[#E8DAC9] text-[#817470] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-[11px] sm:text-xs tracking-wider uppercase">
-        <span>3. PAYMENT</span>
+      <span class="text-[#D8C7B5] select-none">—</span>
+      <!-- Step 3: PAYMENT (Pending) -->
+      <div class="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-[#A89F91]">
+        <span class="w-4 h-4 rounded-full bg-[#EFE9DF] text-[10px] flex items-center justify-center text-[#8C7E72]">3</span>
+        <span>PAYMENT</span>
       </div>
     </div>
 
@@ -58,15 +63,15 @@
     {% endif %}
 
     <!-- 2. SECTION 1: SELECTED PRODUCT -->
-    <div class="space-y-2 pt-2">
+    <div class="space-y-2.5">
       <div class="flex items-center justify-between">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-[#7A6E65]">Selected product</h2>
-        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FAF5EE] text-[#8C4F20] border border-[#E8DAC9]">
-          {{ quantity|stringformat:"02d"|default:"01" }} PRODUCT(S)
+        <h2 class="text-sm font-bold text-[#140804]">Selected product</h2>
+        <span class="text-[11px] font-bold tracking-wider uppercase text-[#8C7E72]">
+          {{ quantity|stringformat:"02d"|default:"01" }} PRODUCTS
         </span>
       </div>
 
-      <!-- Product Card -->
+      <!-- Product Card (Matches Image 1) -->
       <div class="bg-white rounded-2xl border border-[#E8DAC9] p-4 sm:p-5 shadow-xs flex items-center justify-between gap-4">
         <div class="flex items-center gap-3.5 sm:gap-4 min-w-0">
           <!-- Thumbnail -->
@@ -78,7 +83,7 @@
             {% endif %}
           </div>
 
-          <!-- Product Meta -->
+          <!-- Product Details -->
           <div class="min-w-0">
             <span class="text-[10px] font-bold uppercase tracking-widest text-[#8C4F20] block truncate">
               {{ product.category.name|default:"SCULPTURAL ACCENT"|upper }}
@@ -87,7 +92,7 @@
               {{ product.name|default:"Monolith Roman Travertine Teapoy" }}
             </h3>
             <p class="text-[#7A6E65] text-xs mt-0.5 truncate">
-              {{ selected_wood|default:"Honed Roman Travertine" }} • {{ selected_size|default:"120 x 70 cm" }}
+              {{ selected_wood|default:"Honed Italian Travertine" }} • {{ selected_size|default:"Natural Vein" }}
             </p>
             <div class="mt-2">
               <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FAF5EE] text-[#8C4F20] border border-[#E8DAC9]">
@@ -97,62 +102,155 @@
           </div>
         </div>
 
-        <!-- Price Meta -->
+        <!-- Price -->
         <div class="text-right shrink-0">
           <div class="text-base sm:text-lg font-bold text-[#140804]">
             {{ formatted_grand_total|default:"₹24,900" }}
           </div>
           <span class="text-[9px] font-bold tracking-wider uppercase text-[#817470] block mt-0.5">
-            TAXES & SHIPPING INCL.
+            TAXES & FREIGHT INCL.
           </span>
         </div>
       </div>
     </div>
 
-    <!-- 3. SECTION 2: SUMMARY OF PRODUCT -->
-    <div class="space-y-2">
-      <h2 class="text-xs font-bold uppercase tracking-wider text-[#7A6E65]">Summary of product</h2>
-
-      <!-- Summary Breakdown Card -->
-      <div class="bg-white rounded-2xl border border-[#E8DAC9] p-5 shadow-xs space-y-3.5">
-        <div class="flex items-center justify-between text-sm text-[#7A6E65]">
-          <span>Subtotal ({{ quantity|default:1 }} Atelier Piece)</span>
-          <span class="font-semibold text-[#140804]">{{ formatted_subtotal|default:formatted_grand_total }}</span>
-        </div>
-
-        <div class="flex items-center justify-between text-sm text-[#7A6E65]">
-          <span>Storage / Delivery</span>
-          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-            FREE / EXPRESS
-          </span>
-        </div>
-
-        <div class="border-t border-[#E8DAC9] pt-3 flex items-baseline justify-between">
-          <span class="text-xs uppercase font-bold text-[#7A6E65] tracking-wider">TOTAL PAYABLE (INR)</span>
-          <span class="text-2xl sm:text-3xl font-black text-[#140804] tracking-tight">
-            {{ formatted_grand_total|default:"₹1,73,389" }}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. SUBMIT FORM: PROCEED TO PAYMENT -->
-    <form method="POST" action="" class="space-y-4 pt-2">
+    <!-- 3. SECTION 2: PAYMENT DETAILS (Matches Image 1 Exact UI) -->
+    <form method="POST" action="" id="summary-form" class="space-y-4">
       {% csrf_token %}
       <input type="hidden" name="product_id" value="{{ product.id|default:'' }}">
       <input type="hidden" name="selected_size" value="{{ selected_size|default:'' }}">
       <input type="hidden" name="selected_wood" value="{{ selected_wood|default:'' }}">
       <input type="hidden" name="quantity" value="{{ quantity|default:1 }}">
+      <input type="hidden" name="unit_price" value="{{ unit_price|default:grand_total }}">
       <input type="hidden" name="custom_measurements" value="{{ default_measurements|default:selected_wood|default:'Standard Dimensions' }}">
+      <input type="hidden" name="payment_plan" id="payment-plan-input" value="FULL_PAYMENT">
 
-      <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#140804] hover:bg-[#8C4F20] text-white font-bold text-sm sm:text-base tracking-wide shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99]">
-        <span>PROCEED TO PAYMENT</span>
-        <span class="text-lg">→</span>
-      </button>
+      <div class="bg-white rounded-2xl border border-[#E8DAC9] p-5 sm:p-6 shadow-xs space-y-4">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold tracking-widest uppercase text-[#8C4F20] block">
+              PAYMENT DETAILS
+            </span>
+            <h2 class="text-base sm:text-lg font-bold text-[#140804] mt-0.5">
+              Select How You Wish To Pay
+            </h2>
+          </div>
+          <div class="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <span class="material-symbols-outlined text-xs">lock</span>
+            <span>256-Bit SSL Encrypted</span>
+          </div>
+        </div>
 
-      <div class="text-center pt-2">
-        <a href="{% url 'checkout_address' %}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#8C4F20] hover:text-[#140804] transition-colors">
-          <span>←</span>
+        <!-- Option A: 100% Full Payment (Recommended) -->
+        <div id="card-full" onclick="selectPaymentOption('FULL_PAYMENT')" class="border-2 border-[#8C4F20] bg-[#FFFDFB] rounded-2xl p-4 sm:p-5 transition-all cursor-pointer space-y-3">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <!-- Radio Circle -->
+              <div id="radio-full" class="w-5 h-5 rounded-full border-2 border-[#8C4F20] flex items-center justify-center shrink-0 mt-0.5 bg-white">
+                <div class="w-2.5 h-2.5 rounded-full bg-[#8C4F20]"></div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-bold text-sm sm:text-base text-[#140804]">Option A: 100% Full Payment</h3>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase tracking-wider">
+                    RECOMMENDED
+                  </span>
+                </div>
+                <p class="text-xs text-[#7A6E65] mt-1 leading-relaxed">
+                  Settle total order upfront in a single secure transaction. No future reminders or milestones.
+                </p>
+              </div>
+            </div>
+            <!-- Price on right -->
+            <div class="text-right shrink-0">
+              <span class="text-[10px] font-medium text-[#7A6E65] block">Total Due Today</span>
+              <span class="text-base sm:text-lg font-black text-[#140804]">{{ formatted_grand_total }}</span>
+            </div>
+          </div>
+
+          <!-- Feature Checks -->
+          <div class="pt-2 border-t border-[#F2E8DC] flex items-center gap-3 sm:gap-6 flex-wrap text-xs font-semibold text-emerald-800">
+            <div class="flex items-center gap-1">
+              <span>✓</span>
+              <span>Fully paid immediately</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span>✓</span>
+              <span>Expedited dispatch</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span>✓</span>
+              <span>Zero future payments</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option B: 3 Equal Installments (Flexible) -->
+        <div id="card-inst" onclick="selectPaymentOption('THREE_INSTALLMENTS')" class="border border-[#E8DAC9] bg-white rounded-2xl p-4 sm:p-5 transition-all cursor-pointer hover:border-[#C4A480] space-y-2">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <!-- Radio Circle -->
+              <div id="radio-inst" class="w-5 h-5 rounded-full border-2 border-[#D8C7B5] flex items-center justify-center shrink-0 mt-0.5 bg-white">
+                <div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-bold text-sm sm:text-base text-[#140804]">3 Equal Installments</h3>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700 border border-zinc-200 uppercase tracking-wider">
+                    FLEXIBLE
+                  </span>
+                </div>
+                <p class="text-xs text-[#7A6E65] mt-1 leading-relaxed">
+                  Split the total cost into 3 equal parts. Pay the first installment now and the remaining 2 installments later as per schedule.
+                </p>
+              </div>
+            </div>
+            <!-- Price on right -->
+            <div class="text-right shrink-0">
+              <span class="text-[10px] font-medium text-[#7A6E65] block">Total Amount</span>
+              <span class="text-base sm:text-lg font-black text-[#140804]">{{ formatted_grand_total }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Commitment & Payable Today Summary Box -->
+        <div class="bg-[#FAF5EE] rounded-xl p-4 border border-[#E8DAC9] space-y-2 text-xs">
+          <div class="flex items-center justify-between text-[#7A6E65]">
+            <span>Total Order Commitment</span>
+            <span class="font-bold text-[#140804]">{{ formatted_grand_total }}</span>
+          </div>
+          <div class="flex items-center justify-between text-[#7A6E65]">
+            <span>Selected Payment Option</span>
+            <span id="selected-plan-label" class="font-semibold text-[#140804]">100% Full Payment</span>
+          </div>
+
+          <div class="border-t border-[#E8DAC9] pt-2.5 mt-2 flex items-baseline justify-between">
+            <div>
+              <span class="text-xs uppercase font-bold text-[#140804] tracking-wider block">
+                Amount Payable Today
+              </span>
+              <span class="text-[10px] text-[#8C4F20] font-medium block">
+                via Cashfree Secure Gateway
+              </span>
+            </div>
+            <div class="text-right">
+              <span id="payable-today-display" class="text-xl sm:text-2xl font-black text-[#140804]">
+                {{ formatted_grand_total }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-4 px-6 rounded-xl bg-[#140804] hover:bg-[#8C4F20] text-white font-bold text-sm sm:text-base tracking-wider uppercase transition-all shadow-md active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2">
+          <span>PROCEED TO PAYMENT</span>
+        </button>
+      </div>
+
+      <!-- Back Link -->
+      <div class="text-center pt-1">
+        <a href="{% url 'checkout_address' %}" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#7A6E65] hover:text-[#140804] transition-colors">
           <span>BACK TO ADDRESS</span>
         </a>
       </div>
@@ -160,4 +258,43 @@
 
   </div>
 </div>
+
+<script>
+  const fullAmountFormatted = "{{ formatted_grand_total|default:'₹1,73,389' }}";
+  const instAmountFormatted = "{{ formatted_installment_amount|default:'₹57,796' }}";
+
+  function selectPaymentOption(option) {
+    const planInput = document.getElementById('payment-plan-input');
+    const cardFull = document.getElementById('card-full');
+    const cardInst = document.getElementById('card-inst');
+    const radioFull = document.getElementById('radio-full');
+    const radioInst = document.getElementById('radio-inst');
+    const planLabel = document.getElementById('selected-plan-label');
+    const payableDisplay = document.getElementById('payable-today-display');
+
+    planInput.value = option;
+
+    if (option === 'FULL_PAYMENT') {
+      // Full Payment Selected
+      cardFull.className = "border-2 border-[#8C4F20] bg-[#FFFDFB] rounded-2xl p-4 sm:p-5 transition-all cursor-pointer space-y-3";
+      cardInst.className = "border border-[#E8DAC9] bg-white rounded-2xl p-4 sm:p-5 transition-all cursor-pointer hover:border-[#C4A480] space-y-2";
+      radioFull.className = "w-5 h-5 rounded-full border-2 border-[#8C4F20] flex items-center justify-center shrink-0 mt-0.5 bg-white";
+      radioFull.innerHTML = '<div class="w-2.5 h-2.5 rounded-full bg-[#8C4F20]"></div>';
+      radioInst.className = "w-5 h-5 rounded-full border-2 border-[#D8C7B5] flex items-center justify-center shrink-0 mt-0.5 bg-white";
+      radioInst.innerHTML = '<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>';
+      planLabel.textContent = "100% Full Payment";
+      payableDisplay.textContent = fullAmountFormatted;
+    } else {
+      // 3 Installments Selected
+      cardInst.className = "border-2 border-[#8C4F20] bg-[#FFFDFB] rounded-2xl p-4 sm:p-5 transition-all cursor-pointer space-y-2";
+      cardFull.className = "border border-[#E8DAC9] bg-white rounded-2xl p-4 sm:p-5 transition-all cursor-pointer hover:border-[#C4A480] space-y-3";
+      radioInst.className = "w-5 h-5 rounded-full border-2 border-[#8C4F20] flex items-center justify-center shrink-0 mt-0.5 bg-white";
+      radioInst.innerHTML = '<div class="w-2.5 h-2.5 rounded-full bg-[#8C4F20]"></div>';
+      radioFull.className = "w-5 h-5 rounded-full border-2 border-[#D8C7B5] flex items-center justify-center shrink-0 mt-0.5 bg-white";
+      radioFull.innerHTML = '<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>';
+      planLabel.textContent = "3 Equal Installments (" + instAmountFormatted + " × 3)";
+      payableDisplay.textContent = instAmountFormatted;
+    }
+  }
+</script>
 {% endblock %}

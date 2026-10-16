@@ -23,7 +23,12 @@ class CashfreeService:
 
     @classmethod
     def get_base_url(cls):
-        env = getattr(settings, 'CASHFREE_ENVIRONMENT', 'SANDBOX').upper()
+        client_secret = getattr(settings, 'CASHFREE_CLIENT_SECRET', '')
+        if client_secret.startswith('cfsk_ma_prod_'):
+            return 'https://api.cashfree.com'
+        if client_secret.startswith('cfsk_ma_test_'):
+            return 'https://sandbox.cashfree.com'
+        env = getattr(settings, 'CASHFREE_ENVIRONMENT', 'PRODUCTION').upper()
         if env == 'PRODUCTION':
             return 'https://api.cashfree.com'
         return 'https://sandbox.cashfree.com'
@@ -141,6 +146,25 @@ class CashfreeService:
             raise CashfreeAPIError("Unable to connect to Cashfree payment server. Please try again shortly.") from e
 
         if resp.status_code not in [200, 201]:
+            # If 401 occurs because endpoint mismatch, try alternate endpoint once
+            if resp.status_code == 401:
+                alt_url = 'https://api.cashfree.com/pg/orders' if 'sandbox' in url else 'https://sandbox.cashfree.com/pg/orders'
+                try:
+                    retry_resp = requests.post(alt_url, json=payload, headers=cls.get_headers(), timeout=15)
+                    if retry_resp.status_code in [200, 201]:
+                        retry_data = retry_resp.json()
+                        return {
+                            "order_id": retry_data.get("order_id", cf_order_id),
+                            "payment_session_id": retry_data.get("payment_session_id"),
+                            "order_status": retry_data.get("order_status"),
+                            "order_amount": retry_data.get("order_amount"),
+                            "cf_order_id": retry_data.get("cf_order_id"),
+                            "is_simulated": False,
+                            "raw_response": retry_data
+                        }
+                except Exception as retry_err:
+                    logger.warning(f"Cashfree alternate endpoint retry failed: {retry_err}")
+
             err_msg = data.get('message') or data.get('error') or "Cashfree order creation failed."
             logger.error(f"Cashfree Order Error ({resp.status_code}): {data}")
             raise CashfreeAPIError(err_msg, status_code=resp.status_code, raw_response=data)
