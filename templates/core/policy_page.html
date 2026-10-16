@@ -38,12 +38,39 @@
   .policy-content a:hover {
     color: #140804;
   }
+  .policy-content h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #140804;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #FAF0E6;
+    letter-spacing: -0.01em;
+  }
+  .policy-content h2:first-child {
+    margin-top: 0;
+  }
   .policy-content h3 {
     font-size: 1.15rem;
     font-weight: 700;
     color: #111827;
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
+  }
+  .policy-content blockquote {
+    border-left: 4px solid #8C4F20;
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #4B5563;
+    background: #FAF6F0;
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+  .policy-content hr {
+    border: none;
+    border-top: 1px solid #E8DAC9;
+    margin: 2rem 0;
   }
 </style>
 {% endblock %}
@@ -106,7 +133,7 @@
       <aside class="hidden lg:block lg:col-span-4">
         <div class="sticky top-24 bg-white rounded-2xl border border-[#E8DAC9] p-5 shadow-xs space-y-3">
           <h2 class="text-xs font-black uppercase tracking-wider text-[#8C4F20]">Document Sections</h2>
-          <nav class="space-y-1 text-xs">
+          <nav id="toc-nav" class="space-y-1 text-xs">
             {% for sec in sections %}
             <a href="#section-{{ forloop.counter }}" class="block px-3 py-2 rounded-xl text-[#7A6E65] hover:bg-[#FAF5EE] hover:text-[#140804] font-medium transition-colors truncate">
               {{ sec.active_heading|default:"Section" }}
@@ -125,7 +152,7 @@
         </div>
       </aside>
 
-      <!-- RIGHT COLUMN: Document Body & Sections -->
+      <!-- RIGHT COLUMN: Document Body -->
       <main class="lg:col-span-8 space-y-6">
         
         <!-- Summary Callout Box -->
@@ -140,26 +167,32 @@
         </div>
         {% endif %}
 
-        <!-- Individual Sections -->
+        <!-- UNIFIED DOCUMENT CONTENT -->
+        {% if active_content %}
+        <article class="bg-white rounded-2xl border border-[#E8DAC9] p-6 sm:p-10 lg:p-12 shadow-xs space-y-4">
+          <div id="policy-document-body" class="policy-content text-xs sm:text-sm leading-relaxed">
+            {{ active_content|safe }}
+          </div>
+        </article>
+        {% elif sections %}
+        <!-- Fallback if active_content was empty -->
         <div class="space-y-6">
           {% for sec in sections %}
           <article id="section-{{ forloop.counter }}" class="bg-white rounded-2xl border border-[#E8DAC9] p-6 sm:p-8 shadow-xs space-y-3 scroll-mt-24">
-            
             <h2 class="text-base sm:text-lg font-bold text-[#140804] pb-2 border-b border-[#FAF5EE]">
               {{ sec.active_heading }}
             </h2>
-
             <div class="policy-content text-xs sm:text-sm leading-relaxed">
               {{ sec.active_content|safe }}
             </div>
-
           </article>
-          {% empty %}
-          <div class="bg-white rounded-2xl border border-[#E8DAC9] p-8 text-center text-gray-500">
-            <p>This policy document is currently being updated by our master craftsmen.</p>
-          </div>
           {% endfor %}
         </div>
+        {% else %}
+        <div class="bg-white rounded-2xl border border-[#E8DAC9] p-8 text-center text-gray-500">
+          <p>This policy document is currently being updated by our master craftsmen.</p>
+        </div>
+        {% endif %}
 
         <!-- Support Concierge Box -->
         <div class="bg-[#140804] text-white rounded-2xl p-6 sm:p-8 shadow-md flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -181,4 +214,29 @@
   </div>
 
 </div>
+
+<!-- DYNAMIC TOC GENERATOR FOR UNIFIED CONTENT -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const docBody = document.getElementById('policy-document-body');
+    const tocNav = document.getElementById('toc-nav');
+    if (docBody && tocNav) {
+      const headings = docBody.querySelectorAll('h2');
+      if (headings.length > 0) {
+        tocNav.innerHTML = '';
+        headings.forEach(function(h, idx) {
+          const anchorId = 'clause-' + (idx + 1);
+          h.id = anchorId;
+          h.classList.add('scroll-mt-24');
+          
+          const a = document.createElement('a');
+          a.href = '#' + anchorId;
+          a.className = 'block px-3 py-2 rounded-xl text-[#7A6E65] hover:bg-[#FAF5EE] hover:text-[#140804] font-medium transition-colors truncate';
+          a.textContent = h.textContent.trim();
+          tocNav.appendChild(a);
+        });
+      }
+    }
+  });
+</script>
 {% endblock %}

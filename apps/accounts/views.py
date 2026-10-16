@@ -2338,6 +2338,7 @@ def admin_footer_editor_view(request, slug):
             page.draft_title = page.title
             page.draft_nav_label = page.nav_label
             page.draft_summary = page.summary
+            page.draft_content = page.content
             page.status = 'published' if page.is_published else 'unpublished'
             page.save()
 
@@ -2352,85 +2353,23 @@ def admin_footer_editor_view(request, slug):
         title = request.POST.get('title', '').strip() or page.title
         nav_label = request.POST.get('nav_label', '').strip() or title
         summary = request.POST.get('summary', '').strip()
+        content = request.POST.get('content', '').strip()
         user_display = request.user.get_full_name() or request.user.username if request.user.is_authenticated else 'Master Admin'
-
-        sections_data = []
-        raw_sections_json = request.POST.get('sections_json', '').strip()
-        if raw_sections_json:
-            try:
-                sections_data = json.loads(raw_sections_json)
-            except Exception as e:
-                import logging
-                logging.getLogger(__name__).warning("JSON section parse error: %s", e)
-
-        if not sections_data:
-            sec_indices = request.POST.getlist('section_index')
-            for idx in sec_indices:
-                s_id = request.POST.get(f'sec_id_{idx}')
-                s_heading = request.POST.get(f'sec_heading_{idx}', '').strip()
-                s_content = request.POST.get(f'sec_content_{idx}', '').strip()
-                s_order = request.POST.get(f'sec_order_{idx}', idx)
-                try:
-                    s_order = int(s_order)
-                except (ValueError, TypeError):
-                    s_order = 1
-                if s_heading or s_content:
-                    sections_data.append({
-                        'id': s_id,
-                        'heading': s_heading,
-                        'content': s_content,
-                        'order': s_order
-                    })
 
         with transaction.atomic():
             if action == 'save_draft':
                 page.draft_title = title
                 page.draft_nav_label = nav_label
                 page.draft_summary = summary
+                page.draft_content = content
                 page.status = 'draft'
                 page.last_updated_by = user_display
                 page.save()
 
-                seen_ids = []
-                for s_idx, sec_info in enumerate(sections_data, start=1):
-                    sec_id = sec_info.get('id')
-                    s_head = sec_info.get('heading', '').strip()
-                    s_body = sec_info.get('content', '').strip()
-                    s_ord = sec_info.get('order', s_idx)
-                    try:
-                        s_ord = int(s_ord)
-                    except (ValueError, TypeError):
-                        s_ord = s_idx
-
-                    sec_obj = None
-                    if sec_id and str(sec_id).isdigit():
-                        sec_obj = page.sections.filter(id=int(sec_id)).first()
-
-                    if sec_obj:
-                        sec_obj.draft_heading = s_head
-                        sec_obj.draft_content = s_body
-                        sec_obj.order = s_ord
-                        sec_obj.save()
-                        seen_ids.append(sec_obj.id)
-                    else:
-                        new_sec = FooterPageSection.objects.create(
-                            page=page,
-                            heading=s_head,
-                            content=s_body,
-                            draft_heading=s_head,
-                            draft_content=s_body,
-                            order=s_ord,
-                            is_active=True
-                        )
-                        seen_ids.append(new_sec.id)
-
-                if seen_ids:
-                    page.sections.exclude(id__in=seen_ids).delete()
-
                 messages.success(
                     request,
                     f"Draft saved successfully for '{page.title}' at {timezone.now().strftime('%I:%M %p')}. "
-                    "The public website continues serving the published version until you click 'Publish Changes'."
+                    "Public visitors continue seeing the live published version until you click 'Publish Changes'."
                 )
 
             elif action == 'publish':
@@ -2440,78 +2379,39 @@ def admin_footer_editor_view(request, slug):
                 page.draft_nav_label = nav_label
                 page.summary = summary
                 page.draft_summary = summary
+                page.content = content
+                page.draft_content = content
                 page.is_published = True
                 page.status = 'published'
                 page.published_at = timezone.now()
                 page.last_updated_by = user_display
                 page.save()
 
-                seen_ids = []
-                for s_idx, sec_info in enumerate(sections_data, start=1):
-                    sec_id = sec_info.get('id')
-                    s_head = sec_info.get('heading', '').strip()
-                    s_body = sec_info.get('content', '').strip()
-                    s_ord = sec_info.get('order', s_idx)
-                    try:
-                        s_ord = int(s_ord)
-                    except (ValueError, TypeError):
-                        s_ord = s_idx
-
-                    sec_obj = None
-                    if sec_id and str(sec_id).isdigit():
-                        sec_obj = page.sections.filter(id=int(sec_id)).first()
-
-                    if sec_obj:
-                        sec_obj.heading = s_head
-                        sec_obj.draft_heading = s_head
-                        sec_obj.content = s_body
-                        sec_obj.draft_content = s_body
-                        sec_obj.order = s_ord
-                        sec_obj.is_active = True
-                        sec_obj.save()
-                        seen_ids.append(sec_obj.id)
-                    else:
-                        new_sec = FooterPageSection.objects.create(
-                            page=page,
-                            heading=s_head,
-                            draft_heading=s_head,
-                            content=s_body,
-                            draft_content=s_body,
-                            order=s_ord,
-                            is_active=True
-                        )
-                        seen_ids.append(new_sec.id)
-
-                if seen_ids:
-                    page.sections.exclude(id__in=seen_ids).delete()
-
                 messages.success(
                     request,
                     f"🎉 Successfully published! '{page.title}' is now live on https://gloryfurniturehub.com/{page.slug}/."
                 )
 
-            elif action == 'discard':
-                page.draft_title = page.title
-                page.draft_nav_label = page.nav_label
-                page.draft_summary = page.summary
-                page.status = 'published' if page.is_published else 'draft'
-                page.save()
-                for sec in page.sections.all():
-                    sec.draft_heading = sec.heading
-                    sec.draft_content = sec.content
-                    sec.save()
-                messages.info(
-                    request,
-                    f"Draft edits discarded. Restored to published state for '{page.title}'."
-                )
-
         return redirect('admin_footer_editor', slug=slug)
 
-    sections = list(page.sections.filter(is_active=True).order_by('order', 'id'))
+    # Initialize full document content if blank
+    if not page.content and page.sections.exists():
+        existing_sec_html = []
+        for s in page.sections.filter(is_active=True).order_by('order', 'id'):
+            if s.heading:
+                existing_sec_html.append(f"<h2>{s.heading}</h2>")
+            if s.content:
+                existing_sec_html.append(s.content)
+        page.content = "\n\n".join(existing_sec_html)
+        if not page.draft_content:
+            page.draft_content = page.content
+        page.save()
+
+    active_editor_content = page.draft_content if (page.status == 'draft' and page.draft_content) else (page.content or page.draft_content)
 
     context = {
         'page': page,
-        'sections': sections,
+        'active_editor_content': active_editor_content,
         'active_nav': 'footer_cms',
         'page_title': f"Edit {page.title} — Full-Window Editor",
     }

@@ -738,6 +738,21 @@ def policy_page_view(request, slug):
         from django.http import Http404
         raise Http404("This page is currently unpublished.")
 
+    active_title = page.draft_title if (is_preview and page.draft_title) else page.title
+    active_summary = page.draft_summary if (is_preview and page.draft_summary) else page.summary
+    active_content = page.draft_content if (is_preview and page.draft_content) else page.content
+
+    if not active_content and page.sections.exists():
+        sec_list = []
+        for s in page.sections.filter(is_active=True).order_by('order', 'id'):
+            h = s.draft_heading if (is_preview and s.draft_heading) else s.heading
+            c = s.draft_content if (is_preview and s.draft_content) else s.content
+            if h:
+                sec_list.append(f"<h2>{h}</h2>")
+            if c:
+                sec_list.append(c)
+        active_content = "\n\n".join(sec_list)
+
     sections = list(page.sections.filter(is_active=True).order_by('order', 'id'))
 
     context = {
@@ -745,8 +760,9 @@ def policy_page_view(request, slug):
         'sections': sections,
         'is_preview': is_preview,
         'is_admin': is_admin,
-        'active_title': page.draft_title if (is_preview and page.draft_title) else page.title,
-        'active_summary': page.draft_summary if (is_preview and page.draft_summary) else page.summary,
+        'active_title': active_title,
+        'active_summary': active_summary,
+        'active_content': active_content,
     }
     return render(request, 'core/policy_page.html', context)
 

@@ -553,11 +553,13 @@ class FooterPage(models.Model):
     icon = models.CharField(max_length=50, default="📜", help_text="Emoji or icon symbol")
     short_description = models.CharField(max_length=300, blank=True, default="", help_text="Admin description")
     summary = models.TextField(blank=True, default="", help_text="Published page introduction")
+    content = models.TextField(blank=True, default="", help_text="Full published page content HTML")
 
     # Draft / Work-in-progress content
     draft_title = models.CharField(max_length=200, blank=True, default="")
     draft_nav_label = models.CharField(max_length=100, blank=True, default="")
     draft_summary = models.TextField(blank=True, default="")
+    draft_content = models.TextField(blank=True, default="", help_text="Full draft page content HTML")
 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')
     is_published = models.BooleanField(default=True)
@@ -587,6 +589,10 @@ class FooterPage(models.Model):
     @property
     def active_summary(self):
         return self.summary or self.draft_summary
+
+    @property
+    def active_content(self):
+        return self.content or self.draft_content
 
     @classmethod
     def seed_default_pages(cls):
@@ -759,6 +765,16 @@ class FooterPage(models.Model):
         ]
 
         for pdata in pages_data:
+            sec_html_list = []
+            for sec_data in pdata.get('sections', []):
+                h = sec_data.get('heading', '').strip()
+                c = sec_data.get('content', '').strip()
+                if h:
+                    sec_html_list.append(f"<h2>{h}</h2>")
+                if c:
+                    sec_html_list.append(c)
+            compiled_full_html = "\n\n".join(sec_html_list)
+
             page, created = cls.objects.get_or_create(
                 slug=pdata['slug'],
                 defaults={
@@ -768,9 +784,11 @@ class FooterPage(models.Model):
                     'footer_order': pdata['footer_order'],
                     'short_description': pdata['short_description'],
                     'summary': pdata['summary'],
+                    'content': compiled_full_html,
                     'draft_title': pdata['title'],
                     'draft_nav_label': pdata['nav_label'],
                     'draft_summary': pdata['summary'],
+                    'draft_content': compiled_full_html,
                     'status': 'published',
                     'is_published': True,
                     'is_in_footer': True,
@@ -778,6 +796,25 @@ class FooterPage(models.Model):
                     'last_updated_by': 'Master Studio Admin',
                 }
             )
+
+            # Auto-populate content if existing record had blank content
+            if not page.content:
+                if page.sections.exists():
+                    existing_sec_html = []
+                    for s in page.sections.filter(is_active=True).order_by('order', 'id'):
+                        if s.heading:
+                            existing_sec_html.append(f"<h2>{s.heading}</h2>")
+                        if s.content:
+                            existing_sec_html.append(s.content)
+                        elif s.draft_content:
+                            existing_sec_html.append(s.draft_content)
+                    page.content = "\n\n".join(existing_sec_html)
+                else:
+                    page.content = compiled_full_html
+                if not page.draft_content:
+                    page.draft_content = page.content
+                page.save()
+
             # Seed sections if new page or no sections
             if created or not page.sections.exists():
                 for s_idx, sec_data in enumerate(pdata['sections'], start=1):
