@@ -88,140 +88,344 @@
 </head><body class="bg-surface font-body-md text-on-surface antialiased pb-20 sm:pb-0">
 
 <!-- ============================================================== -->
-<!-- SLIDE-OUT NAVIGATION DRAWER (3-Lines Menu - Mobile)            -->
+<!-- 1. MOBILE NAVIGATION DRAWER (Slide-Out on Mobile)              -->
 <!-- ============================================================== -->
-<div id="navDrawerOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
-<aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out">
+<div id="navDrawerOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
+<aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out overflow-y-auto font-sans">
   <div>
     <!-- Drawer Header -->
-    <div class="p-5 border-b border-surface-container flex items-center justify-between bg-surface-container-low/50">
+    <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/80">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center border border-amber-600/30 bg-[#5C3D2E]">
-          <img alt="Glory Furniture" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
+        <!-- Speed shopping cart icon -->
+        <div class="w-8 h-8 rounded-lg bg-[#E03131] text-white flex items-center justify-center shadow-xs">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
         </div>
         <div class="flex flex-col leading-none">
-          <span class="font-display-md text-xs font-black text-primary tracking-wider uppercase">GLORY</span>
-          <span class="text-[9px] font-bold text-secondary tracking-widest uppercase">FURNITURE HUB</span>
+          <span class="font-black text-sm tracking-tight text-gray-950 uppercase">CLASSY<span class="text-[#E03131]">SHOP</span></span>
+          <span class="text-[8px] font-bold tracking-[0.2em] text-gray-500 uppercase mt-0.5">BIG MEGA STORE</span>
         </div>
       </div>
-      <button type="button" onclick="toggleNavDrawer()" class="p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Close Menu">
-        <span class="material-symbols-outlined text-[20px]">close</span>
+      <button type="button" onclick="toggleNavDrawer()" class="p-1.5 rounded-full text-gray-500 hover:text-gray-950 hover:bg-gray-200 transition-colors cursor-pointer" title="Close Menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
 
-    <!-- Drawer Menu: ONLY Profile, Cart, and Fav (Favorites) -->
-    <nav class="p-4 flex flex-col gap-2.5">
-      <!-- 1. Profile -->
-      <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low/60 hover:bg-surface-container transition-all group">
-        <div class="flex items-center gap-3.5">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-[22px]">person</span>
-          </div>
-          <div class="flex flex-col">
-            <span class="font-bold text-sm text-primary">Profile</span>
-            <span class="text-[11px] text-on-surface-variant font-medium">{% if request.user.is_authenticated %}My Account &amp; Orders{% else %}Sign In / Register{% endif %}</span>
-          </div>
-        </div>
-        <span class="material-symbols-outlined text-stone-400 group-hover:translate-x-1 transition-transform text-[18px]">chevron_right</span>
-      </a>
+    <!-- Mobile Search Inside Drawer -->
+    <div class="p-4 border-b border-gray-100 bg-white">
+      <form action="/catalog/" method="GET" class="flex items-center bg-[#F1F3F6] rounded-lg px-3 py-2 border border-transparent focus-within:border-gray-300 focus-within:bg-white transition-all">
+        <input 
+          type="text" 
+          name="search" 
+          placeholder="Search for products..." 
+          class="w-full bg-transparent text-xs text-gray-900 placeholder:text-gray-400 outline-none"
+        />
+        <button type="submit" class="text-gray-500 hover:text-gray-950 ml-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+      </form>
+    </div>
 
-      <!-- 2. Cart -->
-      <a href="/cart/" class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low/60 hover:bg-surface-container transition-all group">
-        <div class="flex items-center gap-3.5">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+    <!-- User Authentication Card -->
+    <div class="px-4 py-3 bg-[#FAF8F5] border-b border-gray-100">
+      {% if request.user.is_authenticated %}
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-full bg-[#5C3D2E] text-white font-bold text-xs flex items-center justify-center shrink-0">
+            {{ USER_NAME|slice:":1"|default:"U" }}
           </div>
-          <div class="flex flex-col">
-            <span class="font-bold text-sm text-primary">Cart</span>
-            <span class="text-[11px] text-on-surface-variant font-medium">Shopping Bag</span>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-gray-950 truncate">Hi, {{ USER_NAME|default:"Customer" }}</p>
+            <p class="text-[10px] text-gray-500 truncate">{{ USER_EMAIL|default:"" }}</p>
           </div>
         </div>
-        <span id="drawerCartBadge" class="bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full">2</span>
-      </a>
+        <a href="/logout/" class="text-[11px] font-bold text-red-600 hover:underline">Logout</a>
+      </div>
+      {% else %}
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-gray-600">Welcome to ClassyShop!</span>
+        <div class="flex items-center gap-2 text-xs font-bold text-gray-900">
+          <a href="/login/" class="text-[#E03131] hover:underline">Login</a>
+          <span class="text-gray-300">|</span>
+          <a href="/register/" class="hover:underline">Register</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
 
-      <!-- 3. Fav (Favorites) -->
-      <a href="/wishlist/" class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-container-low/60 hover:bg-surface-container transition-all group">
-        <div class="flex items-center gap-3.5">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-secondary group-hover:scale-105 transition-transform">
-            <span class="material-symbols-outlined text-[22px]">favorite</span>
-          </div>
-          <div class="flex flex-col">
-            <span class="font-bold text-sm text-primary">Fav</span>
-            <span class="text-[11px] text-on-surface-variant font-medium">Saved Items &amp; Wishlist</span>
-          </div>
-        </div>
-        <span id="drawerWishlistBadge" class="bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full">3</span>
+    <!-- Shop By Categories Accordion / Menu -->
+    <div class="p-4 border-b border-gray-100">
+      <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-gray-900 mb-2.5">
+        <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <span>Shop by Categories</span>
+      </div>
+      <div class="grid grid-cols-2 gap-1.5 text-xs">
+        <a href="/catalog/?category=Sofa%20Set" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Sofa Sets</a>
+        <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Beds &amp; Cots</a>
+        <a href="/catalog/?category=Dining%20Table" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Dining Tables</a>
+        <a href="/catalog/?category=Podimes" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Diwans</a>
+        <a href="/catalog/?category=Dressing%20Table" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Dressing</a>
+        <a href="/catalog/?search=teapoy" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Teapoys</a>
+        <a href="/catalog/?search=door" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Doors</a>
+        <a href="/custom-orders/" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Custom Orders</a>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Links -->
+    <nav class="p-4 flex flex-col gap-1 text-xs font-semibold text-gray-800">
+      <a href="/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>Home</span>
+        <span>&rarr;</span>
+      </a>
+      <a href="/catalog/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>Full Furniture Catalog</span>
+        <span>&rarr;</span>
+      </a>
+      <a href="/wishlist/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>Wishlist</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">{{ WISHLIST_COUNT|default:"0" }}</span>
+      </a>
+      <a href="/cart/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>Shopping Cart</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E03131] text-white">{{ CART_COUNT|default:"0" }}</span>
+      </a>
+      <a href="/orders/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>My Orders</span>
+        <span>&rarr;</span>
+      </a>
+      <a href="/contact-us/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>Contact Us</span>
+        <span>&rarr;</span>
+      </a>
+      <a href="/about/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+        <span>About Us</span>
+        <span>&rarr;</span>
       </a>
     </nav>
   </div>
 
-  <!-- Drawer Footer -->
-  <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
-    <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © 2024</p>
+  <!-- Drawer Footer: Delivery perk -->
+  <div class="p-4 border-t border-gray-100 bg-gray-50 text-xs flex items-center gap-2 text-gray-700">
+    <span class="text-base">🚀</span>
+    <span class="font-bold">Free International Delivery</span>
   </div>
 </aside>
 
 <!-- ============================================================== -->
-<!-- WINDOWS / DESKTOP SCREEN TOP NAVBAR (Hidden on Android Mobile) -->
+<!-- 2. MODERN 2-TIER NAVBAR (Exact UI to User Image)               -->
 <!-- ============================================================== -->
-<header class="hidden sm:block sticky top-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-[0_1px_4px_rgba(45,30,24,0.03)] select-none">
-  <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex items-center justify-between gap-4">
+<header class="sticky top-0 w-full z-40 bg-white border-b border-gray-200 select-none shadow-xs font-sans">
+  
+  <!-- TIER 1: Main Header Row (Logo, Search, User, Wishlist, Cart) -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between gap-3 sm:gap-6">
     
-    <!-- Left: Brand Logo & Straight Title -->
-    <a class="flex items-center gap-2.5 shrink-0 group select-none cursor-pointer" href="/">
-      <div class="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0 border border-amber-600/30 shadow-xs bg-[#5C3D2E]">
-        <img alt="Glory Furniture Hub" class="w-full h-full object-contain" src="/static/favicon.svg" onerror="this.onerror=null; this.src='/static/favicon.svg';">
-      </div>
-      <span class="font-display-md text-base lg:text-lg tracking-wider uppercase text-primary font-black group-hover:text-secondary transition-colors whitespace-nowrap">
-        GLORY FURNITURE HUB
-      </span>
-    </a>
+    <!-- Left: Brand Logo & Mobile Menu Toggle -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <!-- Mobile Hamburger Button -->
+      <button 
+        type="button" 
+        onclick="toggleNavDrawer()" 
+        class="lg:hidden p-1.5 rounded-lg text-gray-700 hover:text-black hover:bg-gray-100 transition-colors cursor-pointer" 
+        title="Open Navigation"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
 
-    <!-- Center: Extended Search Bar -->
-    <div class="flex-1 max-w-2xl mx-4">
-      <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-stone-100/80 hover:bg-stone-100 focus-within:bg-white rounded-full px-4 py-2 border border-stone-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
-        <span class="material-symbols-outlined text-stone-400 text-[20px] mr-2 shrink-0">search</span>
+      <!-- Brand Logo (Cart Icon + CLASSYSHOP + BIG MEGA STORE) -->
+      <a href="/" class="flex items-center gap-2 sm:gap-2.5 group cursor-pointer select-none">
+        <!-- Red speed shopping cart / bag icon -->
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#E03131] to-[#C92A2A] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+        <div class="flex flex-col leading-none">
+          <span class="font-black text-lg sm:text-xl lg:text-2xl tracking-tight text-gray-950 uppercase">
+            CLASSY<span class="text-[#E03131]">SHOP</span>
+          </span>
+          <span class="text-[7.5px] sm:text-[8.5px] font-bold tracking-[0.24em] text-gray-500 uppercase mt-0.5">
+            BIG MEGA STORE
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Center: Extended Search Bar (Desktop & Tablet) -->
+    <div class="hidden sm:flex flex-1 max-w-2xl mx-2 lg:mx-6">
+      <form action="/catalog/" method="GET" class="w-full relative flex items-center bg-[#F1F3F6] hover:bg-[#ECEEF2] focus-within:bg-white rounded-lg border border-transparent focus-within:border-gray-300 focus-within:ring-2 focus-within:ring-gray-200 transition-all px-3.5 py-2">
         <input 
           type="text" 
           name="search" 
-          placeholder="Search bed, dining table, sofa, diwan..." 
-          class="w-full bg-transparent text-sm text-stone-900 placeholder:text-stone-400 outline-none"
+          placeholder="Search for products..." 
+          class="w-full bg-transparent text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 outline-none"
         />
+        <button type="submit" class="text-gray-500 hover:text-gray-900 p-1 flex items-center justify-center cursor-pointer transition-colors" title="Search">
+          <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
       </form>
     </div>
 
-    <!-- Right: Navigation Links & Action Icons (Catalog, Orders, Profile, Cart, Fav) -->
-    <div class="flex items-center gap-1.5 lg:gap-3 shrink-0 text-stone-700">
-      <a href="/catalog/" class="px-3 py-1.5 rounded-full text-xs font-bold text-stone-700 hover:text-[#5C3D2E] hover:bg-stone-100 transition-colors">
-        Catalog
-      </a>
-      <a href="/orders/" class="px-3 py-1.5 rounded-full text-xs font-bold text-stone-700 hover:text-[#5C3D2E] hover:bg-stone-100 transition-colors">
-        Orders
-      </a>
-
-      <!-- Profile -->
-      <a href="{% if request.user.is_authenticated %}/customer/profile/{% else %}/login/{% endif %}" class="p-2 rounded-full hover:bg-stone-100 text-stone-700 hover:text-[#5C3D2E] transition-colors flex items-center justify-center cursor-pointer" title="Profile">
-        <span class="material-symbols-outlined text-[22px]">person</span>
+    <!-- Right Utilities: Info Icon, Login | Register, Wishlist, Cart -->
+    <div class="flex items-center gap-2 sm:gap-3.5 lg:gap-4 shrink-0 text-gray-700">
+      
+      <!-- Info Icon (ⓘ) -->
+      <a href="/faq/" class="hidden md:flex p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-black transition-colors items-center justify-center" title="Help &amp; Information">
+        <svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
       </a>
 
-      <!-- Cart -->
-      <a href="/cart/" class="p-2 rounded-full hover:bg-stone-100 text-stone-700 hover:text-[#5C3D2E] transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
-        <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
-        <span id="navCartBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-[#5C3D2E] text-white text-[9px] font-bold w-4 h-4 shadow-xs">
+      <!-- Login | Register Text Link (Or User Account if logged in) -->
+      <div class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-gray-700 whitespace-nowrap">
+        {% if request.user.is_authenticated %}
+        <a href="/customer/profile/" class="hover:text-black transition-colors font-bold text-gray-900">
+          Hi, {{ USER_NAME|slice:":10"|default:"Account" }}
+        </a>
+        <span class="text-gray-300">|</span>
+        <a href="/logout/" class="text-red-600 hover:text-red-700 transition-colors">
+          Logout
+        </a>
+        {% else %}
+        <a href="/login/" class="hover:text-black transition-colors font-medium">
+          Login
+        </a>
+        <span class="text-gray-300">|</span>
+        <a href="/register/" class="hover:text-black transition-colors font-medium">
+          Register
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Wishlist Heart Outline Icon with Counter Badge -->
+      <a href="/wishlist/" class="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative flex items-center justify-center cursor-pointer" title="Wishlist">
+        <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+        {% if WISHLIST_COUNT > 0 %}
+        <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#E03131] text-white text-[9px] font-bold flex items-center justify-center shadow-xs">
+          {{ WISHLIST_COUNT }}
+        </span>
+        {% endif %}
+      </a>
+
+      <!-- Shopping Cart Trolley Icon with Counter Badge -->
+      <a href="/cart/" class="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative flex items-center justify-center cursor-pointer" title="Shopping Cart">
+        <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gray-950 text-white text-[9px] font-bold flex items-center justify-center shadow-xs">
           {{ CART_COUNT|default:"0" }}
         </span>
       </a>
 
-      <!-- Wishlist / Fav -->
-      <a href="/wishlist/" class="p-2 rounded-full hover:bg-stone-100 text-stone-700 hover:text-[#5C3D2E] transition-colors relative flex items-center justify-center cursor-pointer" title="Favorites">
-        <span class="material-symbols-outlined text-[22px]">favorite</span>
-        <span id="navWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-[#5C3D2E] text-white text-[9px] font-bold w-4 h-4 shadow-xs">
-          {{ WISHLIST_COUNT|default:"0" }}
-        </span>
-      </a>
     </div>
 
   </div>
+
+  <!-- Mobile Search Bar (Only visible on small phones) -->
+  <div class="sm:hidden px-4 pb-2.5">
+    <form action="/catalog/" method="GET" class="w-full flex items-center bg-[#F1F3F6] rounded-lg px-3 py-1.5 border border-transparent focus-within:border-gray-300">
+      <input 
+        type="text" 
+        name="search" 
+        placeholder="Search for products..." 
+        class="w-full bg-transparent text-xs text-gray-900 placeholder:text-gray-400 outline-none"
+      />
+      <button type="submit" class="text-gray-500 hover:text-gray-900 p-0.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- TIER 2: Secondary Bar (SHOP BY CATEGORIES, Links, Free Delivery) -->
+  <div class="border-t border-gray-150 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+      
+      <!-- Left: SHOP BY CATEGORIES Dropdown Button -->
+      <div class="relative group" id="shop-categories-dropdown">
+        <button 
+          type="button" 
+          onclick="toggleCategoryDropdown()" 
+          class="py-2.5 sm:py-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-950 hover:text-[#E03131] transition-colors cursor-pointer select-none"
+        >
+          <svg class="w-4 h-4 text-gray-900 group-hover:text-[#E03131]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <span>SHOP BY CATEGORIES</span>
+          <svg class="w-3.5 h-3.5 text-gray-500 group-hover:text-[#E03131] transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div 
+          id="categoryDropdownMenu" 
+          class="hidden group-hover:block absolute left-0 top-full w-64 bg-white rounded-b-2xl shadow-xl border border-gray-100 py-2 z-50 transition-all font-sans"
+        >
+          <div class="px-3 py-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">
+            Solid Teak Collections
+          </div>
+          <a href="/catalog/?category=Sofa%20Set" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Sofa Sets &amp; Couches</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Wooden Beds &amp; Cots</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <a href="/catalog/?category=Dining%20Table" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Dining Tables &amp; Sets</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <a href="/catalog/?category=Podimes" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Diwans &amp; Daybeds</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <a href="/catalog/?category=Dressing%20Table" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Dressing Tables</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <a href="/catalog/?search=teapoy" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Teapoy &amp; Coffee Tables</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <a href="/catalog/?search=door" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
+            <span>Teak Doors &amp; Frames</span>
+            <span class="text-gray-400">&rarr;</span>
+          </a>
+          <div class="border-t border-gray-100 my-1"></div>
+          <a href="/custom-orders/" class="flex items-center justify-between px-4 py-2 text-xs font-bold text-[#E03131] hover:bg-red-50/50 transition-colors">
+            <span>Custom Furniture Orders</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Center: Horizontal Navigation Links -->
+      <nav class="hidden md:flex items-center gap-5 lg:gap-7 overflow-x-auto no-scrollbar py-2 text-xs lg:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
+        <a href="/" class="text-gray-950 font-bold hover:text-[#E03131] transition-colors">Home</a>
+        <a href="/catalog/?category=Sofa%20Set" class="hover:text-black transition-colors">Sofa Sets</a>
+        <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="hover:text-black transition-colors">Beds &amp; Cots</a>
+        <a href="/catalog/?category=Dining%20Table" class="hover:text-black transition-colors">Dining Tables</a>
+        <a href="/catalog/?category=Podimes" class="hover:text-black transition-colors">Diwans</a>
+        <a href="/catalog/?category=Dressing%20Table" class="hover:text-black transition-colors">Dressing</a>
+        <a href="/catalog/?search=door" class="hover:text-black transition-colors">Doors</a>
+        <a href="/custom-orders/" class="hover:text-black transition-colors">Custom Orders</a>
+        <a href="/contact-us/" class="hover:text-black transition-colors">Contact Us</a>
+      </nav>
+
+      <!-- Right: Free International Delivery Perk -->
+      <div class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-gray-800 shrink-0 select-none py-2">
+        <span class="text-sm">🚀</span>
+        <span>Free International Delivery</span>
+      </div>
+
+    </div>
+  </div>
+
 </header>
 
 <main class="w-full bg-surface"><div class="flex flex-col w-full">
@@ -230,87 +434,166 @@
 <span class="material-symbols-outlined text-secondary-container" id="toastIcon">volume_up</span>
 <span class="font-label-md text-label-md" id="toastMessage">Audio unmuted</span>
 </div>
+
 <!-- ============================================================== -->
-<!-- 1. HERO SHOWCASE CARDS CAROUSEL (Image 1 UI - Mocha Taupe BG) -->
+<!-- 3. HERO SHOWCASE CAROUSEL (Rounded Card with White Arrows)     -->
 <!-- ============================================================== -->
-<section class="relative w-full overflow-hidden select-none pt-4 sm:pt-6 pb-2" id="hero-showcase-section" style="background: linear-gradient(180deg, #BAA99D 0%, #B29F92 100%);">
+<section class="relative w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4 select-none" id="hero-slider-section">
   
-  <!-- Cards Showcase Track (Visible on both Window and Android Ratio) -->
-  <div class="relative w-full flex items-center justify-center overflow-hidden h-[210px] xs:h-[235px] sm:h-[295px] md:h-[335px]" style="perspective: 1200px; touch-action: pan-y;">
-    <div class="relative w-full h-full flex items-center justify-center" id="heroCardTrack" style="transform-style: preserve-3d;">
+  <!-- Carousel Card Container (Rounded corners matching image) -->
+  <div class="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-stone-200/90 bg-stone-900 h-[240px] xs:h-[290px] sm:h-[390px] md:h-[460px] lg:h-[500px] group">
+    
+    <!-- Left Navigation Button (White Circular Arrow Button) -->
+    <button 
+      type="button" 
+      onclick="prevSlide()" 
+      class="absolute left-2.5 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-white text-gray-800 hover:text-black shadow-md hover:shadow-lg border border-gray-150 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+      title="Previous Slide"
+      aria-label="Previous Slide"
+    >
+      <svg class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+
+    <!-- Right Navigation Button (White Circular Arrow Button) -->
+    <button 
+      type="button" 
+      onclick="nextSlide()" 
+      class="absolute right-2.5 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 hover:bg-white text-gray-800 hover:text-black shadow-md hover:shadow-lg border border-gray-150 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+      title="Next Slide"
+      aria-label="Next Slide"
+    >
+      <svg class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </button>
+
+    <!-- Carousel Slides Track -->
+    <div id="carouselSlidesTrack" class="relative w-full h-full flex transition-transform duration-700 ease-in-out">
       
-      <!-- Card 0: The Living Edit (Default Active Center) -->
-      <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="0" onclick="goToHeroCard(0)">
-        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_1 }}{% else %}/static/images/hero_card_living_clean.jpg{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_1_title }}{% else %}The Living Edit{% endif %}" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_1_title }}{% else %}The Living Edit{% endif %}</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_1_subtitle }}{% else %}Warm, timeless essentials{% endif %}</p>
+      <!-- SLIDE 1: Poppies on the sea (Exact match to screenshot!) -->
+      <div class="carousel-slide w-full h-full shrink-0 relative overflow-hidden">
+        <img 
+          src="{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.hero_1 %}{{ HOME_MEDIA_CMS.hero_1 }}{% else %}/static/images/hero_card_living_clean.jpg{% endif %}" 
+          alt="Poppies on the sea - Artisanal Living" 
+          class="w-full h-full object-cover object-center" 
+        />
+        <!-- Vignette & Content Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-transparent"></div>
+        
+        <!-- Text Overlay on Left (Matching screenshot: SS'24 / Poppies on the sea) -->
+        <div class="absolute left-5 sm:left-12 lg:left-16 bottom-8 sm:bottom-14 lg:bottom-16 text-white max-w-lg z-10 pointer-events-auto space-y-1 sm:space-y-2">
+          <span class="inline-block px-2.5 py-0.5 rounded-md text-[10px] sm:text-xs font-black tracking-wider uppercase bg-white/20 backdrop-blur-md text-white border border-white/30">
+            SS'24
+          </span>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-serif italic font-normal tracking-tight text-white drop-shadow-md leading-tight">
+            Poppies on the sea
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-200 font-light max-w-md drop-shadow-sm">
+            Handcrafted Solid Teak Living Room &amp; Relaxing Lounges
+          </p>
+          <div class="pt-2">
+            <a href="/catalog/?category=Sofa%20Set" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white text-gray-950 font-bold text-xs sm:text-sm shadow-md hover:bg-[#E03131] hover:text-white transition-all active:scale-95">
+              <span>Explore Collection</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
         </div>
       </div>
 
-      <!-- Card 1: Soft Retreats -->
-      <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="1" onclick="goToHeroCard(1)">
-        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_2 }}{% else %}/static/images/hero_card_bed_full.jpg{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_2_title }}{% else %}Soft Retreats{% endif %}" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_2_title }}{% else %}Soft Retreats{% endif %}</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_2_subtitle }}{% else %}Rest in natural comfort{% endif %}</p>
+      <!-- SLIDE 2: Royal Teak Bedroom Suites -->
+      <div class="carousel-slide w-full h-full shrink-0 relative overflow-hidden">
+        <img 
+          src="{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.hero_2 %}{{ HOME_MEDIA_CMS.hero_2 }}{% else %}/static/images/hero_card_bed_full.jpg{% endif %}" 
+          alt="Royal Teak Bedroom Suites" 
+          class="w-full h-full object-cover object-center" 
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+        
+        <div class="absolute left-5 sm:left-12 lg:left-16 bottom-8 sm:bottom-14 lg:bottom-16 text-white max-w-lg z-10 pointer-events-auto space-y-1 sm:space-y-2">
+          <span class="inline-block px-2.5 py-0.5 rounded-md text-[10px] sm:text-xs font-black tracking-wider uppercase bg-white/20 backdrop-blur-md text-white border border-white/30">
+            HERITAGE 2026
+          </span>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-serif italic font-normal tracking-tight text-white drop-shadow-md leading-tight">
+            Royal Teak Cots &amp; Beds
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-200 font-light max-w-md drop-shadow-sm">
+            Master-carved posture slats with generational 10-year warranty.
+          </p>
+          <div class="pt-2">
+            <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white text-gray-950 font-bold text-xs sm:text-sm shadow-md hover:bg-[#E03131] hover:text-white transition-all active:scale-95">
+              <span>Shop Cots &amp; Beds</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
         </div>
       </div>
 
-      <!-- Card 2: Gather & Dine -->
-      <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="2" onclick="goToHeroCard(2)">
-        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_3 }}{% else %}/static/images/hero_card_dining_full.jpg{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_3_title }}{% else %}Gather & Dine{% endif %}" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_3_title }}{% else %}Gather & Dine{% endif %}</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_3_subtitle }}{% else %}Spaces for meaningful moments{% endif %}</p>
+      <!-- SLIDE 3: Artisanal Dining Sets -->
+      <div class="carousel-slide w-full h-full shrink-0 relative overflow-hidden">
+        <img 
+          src="{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.hero_3 %}{{ HOME_MEDIA_CMS.hero_3 }}{% else %}/static/images/hero_card_dining_full.jpg{% endif %}" 
+          alt="Artisanal 6 & 8-Seater Dining Sets" 
+          class="w-full h-full object-cover object-center" 
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+        
+        <div class="absolute left-5 sm:left-12 lg:left-16 bottom-8 sm:bottom-14 lg:bottom-16 text-white max-w-lg z-10 pointer-events-auto space-y-1 sm:space-y-2">
+          <span class="inline-block px-2.5 py-0.5 rounded-md text-[10px] sm:text-xs font-black tracking-wider uppercase bg-white/20 backdrop-blur-md text-white border border-white/30">
+            ATELIER DINING
+          </span>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-serif italic font-normal tracking-tight text-white drop-shadow-md leading-tight">
+            6 &amp; 8-Seater Dining Sets
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-200 font-light max-w-md drop-shadow-sm">
+            Traditional mortise-and-tenon craftsmanship with natural honey luster finish.
+          </p>
+          <div class="pt-2">
+            <a href="/catalog/?category=Dining%20Table" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white text-gray-950 font-bold text-xs sm:text-sm shadow-md hover:bg-[#E03131] hover:text-white transition-all active:scale-95">
+              <span>View Dining Sets</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
         </div>
       </div>
 
-      <!-- Card 3: Artisan Sanctuaries -->
-      <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="3" onclick="goToHeroCard(3)">
-        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_4 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBP6Sc2G1ga1CiPRkIPjlFaE4nLFkuJKMJufcJ3XraTvuqM70_TjdbaX8DqUYVLYrbmH0bdrorwT6ULYwBOMmsfEuxDN2bqvx5wd72KCTjWKKh1XJSFqLVOMTEvNJTGmwuYIHMqrRYmHhpV6dBbP5hVhEVg9PPIyzvgYJb-RBcwvZb1ZR7xelUEL26wh_OZzoxcaYT7s5lRoW5rq5sMFtjDaUehA94PJRn4LO8MVcFANFFBp_JrB-w{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_4_title }}{% else %}Artisan Sanctuaries{% endif %}" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_4_title }}{% else %}Artisan Sanctuaries{% endif %}</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_4_subtitle }}{% else %}Bespoke handcrafted suites{% endif %}</p>
-        </div>
-      </div>
-
-      <!-- Card 4: Nordic Bouclé Living (Extra Left Side Card) -->
-      <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="4" onclick="goToHeroCard(4)">
-        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_5 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuBfiW_WTyRCjiNePezPop4j9QGCOkz68YNMPRhRu1fMVWzgItVDsALH4pRnidHUjQgywuEHvNR8ze_1VGBrZrA3rn8ARj47fI5p6uVLmiWaOC6WIU9O-eqdVmb5EfJ2N7YH6WYOYm-el7G28elk70IzRIM26cpbpSVFSzPwblOUOCTKTUlGPVdNBGoXKrKvEcWbnVxIWL9d84y9tEiCdCNhBVHNvjAGIpMkBr6ckwIp_m-vvLIMAmA{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_5_title }}{% else %}Nordic Bouclé Living{% endif %}" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_5_title }}{% else %}Nordic Bouclé Living{% endif %}</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_5_subtitle }}{% else %}Sculptural lounge aesthetic{% endif %}</p>
-        </div>
-      </div>
-
-      <!-- Card 5: Architectural Pavilion (Extra Right Side Card) -->
-      <div class="hero-top-card absolute w-[70vw] max-w-[490px] h-[190px] xs:h-[215px] sm:h-[270px] md:h-[305px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl cursor-pointer bg-stone-900 border border-white/25 select-none" data-hero-index="5" onclick="goToHeroCard(5)">
-        <img src="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_6 }}{% else %}https://lh3.googleusercontent.com/aida-public/AB6AXuAeX-7-m4xsZYUC1QI8Uul1nEoQ3G4b-o0GbQrVoGzRA1X56EcWlz-F5_KbtccY4AOAzW6RtFfqG-7VBfxqbnvfLXgiIgtKWgzDzBpa3Ix503c-nFY2APbz9Dkr-xxRAR_Sy4NwKzkvBr0-aUe4_bIOw3EALXmwSX7VmYGOzm8fX5_uF-WUF0Ame1zwakgBIZBlUOzuqpz3abxrpBxnffu2t4knM5FSJqDqUCUfjCrBCaDHT5hqUEM{% endif %}" alt="{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_6_title }}{% else %}Architectural Pavilion{% endif %}" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-3 left-3.5 sm:bottom-5 sm:left-6 text-white text-left pointer-events-none">
-          <h3 class="font-display-md text-sm xs:text-base sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_6_title }}{% else %}Architectural Pavilion{% endif %}</h3>
-          <p class="text-[10px] sm:text-xs text-stone-200/90 font-light mt-0.5 sm:mt-1 drop-shadow-sm">{% if HOME_MEDIA_CMS %}{{ HOME_MEDIA_CMS.hero_card_6_subtitle }}{% else %}Generational teak mastery{% endif %}</p>
+      <!-- SLIDE 4: Custom Architectural Interior Joinery -->
+      <div class="carousel-slide w-full h-full shrink-0 relative overflow-hidden">
+        <img 
+          src="{% if HOME_MEDIA_CMS and HOME_MEDIA_CMS.craft_banner %}{{ HOME_MEDIA_CMS.craft_banner }}{% else %}/static/images/welcome_exact_hero.jpg{% endif %}" 
+          alt="Custom Architectural Commissions" 
+          class="w-full h-full object-cover object-center" 
+        />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+        
+        <div class="absolute left-5 sm:left-12 lg:left-16 bottom-8 sm:bottom-14 lg:bottom-16 text-white max-w-lg z-10 pointer-events-auto space-y-1 sm:space-y-2">
+          <span class="inline-block px-2.5 py-0.5 rounded-md text-[10px] sm:text-xs font-black tracking-wider uppercase bg-white/20 backdrop-blur-md text-white border border-white/30">
+            BESPOKE WOODWORK
+          </span>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-serif italic font-normal tracking-tight text-white drop-shadow-md leading-tight">
+            Custom Joinery Commissions
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-200 font-light max-w-md drop-shadow-sm">
+            Tailored precisely to your architectural floorplan and room dimensions.
+          </p>
+          <div class="pt-2">
+            <a href="/custom-orders/" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white text-gray-950 font-bold text-xs sm:text-sm shadow-md hover:bg-[#E03131] hover:text-white transition-all active:scale-95">
+              <span>Book Custom Measurement</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
         </div>
       </div>
 
     </div>
+
+    <!-- Carousel Dots Indicators (Bottom Center) -->
+    <div class="absolute bottom-3 sm:bottom-5 inset-x-0 flex items-center justify-center gap-2 z-20" id="carouselDots">
+      <button type="button" aria-label="Slide 1" class="w-7 h-2 rounded-full transition-all duration-300 bg-white shadow-xs" onclick="goToSlide(0)"></button>
+      <button type="button" aria-label="Slide 2" class="w-2 h-2 rounded-full transition-all duration-300 bg-white/50 hover:bg-white" onclick="goToSlide(1)"></button>
+      <button type="button" aria-label="Slide 3" class="w-2 h-2 rounded-full transition-all duration-300 bg-white/50 hover:bg-white" onclick="goToSlide(2)"></button>
+      <button type="button" aria-label="Slide 4" class="w-2 h-2 rounded-full transition-all duration-300 bg-white/50 hover:bg-white" onclick="goToSlide(3)"></button>
+    </div>
+
   </div>
 
-  <!-- Carousel Dots Indicator (6 Dots for 6 cards) -->
-  <div class="flex items-center justify-center gap-2 pt-2.5 pb-4 sm:pb-6" id="heroCardDots">
-    <button aria-label="Slide 1" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-[#5C3D2E] scale-110" onclick="goToHeroCard(0)"></button>
-    <button aria-label="Slide 2" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-black/25 hover:bg-[#5C3D2E]" onclick="goToHeroCard(1)"></button>
-    <button aria-label="Slide 3" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-black/25 hover:bg-[#5C3D2E]" onclick="goToHeroCard(2)"></button>
-    <button aria-label="Slide 4" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-black/25 hover:bg-[#5C3D2E]" onclick="goToHeroCard(3)"></button>
-    <button aria-label="Slide 5" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-black/25 hover:bg-[#5C3D2E]" onclick="goToHeroCard(4)"></button>
-    <button aria-label="Slide 6" class="w-2.5 h-2.5 rounded-full transition-all duration-300 bg-black/25 hover:bg-[#5C3D2E]" onclick="goToHeroCard(5)"></button>
-  </div>
 </section>
 
 <!-- ============================================================== -->
@@ -1357,153 +1640,110 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
     }
 
     // ==============================================================
-    // Hero Top Cards 3D Carousel (Move Animation & Android Ratio)
+    // Category Dropdown Toggle (Desktop & Mobile Support)
     // ==============================================================
-    let activeHeroCardIdx = 0;
-    const totalHeroCards = 6;
-    let heroAutoMoveTimer = null;
+    function toggleCategoryDropdown(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('categoryDropdownMenu');
+      if (menu) menu.classList.toggle('hidden');
+    }
 
-    function updateHeroCardPositions() {
-      const cards = document.querySelectorAll('.hero-top-card');
-      const dots = document.querySelectorAll('#heroCardDots button');
-      if (!cards.length) return;
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('shop-categories-dropdown');
+      const menu = document.getElementById('categoryDropdownMenu');
+      if (dropdown && menu && !dropdown.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
 
-      const isMobile = window.innerWidth < 640;
+    // ==============================================================
+    // Hero Carousel Slider Controller (Exact Match to User Image)
+    // ==============================================================
+    let currentSlide = 0;
+    const totalSlides = 4;
+    let slideTimer = null;
 
-      cards.forEach((card, idx) => {
-        let offset = idx - activeHeroCardIdx;
-        if (offset > totalHeroCards / 2) offset -= totalHeroCards;
-        if (offset < -totalHeroCards / 2) offset += totalHeroCards;
-
-        let transform = '';
-        let zIndex = 10;
-        let opacity = 0;
-        let filter = 'brightness(0.7)';
-
-        if (isMobile) {
-          // Android / Mobile Screen Ratio: Focused Center Card + Peek Left & Right
-          if (offset === 0) {
-            transform = 'translateX(0%) translateZ(40px) scale(1)';
-            zIndex = 30;
-            opacity = 1;
-            filter = 'brightness(1)';
-          } else if (offset === -1) {
-            transform = 'translateX(-66%) translateZ(-30px) scale(0.82)';
-            zIndex = 20;
-            opacity = 0.78;
-            filter = 'brightness(0.85)';
-          } else if (offset === 1) {
-            transform = 'translateX(66%) translateZ(-30px) scale(0.82)';
-            zIndex = 20;
-            opacity = 0.78;
-            filter = 'brightness(0.85)';
-          } else if (offset === -2) {
-            transform = 'translateX(-115%) translateZ(-60px) scale(0.68)';
-            zIndex = 10;
-            opacity = 0.35;
-            filter = 'brightness(0.7)';
-          } else if (offset === 2) {
-            transform = 'translateX(115%) translateZ(-60px) scale(0.68)';
-            zIndex = 10;
-            opacity = 0.35;
-            filter = 'brightness(0.7)';
-          } else {
-            transform = offset < 0 ? 'translateX(-150%) scale(0.55)' : 'translateX(150%) scale(0.55)';
-            zIndex = 5;
-            opacity = 0;
-          }
+    function updateCarousel() {
+      const track = document.getElementById('carouselSlidesTrack');
+      const dots = document.querySelectorAll('#carouselDots button');
+      if (track) {
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.className = 'w-7 h-2 rounded-full transition-all duration-300 bg-white shadow-xs';
         } else {
-          // Windows / Desktop Screen Ratio: Center card + 2 Cards on Left + 2 Cards on Right
-          if (offset === 0) {
-            transform = 'translateX(0%) translateZ(80px) scale(1)';
-            zIndex = 35;
-            opacity = 1;
-            filter = 'brightness(1)';
-          } else if (offset === -1) {
-            transform = 'translateX(-54%) translateZ(-20px) scale(0.86)';
-            zIndex = 25;
-            opacity = 0.88;
-            filter = 'brightness(0.88)';
-          } else if (offset === 1) {
-            transform = 'translateX(54%) translateZ(-20px) scale(0.86)';
-            zIndex = 25;
-            opacity = 0.88;
-            filter = 'brightness(0.88)';
-          } else if (offset === -2) {
-            transform = 'translateX(-98%) translateZ(-70px) scale(0.72)';
-            zIndex = 15;
-            opacity = 0.65;
-            filter = 'brightness(0.75)';
-          } else if (offset === 2) {
-            transform = 'translateX(98%) translateZ(-70px) scale(0.72)';
-            zIndex = 15;
-            opacity = 0.65;
-            filter = 'brightness(0.75)';
-          } else {
-            transform = offset < 0 ? 'translateX(-145%) scale(0.55)' : 'translateX(145%) scale(0.55)';
-            zIndex = 5;
-            opacity = 0;
-          }
-        }
-
-        card.style.transition = 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.65s ease, filter 0.65s ease';
-        card.style.transform = transform;
-        card.style.zIndex = zIndex;
-        card.style.opacity = opacity;
-        card.style.filter = filter;
-      });
-
-      // Update dots
-      dots.forEach((dot, dIdx) => {
-        if (dIdx === activeHeroCardIdx) {
-          dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-[#5C3D2E] scale-110 shadow-xs';
-        } else {
-          dot.className = 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-black/25 hover:bg-[#5C3D2E]';
+          dot.className = 'w-2 h-2 rounded-full transition-all duration-300 bg-white/50 hover:bg-white';
         }
       });
     }
 
-    window.goToHeroCard = function(idx) {
-      activeHeroCardIdx = (idx % totalHeroCards + totalHeroCards) % totalHeroCards;
-      updateHeroCardPositions();
-      restartHeroTimer();
+    window.goToSlide = function(idx) {
+      currentSlide = (idx % totalSlides + totalSlides) % totalSlides;
+      updateCarousel();
+      startSlideTimer();
     };
 
-    window.nextHeroCard = function() {
-      activeHeroCardIdx = (activeHeroCardIdx + 1) % totalHeroCards;
-      updateHeroCardPositions();
+    window.nextSlide = function() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+      startSlideTimer();
     };
 
-    function restartHeroTimer() {
-      if (heroAutoMoveTimer) clearInterval(heroAutoMoveTimer);
-      heroAutoMoveTimer = setInterval(nextHeroCard, 3500);
+    window.prevSlide = function() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+      startSlideTimer();
+    };
+
+    function startSlideTimer() {
+      if (slideTimer) clearInterval(slideTimer);
+      slideTimer = setInterval(() => {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateCarousel();
+      }, 5000);
     }
 
-    // Initialize Hero Cards on Load
+    function stopSlideTimer() {
+      if (slideTimer) {
+        clearInterval(slideTimer);
+        slideTimer = null;
+      }
+    }
+
+    // Initialize Hero Carousel on DOMContentLoaded
     document.addEventListener('DOMContentLoaded', () => {
-      updateHeroCardPositions();
-      restartHeroTimer();
+      updateCarousel();
+      startSlideTimer();
 
-      const track = document.getElementById('heroCardTrack');
+      const sliderSection = document.getElementById('hero-slider-section');
+      if (sliderSection) {
+        sliderSection.addEventListener('mouseenter', stopSlideTimer);
+        sliderSection.addEventListener('mouseleave', startSlideTimer);
+      }
+
+      const track = document.getElementById('carouselSlidesTrack');
       if (track) {
         let touchStartX = 0;
         track.addEventListener('touchstart', (e) => {
           touchStartX = e.changedTouches[0].screenX;
+          stopSlideTimer();
         }, { passive: true });
+
         track.addEventListener('touchend', (e) => {
           const touchEndX = e.changedTouches[0].screenX;
           const diff = touchEndX - touchStartX;
           if (Math.abs(diff) > 40) {
             if (diff < 0) {
-              goToHeroCard(activeHeroCardIdx + 1);
+              window.nextSlide();
             } else {
-              goToHeroCard(activeHeroCardIdx - 1);
+              window.prevSlide();
             }
+          } else {
+            startSlideTimer();
           }
         }, { passive: true });
       }
-
-      window.addEventListener('resize', updateHeroCardPositions);
     });
   </script>
 </div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-xl"><div class="w-full px-4 sm:px-6 lg:px-10"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="/static/favicon.svg"><span class="font-headline-sm text-headline-sm font-semibold text-primary">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div><!-- Mobile Bottom Navigation (Identical across Home, Catalog, Orders, Bag, Account) -->
