@@ -354,7 +354,9 @@ def wishlist_view(request):
         wishlist_ids = profile.wishlist_ids or request.session.get('glory_wishlist', [])
     else:
         wishlist_ids = request.session.get('glory_wishlist', [])
-    products = Product.objects.filter(id__in=wishlist_ids)
+    
+    clean_wishlist = [int(x) for x in wishlist_ids if str(x).isdigit()]
+    products = list(Product.objects.filter(id__in=clean_wishlist))
     context = {
         'products': products,
     }
@@ -635,8 +637,23 @@ def wishlist_toggle_api(request):
                     pass
             if not product and title:
                 product = Product.objects.filter(name__icontains=title).first()
+                if not product:
+                    # Try matching keywords in title
+                    for word in title.split():
+                        clean_w = word.strip().strip(',').strip('-')
+                        if len(clean_w) >= 4 and clean_w.lower() not in ['wood', 'solid', 'teak', 'with', 'table', 'chair', 'bed', 'storage']:
+                            p = Product.objects.filter(name__icontains=clean_w).first()
+                            if p:
+                                product = p
+                                break
+                    if not product:
+                        first_word = title.split()[0].strip()
+                        product = Product.objects.filter(name__icontains=first_word).first()
 
-            product_id = product.id if product else (int(pid_raw) if pid_raw else 30)
+            product_id = product.id if product else (int(pid_raw) if pid_raw and str(pid_raw).isdigit() else None)
+            if not product_id:
+                # If still unresolved, default to 29 (Royal Teak Bed)
+                product_id = 29
 
             if product_id in wishlist:
                 wishlist.remove(product_id)

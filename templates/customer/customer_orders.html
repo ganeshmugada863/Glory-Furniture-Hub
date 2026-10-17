@@ -140,18 +140,18 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- 3. ORDERS GRID (5 PIECES EXACT TO SCREENSHOT)                  -->
+    <!-- 3. ORDERS GRID (2-COLUMN COMPACT ON PHONE RATIO)               -->
     <!-- ============================================================== -->
-    <div id="ordersCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+    <div id="ordersCardsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3.5">
 
       <!-- CARD 1: Royal Teak Wood Bed (Out for Delivery) -->
-      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="out_for_delivery" data-order-id="GFH-89241" data-title="Royal Teak Wood Bed">
+      <div class="order-item-card bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="out_for_delivery" data-order-id="GFH-89241" data-title="Royal Teak Wood Bed">
         <div>
           <!-- Thumbnail & Status Tag -->
-          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+          <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
             <img src="{% static 'images/card_bed.jpg' %}" alt="Royal Teak Wood Bed" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
-            <div class="absolute top-2 left-2">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFF7E8] text-[#9A6417] border border-[#F5E2B8] shadow-2xs">
+            <div class="absolute top-1.5 left-1.5 sm:top-2 sm:left-2">
+              <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-bold bg-[#FFF7E8] text-[#9A6417] border border-[#F5E2B8] shadow-2xs">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#E58A1F]"></span>
                 <span>Out for Delivery</span>
               </span>
@@ -159,25 +159,25 @@
           </div>
 
           <!-- SKU & Title -->
-          <div class="mt-2.5 space-y-0.5">
-            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+          <div class="mt-2 space-y-0.5">
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
               #GFH-89241
             </span>
             <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
               Royal Teak Wood Bed
             </h3>
-            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+            <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
               King Size • Solid Teak
             </p>
           </div>
         </div>
 
         <!-- Price & Details CTA -->
-        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+        <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
           <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
             ₹52,999
           </span>
-          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
             <span>Details</span>
             <span>&gt;</span>
           </a>
@@ -185,13 +185,13 @@
       </div>
 
       <!-- CARD 2: Stockholm Curved Bouclé Sofa (Delivered) -->
-      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="delivered" data-order-id="GFH-78104" data-title="Stockholm Curved Bouclé Sofa">
+      <div class="order-item-card bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="delivered" data-order-id="GFH-78104" data-title="Stockholm Curved Bouclé Sofa">
         <div>
           <!-- Thumbnail & Status Tag -->
-          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+          <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
             <img src="{% static 'images/sofa_living.jpg' %}" alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
-            <div class="absolute top-2 left-2">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EAF7EE] text-[#1E7E34] border border-[#C3E6CB] shadow-2xs">
+            <div class="absolute top-1.5 left-1.5 sm:top-2 sm:left-2">
+              <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-bold bg-[#EAF7EE] text-[#1E7E34] border border-[#C3E6CB] shadow-2xs">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#28A745]"></span>
                 <span>Delivered</span>
               </span>
@@ -199,25 +199,25 @@
           </div>
 
           <!-- SKU & Title -->
-          <div class="mt-2.5 space-y-0.5">
-            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+          <div class="mt-2 space-y-0.5">
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
               #GFH-78104
             </span>
             <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
-              Stockholm Curved Boucl...
+              Stockholm Curved Sofa
             </h3>
-            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+            <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
               Cream Bouclé • 3-Seater
             </p>
           </div>
         </div>
 
         <!-- Price & Details CTA -->
-        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+        <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
           <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
             ₹48,500
           </span>
-          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
             <span>Details</span>
             <span>&gt;</span>
           </a>
@@ -225,52 +225,49 @@
       </div>
 
       <!-- CARD 3: Bespoke Atelier Reading Chair (In Workshop) -->
-      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="in_workshop" data-order-id="GFH-65290" data-title="Bespoke Atelier Reading Chair">
+      <div class="order-item-card bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="in_workshop" data-order-id="GFH-65290" data-title="Bespoke Atelier Reading Chair">
         <div>
           <!-- Thumbnail & Status Tag -->
-          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+          <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
             <img src="{% static 'images/lounge_chair.jpg' %}" alt="Bespoke Atelier Reading Chair" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
             
             <!-- In Workshop Pill Tag -->
-            <div class="absolute top-2 left-2 z-10">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FBF3EB] text-[#8C4F20] border border-[#F2DECF] shadow-2xs">
+            <div class="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 z-10">
+              <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-bold bg-[#FBF3EB] text-[#8C4F20] border border-[#F2DECF] shadow-2xs">
                 <span>⚙</span>
                 <span>In Workshop</span>
               </span>
             </div>
 
             <!-- Overlay Pill exactly as in reference image -->
-            <div class="absolute bottom-1.5 left-1.5 right-1.5 bg-black/75 backdrop-blur-xs rounded-lg p-1.5 text-white">
-              <div class="flex items-center justify-between text-[9px] font-bold">
-                <span class="truncate">Modern Lounge Chair</span>
+            <div class="absolute bottom-1 left-1 right-1 sm:bottom-1.5 sm:left-1.5 sm:right-1.5 bg-black/75 backdrop-blur-xs rounded p-1 sm:p-1.5 text-white">
+              <div class="flex items-center justify-between text-[8px] sm:text-[9px] font-bold">
+                <span class="truncate">Lounge Chair</span>
                 <span class="text-amber-300 shrink-0">₹12,499</span>
               </div>
-              <p class="text-[8px] text-stone-300 truncate mt-0.5 leading-none">
-                Stylish and comfortable lounge chair perfect for your living room.
-              </p>
             </div>
           </div>
 
           <!-- SKU & Title -->
-          <div class="mt-2.5 space-y-0.5">
-            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+          <div class="mt-2 space-y-0.5">
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
               #GFH-65290
             </span>
             <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
-              Bespoke Atelier Reading...
+              Bespoke Reading Chair
             </h3>
-            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+            <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
               Ochre • Solid Wood
             </p>
           </div>
         </div>
 
         <!-- Price & Details CTA -->
-        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+        <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
           <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
             ₹12,499
           </span>
-          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
             <span>Details</span>
             <span>&gt;</span>
           </a>
@@ -278,13 +275,13 @@
       </div>
 
       <!-- CARD 4: Koto Extendable Oak Table (Shipped / In Transit) -->
-      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="in_transit" data-order-id="GFH-55102" data-title="Koto Extendable Oak Table">
+      <div class="order-item-card bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="in_transit" data-order-id="GFH-55102" data-title="Koto Extendable Oak Table">
         <div>
           <!-- Thumbnail & Status Tag -->
-          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+          <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
             <img src="{% static 'images/card_dining.jpg' %}" alt="Koto Extendable Oak Table" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
-            <div class="absolute top-2 left-2">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF5FB] text-[#1B6CA8] border border-[#BCE1F5] shadow-2xs">
+            <div class="absolute top-1.5 left-1.5 sm:top-2 sm:left-2">
+              <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-bold bg-[#EBF5FB] text-[#1B6CA8] border border-[#BCE1F5] shadow-2xs">
                 <span>🚚</span>
                 <span>Shipped</span>
               </span>
@@ -292,25 +289,25 @@
           </div>
 
           <!-- SKU & Title -->
-          <div class="mt-2.5 space-y-0.5">
-            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+          <div class="mt-2 space-y-0.5">
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
               #GFH-55102
             </span>
             <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
-              Koto Extendable Oak Table
+              Koto Extendable Table
             </h3>
-            <p class="text-[11px] text-[#7A716B] font-medium truncate">
-              Natural Oak • 6-8 Seater
+            <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
+              European Oak • 6-Seater
             </p>
           </div>
         </div>
 
         <!-- Price & Details CTA -->
-        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+        <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
           <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
             ₹34,200
           </span>
-          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
             <span>Details</span>
             <span>&gt;</span>
           </a>
@@ -318,13 +315,13 @@
       </div>
 
       <!-- CARD 5: Monolith Travertine Table (Delivered) -->
-      <div class="order-item-card bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="delivered" data-order-id="GFH-44910" data-title="Monolith Travertine Table">
+      <div class="order-item-card bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group" data-status="delivered" data-order-id="GFH-44910" data-title="Monolith Travertine Table">
         <div>
           <!-- Thumbnail & Status Tag -->
-          <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+          <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
             <img src="{% static 'images/teapoy_travertine.jpg' %}" alt="Monolith Travertine Table" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
-            <div class="absolute top-2 left-2">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EAF7EE] text-[#1E7E34] border border-[#C3E6CB] shadow-2xs">
+            <div class="absolute top-1.5 left-1.5 sm:top-2 sm:left-2">
+              <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-bold bg-[#EAF7EE] text-[#1E7E34] border border-[#C3E6CB] shadow-2xs">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#28A745]"></span>
                 <span>Delivered</span>
               </span>
@@ -332,25 +329,25 @@
           </div>
 
           <!-- SKU & Title -->
-          <div class="mt-2.5 space-y-0.5">
-            <span class="text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
+          <div class="mt-2 space-y-0.5">
+            <span class="text-[9px] sm:text-[10px] font-mono font-bold text-[#8C827A] tracking-wider block">
               #GFH-44910
             </span>
             <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug line-clamp-1">
               Monolith Travertine Table
             </h3>
-            <p class="text-[11px] text-[#7A716B] font-medium truncate">
+            <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
               Ivory Travertine • Honed
             </p>
           </div>
         </div>
 
         <!-- Price & Details CTA -->
-        <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
+        <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
           <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
             ₹28,800
           </span>
-          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-1 text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
+          <a href="{% url 'catalog' %}" class="inline-flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-[11px] font-bold text-[#8C4F20] hover:text-[#1D1714] transition-colors">
             <span>Details</span>
             <span>&gt;</span>
           </a>
@@ -368,7 +365,7 @@
     </div>
 
     <!-- ============================================================== -->
-    <!-- 4. RECOMMENDED FOR YOUR LIVING SPACE (4 CARDS)                 -->
+    <!-- 4. RECOMMENDED FOR YOUR LIVING SPACE (2-COL PHONE RATIO)       -->
     <!-- ============================================================== -->
     <div class="pt-4 space-y-3.5">
       
@@ -378,47 +375,47 @@
           <span class="text-[10px] sm:text-[11px] font-extrabold text-[#8C4F20] uppercase tracking-widest block">
             HANDCRAFTED FOR YOU
           </span>
-          <h2 class="text-lg sm:text-2xl font-black text-[#1D1714] tracking-tight">
+          <h2 class="text-base sm:text-2xl font-black text-[#1D1714] tracking-tight">
             Recommended For Your Living Space
           </h2>
         </div>
         <a href="{% url 'catalog' %}" class="text-xs sm:text-sm font-bold text-[#8C4F20] hover:text-[#1D1714] flex items-center gap-1 transition-colors">
-          <span>View All Recommendations</span>
+          <span>View All</span>
           <span>→</span>
         </a>
       </div>
 
-      <!-- 4 Cards Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- 4 Cards Grid - 2 per row on phones -->
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
 
         <!-- REC 1: Kyoto Solid Walnut Platform Bed -->
-        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+        <div class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
           <div>
-            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
               <img src="{% static 'images/card_bed.jpg' %}" alt="Kyoto Solid Walnut Platform Bed" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
               <!-- Heart Wishlist Toggle -->
-              <button type="button" onclick="toggleFavoritePiece(this, 'Kyoto Solid Walnut Platform Bed')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <button type="button" onclick="toggleFavoritePiece(this, 'Kyoto Solid Walnut Platform Bed')" class="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
               </button>
             </div>
 
-            <div class="mt-2.5 space-y-0.5">
+            <div class="mt-2 space-y-0.5">
               <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
-                Kyoto Solid Walnut Platform Bed
+                Kyoto Walnut Platform Bed
               </h3>
-              <p class="text-[11px] text-[#7A716B] font-medium truncate">
-                Solid American Walnut • Minimalist
+              <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
+                Solid American Walnut
               </p>
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
-            <span class="text-sm font-extrabold text-[#1D1714]">
+          <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
+            <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
               ₹38,900
             </span>
-            <button type="button" onclick="addRecommendedToCart('Kyoto Solid Walnut Platform Bed', 38900)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+            <button type="button" onclick="addRecommendedToCart('Kyoto Solid Walnut Platform Bed', 38900)" class="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-[11px] sm:text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
               <span>👜</span>
               <span>Add</span>
             </button>
@@ -426,33 +423,33 @@
         </div>
 
         <!-- REC 2: Stockholm Curved Bouclé Sofa -->
-        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+        <div class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
           <div>
-            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
               <img src="{% static 'images/sofa_living.jpg' %}" alt="Stockholm Curved Bouclé Sofa" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
               <!-- Heart Wishlist Toggle -->
-              <button type="button" onclick="toggleFavoritePiece(this, 'Stockholm Curved Bouclé Sofa')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <button type="button" onclick="toggleFavoritePiece(this, 'Stockholm Curved Bouclé Sofa')" class="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
               </button>
             </div>
 
-            <div class="mt-2.5 space-y-0.5">
+            <div class="mt-2 space-y-0.5">
               <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
-                Stockholm Curved Bouclé Sofa
+                Stockholm Curved Sofa
               </h3>
-              <p class="text-[11px] text-[#7A716B] font-medium truncate">
-                Textured Cream Bouclé • 3-Seater
+              <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
+                Cream Bouclé • 3-Seater
               </p>
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
-            <span class="text-sm font-extrabold text-[#1D1714]">
+          <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
+            <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
               ₹48,500
             </span>
-            <button type="button" onclick="addRecommendedToCart('Stockholm Curved Bouclé Sofa', 48500)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+            <button type="button" onclick="addRecommendedToCart('Stockholm Curved Bouclé Sofa', 48500)" class="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-[11px] sm:text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
               <span>👜</span>
               <span>Add</span>
             </button>
@@ -460,33 +457,33 @@
         </div>
 
         <!-- REC 3: Koto Extendable Oak Dining Table -->
-        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+        <div class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
           <div>
-            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
               <img src="{% static 'images/card_dining.jpg' %}" alt="Koto Extendable Oak Dining Table" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
               <!-- Heart Wishlist Toggle -->
-              <button type="button" onclick="toggleFavoritePiece(this, 'Koto Extendable Oak Dining Table')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <button type="button" onclick="toggleFavoritePiece(this, 'Koto Extendable Oak Dining Table')" class="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" title="Add to Wishlist">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
               </button>
             </div>
 
-            <div class="mt-2.5 space-y-0.5">
+            <div class="mt-2 space-y-0.5">
               <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
-                Koto Extendable Oak Dining Table
+                Koto Extendable Table
               </h3>
-              <p class="text-[11px] text-[#7A716B] font-medium truncate">
-                Natural European Oak • 6-8 Seater
+              <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
+                Natural European Oak
               </p>
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
-            <span class="text-sm font-extrabold text-[#1D1714]">
+          <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
+            <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
               ₹34,200
             </span>
-            <button type="button" onclick="addRecommendedToCart('Koto Extendable Oak Dining Table', 34200)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+            <button type="button" onclick="addRecommendedToCart('Koto Extendable Oak Dining Table', 34200)" class="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-[11px] sm:text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
               <span>👜</span>
               <span>Add</span>
             </button>
@@ -494,45 +491,42 @@
         </div>
 
         <!-- REC 4: Bespoke Atelier Lounge Chair -->
-        <div class="bg-white rounded-2xl p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
+        <div class="bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-[#E8E2DC] shadow-[0_2px_8px_rgba(30,20,15,0.03)] flex flex-col justify-between hover:shadow-md transition-all group">
           <div>
-            <div class="relative w-full aspect-4/3 rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
+            <div class="relative w-full aspect-4/3 rounded-lg sm:rounded-xl overflow-hidden bg-[#F5F2EE] border border-[#EAE3DC]">
               <img src="{% static 'images/lounge_chair.jpg' %}" alt="Bespoke Atelier Lounge Chair" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/card_bed.jpg';" />
               
               <!-- Heart Wishlist Toggle -->
-              <button type="button" onclick="toggleFavoritePiece(this, 'Bespoke Atelier Lounge Chair')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 z-10" title="Add to Wishlist">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <button type="button" onclick="toggleFavoritePiece(this, 'Bespoke Atelier Lounge Chair')" class="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-[#7A716B] hover:text-red-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95 z-10" title="Add to Wishlist">
+                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
               </button>
 
               <!-- Overlay preview -->
-              <div class="absolute bottom-1.5 left-1.5 right-1.5 bg-black/75 backdrop-blur-xs rounded-lg p-1.5 text-white">
-                <div class="flex items-center justify-between text-[9px] font-bold">
-                  <span class="truncate">Modern Lounge Chair</span>
+              <div class="absolute bottom-1 left-1 right-1 sm:bottom-1.5 sm:left-1.5 sm:right-1.5 bg-black/75 backdrop-blur-xs rounded p-1 sm:p-1.5 text-white">
+                <div class="flex items-center justify-between text-[8px] sm:text-[9px] font-bold">
+                  <span class="truncate">Modern Lounge</span>
                   <span class="text-amber-300 shrink-0">₹12,499</span>
                 </div>
-                <p class="text-[8px] text-stone-300 truncate mt-0.5 leading-none">
-                  Stylish and comfortable lounge chair perfect for your living room.
-                </p>
               </div>
             </div>
 
-            <div class="mt-2.5 space-y-0.5">
+            <div class="mt-2 space-y-0.5">
               <h3 class="text-xs sm:text-sm font-extrabold text-[#1D1714] leading-snug truncate">
-                Bespoke Atelier Lounge Chair
+                Bespoke Lounge Chair
               </h3>
-              <p class="text-[11px] text-[#7A716B] font-medium truncate">
-                Warm Teak &amp; Ochre • Cushioned
+              <p class="text-[10px] sm:text-[11px] text-[#7A716B] font-medium truncate">
+                Warm Teak &amp; Ochre
               </p>
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-3 mt-2 border-t border-[#F8F5F2]">
-            <span class="text-sm font-extrabold text-[#1D1714]">
+          <div class="flex items-center justify-between pt-2 sm:pt-3 mt-1.5 sm:mt-2 border-t border-[#F8F5F2]">
+            <span class="text-xs sm:text-sm font-extrabold text-[#1D1714]">
               ₹12,499
             </span>
-            <button type="button" onclick="addRecommendedToCart('Bespoke Atelier Lounge Chair', 12499)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
+            <button type="button" onclick="addRecommendedToCart('Bespoke Atelier Lounge Chair', 12499)" class="inline-flex items-center gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg bg-[#201511] hover:bg-[#8C4F20] text-white text-[11px] sm:text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95">
               <span>👜</span>
               <span>Add</span>
             </button>

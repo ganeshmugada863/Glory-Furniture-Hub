@@ -165,28 +165,26 @@
       <a href="/cart/" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors border border-stone-200/60 group">
         <div class="w-8 h-8 rounded-lg bg-gray-900 text-white flex items-center justify-center text-xs relative shrink-0">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E03131] text-white text-[8px] font-bold flex items-center justify-center">
+          <span id="drawerCartBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E03131] text-white text-[8px] font-bold flex items-center justify-center transition-transform duration-200">
             {{ CART_COUNT|default:"0" }}
           </span>
         </div>
         <div class="min-w-0">
           <span class="block text-xs font-bold text-gray-900 leading-tight">My Cart</span>
-          <span class="block text-[10px] text-gray-500 truncate">Items: {{ CART_COUNT|default:"0" }}</span>
+          <span class="block text-[10px] text-gray-500 truncate" id="drawerCartSubtext">Items: {{ CART_COUNT|default:"0" }}</span>
         </div>
       </a>
 
       <a href="/wishlist/" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors border border-stone-200/60 group">
         <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xs relative shrink-0 border border-rose-200/60">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-          {% if WISHLIST_COUNT > 0 %}
-          <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E03131] text-white text-[8px] font-bold flex items-center justify-center">
-            {{ WISHLIST_COUNT }}
+          <span id="drawerWishlistBadge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E03131] text-white text-[8px] font-bold flex items-center justify-center transition-transform duration-200">
+            {{ WISHLIST_COUNT|default:"0" }}
           </span>
-          {% endif %}
         </div>
         <div class="min-w-0">
           <span class="block text-xs font-bold text-gray-900 leading-tight">Wishlist</span>
-          <span class="block text-[10px] text-gray-500 truncate">Saved Items</span>
+          <span class="block text-[10px] text-gray-500 truncate" id="drawerWishlistSubtext">{% if WISHLIST_COUNT %}{{ WISHLIST_COUNT }} Saved{% else %}Saved Items{% endif %}</span>
         </div>
       </a>
 
@@ -388,11 +386,9 @@
         <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
         </svg>
-        {% if WISHLIST_COUNT > 0 %}
-        <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#E03131] text-white text-[9px] font-bold flex items-center justify-center shadow-xs">
-          {{ WISHLIST_COUNT }}
+        <span id="headerWishlistBadge" class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#E03131] text-white text-[9px] font-bold flex items-center justify-center shadow-xs transition-transform duration-200">
+          {{ WISHLIST_COUNT|default:"0" }}
         </span>
-        {% endif %}
       </a>
 
       <!-- Shopping Cart Trolley Icon with Counter Badge - Hidden on mobile/Android ratio -->
@@ -400,7 +396,7 @@
         <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
         </svg>
-        <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gray-950 text-white text-[9px] font-bold flex items-center justify-center shadow-xs">
+        <span id="headerCartBadge" class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-gray-950 text-white text-[9px] font-bold flex items-center justify-center shadow-xs transition-transform duration-200">
           {{ CART_COUNT|default:"0" }}
         </span>
       </a>
@@ -1711,9 +1707,43 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       }, 3200);
     }
 
-    function addToCart(title, price, productId) {
-      showToast(`Adding "${title}" to your shopping cart...`, 'shopping_cart');
+    // Global reactive counters initialized from server context
+    let currentWishlistCount = parseInt('{{ WISHLIST_COUNT|default:"0" }}') || 0;
+    let currentGlobalCartCount = parseInt('{{ CART_COUNT|default:"0" }}') || 0;
 
+    function updateWishlistBadges(count) {
+      currentWishlistCount = Math.max(0, count);
+      document.querySelectorAll('#navSettingsWishlistBadge, #drawerWishlistBadge, #headerWishlistBadge').forEach(el => {
+        el.textContent = currentWishlistCount;
+        el.style.transform = 'scale(1.25)';
+        setTimeout(() => el.style.transform = '', 200);
+      });
+      const sub = document.getElementById('drawerWishlistSubtext');
+      if (sub) {
+        sub.textContent = currentWishlistCount > 0 ? `${currentWishlistCount} Saved` : 'Saved Items';
+      }
+    }
+
+    function updateCartBadges(count) {
+      currentGlobalCartCount = Math.max(0, count);
+      document.querySelectorAll('#navDirectCartBadge, #drawerCartBadge, #headerCartBadge, #navSettingsCartBadge').forEach(el => {
+        el.textContent = currentGlobalCartCount;
+        el.style.transform = 'scale(1.25)';
+        setTimeout(() => el.style.transform = '', 200);
+      });
+      const sub = document.getElementById('drawerCartSubtext');
+      if (sub) {
+        sub.textContent = `Items: ${currentGlobalCartCount}`;
+      }
+    }
+
+    function addToCart(title, price, productId) {
+      // 1. INSTANT OPTIMISTIC FEEDBACK (0ms DELAY)
+      currentGlobalCartCount += 1;
+      updateCartBadges(currentGlobalCartCount);
+      showToast(`Added "${title}" to your Shopping Cart!`, 'check_circle');
+
+      // 2. ASYNC BACKGROUND SERVER SYNC
       fetch('/api/cart/add/', {
         method: 'POST',
         headers: {
@@ -1729,27 +1759,77 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       })
       .then(res => res.json())
       .then(data => {
-        if (data.status === 'success') {
-          showToast(`"${title}" added to your shopping cart!`, 'check_circle');
-          const count = data.cart_count || 1;
-          document.querySelectorAll('#navDirectCartBadge, #drawerCartBadge, #headerCartBadge, #navSettingsCartBadge').forEach(el => {
-            el.textContent = count;
-            el.classList.remove('hidden');
-          });
-          const settingsCart = document.getElementById('navSettingsCartBadge');
-          if (settingsCart) settingsCart.textContent = `${count} items`;
-        } else {
-          showToast(`"${title}" added to your shopping cart!`, 'check_circle');
+        if (data && data.cart_count !== undefined) {
+          updateCartBadges(data.cart_count);
         }
       })
-      .catch(() => {
-        showToast(`"${title}" added to your shopping cart!`, 'check_circle');
-      });
+      .catch(() => {});
     }
 
     function toggleFavorite(btn, title, price, productId) {
+      // Auto-infer productId if not passed
+      if (!productId) {
+        const prodLink = btn.closest('.product-item')?.querySelector('a[href*="/product/"]');
+        if (prodLink) {
+          const match = prodLink.getAttribute('href').match(/\/product\/(\d+)\/?/);
+          if (match) productId = parseInt(match[1]);
+        }
+      }
+      const cardEl = btn.closest('.product-item') || btn.closest('.group') || btn.parentElement;
+      const imgEl = cardEl ? cardEl.querySelector('img') : null;
+      const imgSrc = imgEl ? imgEl.src : '';
+      const catEl = cardEl ? (cardEl.getAttribute('data-category') || '') : '';
+
       const icon = btn.querySelector('.material-symbols-outlined') || btn.querySelector('svg');
       
+      // 1. INSTANT OPTIMISTIC UI RESPONSE (0ms DELAY)
+      const isCurrentlyFavorited = btn.classList.contains('text-red-600') || (icon && icon.textContent.trim() === 'favorite');
+      const willBeFavorited = !isCurrentlyFavorited;
+
+      if (willBeFavorited) {
+        btn.classList.add('text-red-600');
+        if (icon) {
+          icon.textContent = 'favorite';
+          icon.classList.add('text-red-600');
+          icon.style.fontVariationSettings = "'FILL' 1";
+        }
+        btn.style.transform = 'scale(1.3)';
+        setTimeout(() => btn.style.transform = '', 200);
+        showToast(`Added "${title}" to your Wishlist!`, 'favorite');
+        updateWishlistBadges(currentWishlistCount + 1);
+      } else {
+        btn.classList.remove('text-red-600');
+        if (icon) {
+          icon.textContent = 'favorite_border';
+          icon.classList.remove('text-red-600');
+          icon.style.fontVariationSettings = "'FILL' 0";
+        }
+        btn.style.transform = 'scale(0.85)';
+        setTimeout(() => btn.style.transform = '', 200);
+        showToast(`Removed "${title}" from Wishlist`, 'heart_broken');
+        updateWishlistBadges(Math.max(0, currentWishlistCount - 1));
+      }
+
+      // Store in localStorage immediately so /wishlist/ path reflects instantly
+      try {
+        let localWishlist = JSON.parse(localStorage.getItem('glory_wishlist_cache') || '[]');
+        if (willBeFavorited) {
+          if (!localWishlist.find(item => item.title === title || (productId && item.product_id === productId))) {
+            localWishlist.push({ 
+              title: title, 
+              price: price, 
+              product_id: productId || null,
+              image: imgSrc,
+              category: catEl
+            });
+          }
+        } else {
+          localWishlist = localWishlist.filter(item => item.title !== title && (!productId || item.product_id !== productId));
+        }
+        localStorage.setItem('glory_wishlist_cache', JSON.stringify(localWishlist));
+      } catch(e) {}
+
+      // 2. ASYNC BACKGROUND SERVER SYNC
       fetch('/api/wishlist/toggle/', {
         method: 'POST',
         headers: {
@@ -1763,30 +1843,11 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       })
       .then(res => res.json())
       .then(data => {
-        const added = data.added;
-        const count = data.count !== undefined ? data.count : 1;
-        if (added) {
-          if (icon) {
-            icon.style.fontVariationSettings = "'FILL' 1";
-            icon.classList.add('text-error', 'text-red-600');
-          }
-          btn.classList.add('text-red-600');
-          showToast(`Added "${title}" to saved favorites`, 'favorite');
-        } else {
-          if (icon) {
-            icon.style.fontVariationSettings = "'FILL' 0";
-            icon.classList.remove('text-error', 'text-red-600');
-          }
-          btn.classList.remove('text-red-600');
-          showToast(`Removed "${title}" from favorites`, 'heart_broken');
+        if (data && data.count !== undefined) {
+          updateWishlistBadges(data.count);
         }
-        document.querySelectorAll('#navSettingsWishlistBadge, #drawerWishlistBadge, #headerWishlistBadge').forEach(el => {
-          el.textContent = `${count} saved`;
-        });
       })
-      .catch(() => {
-        showToast(`Updated favorites for "${title}"`, 'favorite');
-      });
+      .catch(() => {});
     }
 
     function filterCategory(category, button) {
