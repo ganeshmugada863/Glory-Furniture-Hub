@@ -88,130 +88,219 @@
 </head><body class="bg-surface font-body-md text-on-surface antialiased pb-20 sm:pb-0">
 
 <!-- ============================================================== -->
-<!-- 1. MOBILE NAVIGATION DRAWER (Slide-Out on Mobile)              -->
+<!-- 1. MOBILE NAVIGATION DRAWER (Enhanced Android & Mobile Layout) -->
 <!-- ============================================================== -->
 <div id="navDrawerOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 opacity-0 pointer-events-none transition-opacity duration-300" onclick="toggleNavDrawer()"></div>
-<aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out overflow-y-auto font-sans">
-  <div>
-    <!-- Drawer Header -->
-    <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/80">
-      <div class="flex items-center gap-2.5">
-        <!-- Speed shopping cart icon -->
-        <div class="w-8 h-8 rounded-lg bg-[#E03131] text-white flex items-center justify-center shadow-xs">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 0 1-8 0"/>
+<aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-[84vw] max-w-[340px] bg-white z-50 shadow-2xl flex flex-col justify-between -translate-x-full transition-transform duration-300 ease-out font-sans select-none">
+  
+  <!-- Scrollable Content Area -->
+  <div class="flex-1 overflow-y-auto overscroll-contain">
+    
+    <!-- Top Header Bar with Glory Furniture Hub Branding -->
+    <div class="p-4 border-b border-stone-200/80 bg-gradient-to-r from-stone-900 to-stone-950 text-white flex items-center justify-between sticky top-0 z-10 shadow-xs">
+      <a href="/" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8B5A2B] to-[#5C3D2E] text-white flex items-center justify-center shadow-sm border border-white/10 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
         </div>
         <div class="flex flex-col leading-none">
-          <span class="font-black text-sm tracking-tight text-gray-950 uppercase">CLASSY<span class="text-[#E03131]">SHOP</span></span>
-          <span class="text-[8px] font-bold tracking-[0.2em] text-gray-500 uppercase mt-0.5">BIG MEGA STORE</span>
+          <span class="font-black text-sm tracking-tight text-white uppercase">
+            GLORY <span class="text-[#E03131]">FURNITURE</span>
+          </span>
+          <span class="text-[8px] font-bold tracking-[0.22em] text-[#D4A556] uppercase mt-0.5">
+            HUB &bull; SOLID TEAK
+          </span>
         </div>
-      </div>
-      <button type="button" onclick="toggleNavDrawer()" class="p-1.5 rounded-full text-gray-500 hover:text-gray-950 hover:bg-gray-200 transition-colors cursor-pointer" title="Close Menu">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </a>
+      <!-- Close Button with Android-friendly 44px tap target -->
+      <button 
+        type="button" 
+        onclick="toggleNavDrawer()" 
+        class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white flex items-center justify-center transition-all cursor-pointer" 
+        title="Close Menu"
+        aria-label="Close Navigation"
+      >
+        <svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
 
-    <!-- Mobile Search Inside Drawer -->
-    <div class="p-4 border-b border-gray-100 bg-white">
-      <form action="/catalog/" method="GET" class="flex items-center bg-[#F1F3F6] rounded-lg px-3 py-2 border border-transparent focus-within:border-gray-300 focus-within:bg-white transition-all">
-        <input 
-          type="text" 
-          name="search" 
-          placeholder="Search for products..." 
-          class="w-full bg-transparent text-xs text-gray-900 placeholder:text-gray-400 outline-none"
-        />
-        <button type="submit" class="text-gray-500 hover:text-gray-950 ml-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </button>
-      </form>
-    </div>
-
-    <!-- User Authentication Card -->
-    <div class="px-4 py-3 bg-[#FAF8F5] border-b border-gray-100">
+    <!-- User Account Status Card (Android Card Style) -->
+    <div class="p-3.5 bg-stone-50 border-b border-stone-200/80">
       {% if request.user.is_authenticated %}
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-8 h-8 rounded-full bg-[#5C3D2E] text-white font-bold text-xs flex items-center justify-center shrink-0">
+      <div class="flex items-center justify-between bg-white p-3 rounded-2xl border border-stone-200/80 shadow-2xs">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B5A2B] to-[#5C3D2E] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs">
             {{ USER_NAME|slice:":1"|default:"U" }}
           </div>
           <div class="min-w-0">
             <p class="text-xs font-bold text-gray-950 truncate">Hi, {{ USER_NAME|default:"Customer" }}</p>
-            <p class="text-[10px] text-gray-500 truncate">{{ USER_EMAIL|default:"" }}</p>
+            <p class="text-[10px] text-gray-500 truncate">{{ USER_EMAIL|default:"Member" }}</p>
           </div>
         </div>
-        <a href="/logout/" class="text-[11px] font-bold text-red-600 hover:underline">Logout</a>
+        <a href="/logout/" class="text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2.5 py-1.5 rounded-lg transition-colors">
+          Logout
+        </a>
       </div>
       {% else %}
-      <div class="flex items-center justify-between">
-        <span class="text-xs text-gray-600">Welcome to ClassyShop!</span>
-        <div class="flex items-center gap-2 text-xs font-bold text-gray-900">
-          <a href="/login/" class="text-[#E03131] hover:underline">Login</a>
-          <span class="text-gray-300">|</span>
-          <a href="/register/" class="hover:underline">Register</a>
+      <div class="bg-white p-3 rounded-2xl border border-stone-200/80 shadow-2xs flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-gray-900">Welcome to Glory!</p>
+          <p class="text-[10px] text-gray-500">Sign in for orders &amp; saved items</p>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <a href="/login/" class="px-3 py-1.5 rounded-lg bg-[#E03131] text-white text-xs font-bold shadow-2xs active:scale-95 transition-all">
+            Login
+          </a>
+          <a href="/register/" class="px-2.5 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:text-black text-xs font-medium active:scale-95 transition-all">
+            Join
+          </a>
         </div>
       </div>
       {% endif %}
     </div>
 
-    <!-- Shop By Categories Accordion / Menu -->
-    <div class="p-4 border-b border-gray-100">
-      <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-gray-900 mb-2.5">
-        <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        <span>Shop by Categories</span>
+    <!-- Quick Android Action Grid (Cart, Wishlist, Orders, Custom) -->
+    <div class="p-3.5 border-b border-stone-100 grid grid-cols-2 gap-2">
+      <a href="/cart/" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors border border-stone-200/60 group">
+        <div class="w-8 h-8 rounded-lg bg-gray-900 text-white flex items-center justify-center text-xs relative shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E03131] text-white text-[8px] font-bold flex items-center justify-center">
+            {{ CART_COUNT|default:"0" }}
+          </span>
+        </div>
+        <div class="min-w-0">
+          <span class="block text-xs font-bold text-gray-900 leading-tight">My Cart</span>
+          <span class="block text-[10px] text-gray-500 truncate">Items: {{ CART_COUNT|default:"0" }}</span>
+        </div>
+      </a>
+
+      <a href="/wishlist/" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors border border-stone-200/60 group">
+        <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xs relative shrink-0 border border-rose-200/60">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          {% if WISHLIST_COUNT > 0 %}
+          <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E03131] text-white text-[8px] font-bold flex items-center justify-center">
+            {{ WISHLIST_COUNT }}
+          </span>
+          {% endif %}
+        </div>
+        <div class="min-w-0">
+          <span class="block text-xs font-bold text-gray-900 leading-tight">Wishlist</span>
+          <span class="block text-[10px] text-gray-500 truncate">Saved Items</span>
+        </div>
+      </a>
+
+      <a href="/orders/" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors border border-stone-200/60 group">
+        <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#8B5A2B] flex items-center justify-center text-xs shrink-0 border border-amber-200/60">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
+        <div class="min-w-0">
+          <span class="block text-xs font-bold text-gray-900 leading-tight">Orders</span>
+          <span class="block text-[10px] text-gray-500 truncate">Track Status</span>
+        </div>
+      </a>
+
+      <a href="/custom-orders/" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors border border-stone-200/60 group">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs shrink-0 border border-emerald-200/60">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </div>
+        <div class="min-w-0">
+          <span class="block text-xs font-bold text-emerald-800 leading-tight">Custom Plan</span>
+          <span class="block text-[10px] text-emerald-600 truncate">Bespoke Wood</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Solid Teak Furniture Categories List -->
+    <div class="p-3.5 border-b border-stone-100">
+      <div class="px-1 mb-2 flex items-center justify-between">
+        <span class="text-[10px] font-black uppercase tracking-widest text-stone-500">Categories</span>
+        <a href="/catalog/" class="text-[11px] font-bold text-[#E03131] hover:underline">View All &rarr;</a>
       </div>
       <div class="grid grid-cols-2 gap-1.5 text-xs">
-        <a href="/catalog/?category=Sofa%20Set" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Sofa Sets</a>
-        <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Beds &amp; Cots</a>
-        <a href="/catalog/?category=Dining%20Table" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Dining Tables</a>
-        <a href="/catalog/?category=Podimes" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Diwans</a>
-        <a href="/catalog/?category=Dressing%20Table" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Dressing</a>
-        <a href="/catalog/?search=teapoy" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Teapoys</a>
-        <a href="/catalog/?search=door" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Doors</a>
-        <a href="/custom-orders/" class="px-3 py-2 rounded-lg bg-gray-50 hover:bg-[#FAF4ED] text-gray-800 font-medium hover:text-[#5C3D2E] transition-colors truncate">Custom Orders</a>
+        <a href="/catalog/?category=Sofa%20Set" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">🛋️</span>
+          <span class="truncate">Sofa Sets</span>
+        </a>
+        <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">🛏️</span>
+          <span class="truncate">Beds &amp; Cots</span>
+        </a>
+        <a href="/catalog/?category=Dining%20Table" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">🍽️</span>
+          <span class="truncate">Dining Sets</span>
+        </a>
+        <a href="/catalog/?category=Podimes" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">🪵</span>
+          <span class="truncate">Diwans</span>
+        </a>
+        <a href="/catalog/?category=Dressing%20Table" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">🪞</span>
+          <span class="truncate">Dressing</span>
+        </a>
+        <a href="/catalog/?search=teapoy" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">☕</span>
+          <span class="truncate">Teapoy</span>
+        </a>
+        <a href="/catalog/?search=door" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-800 font-semibold transition-colors">
+          <span class="text-sm">🚪</span>
+          <span class="truncate">Teak Doors</span>
+        </a>
+        <a href="/custom-orders/" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50/60 hover:bg-red-50 text-[#E03131] font-bold transition-colors">
+          <span class="text-sm">✨</span>
+          <span class="truncate">Custom</span>
+        </a>
       </div>
     </div>
 
-    <!-- Quick Navigation Links -->
-    <nav class="p-4 flex flex-col gap-1 text-xs font-semibold text-gray-800">
-      <a href="/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>Home</span>
-        <span>&rarr;</span>
+    <!-- Main Navigation Links -->
+    <nav class="p-3.5 space-y-1 text-xs font-semibold text-stone-800">
+      <a href="/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-stone-100 text-stone-900 font-bold transition-colors">
+        <span class="flex items-center gap-2.5">
+          <svg class="w-4 h-4 text-[#8B5A2B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Home</span>
+        </span>
+        <span class="text-stone-400">&rarr;</span>
       </a>
-      <a href="/catalog/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>Full Furniture Catalog</span>
-        <span>&rarr;</span>
+
+      <a href="/catalog/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-stone-100 transition-colors">
+        <span class="flex items-center gap-2.5">
+          <svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+          <span>Full Catalog</span>
+        </span>
+        <span class="text-stone-400">&rarr;</span>
       </a>
-      <a href="/wishlist/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>Wishlist</span>
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700">{{ WISHLIST_COUNT|default:"0" }}</span>
+
+      <a href="/contact-us/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-stone-100 transition-colors">
+        <span class="flex items-center gap-2.5">
+          <svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span>Contact Us</span>
+        </span>
+        <span class="text-stone-400">&rarr;</span>
       </a>
-      <a href="/cart/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>Shopping Cart</span>
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E03131] text-white">{{ CART_COUNT|default:"0" }}</span>
-      </a>
-      <a href="/orders/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>My Orders</span>
-        <span>&rarr;</span>
-      </a>
-      <a href="/contact-us/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>Contact Us</span>
-        <span>&rarr;</span>
-      </a>
-      <a href="/about/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
-        <span>About Us</span>
-        <span>&rarr;</span>
+
+      <a href="/about/" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-stone-100 transition-colors">
+        <span class="flex items-center gap-2.5">
+          <svg class="w-4 h-4 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>About Atelier</span>
+        </span>
+        <span class="text-stone-400">&rarr;</span>
       </a>
     </nav>
+
   </div>
 
-  <!-- Drawer Footer: Delivery perk -->
-  <div class="p-4 border-t border-gray-100 bg-gray-50 text-xs flex items-center gap-2 text-gray-700">
-    <span class="text-base">🚀</span>
-    <span class="font-bold">Free International Delivery</span>
+  <!-- Drawer Footer: Delivery perk & Help -->
+  <div class="p-3.5 border-t border-stone-200/80 bg-stone-50 text-xs flex items-center justify-between text-stone-700">
+    <div class="flex items-center gap-2">
+      <span class="text-base">🚀</span>
+      <span class="font-bold text-[11px]">Free Delivery</span>
+    </div>
+    <a href="/contact-us/" class="text-[11px] font-bold text-[#8B5A2B] hover:underline">
+      Support 24/7
+    </a>
   </div>
+
 </aside>
 
 <!-- ============================================================== -->
@@ -234,22 +323,20 @@
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
 
-      <!-- Brand Logo (Cart Icon + CLASSYSHOP + BIG MEGA STORE) -->
-      <a href="/" class="flex items-center gap-2 sm:gap-2.5 group cursor-pointer select-none">
-        <!-- Red speed shopping cart / bag icon -->
-        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#E03131] to-[#C92A2A] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-          <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 0 1-8 0"/>
+      <!-- Brand Logo (Glory Furniture Hub with Warm Wood Icon) -->
+      <a href="/" class="flex items-center gap-2.5 sm:gap-3 group cursor-pointer select-none">
+        <!-- Wood craft icon badge -->
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#8B5A2B] to-[#5C3D2E] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-amber-900/20 shrink-0">
+          <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
         </div>
         <div class="flex flex-col leading-none">
           <span class="font-black text-lg sm:text-xl lg:text-2xl tracking-tight text-gray-950 uppercase">
-            CLASSY<span class="text-[#E03131]">SHOP</span>
+            GLORY <span class="text-[#8B5A2B]">FURNITURE</span>
           </span>
-          <span class="text-[7.5px] sm:text-[8.5px] font-bold tracking-[0.24em] text-gray-500 uppercase mt-0.5">
-            BIG MEGA STORE
+          <span class="text-[7.5px] sm:text-[8.5px] font-bold tracking-[0.26em] text-[#C9963F] uppercase mt-0.5">
+            HUB &bull; SOLID TEAKWOOD
           </span>
         </div>
       </a>
@@ -344,83 +431,28 @@
     </form>
   </div>
 
-  <!-- TIER 2: Secondary Bar (SHOP BY CATEGORIES, Links, Free Delivery) -->
+  <!-- TIER 2: Secondary Bar (Clean Navigation Links & Free Delivery) -->
   <div class="border-t border-gray-150 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
       
-      <!-- Left: SHOP BY CATEGORIES Dropdown Button -->
-      <div class="relative group" id="shop-categories-dropdown">
-        <button 
-          type="button" 
-          onclick="toggleCategoryDropdown()" 
-          class="py-2.5 sm:py-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-950 hover:text-[#E03131] transition-colors cursor-pointer select-none"
-        >
-          <svg class="w-4 h-4 text-gray-900 group-hover:text-[#E03131]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          <span>SHOP BY CATEGORIES</span>
-          <svg class="w-3.5 h-3.5 text-gray-500 group-hover:text-[#E03131] transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div 
-          id="categoryDropdownMenu" 
-          class="hidden group-hover:block absolute left-0 top-full w-64 bg-white rounded-b-2xl shadow-xl border border-gray-100 py-2 z-50 transition-all font-sans"
-        >
-          <div class="px-3 py-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100">
-            Solid Teak Collections
-          </div>
-          <a href="/catalog/?category=Sofa%20Set" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Sofa Sets &amp; Couches</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Wooden Beds &amp; Cots</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <a href="/catalog/?category=Dining%20Table" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Dining Tables &amp; Sets</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <a href="/catalog/?category=Podimes" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Diwans &amp; Daybeds</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <a href="/catalog/?category=Dressing%20Table" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Dressing Tables</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <a href="/catalog/?search=teapoy" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Teapoy &amp; Coffee Tables</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <a href="/catalog/?search=door" class="flex items-center justify-between px-4 py-2 text-xs font-medium text-gray-700 hover:text-black hover:bg-gray-50 transition-colors">
-            <span>Teak Doors &amp; Frames</span>
-            <span class="text-gray-400">&rarr;</span>
-          </a>
-          <div class="border-t border-gray-100 my-1"></div>
-          <a href="/custom-orders/" class="flex items-center justify-between px-4 py-2 text-xs font-bold text-[#E03131] hover:bg-red-50/50 transition-colors">
-            <span>Custom Furniture Orders</span>
-            <span>&rarr;</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Center: Horizontal Navigation Links -->
-      <nav class="hidden md:flex items-center gap-5 lg:gap-7 overflow-x-auto no-scrollbar py-2 text-xs lg:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
-        <a href="/" class="text-gray-950 font-bold hover:text-[#E03131] transition-colors">Home</a>
+      <!-- Horizontal Navigation Links -->
+      <nav class="flex items-center gap-5 lg:gap-7 overflow-x-auto no-scrollbar py-2.5 text-xs lg:text-[13px] font-semibold text-gray-700 whitespace-nowrap">
+        <a href="/" class="text-gray-950 font-bold hover:text-[#8B5A2B] transition-colors">Home</a>
         <a href="/catalog/?category=Sofa%20Set" class="hover:text-black transition-colors">Sofa Sets</a>
         <a href="/catalog/?category=Cot%20%2F%20Wooden%20Bed" class="hover:text-black transition-colors">Beds &amp; Cots</a>
         <a href="/catalog/?category=Dining%20Table" class="hover:text-black transition-colors">Dining Tables</a>
         <a href="/catalog/?category=Podimes" class="hover:text-black transition-colors">Diwans</a>
         <a href="/catalog/?category=Dressing%20Table" class="hover:text-black transition-colors">Dressing</a>
+        <a href="/catalog/?search=teapoy" class="hover:text-black transition-colors">Teapoys</a>
         <a href="/catalog/?search=door" class="hover:text-black transition-colors">Doors</a>
-        <a href="/custom-orders/" class="hover:text-black transition-colors">Custom Orders</a>
+        <a href="/custom-orders/" class="hover:text-[#8B5A2B] transition-colors font-bold">Custom Orders</a>
         <a href="/contact-us/" class="hover:text-black transition-colors">Contact Us</a>
       </nav>
 
-      <!-- Right: Free International Delivery Perk -->
+      <!-- Right: Free Delivery Perk -->
       <div class="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-gray-800 shrink-0 select-none py-2">
         <span class="text-sm">🚀</span>
-        <span>Free International Delivery</span>
+        <span>Free Delivery</span>
       </div>
 
     </div>
@@ -1639,22 +1671,6 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       dd.classList.toggle('hidden');
     }
 
-    // ==============================================================
-    // Category Dropdown Toggle (Desktop & Mobile Support)
-    // ==============================================================
-    function toggleCategoryDropdown(e) {
-      if (e) e.stopPropagation();
-      const menu = document.getElementById('categoryDropdownMenu');
-      if (menu) menu.classList.toggle('hidden');
-    }
-
-    document.addEventListener('click', (e) => {
-      const dropdown = document.getElementById('shop-categories-dropdown');
-      const menu = document.getElementById('categoryDropdownMenu');
-      if (dropdown && menu && !dropdown.contains(e.target)) {
-        menu.classList.add('hidden');
-      }
-    });
 
     // ==============================================================
     // Hero Carousel Slider Controller (Exact Match to User Image)
