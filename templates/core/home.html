@@ -311,20 +311,10 @@
   <!-- TIER 1: Main Header Row (Logo, Search, User, Wishlist, Cart) -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5 flex items-center justify-between gap-3 sm:gap-6">
     
-    <!-- Left: Brand Logo & Mobile Menu Toggle -->
-    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-      <!-- Mobile Hamburger Button -->
-      <button 
-        type="button" 
-        onclick="toggleNavDrawer()" 
-        class="lg:hidden p-1.5 rounded-lg text-gray-700 hover:text-black hover:bg-gray-100 transition-colors cursor-pointer" 
-        title="Open Navigation"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
-
+    <!-- Left: Brand Logo (Clean, no left hamburger icon) -->
+    <div class="flex items-center shrink-0">
       <!-- Brand Logo (Glory Furniture Hub with Warm Wood Icon) -->
-      <a href="/" class="flex items-center gap-2.5 sm:gap-3 group cursor-pointer select-none">
+      <a href="/" class="flex items-center gap-2 sm:gap-3 group cursor-pointer select-none">
         <!-- Wood craft icon badge -->
         <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#8B5A2B] to-[#5C3D2E] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-amber-900/20 shrink-0">
           <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -332,10 +322,10 @@
           </svg>
         </div>
         <div class="flex flex-col leading-none">
-          <span class="font-black text-lg sm:text-xl lg:text-2xl tracking-tight text-gray-950 uppercase">
+          <span class="font-black text-base sm:text-xl lg:text-2xl tracking-tight text-gray-950 uppercase">
             GLORY <span class="text-[#8B5A2B]">FURNITURE</span>
           </span>
-          <span class="text-[7.5px] sm:text-[8.5px] font-bold tracking-[0.26em] text-[#C9963F] uppercase mt-0.5">
+          <span class="text-[7px] sm:text-[8.5px] font-bold tracking-[0.24em] sm:tracking-[0.26em] text-[#C9963F] uppercase mt-0.5">
             HUB &bull; SOLID TEAKWOOD
           </span>
         </div>
@@ -357,7 +347,7 @@
       </form>
     </div>
 
-    <!-- Right Utilities: Info Icon, User Account, Orders Icon, Wishlist, Cart -->
+    <!-- Right Utilities: Info Icon, User Account, Desktop Icons & Mobile Sidebar 3-Line Menu -->
     <div class="flex items-center gap-2 sm:gap-3 lg:gap-3.5 shrink-0 text-gray-700">
       
       <!-- Info Icon (ⓘ) -->
@@ -386,15 +376,15 @@
         {% endif %}
       </div>
 
-      <!-- Customer Orders Icon (Package / Order Box) -->
-      <a href="/orders/" class="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative flex items-center justify-center cursor-pointer" title="My Orders" aria-label="Customer Orders">
+      <!-- Customer Orders Icon - Hidden on mobile/Android ratio -->
+      <a href="/orders/" class="hidden sm:flex p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative items-center justify-center cursor-pointer" title="My Orders" aria-label="Customer Orders">
         <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
         </svg>
       </a>
 
-      <!-- Wishlist Heart Outline Icon with Counter Badge -->
-      <a href="/wishlist/" class="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative flex items-center justify-center cursor-pointer" title="Wishlist">
+      <!-- Wishlist Heart Outline Icon with Counter Badge - Hidden on mobile/Android ratio -->
+      <a href="/wishlist/" class="hidden sm:flex p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative items-center justify-center cursor-pointer" title="Wishlist">
         <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
         </svg>
@@ -405,8 +395,8 @@
         {% endif %}
       </a>
 
-      <!-- Shopping Cart Trolley Icon with Counter Badge -->
-      <a href="/cart/" class="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative flex items-center justify-center cursor-pointer" title="Shopping Cart">
+      <!-- Shopping Cart Trolley Icon with Counter Badge - Hidden on mobile/Android ratio -->
+      <a href="/cart/" class="hidden sm:flex p-1.5 sm:p-2 rounded-full hover:bg-gray-100 text-gray-800 hover:text-black transition-colors relative items-center justify-center cursor-pointer" title="Shopping Cart">
         <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
         </svg>
@@ -414,6 +404,19 @@
           {{ CART_COUNT|default:"0" }}
         </span>
       </a>
+
+      <!-- Mobile Sidebar 3 Horizontal Lines Icon (Replaces Cart Icon in Mobile/Android View) -->
+      <button 
+        type="button" 
+        onclick="toggleNavDrawer()" 
+        class="lg:hidden p-1.5 rounded-lg text-gray-800 hover:text-black hover:bg-gray-100 transition-colors cursor-pointer flex items-center justify-center active:scale-95" 
+        title="Open Navigation"
+        aria-label="Open Navigation Sidebar"
+      >
+        <svg class="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
 
     </div>
 
