@@ -43,7 +43,7 @@ class RoleBasedAccessMiddleware:
         elif not role and user_email:
             role = 'customer'
 
-        is_authenticated_user = bool(request.user.is_authenticated or user_email or role)
+        is_authenticated_user = bool(request.user.is_authenticated or user_email)
         request.user_role = role
         request.is_admin_user = (role == 'admin')
         request.is_customer_user = (role == 'customer')
