@@ -298,14 +298,33 @@ def product_detail_view(request, pk=None, slug=None):
     if isinstance(raw_addresses, list):
         for a in raw_addresses:
             if isinstance(a, dict):
-                saved_addresses.append(a)
+                fl = str(a.get('flat') or a.get('house_number') or '').strip()
+                st = str(a.get('street') or a.get('area') or a.get('address') or '').strip()
+                ci = str(a.get('city') or '').strip()
+                pin = str(a.get('pincode') or a.get('pin_code') or a.get('postal_code') or '').strip()
+                ft = str(a.get('full_text') or '').strip()
+                if not ft:
+                    ft = ', '.join([x for x in [fl, st, ci, pin] if x])
+                saved_addresses.append({
+                    'id': a.get('id', len(saved_addresses) + 1),
+                    'tag': a.get('tag', 'Home'),
+                    'flat': fl or ft,
+                    'street': st or ft,
+                    'city': ci,
+                    'pincode': pin,
+                    'full_text': ft or fl or st,
+                    'is_default': bool(a.get('is_default', len(saved_addresses) == 0))
+                })
             elif isinstance(a, str) and a.strip():
+                txt = a.strip()
                 saved_addresses.append({
                     'id': len(saved_addresses) + 1,
                     'tag': 'Home',
-                    'full_text': a.strip(),
-                    'flat': a.strip(),
-                    'street': a.strip(),
+                    'full_text': txt,
+                    'flat': txt,
+                    'street': txt,
+                    'city': '',
+                    'pincode': '',
                     'is_default': len(saved_addresses) == 0
                 })
 

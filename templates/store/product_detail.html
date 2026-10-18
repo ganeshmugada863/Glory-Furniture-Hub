@@ -1511,15 +1511,15 @@
       const presentInput = document.getElementById('presentAddressInput');
       {% if saved_address %}
       if (presentInput && !presentInput.value.trim()) {
-        presentInput.value = "{{ saved_address.flat|default:saved_address.full_text|escapejs }}";
+        presentInput.value = "{% if saved_address.flat %}{{ saved_address.flat|escapejs }}{% elif saved_address.full_text %}{{ saved_address.full_text|escapejs }}{% endif %}";
       }
       {% endif %}
     }
 
     function loadSavedAddress() {
       {% if saved_address %}
-      const serverAddr = "{{ saved_address.full_text|default:saved_address.street|escapejs }}";
-      const serverPin = "{{ saved_address.pincode|default:''|escapejs }}";
+      const serverAddr = "{% if saved_address.full_text %}{{ saved_address.full_text|escapejs }}{% elif saved_address.street %}{{ saved_address.street|escapejs }}{% elif saved_address.flat %}{{ saved_address.flat|escapejs }}{% endif %}";
+      const serverPin = "{% if saved_address.pincode %}{{ saved_address.pincode|escapejs }}{% endif %}";
       if (serverAddr) {
         if (serverPin) document.getElementById('pincodeInput').value = serverPin;
         const banner = document.getElementById('addressSavedBanner');

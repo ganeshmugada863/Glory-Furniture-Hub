@@ -17,10 +17,10 @@ class RoleBasedAccessMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # 0. Global forwarder to canonical production domain https://gloryfurniturehub.com
+        # 0. Global forwarder to canonical production domain https://www.gloryfurniturehub.com
         host = request.get_host().lower()
         if 'onrender.com' in host or 'hf.space' in host or 'huggingface.co' in host:
-            return redirect(f"https://gloryfurniturehub.com{request.get_full_path()}", permanent=True)
+            return redirect(f"https://www.gloryfurniturehub.com{request.get_full_path()}", permanent=True)
 
         path = request.path
 

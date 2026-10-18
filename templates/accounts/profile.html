@@ -597,7 +597,7 @@
                 </div>
 
                 <p class="text-xs text-on-surface leading-relaxed pt-0.5">
-                  {{ addr.full_text|default:addr.street|default:addr.flat }}
+                  {% if addr.full_text %}{{ addr.full_text }}{% elif addr.street %}{{ addr.street }}{% else %}{{ addr.flat|default:"" }}{% endif %}
                 </p>
 
                 {% if addr.pincode %}
