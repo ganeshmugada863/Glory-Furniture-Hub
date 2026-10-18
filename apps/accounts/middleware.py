@@ -102,6 +102,18 @@ class RoleBasedAccessMiddleware:
         is_admin_path = (path.startswith('/admin/') or path.startswith('/admin-portal')) and not path.startswith('/django-admin/')
         is_admin_auth_path = path in ['/admin/login/', '/admin/logout/']
 
+        def finalize_response(resp):
+            if is_admin_path or is_admin_auth_path:
+                resp['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
+            return resp
+
+        # Search Engine External Referrer Interceptor
+        referer = (request.META.get('HTTP_REFERER') or '').lower()
+        is_search_engine_referer = any(se in referer for se in ['google.', 'bing.', 'yahoo.', 'duckduckgo.', 'yandex.', 'baidu.'])
+
+        if (is_admin_path or is_admin_auth_path) and is_search_engine_referer and not request.is_admin_user:
+            return finalize_response(redirect('/'))
+
         if is_admin_path and not is_admin_auth_path:
             is_valid_admin = (
                 request.user.is_authenticated and (
@@ -112,16 +124,16 @@ class RoleBasedAccessMiddleware:
             )
             if not is_valid_admin:
                 if path.startswith('/admin-portal'):
-                    return HttpResponseForbidden("Access Denied: Admin privileges required.")
+                    return finalize_response(HttpResponseForbidden("Access Denied: Admin privileges required."))
                 if request.user.is_authenticated:
                     messages.error(request, 'Access Denied: Admin privileges required.')
-                    return redirect('home')
+                    return finalize_response(redirect('home'))
                 else:
-                    return redirect(f'/admin/login/?next={path}')
+                    return finalize_response(redirect(f'/admin/login/?next={path}'))
 
         # If admin visits /admin/login/ while already logged in, redirect to admin dashboard
         if path == '/admin/login/' and role == 'admin':
-            return redirect('admin_dashboard')
+            return finalize_response(redirect('admin_dashboard'))
 
         # 2. PROTECTED CUSTOMER ROUTES (Cart, Checkout, Booking, Profile) REQUIRE ACCOUNT
         if not is_authenticated_user and not is_auth_path and not is_static_or_api and not is_public_storefront and not is_payment_path:
@@ -135,5 +147,5 @@ class RoleBasedAccessMiddleware:
             return redirect('home')
 
         response = self.get_response(request)
-        return response
+        return finalize_response(response)
 

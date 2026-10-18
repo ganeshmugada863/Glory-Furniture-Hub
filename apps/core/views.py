@@ -134,45 +134,18 @@ def home_view(request):
 
 def root_view(request):
     """
-    Intelligent Root Router (/):
-    - Admins: Directly routed to /admin/dashboard/.
-    - Registered / Authenticated customers: Directly routed to home_view.
-    - First-time / Unauthenticated visitors: Routed to welcome_view.
+    Public Root Router (/):
+    Always serves the dedicated Welcome / Get Started entrance page as the public storefront front-door.
+    Never automatically redirects visitors or logged-in administrators into the admin dashboard.
     """
-    role = request.session.get('glory_role')
-
-    if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
-        return redirect('admin_dashboard')
-
-    user_email = request.session.get('glory_user_email')
-    user_name = request.session.get('glory_user_name')
-    is_registered = bool(
-        request.user.is_authenticated or 
-        user_email or 
-        (role == 'customer' and user_name) or
-        request.session.get('glory_is_registered')
-    )
-    if is_registered:
-        return home_view(request)
-
     return welcome_view(request)
 
 
 def welcome_view(request):
     """
     Dedicated Modern, Minimal & Premium Welcome / Get Started entrance page.
-    - Admins: Directly routed to /admin/dashboard/.
-    - If user is already authenticated/registered, intelligently routes them to existing Home flow.
-    - Otherwise renders the dedicated Welcome / Get Started entrance screen.
+    Renders the dedicated Welcome / Get Started entrance screen for all visitors.
     """
-    role = request.session.get('glory_role')
-    user_email = request.session.get('glory_user_email')
-    user_name = request.session.get('glory_user_name')
-    if role == 'admin' or (request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser)):
-        return redirect('admin_dashboard')
-    if request.user.is_authenticated or user_email or (role == 'customer' and user_name) or request.session.get('glory_is_registered'):
-        return redirect('home')
-
     from apps.core.models import PageCMSContent
     cms_obj = PageCMSContent.get_cms()
     return render(request, 'core/welcome.html', {'cms': cms_obj})
