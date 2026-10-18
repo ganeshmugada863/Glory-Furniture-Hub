@@ -254,7 +254,7 @@
         
         <!-- Brand Logo (Left) -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <a href="{% url 'home' %}" class="flex items-center gap-2 cursor-pointer select-none group">
+          <a href="{% url 'home_alt' %}" class="flex items-center gap-2 cursor-pointer select-none group">
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden flex-shrink-0 border border-[#7A533E]/40 group-hover:opacity-95 transition-opacity">
               <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture Hub" class="w-full h-full object-cover" onerror="this.style.display='none'" />
             </div>
@@ -502,7 +502,7 @@
         
         <!-- Brand Info (2 Cols) -->
         <div class="lg:col-span-2 space-y-4">
-          <a href="{% url 'home' %}" class="flex items-center gap-2.5 cursor-pointer select-none">
+          <a href="{% url 'home_alt' %}" class="flex items-center gap-2.5 cursor-pointer select-none">
             <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 shadow-2xs border border-gray-200">
               <img src="{% static 'images/logo.png' %}" alt="{{ WEBSITE_SETTINGS.website_name|default:SITE_NAME }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://res.cloudinary.com/dskull48t/image/upload/v1773489874/glory_furniture/glory_logo_hyderabad.png';" />
             </div>
@@ -613,7 +613,7 @@
         <div class="space-y-3">
           <h4 class="font-bold text-xs uppercase tracking-wider text-gray-950">Studio</h4>
           <ul class="space-y-2 text-xs text-gray-600">
-            <li><a href="{% url 'home' %}" class="hover:text-gray-950 transition-colors">Home</a></li>
+            <li><a href="{% url 'home_alt' %}" class="hover:text-gray-950 transition-colors">Home</a></li>
             <li><a href="{% url 'catalog' %}" class="hover:text-gray-950 transition-colors">Full Catalog</a></li>
             <li><a href="{% url 'custom_request' %}" class="hover:text-gray-950 transition-colors">Bespoke Carpentry</a></li>
             <li><a href="{% url 'contact_us' %}" class="hover:text-gray-950 transition-colors">Contact Workshop</a></li>
@@ -878,7 +878,7 @@
   <!-- 5. MOBILE BOTTOM NAVIGATION (Hidden on Desktop)           -->
   <!-- ========================================================= -->
   <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-2 py-1.5 flex items-center justify-around shadow-lg">
-    <a href="{% url 'home' %}" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold {% if request.path == '/' or request.path == '/home/' %}text-[#5C3D2E]{% else %}text-gray-500 hover:text-gray-900{% endif %}">
+    <a href="{% url 'home_alt' %}" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold {% if request.path == '/' or request.path == '/home/' %}text-[#5C3D2E]{% else %}text-gray-500 hover:text-gray-900{% endif %}">
       <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       <span>Home</span>
     </a>

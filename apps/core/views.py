@@ -135,9 +135,18 @@ def home_view(request):
 def root_view(request):
     """
     Public Root Router (/):
-    Always serves the dedicated Welcome / Get Started entrance page as the public storefront front-door.
-    Never automatically redirects visitors or logged-in administrators into the admin dashboard.
+    - If visitor is authenticated (customer or admin) or has an active session / registration,
+      renders home_view (the storefront catalog).
+    - If unauthenticated visitor, serves the dedicated Welcome / Get Started entrance page.
     """
+    is_authenticated = bool(
+        request.user.is_authenticated or 
+        request.session.get('glory_user_email') or 
+        request.session.get('glory_role') or
+        request.session.get('glory_is_registered')
+    )
+    if is_authenticated:
+        return home_view(request)
     return welcome_view(request)
 
 

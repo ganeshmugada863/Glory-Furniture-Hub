@@ -497,7 +497,7 @@
         const targetOrigin = isLocal ? window.location.origin : 'https://gloryfurniturehub.com';
 
         try {
-          localStorage.setItem('glory_auth_return_url', targetOrigin + '/');
+          localStorage.setItem('glory_auth_return_url', targetOrigin + '/home/');
         } catch(e) {}
 
         const callbackUrl = targetOrigin + '/accounts/supabase-callback/';

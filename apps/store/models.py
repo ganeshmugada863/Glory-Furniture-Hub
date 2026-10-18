@@ -81,6 +81,39 @@ DINING_CHAIR_SETS = {
     ],
 }
 
+SOFA_SUITE_SETS = {
+    'sofa_1': [
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80',
+    ],
+    'sofa_2': [
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=800&q=80',
+    ],
+    'sofa_3': [
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80',
+    ],
+    'sofa_311': [
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80',
+    ],
+    'sofa_lshape': [
+        'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80',
+    ],
+}
+
 BED_STORAGE_FALLBACKS = [
     BED_STORAGE_SETS['no_storage'][0],
     BED_STORAGE_SETS['box_storage'][0],
@@ -94,6 +127,14 @@ DINING_CHAIR_FALLBACKS = [
     DINING_CHAIR_SETS['chairs_4'][0],
     DINING_CHAIR_SETS['chairs_8'][0],
     DINING_CHAIR_SETS['chairs_12'][0],
+]
+
+SOFA_SUITE_FALLBACKS = [
+    SOFA_SUITE_SETS['sofa_3'][0],
+    SOFA_SUITE_SETS['sofa_1'][0],
+    SOFA_SUITE_SETS['sofa_2'][0],
+    SOFA_SUITE_SETS['sofa_311'][0],
+    SOFA_SUITE_SETS['sofa_lshape'][0],
 ]
 
 
@@ -282,22 +323,31 @@ class Product(models.Model):
             f = self.finishes if isinstance(self.finishes, dict) else {}
             d2 = int(f.get('dining_chair_2_delta', -14000))
             d4 = int(f.get('dining_chair_4_delta', -7000))
+            d6 = int(f.get('dining_chair_6_delta', 0))
             d8 = int(f.get('dining_chair_8_delta', 15000))
             d12 = int(f.get('dining_chair_12_delta', 35000))
 
             primary = self.primary_image.strip() if self.primary_image else ''
             
-            def get_dining_images(key):
-                base_imgs = list(DINING_CHAIR_SETS[key])
+            img_2_custom = f.get('dining_chair_2_image', '').strip()
+            img_4_custom = f.get('dining_chair_4_image', '').strip()
+            img_6_custom = f.get('dining_chair_6_image', '').strip()
+            img_8_custom = f.get('dining_chair_8_image', '').strip()
+            img_12_custom = f.get('dining_chair_12_image', '').strip()
+
+            def get_dining_images(key, custom_img):
+                base_imgs = list(DINING_CHAIR_SETS.get(key, []))
+                if custom_img:
+                    return [custom_img] + [im for im in base_imgs if im != custom_img][:3]
                 if primary and key == 'chairs_6' and primary not in base_imgs:
                     return [primary] + base_imgs[1:4]
                 return base_imgs
 
-            imgs_2 = get_dining_images('chairs_2')
-            imgs_4 = get_dining_images('chairs_4')
-            imgs_6 = get_dining_images('chairs_6')
-            imgs_8 = get_dining_images('chairs_8')
-            imgs_12 = get_dining_images('chairs_12')
+            imgs_2 = get_dining_images('chairs_2', img_2_custom)
+            imgs_4 = get_dining_images('chairs_4', img_4_custom)
+            imgs_6 = get_dining_images('chairs_6', img_6_custom)
+            imgs_8 = get_dining_images('chairs_8', img_8_custom)
+            imgs_12 = get_dining_images('chairs_12', img_12_custom)
 
             return [
                 {
@@ -362,14 +412,51 @@ class Product(models.Model):
                 }
             ]
         elif ctype == 'sofa':
+            f = self.finishes if isinstance(self.finishes, dict) else {}
+            default_d1 = -int(base * 0.55)
+            default_d2 = -int(base * 0.25)
+            default_d3 = 0
+            default_d311 = int(base * 0.65)
+            default_dlshape = int(base * 0.5)
+
+            d1 = int(f.get('sofa_1_delta', default_d1))
+            d2 = int(f.get('sofa_2_delta', default_d2))
+            d3 = int(f.get('sofa_3_delta', default_d3))
+            d311 = int(f.get('sofa_311_delta', default_d311))
+            dlshape = int(f.get('sofa_lshape_delta', default_dlshape))
+
+            primary = self.primary_image.strip() if self.primary_image else ''
+
+            img_1_custom = f.get('sofa_1_image', '').strip()
+            img_2_custom = f.get('sofa_2_image', '').strip()
+            img_3_custom = f.get('sofa_3_image', '').strip()
+            img_311_custom = f.get('sofa_311_image', '').strip()
+            img_lshape_custom = f.get('sofa_lshape_image', '').strip()
+
+            def get_sofa_images(key, custom_img):
+                base_imgs = list(SOFA_SUITE_SETS.get(key, []))
+                if custom_img:
+                    return [custom_img] + [im for im in base_imgs if im != custom_img][:3]
+                if primary and key == 'sofa_3' and primary not in base_imgs:
+                    return [primary] + base_imgs[1:4]
+                return base_imgs
+
+            imgs_1 = get_sofa_images('sofa_1', img_1_custom)
+            imgs_2 = get_sofa_images('sofa_2', img_2_custom)
+            imgs_3 = get_sofa_images('sofa_3', img_3_custom)
+            imgs_311 = get_sofa_images('sofa_311', img_311_custom)
+            imgs_lshape = get_sofa_images('sofa_lshape', img_lshape_custom)
+
             return [
                 {
                     'id': 'sofa_1',
                     'name': '1-Seater Armchair',
                     'subtitle': '34" W × 36" D × 32" H Lounge Chair',
                     'dimensions': '34" W × 36" D × 32" H',
-                    'delta': -int(base * 0.55),
-                    'price': max(1000, int(base * 0.45)),
+                    'delta': d1,
+                    'price': max(1000, base + d1),
+                    'image': imgs_1[0],
+                    'images': imgs_1,
                     'is_default': False
                 },
                 {
@@ -377,8 +464,10 @@ class Product(models.Model):
                     'name': '2-Seater Loveseat',
                     'subtitle': '58" W × 36" D × 34" H Loveseat',
                     'dimensions': '58" W × 36" D × 34" H',
-                    'delta': -int(base * 0.25),
-                    'price': max(1000, int(base * 0.75)),
+                    'delta': d2,
+                    'price': max(1000, base + d2),
+                    'image': imgs_2[0],
+                    'images': imgs_2,
                     'is_default': False
                 },
                 {
@@ -386,8 +475,10 @@ class Product(models.Model):
                     'name': '3-Seater Sovereign',
                     'subtitle': '84" W × 38" D × 34" H Couch',
                     'dimensions': '84" W × 38" D × 34" H',
-                    'delta': 0,
-                    'price': base,
+                    'delta': d3,
+                    'price': max(1000, base + d3),
+                    'image': imgs_3[0],
+                    'images': imgs_3,
                     'is_default': True
                 },
                 {
@@ -395,8 +486,10 @@ class Product(models.Model):
                     'name': '3+1+1 (5-Seater Royal Suite)',
                     'subtitle': '3-Seater Couch + 2 Armchairs',
                     'dimensions': '84" W + Two 34" W Armchairs',
-                    'delta': int(base * 0.65),
-                    'price': int(base * 1.65),
+                    'delta': d311,
+                    'price': max(1000, base + d311),
+                    'image': imgs_311[0],
+                    'images': imgs_311,
                     'is_default': False
                 },
                 {
@@ -404,8 +497,10 @@ class Product(models.Model):
                     'name': 'L-Shape Sectional Suite',
                     'subtitle': '104" W × 68" Chaise × 34" H',
                     'dimensions': '104" W × 68" D (Chaise) × 34" H',
-                    'delta': int(base * 0.5),
-                    'price': int(base * 1.5),
+                    'delta': dlshape,
+                    'price': max(1000, base + dlshape),
+                    'image': imgs_lshape[0],
+                    'images': imgs_lshape,
                     'is_default': False
                 }
             ]
@@ -497,16 +592,23 @@ class Product(models.Model):
 
         primary = self.primary_image.strip() if self.primary_image else ''
 
-        def get_bed_images(key):
-            base_imgs = list(BED_STORAGE_SETS[key])
+        img_no_custom = f.get('storage_no_image', '').strip()
+        img_box_custom = f.get('storage_box_image', '').strip()
+        img_drawer_custom = f.get('storage_drawer_image', '').strip()
+        img_hydraulic_custom = f.get('storage_hydraulic_image', '').strip()
+
+        def get_bed_images(key, custom_img):
+            base_imgs = list(BED_STORAGE_SETS.get(key, []))
+            if custom_img:
+                return [custom_img] + [im for im in base_imgs if im != custom_img][:3]
             if primary and key in ['no_storage', 'box_storage'] and primary not in base_imgs:
                 return [primary] + base_imgs[1:4]
             return base_imgs
 
-        imgs_no = get_bed_images('no_storage')
-        imgs_box = get_bed_images('box_storage')
-        imgs_drawers = get_bed_images('drawer_storage')
-        imgs_hydraulic = get_bed_images('hydraulic_storage')
+        imgs_no = get_bed_images('no_storage', img_no_custom)
+        imgs_box = get_bed_images('box_storage', img_box_custom)
+        imgs_drawers = get_bed_images('drawer_storage', img_drawer_custom)
+        imgs_hydraulic = get_bed_images('hydraulic_storage', img_hydraulic_custom)
 
         def fmt_delta(d):
             if d == 0:

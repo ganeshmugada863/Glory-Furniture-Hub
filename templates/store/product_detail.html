@@ -581,7 +581,7 @@
               {% for s in product.size_config_list %}
               <button 
                 type="button" 
-                onclick="selectSize(this, '{{ s.name|escapejs }}', {{ s.delta }}, '{{ s.dimensions|escapejs }}')" 
+                onclick="selectSize(this, '{{ s.name|escapejs }}', {{ s.delta }}, '{{ s.dimensions|escapejs }}', [{% for im in s.images %}'{{ im|escapejs }}'{% if not forloop.last %},{% endif %}{% endfor %}])" 
                 class="size-opt-btn p-2.5 text-left rounded-xl border {% if s.is_default %}border-2 border-[#2d1e18] shadow-sm bg-surface-container-lowest{% else %}border-outline-variant/60 bg-surface-container-lowest hover:border-[#2d1e18]{% endif %} transition-all focus:outline-none cursor-pointer"
               >
                 <div class="flex items-center justify-between">
@@ -1042,7 +1042,7 @@
             {% endfor %}
           {% endif %}
         {% endfor %}
-      {% elif product.category_type == 'dining' %}
+      {% elif product.category_type == 'dining' or product.category_type == 'sofa' %}
         {% for c in product.size_config_list %}
           {% if c.is_default %}
             {% for im in c.images %}
@@ -1144,7 +1144,7 @@
       updatePriceDisplay();
     }
 
-    function selectSize(btn, sizeName, priceDelta, dimensions) {
+    function selectSize(btn, sizeName, priceDelta, dimensions, images) {
       document.querySelectorAll('.size-opt-btn').forEach(b => {
         b.classList.remove('border-2', 'border-amber-500', 'bg-amber-100/70', 'shadow-xs', 'ring-1', 'ring-amber-400');
         b.classList.add('border', 'border-outline-variant/60', 'bg-surface-container-lowest');
@@ -1166,6 +1166,11 @@
       sizePriceAdjustment = priceDelta || 0;
       const label = document.getElementById('selectedSizeLabel');
       if (label) label.textContent = sizeName;
+
+      if (images && images.length) {
+        updateGalleryPhotos(images);
+      }
+
       updatePriceDisplay();
     }
 

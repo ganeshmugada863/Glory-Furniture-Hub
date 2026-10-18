@@ -139,13 +139,6 @@ class RoleBasedAccessMiddleware:
         if not is_authenticated_user and not is_auth_path and not is_static_or_api and not is_public_storefront and not is_payment_path:
             return redirect(f'/register/?next={path}')
 
-        # 3. IF AUTHENTICATED USER VISITS REGISTER/LOGIN, REDIRECT TO HOME (UNLESS EXPLICIT NEXT)
-        if is_authenticated_user and path in ['/login/', '/register/']:
-            next_url = request.GET.get('next')
-            if next_url:
-                return redirect(next_url)
-            return redirect('home')
-
         response = self.get_response(request)
         return finalize_response(response)
 

@@ -121,9 +121,9 @@
         const result = await res.json();
         if (result.status === 'success') {
           document.getElementById('status-msg').innerText = "Success! Redirecting to Glory Furniture Home...";
-          let returnUrl = localStorage.getItem('glory_auth_return_url') || result.redirect_url || '/';
+          let returnUrl = localStorage.getItem('glory_auth_return_url') || result.redirect_url || '/home/';
           if (returnUrl.includes('onrender.com') || returnUrl.includes('hf.space')) {
-            returnUrl = 'https://gloryfurniturehub.com/';
+            returnUrl = 'https://gloryfurniturehub.com/home/';
           }
           try { localStorage.removeItem('glory_auth_return_url'); } catch (e) {}
           setTimeout(() => {
@@ -134,8 +134,8 @@
         }
       } catch (err) {
         console.error("Backend login error:", err);
-        document.getElementById('status-msg').innerHTML = `<span class="text-amber-800 font-bold">Connection finalized.</span><br/><a href="/" class="mt-3 inline-block px-4 py-2 bg-[#5C3D2E] text-white text-xs rounded-xl font-bold">Continue to Storefront →</a>`;
-        setTimeout(() => { window.location.href = '/'; }, 2000);
+        document.getElementById('status-msg').innerHTML = `<span class="text-amber-800 font-bold">Connection finalized.</span><br/><a href="/home/" class="mt-3 inline-block px-4 py-2 bg-[#5C3D2E] text-white text-xs rounded-xl font-bold">Continue to Storefront →</a>`;
+        setTimeout(() => { window.location.href = '/home/'; }, 2000);
       }
     }
 

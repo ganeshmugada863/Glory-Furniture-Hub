@@ -155,10 +155,30 @@
                   data-storage-box-delta="{{ p.finishes.box_storage_delta|default:'0' }}"
                   data-storage-drawer-delta="{{ p.finishes.drawer_storage_delta|default:'5500' }}"
                   data-storage-hydraulic-delta="{{ p.finishes.hydraulic_storage_delta|default:'11000' }}"
+                  data-storage-no-img="{{ p.finishes.storage_no_image|default:'' }}"
+                  data-storage-box-img="{{ p.finishes.storage_box_image|default:'' }}"
+                  data-storage-drawer-img="{{ p.finishes.storage_drawer_image|default:'' }}"
+                  data-storage-hydraulic-img="{{ p.finishes.storage_hydraulic_image|default:'' }}"
                   data-dining-chair-2="{{ p.finishes.dining_chair_2_delta|default:'-14000' }}"
                   data-dining-chair-4="{{ p.finishes.dining_chair_4_delta|default:'-7000' }}"
+                  data-dining-chair-6="{{ p.finishes.dining_chair_6_delta|default:'0' }}"
                   data-dining-chair-8="{{ p.finishes.dining_chair_8_delta|default:'15000' }}"
                   data-dining-chair-12="{{ p.finishes.dining_chair_12_delta|default:'35000' }}"
+                  data-dining-chair-2-img="{{ p.finishes.dining_chair_2_image|default:'' }}"
+                  data-dining-chair-4-img="{{ p.finishes.dining_chair_4_image|default:'' }}"
+                  data-dining-chair-6-img="{{ p.finishes.dining_chair_6_image|default:'' }}"
+                  data-dining-chair-8-img="{{ p.finishes.dining_chair_8_image|default:'' }}"
+                  data-dining-chair-12-img="{{ p.finishes.dining_chair_12_image|default:'' }}"
+                  data-sofa-1-delta="{{ p.finishes.sofa_1_delta|default:'-15000' }}"
+                  data-sofa-2-delta="{{ p.finishes.sofa_2_delta|default:'-8000' }}"
+                  data-sofa-3-delta="{{ p.finishes.sofa_3_delta|default:'0' }}"
+                  data-sofa-311-delta="{{ p.finishes.sofa_311_delta|default:'18000' }}"
+                  data-sofa-lshape-delta="{{ p.finishes.sofa_lshape_delta|default:'14000' }}"
+                  data-sofa-1-img="{{ p.finishes.sofa_1_image|default:'' }}"
+                  data-sofa-2-img="{{ p.finishes.sofa_2_image|default:'' }}"
+                  data-sofa-3-img="{{ p.finishes.sofa_3_image|default:'' }}"
+                  data-sofa-311-img="{{ p.finishes.sofa_311_image|default:'' }}"
+                  data-sofa-lshape-img="{{ p.finishes.sofa_lshape_image|default:'' }}"
                   class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-[#5C3D2E] text-[#5C3D2E] hover:text-white text-xs font-black transition-all border border-amber-200 shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1"
                   title="Edit Product Details"
                 >
@@ -274,36 +294,136 @@
             <p class="text-[10px] text-gray-500">Includes engineered teak posture slats, anti-creak silent joints, and full termite-treated framework.</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
-              Storage Type Price Adjustments (₹ Delta relative to base price)
-            </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="add_storage_cards_grid">
-              <div id="add_bed_card_no" onclick="selectAdminStorageCard('add', 'no', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">Without Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_no_delta" id="add_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. -5000 (Slot 1)</span>
+          <!-- Bed Storage Dropdown Selector -->
+          <div class="bg-white p-3 rounded-xl border border-amber-300 shadow-2xs space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+                <span>📦 Storage Name &amp; Mechanism:</span>
+                <span class="text-[10px] font-normal text-gray-500">(Choose from dropdown to filter or view all)</span>
+              </label>
+              <select id="add_bed_storage_select" onchange="filterAdminVariantCard('add', 'bed', this.value)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold text-gray-900 bg-amber-50/50 focus:outline-none focus:border-[#5C3D2E]">
+                <option value="all">👁️ Show All Storage Types</option>
+                <option value="no">🛏️ Without Storage (Plain Posture Platform)</option>
+                <option value="box">📦 Box Storage (Solid Plank Lift Cavity)</option>
+                <option value="drawer">🗄️ Drawer Storage (Side Sliding Drawers)</option>
+                <option value="hydraulic">⚙️ Hydraulic Storage (Gas-Lift Pistons)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-500">Provide pricing adjustment and upload individual photo for each storage option below:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="add_storage_cards_grid">
+            <!-- Without Storage -->
+            <div id="add_bed_card_no" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🛏️ Without Storage</span>
+                  <span class="block text-[10px] text-gray-500">Plain Posture Slat Platform</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-gray-100 text-gray-700">No Cavity</span>
               </div>
-              <div id="add_bed_card_box" onclick="selectAdminStorageCard('add', 'box', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">Box Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_box_delta" id="add_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. 0 (Standard)</span>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_no_delta" id="add_storage_no" value="-5000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
               </div>
-              <div id="add_bed_card_drawer" onclick="selectAdminStorageCard('add', 'drawer', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">Drawer Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_drawer_delta" id="add_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. +5500 (Slot 3)</span>
-              </div>
-              <div id="add_bed_card_hydraulic" onclick="selectAdminStorageCard('add', 'hydraulic', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
-                <span class="block text-[10px] font-black text-amber-950">Hydraulic Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_hydraulic_delta" id="add_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">e.g. +11000 (Slot 2)</span>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Without Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_storage_no_preview" src="" alt="Without Storage" class="w-full h-full object-cover hidden" />
+                    <span id="add_storage_no_placeholder" class="text-xs text-gray-400 text-center">🛏️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_no_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'storage_no')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_no_url" id="add_storage_no_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'storage_no')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
               </div>
             </div>
-            <p id="add_bed_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
-              <span>💡</span>
-              <span><strong>Hydraulic Storage Selected:</strong> Upload bed open at 45° with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, selecting Hydraulic Storage instantly displays all 4 hydraulic photos!</span>
-            </p>
+
+            <!-- Box Storage -->
+            <div id="add_bed_card_box" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">📦 Box Storage</span>
+                  <span class="block text-[10px] text-gray-500">Solid Plank Lift Underbed Cavity</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">Standard</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_box_delta" id="add_storage_box" value="0" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Box Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_storage_box_preview" src="" alt="Box Storage" class="w-full h-full object-cover hidden" />
+                    <span id="add_storage_box_placeholder" class="text-xs text-gray-400 text-center">📦</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_box_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'storage_box')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_box_url" id="add_storage_box_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'storage_box')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drawer Storage -->
+            <div id="add_bed_card_drawer" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🗄️ Drawer Storage</span>
+                  <span class="block text-[10px] text-gray-500">4 Heavy-Duty Sliding Side Drawers</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">Side Drawers</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_drawer_delta" id="add_storage_drawer" value="5500" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Drawer Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_storage_drawer_preview" src="" alt="Drawer Storage" class="w-full h-full object-cover hidden" />
+                    <span id="add_storage_drawer_placeholder" class="text-xs text-gray-400 text-center">🗄️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_drawer_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'storage_drawer')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_drawer_url" id="add_storage_drawer_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'storage_drawer')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hydraulic Storage -->
+            <div id="add_bed_card_hydraulic" class="rounded-xl p-3 bg-amber-50/80 border-2 border-amber-500 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-amber-950">⚙️ Hydraulic Storage</span>
+                  <span class="block text-[10px] text-amber-800">Effortless German Gas-Lift Struts</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Gas-Lift</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-950">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_hydraulic_delta" id="add_storage_hydraulic" value="11000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-600" />
+              </div>
+              <div class="pt-2 border-t border-amber-200 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Hydraulic Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-white border border-dashed border-amber-400 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_storage_hydraulic_preview" src="" alt="Hydraulic Storage" class="w-full h-full object-cover hidden" />
+                    <span id="add_storage_hydraulic_placeholder" class="text-xs text-amber-700 text-center">⚙️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_hydraulic_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'storage_hydraulic')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_hydraulic_url" id="add_storage_hydraulic_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'storage_hydraulic')" class="w-full px-2 py-1 rounded-lg border border-amber-300 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -317,49 +437,336 @@
             <p class="text-[10px] text-gray-500">Handcrafted solid Burma teak planks with seamless edge joinery and heat-resistant lacquer.</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
-              Chair Suite Price Adjustments (₹ Delta relative to 6-Chairs standard price)
-            </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="add_dining_cards_grid">
-              <div id="add_dining_card_2" onclick="selectAdminDiningCard('add', '2', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">2 Chairs Suite</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_2_delta" id="add_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">36"×36" Table (-₹14,000)</span>
+          <!-- Dining Chair Dropdown Selector -->
+          <div class="bg-white p-3 rounded-xl border border-amber-300 shadow-2xs space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+                <span>🪑 Dining Chairs / Seater Options:</span>
+                <span class="text-[10px] font-normal text-gray-500">(Choose from dropdown to filter or view all)</span>
+              </label>
+              <select id="add_dining_chair_select" onchange="filterAdminVariantCard('add', 'dining', this.value)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold text-gray-900 bg-amber-50/50 focus:outline-none focus:border-[#5C3D2E]">
+                <option value="all">👁️ Show All Seater Options (2, 4, 6, 8, 12 Chairs)</option>
+                <option value="2">🪑 2 Chairs Suite (36" × 36" Bistro)</option>
+                <option value="4">🪑 4 Chairs Suite (48" × 36" Family)</option>
+                <option value="6">🪑 6 Chairs Suite (72" × 38" Standard)</option>
+                <option value="8">🪑 8 Chairs Grand Suite (96" × 42" Manor)</option>
+                <option value="12">👑 12 Chairs Royal Feast (132" × 46" Banquet)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-500">Configure pricing adjustment and upload individual photo for 2, 4, 6, 8, or 12 chairs below:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="add_dining_cards_grid">
+            <!-- 2 Chairs -->
+            <div id="add_dining_card_2" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🪑 2 Chairs Suite</span>
+                  <span class="block text-[10px] text-gray-500">36" × 36" Bistro / Cafe Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">2 Chairs</span>
               </div>
-              <div id="add_dining_card_4" onclick="selectAdminDiningCard('add', '4', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">4 Chairs Suite</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_4_delta" id="add_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">48"×36" Table (-₹7,000)</span>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta relative to 6 chairs):</label>
+                <input type="number" name="dining_chair_2_delta" id="add_dining_2" value="-14000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
               </div>
-              <div id="add_dining_card_8" onclick="selectAdminDiningCard('add', '8', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">8 Chairs Grand Suite</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_8_delta" id="add_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">96"×42" Table (+₹15,000)</span>
-              </div>
-              <div id="add_dining_card_12" onclick="selectAdminDiningCard('add', '12', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
-                <span class="block text-[10px] font-black text-amber-950">12 Chairs Royal Feast</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_12_delta" id="add_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">132"×46" Table (+₹35,000)</span>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 2 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_dining_2_preview" src="" alt="2 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="add_dining_2_placeholder" class="text-xs text-gray-400 text-center">🪑 2</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_2_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'dining_2')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_2_url" id="add_dining_2_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'dining_2')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
               </div>
             </div>
-            <p id="add_dining_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
-              <span>💡</span>
-              <span><strong>12 Chairs Royal Feast Selected:</strong> Upload 12-Chairs grand banquet setup photos in Photo Slots. In customer storefront, selecting 12 Chairs instantly displays all 4 twelve-chair photos!</span>
-            </p>
+
+            <!-- 4 Chairs -->
+            <div id="add_dining_card_4" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🪑 4 Chairs Suite</span>
+                  <span class="block text-[10px] text-gray-500">48" × 36" Compact Family Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">4 Chairs</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="dining_chair_4_delta" id="add_dining_4" value="-7000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 4 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_dining_4_preview" src="" alt="4 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="add_dining_4_placeholder" class="text-xs text-gray-400 text-center">🪑 4</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_4_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'dining_4')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_4_url" id="add_dining_4_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'dining_4')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Chairs (Standard Suite) -->
+            <div id="add_dining_card_6" class="rounded-xl p-3 bg-amber-50/70 border-2 border-amber-500 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-amber-950">🪑 6 Chairs (Standard Suite)</span>
+                  <span class="block text-[10px] text-amber-800">72" × 38" Standard Dining Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Standard</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-950">Price Adjustment (₹ Delta relative to base):</label>
+                <input type="number" name="dining_chair_6_delta" id="add_dining_6" value="0" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-600" />
+              </div>
+              <div class="pt-2 border-t border-amber-200 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 6 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-white border border-dashed border-amber-400 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_dining_6_preview" src="" alt="6 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="add_dining_6_placeholder" class="text-xs text-amber-700 text-center">🪑 6</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_6_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'dining_6')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_6_url" id="add_dining_6_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'dining_6')" class="w-full px-2 py-1 rounded-lg border border-amber-300 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8 Chairs -->
+            <div id="add_dining_card_8" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🪑 8 Chairs Grand Suite</span>
+                  <span class="block text-[10px] text-gray-500">96" × 42" Manor Banquet Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">8 Chairs</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="dining_chair_8_delta" id="add_dining_8" value="15000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 8 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_dining_8_preview" src="" alt="8 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="add_dining_8_placeholder" class="text-xs text-gray-400 text-center">🪑 8</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_8_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'dining_8')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_8_url" id="add_dining_8_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'dining_8')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 12 Chairs -->
+            <div id="add_dining_card_12" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">👑 12 Chairs Royal Feast</span>
+                  <span class="block text-[10px] text-gray-500">132" × 46" Royal Banquet Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">12 Chairs</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="dining_chair_12_delta" id="add_dining_12" value="35000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 12 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_dining_12_preview" src="" alt="12 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="add_dining_12_placeholder" class="text-xs text-gray-400 text-center">👑 12</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_12_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'dining_12')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_12_url" id="add_dining_12_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'dining_12')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- SOFA PANEL -->
-        <div id="add_sofa_panel" class="space-y-2 hidden">
-          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
-            <span class="font-bold text-gray-800">🛋️ Supported Configurations:</span>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3-Seater Sovereign:</strong> 84"W × 38"D × 34"H</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3+1+1 (5-Seater):</strong> 84"W Couch + 2 Armchairs</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>L-Shape Sectional:</strong> 104"W × 68" Chaise</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>2-Seater Loveseat:</strong> 58"W × 36"D × 34"H</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>1-Seater Lounge:</strong> 34"W × 36"D × 32"H</div>
+        <div id="add_sofa_panel" class="space-y-3 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+            <p class="text-[11px] font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+              <span>🛋️ Supported Sofa Suite Seating Configurations:</span>
+              <span class="text-[#5C3D2E] font-black">1-Seater &bull; 2-Seater Loveseat &bull; 3-Seater Sovereign &bull; 3+1+1 Suite &bull; L-Shape Sectional</span>
+            </p>
+            <p class="text-[10px] text-gray-500">Solid teak internal frame, multi-density high-resilience foam cushioning, and premium upholstery fabrics.</p>
+          </div>
+
+          <!-- Sofa Dropdown Selector -->
+          <div class="bg-white p-3 rounded-xl border border-amber-300 shadow-2xs space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+                <span>🛋️ Sofa Configuration / Suite:</span>
+                <span class="text-[10px] font-normal text-gray-500">(Choose from dropdown to filter or view all)</span>
+              </label>
+              <select id="add_sofa_select" onchange="filterAdminVariantCard('add', 'sofa', this.value)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold text-gray-900 bg-amber-50/50 focus:outline-none focus:border-[#5C3D2E]">
+                <option value="all">👁️ Show All Sofa Configurations (1-Seater, 2-Seater, 3-Seater, 3+1+1, L-Shape)</option>
+                <option value="1">🛋️ 1-Seater Armchair (34"W × 36"D × 32"H)</option>
+                <option value="2">🛋️ 2-Seater Loveseat (58"W × 36"D × 34"H)</option>
+                <option value="3">🛋️ 3-Seater Sovereign (84"W × 38"D × 34"H - Standard)</option>
+                <option value="311">👑 3+1+1 Royal Suite (5-Seater: Couch + 2 Armchairs)</option>
+                <option value="lshape">📐 L-Shape Sectional Suite (104"W × 68" Chaise)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-500">Configure pricing adjustments and upload individual photo for each sofa suite option below:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="add_sofa_cards_grid">
+            <!-- 1-Seater Armchair -->
+            <div id="add_sofa_card_1" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🛋️ 1-Seater Armchair</span>
+                  <span class="block text-[10px] text-gray-500">34"W × 36"D × 32"H Lounge Chair</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">1-Seater</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta relative to 3-seater):</label>
+                <input type="number" name="sofa_1_delta" id="add_sofa_1" value="-15000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 1-Seater:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_sofa_1_preview" src="" alt="1-Seater" class="w-full h-full object-cover hidden" />
+                    <span id="add_sofa_1_placeholder" class="text-xs text-gray-400 text-center">🛋️ 1</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_1_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'sofa_1')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_1_url" id="add_sofa_1_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'sofa_1')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2-Seater Loveseat -->
+            <div id="add_sofa_card_2" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🛋️ 2-Seater Loveseat</span>
+                  <span class="block text-[10px] text-gray-500">58"W × 36"D × 34"H Compact Couch</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">2-Seater</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="sofa_2_delta" id="add_sofa_2" value="-8000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 2-Seater:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_sofa_2_preview" src="" alt="2-Seater" class="w-full h-full object-cover hidden" />
+                    <span id="add_sofa_2_placeholder" class="text-xs text-gray-400 text-center">🛋️ 2</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_2_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'sofa_2')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_2_url" id="add_sofa_2_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'sofa_2')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3-Seater Sovereign (Standard) -->
+            <div id="add_sofa_card_3" class="rounded-xl p-3 bg-amber-50/70 border-2 border-amber-500 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-amber-950">🛋️ 3-Seater Sovereign (Standard)</span>
+                  <span class="block text-[10px] text-amber-800">84"W × 38"D × 34"H Primary Couch</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Standard</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-950">Price Adjustment (₹ Delta relative to base):</label>
+                <input type="number" name="sofa_3_delta" id="add_sofa_3" value="0" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-600" />
+              </div>
+              <div class="pt-2 border-t border-amber-200 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 3-Seater:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-white border border-dashed border-amber-400 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_sofa_3_preview" src="" alt="3-Seater" class="w-full h-full object-cover hidden" />
+                    <span id="add_sofa_3_placeholder" class="text-xs text-amber-700 text-center">🛋️ 3</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_3_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'sofa_3')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_3_url" id="add_sofa_3_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'sofa_3')" class="w-full px-2 py-1 rounded-lg border border-amber-300 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3+1+1 (5-Seater Royal Suite) -->
+            <div id="add_sofa_card_311" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">👑 3+1+1 Royal Suite (5-Seater)</span>
+                  <span class="block text-[10px] text-gray-500">3-Seater Couch + 2 Individual Armchairs</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">5-Seater Suite</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="sofa_311_delta" id="add_sofa_311" value="18000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 3+1+1 Suite:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_sofa_311_preview" src="" alt="3+1+1 Suite" class="w-full h-full object-cover hidden" />
+                    <span id="add_sofa_311_placeholder" class="text-xs text-gray-400 text-center">👑 3+1+1</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_311_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'sofa_311')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_311_url" id="add_sofa_311_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'sofa_311')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- L-Shape Sectional Suite -->
+            <div id="add_sofa_card_lshape" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">📐 L-Shape Sectional Suite</span>
+                  <span class="block text-[10px] text-gray-500">104"W × 68" Deep Chaise Sectional</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">L-Sectional</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="sofa_lshape_delta" id="add_sofa_lshape" value="14000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for L-Shape:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="add_sofa_lshape_preview" src="" alt="L-Shape Sectional" class="w-full h-full object-cover hidden" />
+                    <span id="add_sofa_lshape_placeholder" class="text-xs text-gray-400 text-center">📐 L-Shape</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_lshape_file" accept="image/*" onchange="previewVariantFileSlot(this, 'add', 'sofa_lshape')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_lshape_url" id="add_sofa_lshape_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'add', 'sofa_lshape')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -696,36 +1103,136 @@
             <p class="text-[10px] text-gray-500">Includes engineered teak posture slats, anti-creak silent joints, and full termite-treated framework.</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
-              Storage Type Price Adjustments (₹ Delta relative to base price)
-            </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="edit_storage_cards_grid">
-              <div id="edit_bed_card_no" onclick="selectAdminStorageCard('edit', 'no', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">Without Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_no_delta" id="edit_storage_no" value="-5000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. -5000 (Slot 1)</span>
+          <!-- Bed Storage Dropdown Selector -->
+          <div class="bg-white p-3 rounded-xl border border-amber-300 shadow-2xs space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+                <span>📦 Storage Name &amp; Mechanism:</span>
+                <span class="text-[10px] font-normal text-gray-500">(Choose from dropdown to filter or view all)</span>
+              </label>
+              <select id="edit_bed_storage_select" onchange="filterAdminVariantCard('edit', 'bed', this.value)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold text-gray-900 bg-amber-50/50 focus:outline-none focus:border-[#5C3D2E]">
+                <option value="all">👁️ Show All Storage Types</option>
+                <option value="no">🛏️ Without Storage (Plain Posture Platform)</option>
+                <option value="box">📦 Box Storage (Solid Plank Lift Cavity)</option>
+                <option value="drawer">🗄️ Drawer Storage (Side Sliding Drawers)</option>
+                <option value="hydraulic">⚙️ Hydraulic Storage (Gas-Lift Pistons)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-500">Provide pricing adjustment and upload individual photo for each storage option below:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="edit_storage_cards_grid">
+            <!-- Without Storage -->
+            <div id="edit_bed_card_no" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🛏️ Without Storage</span>
+                  <span class="block text-[10px] text-gray-500">Plain Posture Slat Platform</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-gray-100 text-gray-700">No Cavity</span>
               </div>
-              <div id="edit_bed_card_box" onclick="selectAdminStorageCard('edit', 'box', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">Box Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_box_delta" id="edit_storage_box" value="0" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. 0 (Standard)</span>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_no_delta" id="edit_storage_no" value="-5000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
               </div>
-              <div id="edit_bed_card_drawer" onclick="selectAdminStorageCard('edit', 'drawer', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">Drawer Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_drawer_delta" id="edit_storage_drawer" value="5500" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">e.g. +5500 (Slot 3)</span>
-              </div>
-              <div id="edit_bed_card_hydraulic" onclick="selectAdminStorageCard('edit', 'hydraulic', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
-                <span class="block text-[10px] font-black text-amber-950">Hydraulic Storage</span>
-                <input type="number" onclick="event.stopPropagation()" name="storage_hydraulic_delta" id="edit_storage_hydraulic" value="11000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">e.g. +11000 (Slot 2)</span>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Without Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_storage_no_preview" src="" alt="Without Storage" class="w-full h-full object-cover hidden" />
+                    <span id="edit_storage_no_placeholder" class="text-xs text-gray-400 text-center">🛏️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_no_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'storage_no')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_no_url" id="edit_storage_no_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'storage_no')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
               </div>
             </div>
-            <p id="edit_bed_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
-              <span>💡</span>
-              <span><strong>Hydraulic Storage Selected:</strong> Upload bed open at 45° with hydraulic gas lift in <strong>Photo Slot 2</strong>. In customer storefront, selecting Hydraulic Storage instantly displays all 4 hydraulic photos!</span>
-            </p>
+
+            <!-- Box Storage -->
+            <div id="edit_bed_card_box" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">📦 Box Storage</span>
+                  <span class="block text-[10px] text-gray-500">Solid Plank Lift Underbed Cavity</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">Standard</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_box_delta" id="edit_storage_box" value="0" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Box Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_storage_box_preview" src="" alt="Box Storage" class="w-full h-full object-cover hidden" />
+                    <span id="edit_storage_box_placeholder" class="text-xs text-gray-400 text-center">📦</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_box_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'storage_box')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_box_url" id="edit_storage_box_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'storage_box')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Drawer Storage -->
+            <div id="edit_bed_card_drawer" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🗄️ Drawer Storage</span>
+                  <span class="block text-[10px] text-gray-500">4 Heavy-Duty Sliding Side Drawers</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">Side Drawers</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_drawer_delta" id="edit_storage_drawer" value="5500" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Drawer Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_storage_drawer_preview" src="" alt="Drawer Storage" class="w-full h-full object-cover hidden" />
+                    <span id="edit_storage_drawer_placeholder" class="text-xs text-gray-400 text-center">🗄️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_drawer_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'storage_drawer')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_drawer_url" id="edit_storage_drawer_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'storage_drawer')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hydraulic Storage -->
+            <div id="edit_bed_card_hydraulic" class="rounded-xl p-3 bg-amber-50/80 border-2 border-amber-500 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-amber-950">⚙️ Hydraulic Storage</span>
+                  <span class="block text-[10px] text-amber-800">Effortless German Gas-Lift Struts</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Gas-Lift</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-950">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="storage_hydraulic_delta" id="edit_storage_hydraulic" value="11000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-600" />
+              </div>
+              <div class="pt-2 border-t border-amber-200 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for Hydraulic Storage:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-white border border-dashed border-amber-400 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_storage_hydraulic_preview" src="" alt="Hydraulic Storage" class="w-full h-full object-cover hidden" />
+                    <span id="edit_storage_hydraulic_placeholder" class="text-xs text-amber-700 text-center">⚙️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="storage_hydraulic_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'storage_hydraulic')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="storage_hydraulic_url" id="edit_storage_hydraulic_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'storage_hydraulic')" class="w-full px-2 py-1 rounded-lg border border-amber-300 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -739,49 +1246,336 @@
             <p class="text-[10px] text-gray-500">Handcrafted solid Burma teak planks with seamless edge joinery and heat-resistant lacquer.</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1.5">
-              Chair Suite Price Adjustments (₹ Delta relative to 6-Chairs standard price)
-            </label>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="edit_dining_cards_grid">
-              <div id="edit_dining_card_2" onclick="selectAdminDiningCard('edit', '2', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">2 Chairs Suite</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_2_delta" id="edit_dining_2" value="-14000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">36"×36" Table (-₹14,000)</span>
+          <!-- Dining Chair Dropdown Selector -->
+          <div class="bg-white p-3 rounded-xl border border-amber-300 shadow-2xs space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+                <span>🪑 Dining Chairs / Seater Options:</span>
+                <span class="text-[10px] font-normal text-gray-500">(Choose from dropdown to filter or view all)</span>
+              </label>
+              <select id="edit_dining_chair_select" onchange="filterAdminVariantCard('edit', 'dining', this.value)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold text-gray-900 bg-amber-50/50 focus:outline-none focus:border-[#5C3D2E]">
+                <option value="all">👁️ Show All Seater Options (2, 4, 6, 8, 12 Chairs)</option>
+                <option value="2">🪑 2 Chairs Suite (36" × 36" Bistro)</option>
+                <option value="4">🪑 4 Chairs Suite (48" × 36" Family)</option>
+                <option value="6">🪑 6 Chairs Suite (72" × 38" Standard)</option>
+                <option value="8">🪑 8 Chairs Grand Suite (96" × 42" Manor)</option>
+                <option value="12">👑 12 Chairs Royal Feast (132" × 46" Banquet)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-500">Configure pricing adjustment and upload individual photo for 2, 4, 6, 8, or 12 chairs below:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="edit_dining_cards_grid">
+            <!-- 2 Chairs -->
+            <div id="edit_dining_card_2" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🪑 2 Chairs Suite</span>
+                  <span class="block text-[10px] text-gray-500">36" × 36" Bistro / Cafe Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">2 Chairs</span>
               </div>
-              <div id="edit_dining_card_4" onclick="selectAdminDiningCard('edit', '4', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">4 Chairs Suite</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_4_delta" id="edit_dining_4" value="-7000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">48"×36" Table (-₹7,000)</span>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta relative to 6 chairs):</label>
+                <input type="number" name="dining_chair_2_delta" id="edit_dining_2" value="-14000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
               </div>
-              <div id="edit_dining_card_8" onclick="selectAdminDiningCard('edit', '8', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-white border border-gray-200 hover:border-amber-400">
-                <span class="block text-[10px] font-bold text-gray-700">8 Chairs Grand Suite</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_8_delta" id="edit_dining_8" value="15000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-gray-400 mt-0.5">96"×42" Table (+₹15,000)</span>
-              </div>
-              <div id="edit_dining_card_12" onclick="selectAdminDiningCard('edit', '12', event)" class="cursor-pointer transition-all rounded-xl p-2.5 bg-amber-100/70 border-2 border-amber-500 shadow-xs ring-1 ring-amber-400">
-                <span class="block text-[10px] font-black text-amber-950">12 Chairs Royal Feast</span>
-                <input type="number" onclick="event.stopPropagation()" name="dining_chair_12_delta" id="edit_dining_12" value="35000" class="w-full mt-1 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-500" />
-                <span class="block text-[9px] text-amber-800 font-bold mt-0.5">132"×46" Table (+₹35,000)</span>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 2 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_dining_2_preview" src="" alt="2 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="edit_dining_2_placeholder" class="text-xs text-gray-400 text-center">🪑 2</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_2_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'dining_2')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_2_url" id="edit_dining_2_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'dining_2')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
               </div>
             </div>
-            <p id="edit_dining_photo_link_note" class="text-[10px] text-amber-900 mt-2 bg-amber-100/70 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5">
-              <span>💡</span>
-              <span><strong>12 Chairs Royal Feast Selected:</strong> Upload 12-Chairs grand banquet setup photos in Photo Slots. In customer storefront, selecting 12 Chairs instantly displays all 4 twelve-chair photos!</span>
-            </p>
+
+            <!-- 4 Chairs -->
+            <div id="edit_dining_card_4" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🪑 4 Chairs Suite</span>
+                  <span class="block text-[10px] text-gray-500">48" × 36" Compact Family Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">4 Chairs</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="dining_chair_4_delta" id="edit_dining_4" value="-7000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 4 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_dining_4_preview" src="" alt="4 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="edit_dining_4_placeholder" class="text-xs text-gray-400 text-center">🪑 4</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_4_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'dining_4')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_4_url" id="edit_dining_4_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'dining_4')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Chairs (Standard Suite) -->
+            <div id="edit_dining_card_6" class="rounded-xl p-3 bg-amber-50/70 border-2 border-amber-500 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-amber-950">🪑 6 Chairs (Standard Suite)</span>
+                  <span class="block text-[10px] text-amber-800">72" × 38" Standard Dining Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Standard</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-950">Price Adjustment (₹ Delta relative to base):</label>
+                <input type="number" name="dining_chair_6_delta" id="edit_dining_6" value="0" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-600" />
+              </div>
+              <div class="pt-2 border-t border-amber-200 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 6 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-white border border-dashed border-amber-400 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_dining_6_preview" src="" alt="6 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="edit_dining_6_placeholder" class="text-xs text-amber-700 text-center">🪑 6</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_6_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'dining_6')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_6_url" id="edit_dining_6_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'dining_6')" class="w-full px-2 py-1 rounded-lg border border-amber-300 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 8 Chairs -->
+            <div id="edit_dining_card_8" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🪑 8 Chairs Grand Suite</span>
+                  <span class="block text-[10px] text-gray-500">96" × 42" Manor Banquet Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">8 Chairs</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="dining_chair_8_delta" id="edit_dining_8" value="15000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 8 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_dining_8_preview" src="" alt="8 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="edit_dining_8_placeholder" class="text-xs text-gray-400 text-center">🪑 8</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_8_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'dining_8')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_8_url" id="edit_dining_8_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'dining_8')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 12 Chairs -->
+            <div id="edit_dining_card_12" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">👑 12 Chairs Royal Feast</span>
+                  <span class="block text-[10px] text-gray-500">132" × 46" Royal Banquet Table</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">12 Chairs</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="dining_chair_12_delta" id="edit_dining_12" value="35000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 12 Chairs:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_dining_12_preview" src="" alt="12 Chairs" class="w-full h-full object-cover hidden" />
+                    <span id="edit_dining_12_placeholder" class="text-xs text-gray-400 text-center">👑 12</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="dining_chair_12_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'dining_12')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="dining_chair_12_url" id="edit_dining_12_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'dining_12')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- SOFA PANEL -->
-        <div id="edit_sofa_panel" class="space-y-2 hidden">
-          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 text-xs">
-            <span class="font-bold text-gray-800">🛋️ Supported Configurations:</span>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 text-[11px] text-gray-600">
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3-Seater Sovereign:</strong> 84"W × 38"D × 34"H</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>3+1+1 (5-Seater):</strong> 84"W Couch + 2 Armchairs</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>L-Shape Sectional:</strong> 104"W × 68" Chaise</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>2-Seater Loveseat:</strong> 58"W × 36"D × 34"H</div>
-              <div class="p-1.5 bg-gray-50 rounded-lg"><strong>1-Seater Lounge:</strong> 34"W × 36"D × 32"H</div>
+        <div id="edit_sofa_panel" class="space-y-3 hidden">
+          <div class="bg-white/90 p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+            <p class="text-[11px] font-bold text-gray-800 mb-1 flex items-center gap-1.5">
+              <span>🛋️ Supported Sofa Suite Seating Configurations:</span>
+              <span class="text-[#5C3D2E] font-black">1-Seater &bull; 2-Seater Loveseat &bull; 3-Seater Sovereign &bull; 3+1+1 Suite &bull; L-Shape Sectional</span>
+            </p>
+            <p class="text-[10px] text-gray-500">Solid teak internal frame, multi-density high-resilience foam cushioning, and premium upholstery fabrics.</p>
+          </div>
+
+          <!-- Sofa Dropdown Selector -->
+          <div class="bg-white p-3 rounded-xl border border-amber-300 shadow-2xs space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+              <label class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+                <span>🛋️ Sofa Configuration / Suite:</span>
+                <span class="text-[10px] font-normal text-gray-500">(Choose from dropdown to filter or view all)</span>
+              </label>
+              <select id="edit_sofa_select" onchange="filterAdminVariantCard('edit', 'sofa', this.value)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold text-gray-900 bg-amber-50/50 focus:outline-none focus:border-[#5C3D2E]">
+                <option value="all">👁️ Show All Sofa Configurations (1-Seater, 2-Seater, 3-Seater, 3+1+1, L-Shape)</option>
+                <option value="1">🛋️ 1-Seater Armchair (34"W × 36"D × 32"H)</option>
+                <option value="2">🛋️ 2-Seater Loveseat (58"W × 36"D × 34"H)</option>
+                <option value="3">🛋️ 3-Seater Sovereign (84"W × 38"D × 34"H - Standard)</option>
+                <option value="311">👑 3+1+1 Royal Suite (5-Seater: Couch + 2 Armchairs)</option>
+                <option value="lshape">📐 L-Shape Sectional Suite (104"W × 68" Chaise)</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-500">Configure pricing adjustments and upload individual photo for each sofa suite option below:</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="edit_sofa_cards_grid">
+            <!-- 1-Seater Armchair -->
+            <div id="edit_sofa_card_1" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🛋️ 1-Seater Armchair</span>
+                  <span class="block text-[10px] text-gray-500">34"W × 36"D × 32"H Lounge Chair</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">1-Seater</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta relative to 3-seater):</label>
+                <input type="number" name="sofa_1_delta" id="edit_sofa_1" value="-15000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 1-Seater:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_sofa_1_preview" src="" alt="1-Seater" class="w-full h-full object-cover hidden" />
+                    <span id="edit_sofa_1_placeholder" class="text-xs text-gray-400 text-center">🛋️ 1</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_1_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'sofa_1')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_1_url" id="edit_sofa_1_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'sofa_1')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2-Seater Loveseat -->
+            <div id="edit_sofa_card_2" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">🛋️ 2-Seater Loveseat</span>
+                  <span class="block text-[10px] text-gray-500">58"W × 36"D × 34"H Compact Couch</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">2-Seater</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="sofa_2_delta" id="edit_sofa_2" value="-8000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 2-Seater:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_sofa_2_preview" src="" alt="2-Seater" class="w-full h-full object-cover hidden" />
+                    <span id="edit_sofa_2_placeholder" class="text-xs text-gray-400 text-center">🛋️ 2</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_2_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'sofa_2')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_2_url" id="edit_sofa_2_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'sofa_2')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3-Seater Sovereign (Standard) -->
+            <div id="edit_sofa_card_3" class="rounded-xl p-3 bg-amber-50/70 border-2 border-amber-500 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-amber-950">🛋️ 3-Seater Sovereign (Standard)</span>
+                  <span class="block text-[10px] text-amber-800">84"W × 38"D × 34"H Primary Couch</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-amber-200 text-amber-950 border border-amber-300">Standard</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-amber-950">Price Adjustment (₹ Delta relative to base):</label>
+                <input type="number" name="sofa_3_delta" id="edit_sofa_3" value="0" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-amber-400 text-xs font-black text-amber-950 focus:outline-none focus:border-amber-600" />
+              </div>
+              <div class="pt-2 border-t border-amber-200 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 3-Seater:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-white border border-dashed border-amber-400 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_sofa_3_preview" src="" alt="3-Seater" class="w-full h-full object-cover hidden" />
+                    <span id="edit_sofa_3_placeholder" class="text-xs text-amber-700 text-center">🛋️ 3</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_3_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'sofa_3')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_3_url" id="edit_sofa_3_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'sofa_3')" class="w-full px-2 py-1 rounded-lg border border-amber-300 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3+1+1 (5-Seater Royal Suite) -->
+            <div id="edit_sofa_card_311" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">👑 3+1+1 Royal Suite (5-Seater)</span>
+                  <span class="block text-[10px] text-gray-500">3-Seater Couch + 2 Individual Armchairs</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">5-Seater Suite</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="sofa_311_delta" id="edit_sofa_311" value="18000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for 3+1+1 Suite:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_sofa_311_preview" src="" alt="3+1+1 Suite" class="w-full h-full object-cover hidden" />
+                    <span id="edit_sofa_311_placeholder" class="text-xs text-gray-400 text-center">👑 3+1+1</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_311_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'sofa_311')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_311_url" id="edit_sofa_311_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'sofa_311')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- L-Shape Sectional Suite -->
+            <div id="edit_sofa_card_lshape" class="rounded-xl p-3 bg-white border border-gray-200 hover:border-amber-400 shadow-2xs space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="block text-xs font-black text-gray-800">📐 L-Shape Sectional Suite</span>
+                  <span class="block text-[10px] text-gray-500">104"W × 68" Deep Chaise Sectional</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-200">L-Sectional</span>
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-gray-700">Price Adjustment (₹ Delta):</label>
+                <input type="number" name="sofa_lshape_delta" id="edit_sofa_lshape" value="14000" class="w-full mt-0.5 px-2.5 py-1.5 rounded-lg border border-gray-300 text-xs font-bold text-gray-800 focus:outline-none focus:border-amber-500" />
+              </div>
+              <div class="pt-2 border-t border-gray-100 space-y-1">
+                <label class="block text-[10px] font-black uppercase text-[#5C3D2E]">📸 Individual Photo for L-Shape:</label>
+                <div class="flex items-center gap-2">
+                  <div class="w-14 h-14 rounded-lg bg-gray-50 border border-dashed border-gray-300 overflow-hidden flex items-center justify-center shrink-0">
+                    <img id="edit_sofa_lshape_preview" src="" alt="L-Shape Sectional" class="w-full h-full object-cover hidden" />
+                    <span id="edit_sofa_lshape_placeholder" class="text-xs text-gray-400 text-center">📐 L-Shape</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" name="sofa_lshape_file" accept="image/*" onchange="previewVariantFileSlot(this, 'edit', 'sofa_lshape')" class="w-full text-[10px] text-gray-600 file:mr-1 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[9px] file:font-bold file:bg-amber-100 file:text-[#5C3D2E] hover:file:bg-amber-200 cursor-pointer" />
+                    <input type="text" name="sofa_lshape_url" id="edit_sofa_lshape_url" placeholder="Or enter Image URL / Path..." oninput="previewVariantUrlSlot(this, 'edit', 'sofa_lshape')" class="w-full px-2 py-1 rounded-lg border border-gray-200 text-[10px] font-medium focus:outline-none focus:border-[#5C3D2E]" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1065,6 +1859,21 @@
 function openAddModal() {
   document.getElementById('add-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  const bedSelect = document.getElementById('add_bed_storage_select');
+  if (bedSelect) {
+    bedSelect.value = 'all';
+    filterAdminVariantCard('add', 'bed', 'all');
+  }
+  const diningSelect = document.getElementById('add_dining_chair_select');
+  if (diningSelect) {
+    diningSelect.value = 'all';
+    filterAdminVariantCard('add', 'dining', 'all');
+  }
+  const sofaSelect = document.getElementById('add_sofa_select');
+  if (sofaSelect) {
+    sofaSelect.value = 'all';
+    filterAdminVariantCard('add', 'sofa', 'all');
+  }
   handleCategoryChange('add');
 }
 
@@ -1232,6 +2041,122 @@ function handleCategoryChange(mode) {
   }
 }
 
+// --- Interactive Variant Filtering (Dropdown: Bed Storage & Dining Chairs) ---
+function filterAdminVariantCard(mode, type, val) {
+  if (type === 'bed') {
+    const keys = ['no', 'box', 'drawer', 'hydraulic'];
+    keys.forEach(k => {
+      const card = document.getElementById(`${mode}_bed_card_${k}`);
+      if (card) {
+        if (val === 'all' || val === k) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      }
+    });
+  } else if (type === 'dining') {
+    const keys = ['2', '4', '6', '8', '12'];
+    keys.forEach(k => {
+      const card = document.getElementById(`${mode}_dining_card_${k}`);
+      if (card) {
+        if (val === 'all' || val === k) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      }
+    });
+  } else if (type === 'sofa') {
+    const keys = ['1', '2', '3', '311', 'lshape'];
+    keys.forEach(k => {
+      const card = document.getElementById(`${mode}_sofa_card_${k}`);
+      if (card) {
+        if (val === 'all' || val === k) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      }
+    });
+  }
+}
+
+// --- Variant Individual Image Previews ---
+function setVariantSlotImage(mode, key, url) {
+  const preview = document.getElementById(`${mode}_${key}_preview`);
+  const placeholder = document.getElementById(`${mode}_${key}_placeholder`);
+  const urlInput = document.getElementById(`${mode}_${key}_url`);
+
+  if (url && url.trim()) {
+    if (preview) {
+      preview.src = url.trim();
+      preview.classList.remove('hidden');
+    }
+    if (placeholder) placeholder.classList.add('hidden');
+    if (urlInput) urlInput.value = url.trim();
+  } else {
+    if (preview) {
+      preview.src = '';
+      preview.classList.add('hidden');
+    }
+    if (placeholder) placeholder.classList.remove('hidden');
+    if (urlInput) urlInput.value = '';
+  }
+}
+
+async function previewVariantFileSlot(input, mode, key) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const preview = document.getElementById(`${mode}_${key}_preview`);
+    const placeholder = document.getElementById(`${mode}_${key}_placeholder`);
+    if (preview && placeholder) {
+      try {
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      } catch (e) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          preview.src = ev.target.result;
+          preview.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    try {
+      const compressed = await compressImageFile(file);
+      if (compressed && compressed !== file) {
+        const dt = new DataTransfer();
+        dt.items.add(compressed);
+        input.files = dt.files;
+      }
+    } catch (err) {
+      console.warn("Client compression skipped for variant image:", err);
+    }
+  }
+}
+
+function previewVariantUrlSlot(input, mode, key) {
+  const val = input.value.trim();
+  const preview = document.getElementById(`${mode}_${key}_preview`);
+  const placeholder = document.getElementById(`${mode}_${key}_placeholder`);
+  if (val) {
+    if (preview) {
+      preview.src = val;
+      preview.classList.remove('hidden');
+    }
+    if (placeholder) placeholder.classList.add('hidden');
+  } else {
+    if (preview) {
+      preview.src = '';
+      preview.classList.add('hidden');
+    }
+    if (placeholder) placeholder.classList.remove('hidden');
+  }
+}
+
 function openEditModal(btn) {
   document.getElementById('edit_product_id').value = btn.dataset.id;
   document.getElementById('edit_name').value = btn.dataset.name || '';
@@ -1261,10 +2186,60 @@ function openEditModal(btn) {
   if (dining2) dining2.value = btn.dataset.diningChair2 || -14000;
   const dining4 = document.getElementById('edit_dining_4');
   if (dining4) dining4.value = btn.dataset.diningChair4 || -7000;
+  const dining6 = document.getElementById('edit_dining_6');
+  if (dining6) dining6.value = btn.dataset.diningChair6 || 0;
   const dining8 = document.getElementById('edit_dining_8');
   if (dining8) dining8.value = btn.dataset.diningChair8 || 15000;
   const dining12 = document.getElementById('edit_dining_12');
   if (dining12) dining12.value = btn.dataset.diningChair12 || 35000;
+
+  const sofa1 = document.getElementById('edit_sofa_1');
+  if (sofa1) sofa1.value = btn.dataset.sofa1Delta || -15000;
+  const sofa2 = document.getElementById('edit_sofa_2');
+  if (sofa2) sofa2.value = btn.dataset.sofa2Delta || -8000;
+  const sofa3 = document.getElementById('edit_sofa_3');
+  if (sofa3) sofa3.value = btn.dataset.sofa3Delta || 0;
+  const sofa311 = document.getElementById('edit_sofa_311');
+  if (sofa311) sofa311.value = btn.dataset.sofa311Delta || 18000;
+  const sofaLshape = document.getElementById('edit_sofa_lshape');
+  if (sofaLshape) sofaLshape.value = btn.dataset.sofaLshapeDelta || 14000;
+
+  // Populate bed storage variant individual images
+  setVariantSlotImage('edit', 'storage_no', btn.dataset.storageNoImg || '');
+  setVariantSlotImage('edit', 'storage_box', btn.dataset.storageBoxImg || '');
+  setVariantSlotImage('edit', 'storage_drawer', btn.dataset.storageDrawerImg || '');
+  setVariantSlotImage('edit', 'storage_hydraulic', btn.dataset.storageHydraulicImg || '');
+
+  // Populate dining chair variant individual images
+  setVariantSlotImage('edit', 'dining_2', btn.dataset.diningChair2Img || '');
+  setVariantSlotImage('edit', 'dining_4', btn.dataset.diningChair4Img || '');
+  setVariantSlotImage('edit', 'dining_6', btn.dataset.diningChair6Img || '');
+  setVariantSlotImage('edit', 'dining_8', btn.dataset.diningChair8Img || '');
+  setVariantSlotImage('edit', 'dining_12', btn.dataset.diningChair12Img || '');
+
+  // Populate sofa variant individual images
+  setVariantSlotImage('edit', 'sofa_1', btn.dataset.sofa1Img || '');
+  setVariantSlotImage('edit', 'sofa_2', btn.dataset.sofa2Img || '');
+  setVariantSlotImage('edit', 'sofa_3', btn.dataset.sofa3Img || '');
+  setVariantSlotImage('edit', 'sofa_311', btn.dataset.sofa311Img || '');
+  setVariantSlotImage('edit', 'sofa_lshape', btn.dataset.sofaLshapeImg || '');
+
+  // Reset dropdown filters to "all"
+  const bedSelect = document.getElementById('edit_bed_storage_select');
+  if (bedSelect) {
+    bedSelect.value = 'all';
+    filterAdminVariantCard('edit', 'bed', 'all');
+  }
+  const diningSelect = document.getElementById('edit_dining_chair_select');
+  if (diningSelect) {
+    diningSelect.value = 'all';
+    filterAdminVariantCard('edit', 'dining', 'all');
+  }
+  const sofaSelect = document.getElementById('edit_sofa_select');
+  if (sofaSelect) {
+    sofaSelect.value = 'all';
+    filterAdminVariantCard('edit', 'sofa', 'all');
+  }
 
   // Populate up to 5 images from dataset
   const imagesStr = btn.dataset.images || btn.dataset.image || '';

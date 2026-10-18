@@ -124,7 +124,7 @@ def customer_login_view(request):
                         next_url = request.GET.get('next')
                         if next_url and not next_url.startswith('/admin'):
                             return redirect(next_url)
-                        return redirect('home')
+                        return redirect('home_alt')
             else:
                 matched_user = User.objects.filter(email__iexact=email).first() or User.objects.filter(username__iexact=email).first()
                 if matched_user and not matched_user.has_usable_password():
@@ -182,7 +182,10 @@ def customer_register_view(request):
             sync_user_session(request, user)
             request.session['glory_is_registered'] = True
             messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}! Your account has been created.")
-            return redirect('home')
+            next_url = request.GET.get('next')
+            if next_url and not next_url.startswith('/admin'):
+                return redirect(next_url)
+            return redirect('home_alt')
 
     from apps.core.models import PageCMSContent
     cms_obj = PageCMSContent.get_cms()
@@ -303,7 +306,7 @@ def google_auth_view(request):
         auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         sync_user_session(request, user)
         messages.success(request, f"Welcome to Glory Furniture Hub, {profile.full_name}!")
-        return JsonResponse({'status': 'success', 'redirect_url': '/'})
+        return JsonResponse({'status': 'success', 'redirect_url': '/home/'})
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
@@ -1619,16 +1622,46 @@ def admin_products_view(request):
                 featured = request.POST.get('featured') in ['1', 'on', 'true', True]
                 new_arrival = request.POST.get('new_arrival') in ['1', 'on', 'true', True]
 
-                # Storage & Category-Specific Variant Deltas
+                # Helper for variant images
+                def _get_var_img(file_key, url_key, default=''):
+                    if file_key in request.FILES and request.FILES[file_key]:
+                        return _save_product_image_file(request.FILES[file_key])
+                    elif request.POST.get(url_key, '').strip():
+                        return request.POST.get(url_key, '').strip()
+                    return default
+
+                # Storage & Category-Specific Variant Deltas and Custom Images
                 finishes = {
                     'no_storage_delta': int(request.POST.get('storage_no_delta', -5000) or -5000),
                     'box_storage_delta': int(request.POST.get('storage_box_delta', 0) or 0),
                     'drawer_storage_delta': int(request.POST.get('storage_drawer_delta', 5500) or 5500),
                     'hydraulic_storage_delta': int(request.POST.get('storage_hydraulic_delta', 11000) or 11000),
+                    'storage_no_image': _get_var_img('storage_no_file', 'storage_no_url'),
+                    'storage_box_image': _get_var_img('storage_box_file', 'storage_box_url'),
+                    'storage_drawer_image': _get_var_img('storage_drawer_file', 'storage_drawer_url'),
+                    'storage_hydraulic_image': _get_var_img('storage_hydraulic_file', 'storage_hydraulic_url'),
+
                     'dining_chair_2_delta': int(request.POST.get('dining_chair_2_delta', -14000) or -14000),
                     'dining_chair_4_delta': int(request.POST.get('dining_chair_4_delta', -7000) or -7000),
+                    'dining_chair_6_delta': int(request.POST.get('dining_chair_6_delta', 0) or 0),
                     'dining_chair_8_delta': int(request.POST.get('dining_chair_8_delta', 15000) or 15000),
                     'dining_chair_12_delta': int(request.POST.get('dining_chair_12_delta', 35000) or 35000),
+                    'dining_chair_2_image': _get_var_img('dining_chair_2_file', 'dining_chair_2_url'),
+                    'dining_chair_4_image': _get_var_img('dining_chair_4_file', 'dining_chair_4_url'),
+                    'dining_chair_6_image': _get_var_img('dining_chair_6_file', 'dining_chair_6_url'),
+                    'dining_chair_8_image': _get_var_img('dining_chair_8_file', 'dining_chair_8_url'),
+                    'dining_chair_12_image': _get_var_img('dining_chair_12_file', 'dining_chair_12_url'),
+
+                    'sofa_1_delta': int(request.POST.get('sofa_1_delta', -15000) or -15000),
+                    'sofa_2_delta': int(request.POST.get('sofa_2_delta', -8000) or -8000),
+                    'sofa_3_delta': int(request.POST.get('sofa_3_delta', 0) or 0),
+                    'sofa_311_delta': int(request.POST.get('sofa_311_delta', 18000) or 18000),
+                    'sofa_lshape_delta': int(request.POST.get('sofa_lshape_delta', 14000) or 14000),
+                    'sofa_1_image': _get_var_img('sofa_1_file', 'sofa_1_url'),
+                    'sofa_2_image': _get_var_img('sofa_2_file', 'sofa_2_url'),
+                    'sofa_3_image': _get_var_img('sofa_3_file', 'sofa_3_url'),
+                    'sofa_311_image': _get_var_img('sofa_311_file', 'sofa_311_url'),
+                    'sofa_lshape_image': _get_var_img('sofa_lshape_file', 'sofa_lshape_url'),
                 }
                 
                 product = Product.objects.create(
@@ -1720,9 +1753,16 @@ def admin_products_view(request):
                 product.featured = request.POST.get('featured') in ['1', 'on', 'true', True]
                 product.new_arrival = request.POST.get('new_arrival') in ['1', 'on', 'true', True]
                 
-                # Update variant and storage price configurations
+                # Update variant and storage price configurations and custom images
                 current_finishes = dict(product.finishes) if isinstance(product.finishes, dict) else {}
-                if 'storage_no_delta' in request.POST:
+
+                def _update_var_img(file_key, url_key, store_key):
+                    if file_key in request.FILES and request.FILES[file_key]:
+                        current_finishes[store_key] = _save_product_image_file(request.FILES[file_key])
+                    elif request.POST.get(url_key, '').strip():
+                        current_finishes[store_key] = request.POST.get(url_key).strip()
+
+                if 'storage_no_delta' in request.POST or 'storage_no_url' in request.POST or 'storage_no_file' in request.FILES:
                     try:
                         current_finishes['no_storage_delta'] = int(request.POST.get('storage_no_delta', -5000))
                         current_finishes['box_storage_delta'] = int(request.POST.get('storage_box_delta', 0))
@@ -1730,14 +1770,41 @@ def admin_products_view(request):
                         current_finishes['hydraulic_storage_delta'] = int(request.POST.get('storage_hydraulic_delta', 11000))
                     except Exception:
                         pass
-                if 'dining_chair_2_delta' in request.POST:
+                    _update_var_img('storage_no_file', 'storage_no_url', 'storage_no_image')
+                    _update_var_img('storage_box_file', 'storage_box_url', 'storage_box_image')
+                    _update_var_img('storage_drawer_file', 'storage_drawer_url', 'storage_drawer_image')
+                    _update_var_img('storage_hydraulic_file', 'storage_hydraulic_url', 'storage_hydraulic_image')
+
+                if 'dining_chair_2_delta' in request.POST or 'dining_chair_6_delta' in request.POST or 'dining_chair_2_url' in request.POST:
                     try:
                         current_finishes['dining_chair_2_delta'] = int(request.POST.get('dining_chair_2_delta', -14000))
                         current_finishes['dining_chair_4_delta'] = int(request.POST.get('dining_chair_4_delta', -7000))
+                        current_finishes['dining_chair_6_delta'] = int(request.POST.get('dining_chair_6_delta', 0))
                         current_finishes['dining_chair_8_delta'] = int(request.POST.get('dining_chair_8_delta', 15000))
                         current_finishes['dining_chair_12_delta'] = int(request.POST.get('dining_chair_12_delta', 35000))
                     except Exception:
                         pass
+                    _update_var_img('dining_chair_2_file', 'dining_chair_2_url', 'dining_chair_2_image')
+                    _update_var_img('dining_chair_4_file', 'dining_chair_4_url', 'dining_chair_4_image')
+                    _update_var_img('dining_chair_6_file', 'dining_chair_6_url', 'dining_chair_6_image')
+                    _update_var_img('dining_chair_8_file', 'dining_chair_8_url', 'dining_chair_8_image')
+                    _update_var_img('dining_chair_12_file', 'dining_chair_12_url', 'dining_chair_12_image')
+
+                if 'sofa_1_delta' in request.POST or 'sofa_3_delta' in request.POST or 'sofa_1_url' in request.POST or 'sofa_1_file' in request.FILES:
+                    try:
+                        current_finishes['sofa_1_delta'] = int(request.POST.get('sofa_1_delta', -15000))
+                        current_finishes['sofa_2_delta'] = int(request.POST.get('sofa_2_delta', -8000))
+                        current_finishes['sofa_3_delta'] = int(request.POST.get('sofa_3_delta', 0))
+                        current_finishes['sofa_311_delta'] = int(request.POST.get('sofa_311_delta', 18000))
+                        current_finishes['sofa_lshape_delta'] = int(request.POST.get('sofa_lshape_delta', 14000))
+                    except Exception:
+                        pass
+                    _update_var_img('sofa_1_file', 'sofa_1_url', 'sofa_1_image')
+                    _update_var_img('sofa_2_file', 'sofa_2_url', 'sofa_2_image')
+                    _update_var_img('sofa_3_file', 'sofa_3_url', 'sofa_3_image')
+                    _update_var_img('sofa_311_file', 'sofa_311_url', 'sofa_311_image')
+                    _update_var_img('sofa_lshape_file', 'sofa_lshape_url', 'sofa_lshape_image')
+
                 product.finishes = current_finishes
 
                 product.save()
