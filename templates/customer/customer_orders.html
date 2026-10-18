@@ -697,14 +697,22 @@
     .then(res => res.json())
     .then(data => {
       // Update badges
-      ['navDirectCartBadge', 'drawerCartBadge', 'navSettingsCartBadge', 'headerCartBadge'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && data.cart_count) el.innerText = data.cart_count;
-      });
-      alert('"' + name + '" has been added to your Shopping Bag!');
+      if (typeof window.updateBadgeCounters === 'function') {
+        window.updateBadgeCounters(data.cart_count, null);
+      } else {
+        ['navDirectCartBadge', 'drawerCartBadge', 'navSettingsCartBadge', 'headerCartBadge'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el && data.cart_count) el.innerText = data.cart_count;
+        });
+      }
+      if (typeof window.showToast === 'function') {
+        window.showToast('"' + name + '" has been added to your Shopping Bag!', 'success');
+      }
     })
     .catch(() => {
-      alert('"' + name + '" added to your Shopping Bag!');
+      if (typeof window.showToast === 'function') {
+        window.showToast('"' + name + '" added to your Shopping Bag!', 'success');
+      }
     });
   }
 
@@ -725,17 +733,27 @@
       if (data.added) {
         btn.classList.add('text-red-600');
         if (icon) icon.setAttribute('fill', 'currentColor');
-        alert('"' + name + '" saved to your Favorites!');
+        if (typeof window.showToast === 'function') {
+          window.showToast('"' + name + '" saved to your Wishlist!', 'success');
+        }
       } else {
         btn.classList.remove('text-red-600');
         if (icon) icon.setAttribute('fill', 'none');
-        alert('"' + name + '" removed from Favorites.');
+        if (typeof window.showToast === 'function') {
+          window.showToast('"' + name + '" removed from Wishlist.', 'info');
+        }
       }
-      const wishBadge = document.getElementById('navSettingsWishlistBadge');
-      if (wishBadge && data.count !== undefined) wishBadge.innerText = data.count;
+      if (typeof window.updateBadgeCounters === 'function') {
+        window.updateBadgeCounters(null, data.count);
+      } else {
+        const wishBadge = document.getElementById('navSettingsWishlistBadge');
+        if (wishBadge && data.count !== undefined) wishBadge.innerText = data.count;
+      }
     })
     .catch(() => {
-      alert('"' + name + '" updated in your Favorites!');
+      if (typeof window.showToast === 'function') {
+        window.showToast('"' + name + '" updated in your Wishlist!', 'success');
+      }
     });
   }
 </script>

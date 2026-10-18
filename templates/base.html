@@ -255,23 +255,17 @@
         <!-- Brand Logo (Left) -->
         <div class="flex items-center gap-2 sm:gap-3">
           <a href="{% url 'home' %}" class="flex items-center gap-2 cursor-pointer select-none group">
-            {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}
-            <span class="font-sans font-black text-xl sm:text-2xl text-[#1A1816] tracking-wider leading-none">
-              AURA
-            </span>
-            {% else %}
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden flex-shrink-0 border border-[#7A533E] group-hover:opacity-95 transition-opacity">
-              <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture" class="w-full h-full object-cover" />
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden flex-shrink-0 border border-[#7A533E]/40 group-hover:opacity-95 transition-opacity">
+              <img src="{% static 'images/logo_wood.jpg' %}" alt="Glory Furniture Hub" class="w-full h-full object-cover" onerror="this.style.display='none'" />
             </div>
             <div class="flex flex-col">
-              <span class="font-sans font-black text-lg sm:text-xl text-white tracking-wider leading-none">
+              <span class="font-sans font-black text-base sm:text-lg tracking-wider leading-none {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}text-[#1A1816]{% else %}text-white{% endif %}">
                 GLORY
               </span>
-              <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-[#F3D19C] uppercase mt-0.5 leading-tight">
+              <span class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase mt-0.5 leading-tight {% if is_home_page or is_light_navbar or '/cart/' in request.path or '/wishlist/' in request.path %}text-[#7A533E]{% else %}text-[#F3D19C]{% endif %}">
                 FURNITURE HUB
               </span>
             </div>
-            {% endif %}
           </a>
         </div>
 
@@ -309,17 +303,13 @@
           <!-- Direct Wishlist Icon Button -->
           <a href="{% url 'wishlist' %}" class="p-1.5 rounded-full hover:bg-gray-100 text-gray-800 transition-colors active-tap cursor-pointer relative flex items-center justify-center" title="Wishlist" aria-label="Open wishlist">
             <svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-            {% if WISHLIST_COUNT > 0 %}
-            <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#E85D5D] text-white min-w-[15px] text-center shadow-2xs leading-tight">{{ WISHLIST_COUNT }}</span>
-            {% endif %}
+            <span id="headerWishlistBadge" class="wishlist-badge-count absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#E85D5D] text-white min-w-[15px] text-center shadow-2xs leading-tight {% if not WISHLIST_COUNT or WISHLIST_COUNT == 0 %}hidden{% endif %}">{{ WISHLIST_COUNT|default:"0" }}</span>
           </a>
 
           <!-- Direct Cart Icon Button -->
           <a href="{% url 'cart' %}" class="p-1.5 rounded-full hover:bg-gray-100 text-gray-800 transition-colors active-tap cursor-pointer relative flex items-center justify-center" title="Cart" aria-label="Open cart">
             <svg class="w-4 h-4 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-            {% if CART_COUNT > 0 %}
-            <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#1A1816] text-white min-w-[15px] text-center shadow-2xs leading-tight">{{ CART_COUNT }}</span>
-            {% endif %}
+            <span id="headerCartBadge" class="cart-badge-count absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#1A1816] text-white min-w-[15px] text-center shadow-2xs leading-tight {% if not CART_COUNT or CART_COUNT == 0 %}hidden{% endif %}">{{ CART_COUNT|default:"0" }}</span>
           </a>
           {% endif %}
 
@@ -917,6 +907,18 @@
 
   <!-- Bulletproof Drawer & Interactive Controls -->
   <script>
+    // Universal Global Broken Image Fallback Interceptor
+    document.addEventListener('error', function(e) {
+      if (e.target && e.target.tagName === 'IMG') {
+        var img = e.target;
+        if (!img.getAttribute('data-fallback-tried')) {
+          img.setAttribute('data-fallback-tried', 'true');
+          img.src = '/static/images/hero_sofa_transparent.png';
+          img.classList.add('object-contain');
+        }
+      }
+    }, true);
+
     window.currentDrawerTab = 'profile';
 
     window.openDrawer = function(tabName) {
@@ -1033,6 +1035,62 @@
       return cookieValue || '{{ csrf_token }}';
     };
 
+    // Universal Global Toast System
+    window.showToast = function(message, type) {
+      type = type || 'success';
+      var container = document.getElementById('glory-global-toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'glory-global-toast-container';
+        container.className = 'fixed bottom-6 right-6 z-[99999] flex flex-col gap-2 pointer-events-none max-w-sm w-full px-4 sm:px-0';
+        document.body.appendChild(container);
+      }
+      var toast = document.createElement('div');
+      var bgClass = type === 'error' ? 'bg-[#991B1B] text-white border-red-800' : 'bg-[#1A1816] text-[#F3D19C] border-[#3E2723]';
+      toast.className = bgClass + ' shadow-2xl rounded-2xl p-4 flex items-center gap-3 text-sm font-medium border transform transition-all duration-300 translate-y-4 opacity-0 pointer-events-auto';
+      toast.innerHTML = '<svg class="w-5 h-5 flex-shrink-0 ' + (type === 'error' ? 'text-white' : 'text-amber-400') + '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' + (type === 'error' ? 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z') + '"></path></svg><span class="flex-1 text-xs sm:text-sm font-sans">' + message + '</span>';
+      container.appendChild(toast);
+      requestAnimationFrame(function() {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      });
+      setTimeout(function() {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 3500);
+    };
+
+    // Universal Badge Synchronizer
+    window.updateBadgeCounters = function(cartCount, wishlistCount) {
+      if (cartCount !== null && cartCount !== undefined) {
+        var c = parseInt(cartCount, 10) || 0;
+        document.querySelectorAll('.cart-badge-count, #headerCartBadge, #drawerCartBadge, #navCartCount').forEach(function(el) {
+          el.textContent = c;
+          if (c > 0) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+        var drawerHeader = document.getElementById('drawer-cart-count-header');
+        if (drawerHeader) drawerHeader.textContent = c + ' items';
+      }
+      if (wishlistCount !== null && wishlistCount !== undefined) {
+        var w = parseInt(wishlistCount, 10) || 0;
+        document.querySelectorAll('.wishlist-badge-count, #headerWishlistBadge, #drawerWishlistBadge, #navWishlistCount').forEach(function(el) {
+          el.textContent = w;
+          if (w > 0) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+        var drawerFavHeader = document.getElementById('drawer-fav-count-header');
+        if (drawerFavHeader) drawerFavHeader.textContent = w + ' items';
+      }
+    };
+
     // Global Add to Cart & Move to Cart Handlers with CSRF Protection
     window.addToCart = async function(productId, size, quantity, measurements) {
       size = size || 'Standard';
@@ -1049,27 +1107,18 @@
         });
         const data = await res.json();
         if (data.status === 'success') {
-          if (typeof updateBadgeCounters === 'function') {
-            updateBadgeCounters(data.cart_count, null);
-          } else {
-            document.querySelectorAll('.cart-badge-count').forEach(function(el) {
-              el.textContent = data.cart_count;
-              el.classList.remove('hidden');
-            });
-          }
+          window.updateBadgeCounters(data.cart_count, null);
           if (typeof window.renderDrawerCart === 'function' && data.cart) {
             window.renderDrawerCart(data.cart, data.formatted_subtotal);
           }
-          if (typeof showToast === 'function') {
-            showToast('Item added to your cart!');
-          }
+          window.showToast('Item added to your cart!', 'success');
           window.openDrawer('cart');
         } else {
-          alert(data.message || 'Could not add product to cart.');
+          window.showToast(data.message || 'Could not add product to cart.', 'error');
         }
       } catch (err) {
         console.error('addToCart error:', err);
-        window.openDrawer('cart');
+        window.showToast('Unable to connect to server. Please try again.', 'error');
       }
     };
 
@@ -1093,22 +1142,21 @@
             },
             body: JSON.stringify({ product_id: productId })
           });
-          if (typeof updateBadgeCounters === 'function') {
-            updateBadgeCounters(data.cart_count, null);
-          }
+          window.updateBadgeCounters(data.cart_count, null);
           if (typeof window.renderDrawerCart === 'function' && data.cart) {
             window.renderDrawerCart(data.cart, data.formatted_subtotal);
           }
           if (typeof window.refreshWishlistDrawer === 'function') {
             window.refreshWishlistDrawer();
           }
+          window.showToast('Item moved to cart!', 'success');
           window.openDrawer('cart');
         } else {
-          alert(data.message || 'Could not move product to cart.');
+          window.showToast(data.message || 'Could not move product to cart.', 'error');
         }
       } catch (err) {
         console.error('moveToCart error:', err);
-        window.openDrawer('cart');
+        window.showToast('Unable to connect to server. Please try again.', 'error');
       }
     };
 

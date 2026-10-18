@@ -234,7 +234,7 @@
               <span class="text-[11px] text-on-surface-variant font-medium">Shopping Bag</span>
             </div>
           </div>
-          <span id="drawerCartBadge" class="bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full">{{ cart_count|default:"2" }}</span>
+          <span id="drawerCartBadge" class="bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full {% if not cart_count or cart_count == 0 %}hidden{% endif %}">{{ cart_count|default:"0" }}</span>
         </a>
 
         <!-- 3. Fav (Favorites) -->
@@ -248,14 +248,14 @@
               <span class="text-[11px] text-on-surface-variant font-medium">Saved Items &amp; Wishlist</span>
             </div>
           </div>
-          <span id="drawerWishlistBadge" class="bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full">{{ wishlist_count|default:"3" }}</span>
+          <span id="drawerWishlistBadge" class="bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full {% if not wishlist_count or wishlist_count == 0 %}hidden{% endif %}">{{ wishlist_count|default:"0" }}</span>
         </a>
       </nav>
     </div>
 
     <!-- Drawer Footer -->
     <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
-      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © 2024</p>
+      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © {% now "Y" %}</p>
     </div>
   </aside>
 
@@ -527,11 +527,16 @@
       .then(res => res.json())
       .then(data => {
         if (data && data.count !== undefined) {
-          const badge = document.getElementById('navWishlistCount');
-          if (badge) {
-            badge.innerText = data.count;
-            badge.style.display = data.count > 0 ? 'flex' : 'none';
-          }
+          document.querySelectorAll('#drawerWishlistBadge, #navWishlistCount, .wishlist-badge-count').forEach(el => {
+            el.innerText = data.count;
+            if (data.count > 0) {
+              el.classList.remove('hidden');
+              el.style.display = 'flex';
+            } else {
+              el.classList.add('hidden');
+              el.style.display = 'none';
+            }
+          });
         }
       })
       .catch(err => {
@@ -550,10 +555,17 @@
       })
       .then(res => res.json())
       .then(data => {
-        const badge = document.getElementById('navCartCount');
-        if (badge && data && data.cart_count !== undefined) {
-          badge.innerText = data.cart_count;
-          badge.style.display = data.cart_count > 0 ? 'flex' : 'none';
+        if (data && data.cart_count !== undefined) {
+          document.querySelectorAll('#drawerCartBadge, #navCartCount, .cart-badge-count').forEach(el => {
+            el.innerText = data.cart_count;
+            if (data.cart_count > 0) {
+              el.classList.remove('hidden');
+              el.style.display = 'flex';
+            } else {
+              el.classList.add('hidden');
+              el.style.display = 'none';
+            }
+          });
         }
       })
       .catch(() => {});
@@ -564,7 +576,12 @@
     function showToast(text) {
       const toast = document.getElementById('atelierToast');
       const msg = document.getElementById('toastMsg');
-      if (!toast || !msg) return;
+      if (!toast || !msg) {
+        if (typeof window.showToast === 'function') {
+          window.showToast(text, 'success');
+        }
+        return;
+      }
       msg.innerText = text;
       toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
       toast.classList.add('opacity-100', 'translate-y-0');
@@ -619,8 +636,8 @@
     <a href="/cart/" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-gray-500 hover:text-gray-900">
       <div class="relative">
         <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-        <span id="navCartCount" class="cart-badge-count absolute -top-1 -right-2 w-3.5 h-3.5 bg-[#5C3D2E] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
-          {{ cart_count|default:"2" }}
+        <span id="navCartCount" class="cart-badge-count absolute -top-1 -right-2 w-3.5 h-3.5 bg-[#5C3D2E] text-white text-[8px] font-bold rounded-full flex items-center justify-center {% if not cart_count or cart_count == 0 %}hidden{% endif %}">
+          {{ cart_count|default:"0" }}
         </span>
       </div>
       <span>Bag</span>

@@ -249,13 +249,13 @@
         <!-- 2. Cart -->
         <a href="/cart/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
           <span class="material-symbols-outlined text-[24px]">shopping_bag</span>
-          <span id="headerCartBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">1</span>
+          <span id="headerCartBadge" class="cart-badge-count rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs {% if not cart_count or cart_count == 0 %}hidden{% endif %}">{{ cart_count|default:"0" }}</span>
         </a>
 
         <!-- 3. Fav (Favorites) -->
         <a href="/wishlist/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Favorites">
           <span class="material-symbols-outlined text-[24px]">favorite</span>
-          <span id="headerWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">3</span>
+          <span id="headerWishlistBadge" class="wishlist-badge-count rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs {% if not wishlist_count or wishlist_count == 0 %}hidden{% endif %}">{{ wishlist_count|default:"0" }}</span>
         </a>
       </div>
 
@@ -324,7 +324,7 @@
               <span class="text-[11px] text-on-surface-variant font-medium">Shopping Bag</span>
             </div>
           </div>
-          <span id="drawerCartBadge" class="bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full">1</span>
+          <span id="drawerCartBadge" class="cart-badge-count bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full {% if not cart_count or cart_count == 0 %}hidden{% endif %}">{{ cart_count|default:"0" }}</span>
         </a>
 
         <!-- 3. Fav (Favorites) -->
@@ -338,14 +338,14 @@
               <span class="text-[11px] text-on-surface-variant font-medium">Saved Items &amp; Wishlist</span>
             </div>
           </div>
-          <span id="drawerWishlistBadge" class="bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full">3</span>
+          <span id="drawerWishlistBadge" class="wishlist-badge-count bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full {% if not wishlist_count or wishlist_count == 0 %}hidden{% endif %}">{{ wishlist_count|default:"0" }}</span>
         </a>
       </nav>
     </div>
 
     <!-- Drawer Footer -->
     <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
-      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © 2024</p>
+      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © {% now "Y" %}</p>
     </div>
   </aside>
 
@@ -1430,12 +1430,12 @@
       const regionText = regionElem ? regionElem.textContent.trim() : '';
 
       if (!pin || pin.length !== 6) {
-        alert('Please enter a valid 6-digit Indian PIN code (e.g. 500034, 530016).');
+        showToast('Please enter a valid 6-digit Indian PIN code (e.g. 500034, 530016).', 'error');
         document.getElementById('pincodeInput').focus();
         return;
       }
       if (!addr) {
-        alert('Please enter your house/flat number, apartment, or street address.');
+        showToast('Please enter your house/flat number, apartment, or street address.', 'error');
         document.getElementById('presentAddressInput').focus();
         return;
       }
@@ -1490,11 +1490,11 @@
 
           showToast('Delivery Address saved to your profile!', 'verified');
         } else {
-          alert(resData.message || 'Could not save address. Please check your PIN code and try again.');
+          showToast(resData.message || 'Could not save address. Please check your PIN code and try again.', 'error');
         }
       } catch (err) {
         console.error('Error saving delivery address:', err);
-        alert('Network connection error while saving address. Please try again.');
+        showToast('Network connection error while saving address. Please try again.', 'error');
       } finally {
         if (saveBtn) {
           saveBtn.disabled = false;

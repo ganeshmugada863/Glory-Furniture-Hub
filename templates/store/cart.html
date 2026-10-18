@@ -278,12 +278,20 @@
     })
     .then(res => res.json())
     .then(data => {
-      const wishBadge = document.getElementById('navSettingsWishlistBadge');
-      if (wishBadge && data.count !== undefined) wishBadge.innerText = data.count;
-      alert('"' + name + '" has been saved to your Curations & Favorites!');
+      if (typeof window.updateBadgeCounters === 'function') {
+        window.updateBadgeCounters(null, data.count);
+      } else {
+        const wishBadge = document.getElementById('navSettingsWishlistBadge');
+        if (wishBadge && data.count !== undefined) wishBadge.innerText = data.count;
+      }
+      if (typeof window.showToast === 'function') {
+        window.showToast('"' + name + '" has been saved to your Wishlist!', 'success');
+      }
     })
     .catch(() => {
-      alert('"' + name + '" saved to your Curations & Favorites!');
+      if (typeof window.showToast === 'function') {
+        window.showToast('"' + name + '" saved to your Wishlist!', 'success');
+      }
     });
   }
 </script>

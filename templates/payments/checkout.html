@@ -304,7 +304,10 @@
     const val = vpaInput.value.trim();
 
     if (!val || !val.includes('@')) {
-      alert("Please enter a valid UPI ID (e.g., username@okhdfcbank)");
+      if (typeof window.showToast === 'function') {
+        window.showToast("Please enter a valid UPI ID (e.g., username@okhdfcbank)", "error");
+      }
+      if (vpaInput) vpaInput.focus();
       return;
     }
 

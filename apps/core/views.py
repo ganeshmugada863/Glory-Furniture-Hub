@@ -513,18 +513,27 @@ def guide_view(request):
 def reverse_geocode_api(request):
     """
     Reverse geocodes lat/lon into street address, city, state, pincode
-    to support HTML5 Geolocation permission auto-fill.
+    to support HTML5 Geolocation permission auto-fill. Supports GET/POST and lat/lng aliases.
     """
-    lat = request.GET.get('lat', '').strip()
-    lon = request.GET.get('lon', '').strip()
+    import urllib.request
+    import json
+
+    params = {}
+    if request.method == 'POST':
+        try:
+            params = json.loads(request.body.decode('utf-8')) if request.body else {}
+        except Exception:
+            params = request.POST.dict()
+    else:
+        params = request.GET.dict()
+
+    lat = str(params.get('lat') or params.get('latitude') or request.GET.get('lat') or request.GET.get('latitude') or '').strip()
+    lon = str(params.get('lon') or params.get('lng') or params.get('longitude') or request.GET.get('lon') or request.GET.get('lng') or request.GET.get('longitude') or '').strip()
 
     if not lat or not lon:
         return JsonResponse({'status': 'error', 'message': 'Latitude and Longitude are required'}, status=400)
 
     try:
-        import urllib.request
-        import json
-
         url = f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}&addressdetails=1"
         req = urllib.request.Request(url, headers={
             'User-Agent': 'GloryFurnitureHub/1.0 (contact@gloryfurniture.com)'
@@ -567,35 +576,47 @@ def reverse_geocode_api(request):
             )
             state = address.get('state') or 'Telangana'
             pincode = address.get('postcode') or ''
+            display_name = data.get('display_name', '')
+
+            payload = {
+                'flat': flat,
+                'street': street,
+                'city': city,
+                'state': state,
+                'pincode': pincode,
+                'display_name': display_name,
+                'suburb': address.get('suburb') or village_or_locality or mandal_or_taluk or '',
+                'district': district,
+                'village': address.get('village', ''),
+                'mandal': mandal_or_taluk,
+            }
 
             return JsonResponse({
                 'status': 'success',
-                'data': {
-                    'flat': flat,
-                    'street': street,
-                    'city': city,
-                    'state': state,
-                    'pincode': pincode,
-                    'display_name': data.get('display_name', ''),
-                    'suburb': address.get('suburb') or village_or_locality or mandal_or_taluk or '',
-                    'district': district,
-                    'village': address.get('village', ''),
-                    'mandal': mandal_or_taluk,
-                }
+                'success': True,
+                **payload,
+                'data': payload
             })
     except Exception as e:
         # Graceful fallback: return partial coords with default Hyderabad state
+        fallback_data = {
+            'flat': '',
+            'street': '',
+            'city': 'Hyderabad',
+            'state': 'Telangana',
+            'pincode': '',
+            'display_name': f"Coordinates: {lat}, {lon}",
+            'suburb': '',
+            'district': 'Hyderabad',
+            'village': '',
+            'mandal': '',
+            'error': str(e)
+        }
         return JsonResponse({
             'status': 'partial',
-            'data': {
-                'flat': '',
-                'street': '',
-                'city': 'Hyderabad',
-                'state': 'Telangana',
-                'pincode': '',
-                'display_name': f"Coordinates: {lat}, {lon}",
-                'error': str(e)
-            }
+            'success': True,
+            **fallback_data,
+            'data': fallback_data
         })
 
 

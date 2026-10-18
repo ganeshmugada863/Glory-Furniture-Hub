@@ -387,23 +387,44 @@
 
   function detectGPSLocation() {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      if (typeof window.showToast === 'function') {
+        window.showToast('Geolocation is not supported by your browser.', 'error');
+      }
       return;
     }
     navigator.geolocation.getCurrentPosition(pos => {
-      fetch(`/api/reverse-geocode/?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`)
+      fetch(`/api/reverse-geocode/?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}&lon=${pos.coords.longitude}`)
         .then(res => res.json())
         .then(data => {
-          if (data.status === 'success') {
-            document.querySelector('input[name="city"]').value = data.city || 'Hyderabad';
-            document.querySelector('input[name="state"]').value = data.state || 'Telangana';
-            document.querySelector('input[name="pincode"]').value = data.pincode || '';
-            document.querySelector('input[name="flat"]').value = data.display_name || '';
+          const payload = data.data || data;
+          if (data.status === 'success' || data.status === 'partial' || data.success) {
+            const cityInput = document.querySelector('input[name="city"]');
+            const stateInput = document.querySelector('input[name="state"]');
+            const pinInput = document.querySelector('input[name="pincode"]');
+            const flatInput = document.querySelector('input[name="flat"]');
+            const streetInput = document.querySelector('input[name="street"]');
+
+            if (cityInput) cityInput.value = payload.city || 'Hyderabad';
+            if (stateInput) stateInput.value = payload.state || 'Telangana';
+            if (pinInput && payload.pincode) pinInput.value = payload.pincode;
+            if (flatInput && (payload.flat || payload.display_name)) flatInput.value = payload.flat || payload.display_name;
+            if (streetInput && payload.street) streetInput.value = payload.street;
+
+            if (typeof window.showToast === 'function') {
+              window.showToast('Address autofilled from GPS successfully!', 'success');
+            }
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.error(err);
+          if (typeof window.showToast === 'function') {
+            window.showToast('Unable to parse location coordinates. Please fill manually.', 'error');
+          }
+        });
     }, err => {
-      alert('Unable to retrieve location. Please fill manually.');
+      if (typeof window.showToast === 'function') {
+        window.showToast('Unable to retrieve location permission. Please fill manually.', 'error');
+      }
     });
   }
 </script>

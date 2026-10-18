@@ -1634,6 +1634,22 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
         </a>
       </div>
 
+      <!-- Audio Toggle Button (Muted by default) -->
+      <button id="atelierAudioToggleBtn" 
+              onclick="toggleAtelierVideoAudio()" 
+              type="button"
+              class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md text-white flex items-center justify-center border border-white/20 transition-all cursor-pointer shadow-lg"
+              title="Toggle Audio" 
+              aria-label="Toggle Audio">
+        <svg id="atelierAudioIconMuted" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+        <svg id="atelierAudioIconUnmuted" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+        </svg>
+      </button>
+
       <!-- Video Carousel Indicator Dots (No arrow buttons as requested) -->
       <div class="absolute bottom-3 sm:bottom-4 inset-x-0 z-20 flex items-center justify-center gap-2" id="atelierVideoDots">
         <button aria-label="Video Slide 1" class="atelier-video-dot w-6 h-2 rounded-full bg-[#E06B6B] transition-all duration-300" onclick="switchAtelierVideo(0)"></button>
@@ -1646,7 +1662,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       <!-- Top Card: Dining Furniture -->
       <div class="flex-1 bg-[#E8EBF5] rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex items-center justify-between gap-3 shadow-sm hover:shadow-md transition-all border border-black/5 group relative overflow-hidden min-h-[165px] sm:min-h-[190px]">
         <div class="w-24 sm:w-28 md:w-32 h-24 sm:h-28 md:h-32 shrink-0 flex items-center justify-center">
-          <img src="/static/images/cat_dining.png" alt="Buy Solid Teak Dining with low price" class="max-w-full max-h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300">
+          <img src="/static/images/cat_dining.png" alt="Buy Solid Teak Dining with low price" class="max-w-full max-h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/hero_sofa_transparent.png';">
         </div>
         <div class="flex-1 flex flex-col items-start justify-center pr-1 sm:pr-2">
           <h4 class="text-xs sm:text-sm font-semibold text-[#1F1E1C] leading-snug line-clamp-2 mb-1.5">
@@ -1664,7 +1680,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       <!-- Bottom Card: Sofas & Living Room -->
       <div class="flex-1 bg-[#DCF0F2] rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex items-center justify-between gap-3 shadow-sm hover:shadow-md transition-all border border-black/5 group relative overflow-hidden min-h-[165px] sm:min-h-[190px]">
         <div class="w-24 sm:w-28 md:w-32 h-24 sm:h-28 md:h-32 shrink-0 flex items-center justify-center">
-          <img src="/static/images/cat_sofa.png" alt="Buy Living Room Sofas with low price" class="max-w-full max-h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300">
+          <img src="/static/images/cat_sofa.png" alt="Buy Living Room Sofas with low price" class="max-w-full max-h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null; this.src='/static/images/hero_sofa_transparent.png';">
         </div>
         <div class="flex-1 flex flex-col items-start justify-center pr-1 sm:pr-2">
           <h4 class="text-xs sm:text-sm font-semibold text-[#1F1E1C] leading-snug line-clamp-2 mb-1.5">
@@ -1683,17 +1699,42 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 </section>
 <!-- Interactive Client Care & Modal Trigger Scripts -->
 <script>
+    // Audio Toggle for Live Atelier Showcase Video
+    function toggleAtelierVideoAudio() {
+      const vid = document.getElementById('atelierShowcaseVideo');
+      const iconMuted = document.getElementById('atelierAudioIconMuted');
+      const iconUnmuted = document.getElementById('atelierAudioIconUnmuted');
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      if (vid.muted) {
+        if (iconMuted) iconMuted.classList.remove('hidden');
+        if (iconUnmuted) iconUnmuted.classList.add('hidden');
+        showToast('Video audio muted', 'volume_off');
+      } else {
+        vid.volume = 0.7;
+        vid.play().catch(() => {});
+        if (iconMuted) iconMuted.classList.add('hidden');
+        if (iconUnmuted) iconUnmuted.classList.remove('hidden');
+        showToast('Video audio enabled', 'volume_up');
+      }
+    }
+
     // State management for Header Cart and Wishlist syncing
-    let currentCartCount = 2;
-    let currentCartTotal = 2480;
-    let currentFavCount = 3;
+    let currentCartCount = parseInt('{{ CART_COUNT|default:"0" }}') || 0;
+    let currentCartTotal = 0;
+    let currentFavCount = parseInt('{{ WISHLIST_COUNT|default:"0" }}') || 0;
 
     function showToast(message, icon = 'check_circle') {
       const toast = document.getElementById('interactionToast');
       const msg = document.getElementById('toastMessage');
       const icn = document.getElementById('toastIcon');
       
-      if (!toast || !msg || !icn) return;
+      if (!toast || !msg || !icn) {
+        if (typeof window.showToast === 'function') {
+          window.showToast(message, 'success');
+        }
+        return;
+      }
       
       msg.textContent = message;
       icn.textContent = icon;
@@ -1713,8 +1754,13 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
 
     function updateWishlistBadges(count) {
       currentWishlistCount = Math.max(0, count);
-      document.querySelectorAll('#navSettingsWishlistBadge, #drawerWishlistBadge, #headerWishlistBadge').forEach(el => {
+      document.querySelectorAll('#navSettingsWishlistBadge, #drawerWishlistBadge, #headerWishlistBadge, .wishlist-badge-count').forEach(el => {
         el.textContent = currentWishlistCount;
+        if (currentWishlistCount > 0) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
         el.style.transform = 'scale(1.25)';
         setTimeout(() => el.style.transform = '', 200);
       });
@@ -1722,18 +1768,29 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       if (sub) {
         sub.textContent = currentWishlistCount > 0 ? `${currentWishlistCount} Saved` : 'Saved Items';
       }
+      if (typeof window.updateBadgeCounters === 'function') {
+        window.updateBadgeCounters(null, currentWishlistCount);
+      }
     }
 
     function updateCartBadges(count) {
       currentGlobalCartCount = Math.max(0, count);
-      document.querySelectorAll('#navDirectCartBadge, #drawerCartBadge, #headerCartBadge, #navSettingsCartBadge').forEach(el => {
+      document.querySelectorAll('#navDirectCartBadge, #drawerCartBadge, #headerCartBadge, #navSettingsCartBadge, .cart-badge-count').forEach(el => {
         el.textContent = currentGlobalCartCount;
+        if (currentGlobalCartCount > 0) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
         el.style.transform = 'scale(1.25)';
         setTimeout(() => el.style.transform = '', 200);
       });
       const sub = document.getElementById('drawerCartSubtext');
       if (sub) {
         sub.textContent = `Items: ${currentGlobalCartCount}`;
+      }
+      if (typeof window.updateBadgeCounters === 'function') {
+        window.updateBadgeCounters(currentGlobalCartCount, null);
       }
     }
 
@@ -2295,7 +2352,7 @@ Artisan coffee table with curved cabriole legs, brass filigree inlays, and tempe
       }
     });
   </script>
-</div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-xl"><div class="w-full px-4 sm:px-6 lg:px-10"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="/static/favicon.svg"><span class="font-headline-sm text-headline-sm font-semibold text-primary">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><p class="">© 2024 Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/faq/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/faq/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div><!-- Mobile Bottom Navigation (Identical across Home, Catalog, Orders, Bag, Account) -->
+</div></main><footer class="w-full bg-surface-container-low mt-space-xl py-space-xl"><div class="w-full px-4 sm:px-6 lg:px-10"><div class="grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><img alt="Glory Furniture Hub Logo" class="h-6 w-auto object-contain" src="/static/favicon.svg"><span class="font-headline-sm text-headline-sm font-semibold text-primary">Glory Furniture Hub</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Handcrafted architectural furniture, bespoke upholstery, and enduring interior objects made from sustainable timber and tactile linen.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Collections</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="living-room" href="/catalog/?category=Sofa%20Set">Seating &amp; Loungers</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="dining" href="/catalog/?category=Dining%20Table">Dining Tables &amp; Credenzas</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="bedroom" href="/catalog/?category=Cot%20%2F%20Wooden%20Bed">Platform Beds</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="office" href="/catalog/">Atelier Workdesks</a></div><div class="flex flex-col gap-space-xs"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary mb-space-xs">Client Care</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="showroom-locator" href="/contact/">Showroom Visits</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="white-glove-service" href="/about/">White-Glove Delivery</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="custom-orders" href="/custom-request/">Material Swatches &amp; Custom Care</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface" data-path="warranty" href="/about/">10-Year Warranty</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md uppercase tracking-wider font-semibold text-primary">Atelier Newsletter</span><p class="font-body-sm text-body-sm text-on-surface-variant">Receive exclusive previews of seasonal drops and private studio releases.</p><div class="flex gap-space-xs"><input class="flex-1 bg-surface rounded-lg px-space-sm py-space-xs font-body-sm text-body-sm text-on-surface border-0 outline-none shadow-[0_1px_4px_-1px_rgba(45,30,24,0.02)]" placeholder="Enter your email" type="email"><button class="bg-primary text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-lg hover:bg-primary-container hover:text-surface transition-colors">Join</button></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm"><p class="">© {% now "Y" %} Glory Furniture Hub. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface" data-path="privacy-policy" href="/privacy-policy/">Privacy Policy</a><a class="hover:text-on-surface" data-path="terms-of-service" href="/terms-and-conditions/">Terms of Service</a><a class="hover:text-on-surface" data-path="sustainability" href="/about/">Sustainability Charter</a></div></div><!-- Mobile Bottom Navigation (Identical across Home, Catalog, Orders, Bag, Account) -->
 <nav class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-2 py-1.5 flex items-center justify-around shadow-lg">
   <a href="{% url 'home' %}" class="flex flex-col items-center py-1 px-2 text-[10px] font-bold text-[#5C3D2E]">
     <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>

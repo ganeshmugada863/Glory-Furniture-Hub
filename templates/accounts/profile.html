@@ -180,13 +180,13 @@
         <!-- 2. Cart -->
         <a href="/cart/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Cart">
           <span class="material-symbols-outlined text-[24px]">shopping_bag</span>
-          <span id="navCartBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">2</span>
+          <span id="navCartBadge" class="cart-badge-count rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs {% if not cart_count or cart_count == 0 %}hidden{% endif %}">{{ cart_count|default:"0" }}</span>
         </a>
 
         <!-- 3. Fav (Favorites) -->
         <a href="/wishlist/" class="p-2 rounded-full hover:bg-surface-container-low text-primary hover:text-secondary transition-colors relative flex items-center justify-center cursor-pointer" title="Favorites">
           <span class="material-symbols-outlined text-[24px]">favorite</span>
-          <span id="navWishlistBadge" class="rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs">{{ wishlist_count|default:"3" }}</span>
+          <span id="navWishlistBadge" class="wishlist-badge-count rounded-full absolute top-1 right-1 flex items-center justify-center bg-secondary text-white text-[9px] font-bold w-4 h-4 shadow-xs {% if not wishlist_count or wishlist_count == 0 %}hidden{% endif %}">{{ wishlist_count|default:"0" }}</span>
         </a>
       </div>
 
@@ -255,7 +255,7 @@
               <span class="text-[11px] text-on-surface-variant font-medium">Shopping Bag</span>
             </div>
           </div>
-          <span id="drawerCartBadge" class="bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full">2</span>
+          <span id="drawerCartBadge" class="cart-badge-count bg-secondary text-white text-xs font-bold px-2.5 py-0.5 rounded-full {% if not cart_count or cart_count == 0 %}hidden{% endif %}">{{ cart_count|default:"0" }}</span>
         </a>
 
         <!-- 3. Fav (Favorites) -->
@@ -269,14 +269,14 @@
               <span class="text-[11px] text-on-surface-variant font-medium">Saved Items &amp; Wishlist</span>
             </div>
           </div>
-          <span id="drawerWishlistBadge" class="bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full">{{ wishlist_count|default:"3" }}</span>
+          <span id="drawerWishlistBadge" class="wishlist-badge-count bg-secondary/15 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full {% if not wishlist_count or wishlist_count == 0 %}hidden{% endif %}">{{ wishlist_count|default:"0" }}</span>
         </a>
       </nav>
     </div>
 
     <!-- Drawer Footer -->
     <div class="p-4 border-t border-surface-container bg-surface-container-low/40 text-xs text-on-surface-variant">
-      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © 2024</p>
+      <p class="text-[11px] font-medium text-stone-500">Glory Furniture Hub © {% now "Y" %}</p>
     </div>
   </aside>
 
@@ -362,7 +362,7 @@
             <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="{% url 'wishlist' %}">
               <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">favorite</span>
               <span>Wishlist</span>
-              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold shrink-0">{{ wishlist_count|default:"3" }} Items</span>
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-[10px] font-bold shrink-0">{{ wishlist_count|default:"0" }} Items</span>
             </a>
             <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-primary text-xs sm:text-sm font-medium shrink-0 transition-all select-none group cursor-pointer" href="{% url 'custom_request' %}">
               <span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">architecture</span>
@@ -409,10 +409,10 @@
             </div>
             <div>
               <div class="font-headline-sm text-lg font-bold text-primary">{% if active_orders_count %}{{ active_orders_count }} In-Transit{% else %}0 In-Transit{% endif %}</div>
-              <p class="text-xs text-on-surface-variant truncate mt-0.5">{% if latest_order %}{{ latest_order.product_name }}{% else %}Serah Teak Platform Bed{% endif %}</p>
+              <p class="text-xs text-on-surface-variant truncate mt-0.5">{% if latest_order %}{{ latest_order.product_name }}{% else %}No active orders{% endif %}</p>
             </div>
             <a href="{% url 'orders' %}" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-secondary text-xs font-bold cursor-pointer">
-              <span>Arriving Soon</span>
+              <span>View Tracking</span>
               <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
             </a>
           </div>
@@ -426,8 +426,8 @@
               </div>
             </div>
             <div>
-              <div class="font-headline-sm text-lg font-bold text-primary">{{ orders_count|default:"4" }} Orders</div>
-              <p class="text-xs text-on-surface-variant mt-0.5">Architectural pieces</p>
+              <div class="font-headline-sm text-lg font-bold text-primary">{{ orders_count|default:"0" }} Orders</div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Purchased items</p>
             </div>
             <a href="{% url 'orders' %}" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-on-surface-variant group-hover:text-primary text-xs font-bold transition-colors cursor-pointer">
               <span>View History</span>
@@ -444,8 +444,8 @@
               </div>
             </div>
             <div>
-              <div class="font-headline-sm text-lg font-bold text-primary">{{ wishlist_count|default:"6" }} Pieces</div>
-              <p class="text-xs text-on-surface-variant mt-0.5">Living room collection</p>
+              <div class="font-headline-sm text-lg font-bold text-primary">{{ wishlist_count|default:"0" }} Pieces</div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Saved items</p>
             </div>
             <a href="{% url 'wishlist' %}" class="mt-3 pt-2 border-t border-surface-container/60 flex items-center justify-between text-secondary text-xs font-bold cursor-pointer">
               <span>Explore Wishlist</span>

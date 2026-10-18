@@ -79,5 +79,10 @@ def global_furniture_context(request):
         'WISHLIST_COUNT': len(wishlist_list),
         'WISHLIST_PRODUCTS': wishlist_products,
         'WISHLIST_IDS': wishlist_list,
+        # Lowercase aliases for complete cross-template synchronization
+        'cart_count': len(cart_list),
+        'wishlist_count': len(wishlist_list),
+        'cart_items': cart_list,
+        'wishlist_ids': [int(x) for x in wishlist_list if str(x).isdigit()],
     }
 

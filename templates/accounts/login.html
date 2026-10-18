@@ -244,6 +244,9 @@
           {% endfor %}
           {% endif %}
 
+          <!-- JS OAuth Error Alert Banner -->
+          <div id="js-oauth-error" class="hidden mb-3 p-2.5 bg-red-950/70 border border-red-800/80 rounded-xl text-xs text-red-300 flex items-start gap-2"></div>
+
           <!-- OAuth Button: Continue with Google -->
           <div class="w-full mb-3">
             <button 
@@ -474,9 +477,13 @@
       const btn = document.getElementById('login-google-btn');
       const text = document.getElementById('login-google-btn-text');
       const spinner = document.getElementById('login-google-spinner');
+      const errBanner = document.getElementById('js-oauth-error');
 
       if (!supabaseClient) {
-        alert("Authentication service is loading. Please refresh and try again.");
+        if (errBanner) {
+          errBanner.textContent = "Authentication service is loading. Please refresh and try again.";
+          errBanner.classList.remove('hidden');
+        }
         return;
       }
 
@@ -484,6 +491,7 @@
         if (btn) btn.disabled = true;
         if (text) text.innerText = "Connecting to Google...";
         if (spinner) spinner.classList.remove('hidden');
+        if (errBanner) errBanner.classList.add('hidden');
 
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const targetOrigin = isLocal ? window.location.origin : 'https://gloryfurniturehub.com';
@@ -508,7 +516,10 @@
         if (btn) btn.disabled = false;
         if (text) text.innerText = "Continue with Google";
         if (spinner) spinner.classList.add('hidden');
-        alert("Google Authentication error: " + (err.message || err));
+        if (errBanner) {
+          errBanner.textContent = "Google Authentication error: " + (err.message || err);
+          errBanner.classList.remove('hidden');
+        }
       }
     }
   </script>
