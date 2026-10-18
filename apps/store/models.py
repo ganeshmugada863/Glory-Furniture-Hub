@@ -151,6 +151,10 @@ class Product(models.Model):
         return self.name
 
     @property
+    def wood_type(self):
+        return self.material or 'Solid Teak Wood'
+
+    @property
     def all_images(self):
         images = []
         if self.primary_image and self.primary_image.strip():
