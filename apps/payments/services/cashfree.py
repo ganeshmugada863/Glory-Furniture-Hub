@@ -184,11 +184,12 @@ class CashfreeService:
         """
         Retrieves all payments made for a Cashfree order from `/pg/orders/{order_id}/payments`.
         """
-        if not cls.is_configured() or cf_order_id.startswith('CF_') and 'simulated' in cf_order_id:
+        if not cls.is_configured() or (cf_order_id.startswith('CF_') and 'simulated' in cf_order_id):
             return [{
-                "payment_status": "SUCCESS",
+                "payment_status": "PENDING",
+                "payment_message": "Gateway pending configuration or session unverified.",
                 "cf_payment_id": f"CF_PAY_SIM_{uuid.uuid4().hex[:8].upper()}",
-                "payment_amount": 1000.0,
+                "payment_amount": 0.0,
                 "payment_currency": "INR",
                 "payment_method": {"upi": {"channel": "intent"}},
                 "is_simulated": True
@@ -216,7 +217,7 @@ class CashfreeService:
         if not cls.is_configured():
             return {
                 "order_id": cf_order_id,
-                "order_status": "PAID",
+                "order_status": "ACTIVE",
                 "is_simulated": True
             }
 

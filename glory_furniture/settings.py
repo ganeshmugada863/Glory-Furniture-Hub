@@ -94,7 +94,7 @@ MIDDLEWARE = [
     'apps.core.middleware.SecurityAndPermissionsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware', # Disabled to allow Hugging Face Space iframe
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.accounts.middleware.RoleBasedAccessMiddleware',
 ]
 
@@ -316,12 +316,11 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50 MB
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Cashfree Payment Gateway Configuration
-DEFAULT_CF_CLIENT_ID = "1415596b360860aa4bd336488486955141"
-DEFAULT_CF_CLIENT_SECRET = "cfsk_ma_prod_1a8c9e55ad7d1591ba5f22e70ca7a177_0b2a75dc"
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-CASHFREE_CLIENT_ID = (os.getenv('CASHFREE_CLIENT_ID') or os.getenv('CASHFREE_APP_ID') or DEFAULT_CF_CLIENT_ID).strip()
-CASHFREE_CLIENT_SECRET = (os.getenv('CASHFREE_CLIENT_SECRET') or os.getenv('CASHFREE_SECRET_KEY') or DEFAULT_CF_CLIENT_SECRET).strip()
+# Cashfree Payment Gateway Configuration
+CASHFREE_CLIENT_ID = (os.getenv('CASHFREE_CLIENT_ID') or os.getenv('CASHFREE_APP_ID') or '').strip()
+CASHFREE_CLIENT_SECRET = (os.getenv('CASHFREE_CLIENT_SECRET') or os.getenv('CASHFREE_SECRET_KEY') or '').strip()
 
 if CASHFREE_CLIENT_SECRET.startswith('cfsk_ma_prod_'):
     CASHFREE_ENVIRONMENT = 'PRODUCTION'

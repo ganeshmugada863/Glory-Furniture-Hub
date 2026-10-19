@@ -113,22 +113,15 @@ def checkout_payment_view(request, order_number):
                 payment_type='FULL',
                 amount=order.total_amount,
                 currency='INR',
-                gateway=method,
+                gateway='Cashfree',
                 gateway_order_id=f"ORD_{order.order_number}",
                 gateway_payment_id=ref_id,
                 payment_method=method,
-                status='PAID',
-                verification_status='VERIFIED',
-                paid_at=timezone.now(),
+                status='PENDING',
+                verification_status='PENDING_VERIFICATION',
                 reference_number=upi_id or ref_id,
-                admin_notes=f"Processed securely via {method} ({selected_app or 'Direct'})"
+                admin_notes=f"Initiated via {method} ({selected_app or 'Direct'}) - Awaiting Gateway Settlement"
             )
-            order.payment_status = 'FULLY_PAID'
-            order.fulfillment_status = 'CONFIRMED'
-            order.order_status = 'CONFIRMED'
-            order.paid_amount = order.total_amount
-            order.remaining_amount = Decimal('0.00')
-            order.save(update_fields=['payment_status', 'fulfillment_status', 'order_status', 'paid_amount', 'remaining_amount'])
 
             order_ids = request.session.get('glory_customer_order_ids', [])
             if order.id not in order_ids:
@@ -136,13 +129,23 @@ def checkout_payment_view(request, order_number):
             request.session['glory_customer_order_ids'] = order_ids
             request.session.modified = True
 
+            # Server-side Cashfree session initiation for direct form submit
             try:
-                NotificationService.notify_order_fully_paid(order)
-            except Exception:
-                pass
+                cf_order_data = CashfreeService.create_order(
+                    order=order,
+                    return_url=f"https://{request.get_host()}/payments/return/?order_id=ORD_{order.order_number}",
+                    notify_url=f"https://{request.get_host()}/payments/webhook/cashfree/"
+                )
+                session_id = cf_order_data.get('payment_session_id')
+                if session_id and not cf_order_data.get('is_simulated'):
+                    is_prod = (getattr(settings, 'CASHFREE_ENVIRONMENT', 'PRODUCTION').upper() == 'PRODUCTION')
+                    checkout_url = f"https://payments.cashfree.com/order/#{session_id}" if is_prod else f"https://payments-test.cashfree.com/order/#{session_id}"
+                    return redirect(checkout_url)
+            except Exception as cf_err:
+                logger.warning(f"Cashfree direct initiation note: {cf_err}")
 
-            messages.success(request, f"Payment of ₹{int(order.total_amount):,} confirmed via {method}!")
-            return redirect('payment_receipt', payment_id=payment.payment_id)
+            messages.info(request, f"Payment session initiated for Order #{order.order_number}. Complete settlement at gateway.")
+            return redirect('payment_checkout', order_number=order.order_number)
 
     # 3 Equal Installments schedule calculation matching Image 1 & product duration days
     if order.installments.exists():
@@ -174,7 +177,7 @@ def checkout_payment_view(request, order_number):
         product_days = (
             (order.installment_plan_snapshot or {}).get('duration_days') or 
             (order.installment_plan_snapshot or {}).get('total_days') or 
-            (order.product.installment_days if order.product and hasattr(order.product, 'installment_days') and order.product.installment_days else 30)
+            (order.product.installment_days if order.product and hasattr(order.product, 'installment_days') and order.product.installment_days else 60)
         )
         installment_schedule = InstallmentEngine.get_three_equal_installments_schedule(order.total_amount, total_days=product_days)
         installment_part_amount = installment_schedule[0]['amount']
@@ -401,17 +404,14 @@ def payment_return_view(request):
             payments_data = CashfreeService.get_order_payments(cf_order_id)
             order_details = CashfreeService.get_order_details(cf_order_id)
         else:
-            sim_status = request.GET.get('sim_status', 'SUCCESS').upper()
-            payments_data = [{
-                'payment_status': sim_status,
-                'cf_payment_id': f"CF_PAY_SIM_{uuid.uuid4().hex[:8].upper()}",
-                'payment_amount': 25000.0,
-            }]
+            payments_data = []
+            order_details = {}
     except Exception as e:
         logger.error(f"Failed to query Cashfree on return: {e}")
         payments_data = []
+        order_details = {}
 
-    successful_payment = next((p for p in payments_data if str(p.get('payment_status', '')).upper() in ['SUCCESS', 'PAID']), None)
+    successful_payment = next((p for p in payments_data if str(p.get('payment_status', '')).upper() in ['SUCCESS', 'PAID'] and not p.get('is_simulated')), None)
 
     if successful_payment:
         try:
@@ -590,23 +590,7 @@ def admin_payments_view(request):
     if not is_admin:
         return redirect(f'/admin/login/?next={request.path}')
 
-    # Auto-reconcile known live test orders if missing (e.g. after dyno restart)
-    try:
-        test_cf_order = 'CF_ORD_29_B42903'
-        if not Payment.objects.filter(gateway_order_id=test_cf_order, status='PAID').exists():
-            WebhookService._resolve_local_records(test_cf_order)
-            p = Payment.objects.filter(gateway_order_id=test_cf_order).first()
-            if p:
-                p.status = 'PAID'
-                p.gateway_payment_id = '6498813446'
-                p.amount = Decimal('2.00')
-                p.payment_method = 'UPI'
-                p.paid_at = p.paid_at or timezone.now()
-                p.save()
-                if p.order:
-                    p.order.update_financial_status()
-    except Exception as e:
-        logger.warning(f"Auto-sync check exception: {e}")
+
 
     # Calculate key payment metrics
     all_payments = Payment.objects.all().select_related('order', 'installment', 'customer').order_by('-paid_at', '-created_at')

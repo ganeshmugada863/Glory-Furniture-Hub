@@ -330,14 +330,18 @@ def booking_summary_view(request):
             except (ValueError, TypeError):
                 quantity = 1
 
-        try:
-            raw_price = request.GET.get('price') or request.POST.get('unit_price')
-            if raw_price:
-                unit_price = float(raw_price)
-            else:
-                unit_price = float(product.price) if product and hasattr(product, 'price') else 24000.0
-        except (ValueError, TypeError):
-            unit_price = float(product.price) if product and hasattr(product, 'price') else 24000.0
+        # Authoritative server-side pricing calculation strictly based on Product and variant delta
+        base_product_price = float(product.price) if product and hasattr(product, 'price') else 24000.0
+        variant_delta = 0.0
+        if product and hasattr(product, 'finishes') and isinstance(product.finishes, dict):
+            size_clean = str(selected_size).lower().replace(' ', '_').replace('-', '_')
+            delta_val = product.finishes.get(f"{size_clean}_delta")
+            if delta_val is not None:
+                try:
+                    variant_delta = float(delta_val)
+                except (ValueError, TypeError):
+                    variant_delta = 0.0
+        unit_price = max(1.0, base_product_price + variant_delta)
 
         # Pricing calculations
         mrp = round(unit_price * 1.30, -2)
@@ -430,6 +434,47 @@ def booking_summary_view(request):
         ).strip()
 
         if request.method == 'POST':
+            raw_meas = request.POST.get('custom_measurements')
+            if raw_meas is not None and not raw_meas.strip():
+                messages.error(request, 'Product measurements are mandatory before booking. Please specify dimensions.')
+                default_delivery_date = str(timezone.now().date() + timedelta(days=5))
+                context = {
+                    'product': product,
+                    'selected_size': selected_size,
+                    'selected_wood': selected_wood,
+                    'quantity': quantity,
+                    'unit_price': unit_price,
+                    'mrp': mrp,
+                    'total_mrp': total_mrp,
+                    'total_savings': total_savings,
+                    'item_subtotal': item_subtotal,
+                    'delivery_charge': delivery_charge,
+                    'gst_included': gst_included,
+                    'grand_total': grand_total,
+                    'formatted_grand_total': f"₹{int(grand_total):,}",
+                    'installment_amount': round(grand_total / 3, 2),
+                    'formatted_installment_amount': f"₹{int(grand_total / 3):,}",
+                    'formatted_unit_price': f"₹{int(unit_price):,}",
+                    'formatted_mrp': f"₹{int(mrp):,}",
+                    'formatted_subtotal': f"₹{int(item_subtotal):,}",
+                    'formatted_savings': f"₹{int(total_savings):,}",
+                    'formatted_gst': f"₹{int(gst_included):,}",
+                    'default_delivery_date': default_delivery_date,
+                    'saved_address': default_address,
+                    'has_saved_address': has_saved_address,
+                    'user_name': (profile.full_name if profile and profile.full_name else (user.get_full_name() if user else None)) or (default_address.get('name') if default_address and isinstance(default_address, dict) else '') or request.session.get('glory_user_name', '') or 'Valued Patron',
+                    'user_email': (user.email if user else None) or (default_address.get('email') if default_address and isinstance(default_address, dict) else '') or request.session.get('glory_user_email', '') or '',
+                    'user_phone': (profile.phone if profile and profile.phone and '98765' not in profile.phone else None) or (default_address.get('phone') if default_address and isinstance(default_address, dict) else '') or request.session.get('glory_user_phone', '') or '',
+                    'item_type': item_type,
+                    'measurement_label': measurement_label,
+                    'measurement_placeholder': measurement_placeholder,
+                    'measurement_hint': measurement_hint,
+                    'quick_presets': quick_presets,
+                    'default_measurements': '',
+                    'error_message': 'Product measurements are mandatory before booking',
+                }
+                return render(request, 'bookings/checkout_summary.html', context)
+
             custom_measurements = (
                 request.POST.get('custom_measurements') or 
                 request.POST.get('measurements') or 

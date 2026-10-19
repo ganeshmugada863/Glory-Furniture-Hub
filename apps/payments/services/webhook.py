@@ -33,8 +33,8 @@ class WebhookService:
         """
         secret = getattr(settings, 'CASHFREE_CLIENT_SECRET', '').strip()
         if not secret:
-            logger.warning("CASHFREE_CLIENT_SECRET not configured. Bypassing webhook signature check for simulation.")
-            return True
+            logger.error("CASHFREE_CLIENT_SECRET not configured. Rejecting webhook signature check.")
+            return False
 
         if not signature or not timestamp:
             logger.error("Missing webhook signature or timestamp headers.")
