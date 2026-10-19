@@ -644,91 +644,201 @@
     <!-- =============================================================== -->
     <!-- Compact Product Specifications (Space-Efficient Single-Line List)-->
     <!-- =============================================================== -->
-    <section class="w-full bg-surface-container-low py-6 border-y border-surface-container" id="detailed-specifications">
+    <section class="w-full bg-[#FAF8F5] py-7 border-y border-[#EFE9DF]" id="detailed-specifications" style="font-family: 'Poppins', sans-serif;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="flex items-center justify-between mb-3.5 flex-wrap gap-2">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div>
-            <span class="text-secondary font-label-md text-[11px] font-bold uppercase tracking-widest">TECHNICAL SPECIFICATIONS</span>
-            <h2 class="font-headline-sm text-base sm:text-lg text-primary font-bold">Product Specifications &amp; Engineering</h2>
+            <span class="text-[#8C4F20] text-[11px] font-semibold uppercase tracking-widest block">Technical Specifications</span>
+            <h2 class="text-lg sm:text-xl text-[#140804] font-semibold tracking-tight mt-0.5">Product Specifications &amp; Engineering</h2>
           </div>
-          <div class="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full text-xs font-bold text-primary shadow-2xs border border-surface-container">
-            <span class="material-symbols-outlined text-[15px] text-secondary">architecture</span>
+          <div class="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full text-xs font-medium text-stone-700 shadow-2xs border border-[#E8DAC9]">
+            <span class="material-symbols-outlined text-[15px] text-[#8C4F20]">architecture</span>
             <span>SKU: GFH-{{ product.id|stringformat:"04d" }}</span>
           </div>
         </div>
 
-        <!-- Space-Efficient Single-Line Specification Rows -->
-        <div class="bg-white rounded-2xl border border-surface-container shadow-2xs divide-y divide-surface-container overflow-hidden">
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">forest</span>
+        <!-- Clean Poppins Specification Rows (Simple & Readable) -->
+        <div class="bg-white rounded-2xl border border-[#E8DAC9] shadow-2xs divide-y divide-[#F0EBE1] overflow-hidden">
+          <!-- 1. Timber / Primary Material -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">forest</span>
               <span>Timber Material</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
-              {{ product.material|default:"100% Kiln-Dried Seasoned Teak Wood (Zero-VOC Biological Polish)" }}
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              {{ product.material|default:"100% Kiln-Dried Seasoned Burma Teak Wood" }}
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">straighten</span>
+
+          <!-- 2. Dimensions -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">straighten</span>
               <span>Dimensions</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
-              {{ product.dimensions|default:"81\" L × 74\" W × 45\" H (Custom Sizing Available)" }}
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              {{ product.dimensions|default:"Standard Architectural Dimensions (Custom Sizing Available)" }}
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">inventory_2</span>
+
+          {% if product.category_type == 'bed' or product.category_type == 'diwan' %}
+          <!-- 3. Bed Storage -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">inventory_2</span>
               <span>Storage &amp; Cavity</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
-              German Gas-Strut Hydraulic Pistons (1200N) or Solid Hardwood Box Storage
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              German Gas-Strut Hydraulic Pistons (1200N) or Solid Hardwood Box
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">handyman</span>
+          <!-- 4. Joinery -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">handyman</span>
               <span>Joinery &amp; Build</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
-              Mortise-and-Tenon Interlocking Joinery with Anti-Creak Steel Sub-plates
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Mortise-and-Tenon Interlocking Joinery with Anti-Creak Plates
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">bed</span>
+          <!-- 5. Mattress Fit -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">bed</span>
               <span>Mattress Fit</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
               Standard King &amp; Queen Mattresses (up to 12" Thickness)
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">texture</span>
+          <!-- 6. Finish -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">texture</span>
               <span>Finish &amp; Detail</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
               Hand-Woven Natural Cane Lattice with Tactile Natural Wax Polish
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">local_shipping</span>
-              <span>Delivery &amp; Setup</span>
+
+          {% elif product.category_type == 'sofa' %}
+          <!-- 3. Sofa Foam & Seating -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">chair</span>
+              <span>Seating Comfort</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
-              {{ product.lead_time|default:"Free White-Glove In-Home Assembly within 3-5 Business Days" }}
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              High-Resilience (HR) 40-Density Foam with Lumbar Support
             </div>
           </div>
-          <div class="flex items-center justify-between px-4 py-2.5 text-xs hover:bg-surface-container-low/50 transition-colors">
-            <div class="flex items-center gap-2 text-stone-500 font-semibold w-1/3 sm:w-1/4 shrink-0">
-              <span class="material-symbols-outlined text-[17px] text-secondary">verified_user</span>
+          <!-- 4. Framing & Joinery -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">handyman</span>
+              <span>Internal Frame</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Solid Burma Teak Framing with Heavy-Gauge Anti-Sag Springs
+            </div>
+          </div>
+          <!-- 5. Upholstery & Fabric -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">texture</span>
+              <span>Upholstery Grade</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Stain-Resistant Belgian Fabric &amp; High-Durability Weave
+            </div>
+          </div>
+          <!-- 6. Finish & Polish -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">auto_awesome</span>
+              <span>Timber Polish</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Multi-Coat Natural Honey Teak Wax Polish (Non-Toxic)
+            </div>
+          </div>
+
+          {% elif product.category_type == 'dining' %}
+          <!-- 3. Dining Seating -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">table_restaurant</span>
+              <span>Seating Configuration</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              6 to 8 Seater with Contoured High-Back Teak Chairs
+            </div>
+          </div>
+          <!-- 4. Tabletop Craft -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">handyman</span>
+              <span>Joinery &amp; Tabletop</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Solid Mortise-and-Tenon Interlocking Joinery
+            </div>
+          </div>
+          <!-- 5. Finish & Protection -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">texture</span>
+              <span>Surface Protection</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Food-Safe Water &amp; Heat-Resistant Natural Protective Coating
+            </div>
+          </div>
+
+          {% else %}
+          <!-- General Joinery -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">handyman</span>
+              <span>Joinery &amp; Build</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Traditional Mortise-and-Tenon Solid Joinery
+            </div>
+          </div>
+          <!-- General Finish -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">texture</span>
+              <span>Finish &amp; Polish</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              Hand-Rubbed Natural Teakwood Wax Polish
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Delivery & Setup (Universal) -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">local_shipping</span>
+              <span>Delivery &amp; Setup</span>
+            </div>
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              {{ product.lead_time|default:"Free White-Glove In-Home Assembly (3-5 Days)" }}
+            </div>
+          </div>
+
+          <!-- Warranty Coverage (Universal) -->
+          <div class="flex items-center justify-between px-4 sm:px-5 py-3 text-xs sm:text-[13px] hover:bg-[#FAF8F5]/60 transition-colors">
+            <div class="flex items-center gap-2.5 text-stone-500 font-medium shrink-0">
+              <span class="material-symbols-outlined text-[18px] text-[#8C4F20]">verified_user</span>
               <span>Warranty Coverage</span>
             </div>
-            <div class="text-right sm:text-left flex-1 font-bold text-primary truncate pl-2">
-              10-Year Anti-Termite &amp; Structural Craft Guarantee
+            <div class="text-right font-medium text-stone-900 pl-4 leading-snug">
+              10-Year Anti-Termite &amp; Structural Guarantee
             </div>
           </div>
         </div>
