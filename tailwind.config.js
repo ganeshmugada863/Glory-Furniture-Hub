@@ -93,6 +93,13 @@ module.exports = {
         'error-container': '#ffdad6',
         'on-error': '#ffffff',
         'on-error-container': '#93000a',
+        brand: {
+          cognac: '#9E4E1D',
+          cognacDark: '#873F14',
+          espresso: '#2E1B10',
+          cream: '#FAF6F0',
+          sand: '#F2E8DC',
+        },
       },
       borderRadius: {
         '2xs': '0.125rem',
@@ -106,6 +113,8 @@ module.exports = {
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        brand: ['"Cinzel"', 'serif'],
         display: ['"Playfair Display"', 'Georgia', 'serif'],
         'display-lg': ['"Playfair Display"', 'Georgia', 'serif'],
         'display-md': ['"Playfair Display"', 'Georgia', 'serif'],

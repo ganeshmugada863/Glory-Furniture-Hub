@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Welcome to Glory Furniture Hub</title>
   
-  <!-- Compiled Tailwind CSS & CDN support -->
+  <!-- Compiled Production Tailwind CSS -->
   <link rel="stylesheet" href="{% static 'css/glory.css' %}">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   
   <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, Cinzel -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,29 +29,6 @@
         }
       } catch(e) {}
     })();
-  </script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            serif: ['"Playfair Display"', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            brand: ['"Cinzel"', 'serif'],
-          },
-          colors: {
-            brand: {
-              cognac: '#9E4E1D',
-              cognacDark: '#873F14',
-              espresso: '#2E1B10',
-              cream: '#FAF6F0',
-              sand: '#F2E8DC',
-            }
-          }
-        }
-      }
-    }
   </script>
 
   <style>
