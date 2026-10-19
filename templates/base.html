@@ -491,9 +491,9 @@
   </main>
 
   <!-- ========================================================= -->
-  <!-- 3. FOOTER (Scoped exclusively to the Homepage)             -->
+  <!-- 3. DYNAMIC FOOTER (Customer Storefront Pages)               -->
   <!-- ========================================================= -->
-  {% if is_home_page or request.resolver_match.url_name == 'home' %}
+  {% if not is_admin_portal and '/admin' not in request.path and '/accounts/admin' not in request.path %}
   <footer class="w-full bg-white text-gray-800 border-t border-gray-200/80 mt-12 sm:mt-16 font-sans">
     
     <!-- Main Footer Links Container -->

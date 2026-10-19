@@ -48,6 +48,68 @@
       <p class="text-xs sm:text-sm text-[#7A6E65] font-medium mt-1">Choose a saved address for shipping your order.</p>
     </div>
 
+    <!-- Check Delivery & White-Glove Installation with GPS & PIN Resolver -->
+    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-[#E8DAC9] shadow-2xs space-y-3">
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[20px] text-[#8C4F20]">local_shipping</span>
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold text-[#140804]">Check Delivery &amp; White-Glove Installation:</h3>
+            <p class="text-[10px] sm:text-[11px] text-[#7A6E65]">Verify postal eligibility or auto-fill via GPS location</p>
+          </div>
+        </div>
+        <button 
+          type="button" 
+          onclick="detectCheckoutGPSLocation()" 
+          id="checkoutGPSBtn"
+          class="px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs active:scale-95"
+        >
+          <span class="material-symbols-outlined text-[15px]">my_location</span>
+          <span>Use GPS</span>
+        </button>
+      </div>
+
+      <!-- PIN Code Input & Verification -->
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <input 
+            type="text" 
+            id="checkoutPincodeInput" 
+            maxlength="6" 
+            inputmode="numeric" 
+            placeholder="Enter 6-digit Pincode (e.g. 500034, 535591)" 
+            class="w-full bg-[#FAF5EE] border border-[#E8DAC9] px-3.5 py-2.5 rounded-xl text-xs font-medium text-[#140804] focus:outline-none focus:border-[#8C4F20] transition-all"
+            oninput="this.value = this.value.replace(/\D/g, ''); if(this.value.length === 6) verifyCheckoutPincode();"
+          >
+        </div>
+        <button 
+          type="button" 
+          onclick="verifyCheckoutPincode()" 
+          id="checkoutVerifyBtn"
+          class="px-4 py-2.5 rounded-xl bg-[#5C3D2E] hover:bg-black text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer active:scale-95 shrink-0"
+        >
+          Verify
+        </button>
+      </div>
+
+      <!-- Status Result Banner -->
+      <div id="checkoutStatusCard" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-xs text-emerald-900 space-y-1">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 font-bold">
+            <span>✅</span>
+            <span id="checkoutStatusTitle">White-Glove Delivery Available</span>
+          </div>
+          <span class="text-[10px] font-bold bg-white text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded-md">Delivered in 3-5 days</span>
+        </div>
+        <p id="checkoutStatusSummary" class="text-[11px] text-emerald-800 leading-relaxed"></p>
+        <div class="pt-1">
+          <button type="button" onclick="openAddModalWithLocation()" class="text-[11px] font-bold text-emerald-950 underline cursor-pointer hover:text-black">
+            + Auto-fill in "Add New Address" form
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- 3. ADDRESS SELECTION FORM -->
     <form method="POST" id="address-selection-form" class="space-y-4">
       {% csrf_token %}
@@ -255,6 +317,123 @@
   function closeModal() {
     document.getElementById('address-modal').classList.add('hidden');
     document.getElementById('address-modal').classList.remove('flex');
+  }
+
+  let detectedCity = '';
+  let detectedState = '';
+  let detectedPincode = '';
+  let detectedLocality = '';
+
+  function detectCheckoutGPSLocation(autoFillModal = false) {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    const btn = document.getElementById('checkoutGPSBtn');
+    if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[15px] animate-spin">refresh</span><span>Locating...</span>';
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        resolveCoords(pos.coords.latitude, pos.coords.longitude, autoFillModal);
+      },
+      (err) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            resolveCoords(pos.coords.latitude, pos.coords.longitude, autoFillModal);
+          },
+          (err2) => {
+            if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[15px]">my_location</span><span>Use GPS</span>';
+            alert('Could not acquire GPS coordinates. Please enter your 6-digit Pincode manually.');
+            const pinInput = document.getElementById('checkoutPincodeInput');
+            if (pinInput) pinInput.focus();
+          },
+          { timeout: 7000, enableHighAccuracy: true }
+        );
+      },
+      { timeout: 7000, enableHighAccuracy: false }
+    );
+  }
+
+  function resolveCoords(lat, lng, autoFillModal = false) {
+    const btn = document.getElementById('checkoutGPSBtn');
+    fetch(`/api/location/lookup/?lat=${lat}&lng=${lng}`)
+      .then(res => res.json())
+      .then(data => {
+        if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[15px]">my_location</span><span>Use GPS</span>';
+        if (data && data.status === 'success') {
+          detectedCity = data.city || '';
+          detectedState = data.state || '';
+          detectedPincode = data.pincode || '';
+          detectedLocality = data.locality || data.city || '';
+
+          const pinInput = document.getElementById('checkoutPincodeInput');
+          if (pinInput && detectedPincode) pinInput.value = detectedPincode;
+
+          const card = document.getElementById('checkoutStatusCard');
+          if (card) {
+            card.classList.remove('hidden');
+            document.getElementById('checkoutStatusSummary').textContent = `${data.formatted || (detectedLocality + ', ' + detectedCity + ', ' + detectedState + ' - ' + detectedPincode)} • Free White-Glove Installation Included`;
+          }
+
+          if (autoFillModal) {
+            fillModalInputs(detectedLocality, detectedCity, detectedState, detectedPincode);
+          }
+        } else {
+          alert('Coordinates acquired. Please enter your pincode.');
+        }
+      })
+      .catch(() => {
+        if (btn) btn.innerHTML = '<span class="material-symbols-outlined text-[15px]">my_location</span><span>Use GPS</span>';
+      });
+  }
+
+  function verifyCheckoutPincode() {
+    const pin = (document.getElementById('checkoutPincodeInput').value || '').trim();
+    if (!pin || pin.length !== 6) {
+      alert('Please enter a valid 6-digit Indian Pincode.');
+      return;
+    }
+    const verifyBtn = document.getElementById('checkoutVerifyBtn');
+    if (verifyBtn) verifyBtn.textContent = 'Checking...';
+
+    fetch(`/api/location/lookup/?pincode=${pin}`)
+      .then(res => res.json())
+      .then(data => {
+        if (verifyBtn) verifyBtn.textContent = 'Verify';
+        if (data && data.status === 'success') {
+          detectedCity = data.city || '';
+          detectedState = data.state || '';
+          detectedPincode = pin;
+          detectedLocality = data.locality || data.city || '';
+
+          const card = document.getElementById('checkoutStatusCard');
+          if (card) {
+            card.classList.remove('hidden');
+            document.getElementById('checkoutStatusSummary').textContent = `${data.formatted || (detectedCity + ', ' + detectedState + ' - ' + pin)} • Free White-Glove In-Home Assembly Included`;
+          }
+        } else {
+          const card = document.getElementById('checkoutStatusCard');
+          if (card) {
+            card.classList.remove('hidden');
+            document.getElementById('checkoutStatusSummary').textContent = `Delivery & Installation available for PIN ${pin} across India.`;
+          }
+        }
+      })
+      .catch(() => {
+        if (verifyBtn) verifyBtn.textContent = 'Verify';
+      });
+  }
+
+  function openAddModalWithLocation() {
+    openAddModal();
+    fillModalInputs(detectedLocality, detectedCity, detectedState, detectedPincode);
+  }
+
+  function fillModalInputs(locality, city, state, pincode) {
+    if (locality && !document.getElementById('modal_street').value) document.getElementById('modal_street').value = locality;
+    if (city) document.getElementById('modal_city').value = city;
+    if (state) document.getElementById('modal_state').value = state;
+    if (pincode) document.getElementById('modal_pincode').value = pincode;
   }
 
   document.addEventListener('DOMContentLoaded', function() {
