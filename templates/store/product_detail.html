@@ -775,26 +775,27 @@
     <!-- =============================================================== -->
     <!-- Fixed Bottom Action Bar (Responsive Mobile & Desktop)            -->
     <!-- =============================================================== -->
-    <div id="fixedBottomActionBar" class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-3 shadow-[0_-4px_24px_rgba(20,8,4,0.12)] border-t border-[#E8DAC9]">
-      <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
+    <div id="fixedBottomActionBar" class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-3 shadow-[0_-4px_24px_rgba(20,8,4,0.12)] border-t border-[#E8DAC9]" style="padding-bottom: max(0.625rem, env(safe-area-inset-bottom));">
+      <div class="max-w-7xl mx-auto flex items-center justify-between gap-2.5 sm:gap-6">
         <!-- Left: Product Identity & Dynamic Live Price -->
-        <div class="flex items-center gap-3 min-w-0">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 shrink-0">
           <div class="hidden sm:block w-12 h-12 rounded-xl bg-stone-100 overflow-hidden border border-[#E8DAC9] shrink-0">
             <img src="{{ product.primary_image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
           </div>
-          <div class="flex flex-col min-w-0">
+          <div class="flex flex-col min-w-0 justify-center">
             <span class="hidden sm:block text-xs font-bold text-[#140804] truncate max-w-[200px] md:max-w-xs">{{ product.name }}</span>
-            <div class="flex items-baseline gap-2">
-              <span id="mobileStickyPrice" class="font-black text-sm sm:text-base text-[#140804] leading-tight">{{ product.formatted_price }}</span>
-              <span class="text-[9px] sm:text-[10px] text-emerald-800 font-bold uppercase tracking-wider bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">White-Glove Setup Included</span>
+            <div class="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
+              <span id="mobileStickyPrice" class="font-black text-sm sm:text-base text-[#140804] leading-tight whitespace-nowrap">{{ product.formatted_price }}</span>
+              <span class="hidden sm:inline-block text-[10px] text-emerald-800 font-bold uppercase tracking-wider bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 whitespace-nowrap">White-Glove Setup Included</span>
+              <span class="sm:hidden text-[9px] text-emerald-800 font-bold uppercase tracking-tight whitespace-nowrap mt-0.5">Free Setup</span>
             </div>
           </div>
         </div>
 
         <!-- Right: Actions (Synced Quantity + Add to Cart + Golden Book Now) -->
-        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-          <!-- Quantity Controls in Bottom Bar -->
-          <div class="flex items-center border border-[#E8DAC9] rounded-xl bg-[#FAF5EE] px-1.5 py-1">
+        <div class="flex items-center gap-1.5 sm:gap-3 flex-1 sm:flex-initial justify-end min-w-0">
+          <!-- Quantity Controls in Bottom Bar (Desktop/Tablet) -->
+          <div class="hidden sm:flex items-center border border-[#E8DAC9] rounded-xl bg-[#FAF5EE] px-1.5 py-1 shrink-0">
             <button type="button" onclick="changeQuantity(-1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-xs text-[#140804] hover:bg-stone-50 cursor-pointer transition-colors">-</button>
             <span id="stickyQuantityDisplay" class="w-7 text-center text-xs font-bold text-[#140804]">1</span>
             <button type="button" onclick="changeQuantity(1)" class="w-7 h-7 rounded-lg bg-white shadow-2xs flex items-center justify-center font-bold text-xs text-[#140804] hover:bg-stone-50 cursor-pointer transition-colors">+</button>
@@ -804,9 +805,9 @@
           <button 
             type="button" 
             onclick="handleAddCurrentProductToCart()" 
-            class="bg-white hover:bg-stone-50 text-[#140804] border-2 border-[#140804] px-3.5 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-2xs hover:shadow-xs transition-all active:scale-[0.98] cursor-pointer flex items-center gap-1.5"
+            class="flex-1 sm:flex-initial bg-white hover:bg-stone-50 text-[#140804] border-2 border-[#140804] px-2.5 sm:px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-2xs hover:shadow-xs transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap min-w-0"
           >
-            <span class="material-symbols-outlined text-[17px]">shopping_bag</span>
+            <span class="material-symbols-outlined text-[16px] sm:text-[17px] shrink-0">shopping_bag</span>
             <span class="hidden sm:inline">Add to Cart</span>
             <span class="sm:hidden">Cart</span>
           </button>
@@ -815,9 +816,9 @@
           <button 
             type="button" 
             onclick="handleBookNowCurrentProduct()" 
-            class="bg-[#140804] hover:bg-[#8C4F20] text-[#FFDBCD] hover:text-white px-5 sm:px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer flex items-center gap-1.5 ring-2 ring-[#8C4F20]/30"
+            class="flex-[1.2] sm:flex-initial bg-[#140804] hover:bg-[#8C4F20] text-[#FFDBCD] hover:text-white px-3 sm:px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm uppercase tracking-wider shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ring-2 ring-[#8C4F20]/30 whitespace-nowrap min-w-0"
           >
-            <span class="material-symbols-outlined text-[17px]">bolt</span>
+            <span class="material-symbols-outlined text-[16px] sm:text-[17px] shrink-0">bolt</span>
             <span>Book Now</span>
           </button>
         </div>
