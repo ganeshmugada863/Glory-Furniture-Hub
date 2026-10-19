@@ -187,8 +187,13 @@ def get_sqlite_db_path():
             return tmp_db
     return src_db
 
+_POSTGRES_VERIFIED = False
+
 def test_postgres_connection(db_config):
-    """Fast probe (connect_timeout=2s) to verify PostgreSQL credentials before binding."""
+    """Fast probe to verify PostgreSQL credentials before binding, caching verified state."""
+    global _POSTGRES_VERIFIED
+    if _POSTGRES_VERIFIED:
+        return True
     if db_config.get('ENGINE') != 'django.db.backends.postgresql':
         return True
     try:
@@ -203,6 +208,7 @@ def test_postgres_connection(db_config):
             connect_timeout=2
         )
         conn.close()
+        _POSTGRES_VERIFIED = True
         return True
     except Exception as e:
         print(f"[DB Probe] Remote PostgreSQL connection failed: {e}. Switching to resilient local store.")
@@ -218,7 +224,7 @@ if DATABASE_URL:
 if DATABASE_URL:
     try:
         is_postgres = DATABASE_URL.startswith(('postgres://', 'postgresql://'))
-        conn_max = 0 if os.getenv('VERCEL') else 600
+        conn_max = 60 if os.getenv('VERCEL') else 600
         parse_options = {
             'conn_max_age': conn_max,
             'conn_health_checks': True,

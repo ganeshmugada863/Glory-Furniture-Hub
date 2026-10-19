@@ -33,5 +33,8 @@ dist-ssr/
 .vscode/*
 .vercel
 .env*
-media/
+media/*
+!media/products/
+media/products/*.mp4
+!media/custom_requests/
 scratch/
