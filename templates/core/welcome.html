@@ -9,10 +9,10 @@
   <!-- Compiled Production Tailwind CSS -->
   <link rel="stylesheet" href="{% static 'css/glory.css' %}">
   
-  <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, Cinzel -->
+  <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
   <script>
     (function() {
@@ -42,7 +42,7 @@
       margin: 0;
       padding: 0;
       background-color: #FAF6F0;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
@@ -112,6 +112,7 @@
         alt="Glory Furniture Hub Luxury Living Room" 
         class="w-full h-full object-cover object-[center_right] sm:object-center transform scale-[1.01]" 
         src="{% if cms.welcome_image %}{{ cms.welcome_image }}{% else %}{% static 'images/welcome_bg_stitch.jpg' %}{% endif %}"
+        onerror="this.onerror=null; this.src='{% static 'images/welcome_bg_stitch.jpg' %}';"
         loading="eager"
       />
       <!-- Left-side soft creamy-warm gradient mask -->
@@ -154,7 +155,7 @@
         </div>
         <!-- Logo Typography -->
         <div class="flex flex-col">
-          <span class="font-serif text-xl sm:text-2xl font-bold tracking-[0.16em] text-[#2E1B10] leading-tight uppercase">GLORY</span>
+          <span class="text-xl sm:text-2xl font-bold tracking-[0.16em] text-[#2E1B10] leading-tight uppercase">GLORY</span>
           <span class="text-[8.5px] sm:text-[9.5px] tracking-[0.28em] font-semibold text-[#9E4E1D] uppercase -mt-0.5">FURNITURE HUB</span>
         </div>
       </a>
@@ -225,7 +226,7 @@
         </div>
 
         <!-- Main Headline: Glory Furniture Hub -->
-        <h1 class="font-serif text-[38px] sm:text-6xl lg:text-[70px] font-bold leading-[1.06] text-[#2E1B10] tracking-tight mb-3 sm:mb-4 drop-shadow-sm">
+        <h1 class="text-[38px] sm:text-6xl lg:text-[70px] font-bold leading-[1.06] text-[#2E1B10] tracking-tight mb-3 sm:mb-4 drop-shadow-sm">
           {{ cms.welcome_title_main|default:"Glory" }}<br>
           <span class="text-[#6E3314]">{{ cms.welcome_title_highlight|default:"Furniture Hub" }}</span>
         </h1>
@@ -336,12 +337,7 @@
           <path d="M1100,90 C1220,70 1340,55 1440,40 L1440,90 Z" fill="#C9906F" opacity="0.35"></path>
         </svg>
 
-        <!-- Carousel Pagination Pill in bottom center -->
-        <div aria-label="Slide navigation" class="absolute bottom-2.5 sm:bottom-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-stone-200/80 shadow-sm z-20">
-          <span class="w-6 h-1.5 rounded-full bg-[#9E4E1D] shadow-[0_0_6px_rgba(158,78,29,0.4)]"></span>
-          <span class="w-1.5 h-1.5 rounded-full bg-stone-300"></span>
-          <span class="w-1.5 h-1.5 rounded-full bg-stone-300"></span>
-        </div>
+        <!-- Wave Footer Accent -->
       </div>
     </footer>
 

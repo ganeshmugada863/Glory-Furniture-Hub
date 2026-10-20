@@ -9,47 +9,12 @@
   <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
 
-  <!-- Tailwind CSS v3 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "surface-tint": "#ffb77d",
-            "primary": "#ffb77d",
-            "primary-container": "#d97707",
-            "on-primary": "#4d2600",
-            "on-primary-container": "#432100",
-            "secondary": "#ffb68f",
-            "secondary-container": "#703b1b",
-            "tertiary": "#f5bc7e",
-            "surface": "#131313",
-            "surface-dim": "#131313",
-            "surface-bright": "#393939",
-            "surface-container-lowest": "#0e0e0e",
-            "surface-container-low": "#1c1b1b",
-            "surface-container": "#201f1f",
-            "surface-container-high": "#2a2a2a",
-            "surface-container-highest": "#353534",
-            "on-surface": "#e5e2e1",
-            "on-surface-variant": "#dbc2b0",
-            "outline": "#a38c7c",
-            "outline-variant": "#554336"
-          },
-          fontFamily: {
-            headline: ['"EB Garamond"', 'serif'],
-            body: ['"Manrope"', 'sans-serif'],
-          }
-        }
-      }
-    };
-  </script>
+  <!-- Production Compiled Tailwind CSS -->
+  <link rel="stylesheet" href="{% static 'css/glory.css' %}">
 
   <!-- Supabase Official JS SDK Client for Google OAuth -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -58,7 +23,7 @@
     body {
       background-color: #0e0e0e;
       color: #e5e2e1;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     .material-symbols-outlined {
@@ -85,7 +50,7 @@
           <span class="material-symbols-outlined text-[20px]">chair</span>
         </div>
         <div class="flex flex-col">
-          <span class="font-headline text-base sm:text-lg text-primary font-bold tracking-wide leading-tight">GLORY FURNITURE HUB</span>
+          <span class="text-base sm:text-lg text-primary font-bold tracking-wide leading-tight">GLORY FURNITURE HUB</span>
           <span class="text-[9px] uppercase text-on-surface-variant tracking-wider leading-none mt-0.5">Bespoke Handcrafted Solid Burma Teak</span>
         </div>
       </a>
@@ -112,19 +77,19 @@
         <div class="absolute inset-0 z-0 overflow-hidden" id="carousel-container">
           <!-- Slide 0 -->
           <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-100" id="slide-0">
-            <img alt="Glory Teak Furniture Collection" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.login_image1 }}" />
+            <img alt="Glory Teak Furniture Collection" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.login_image1 }}" onerror="this.onerror=null; this.src='{% static "images/hero_card_living_clean.jpg" %}';" />
             <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/60 to-surface-container-lowest/30 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/80 via-transparent to-transparent"></div>
           </div>
           <!-- Slide 1 -->
           <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none" id="slide-1">
-            <img alt="Solid Teak Dining Table Set" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.login_slide2_image_url }}" />
+            <img alt="Solid Teak Dining Table Set" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.login_image2 }}" onerror="this.onerror=null; this.src='{% static "images/hero_card_bed_full.jpg" %}';" />
             <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/60 to-surface-container-lowest/30 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/80 via-transparent to-transparent"></div>
           </div>
           <!-- Slide 2 -->
           <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none" id="slide-2">
-            <img alt="Handcrafted Diwan Daybed Lounger" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.login_slide3_image_url }}" />
+            <img alt="Handcrafted Diwan Daybed Lounger" class="w-full h-full object-cover object-center scale-[1.02]" src="{{ cms.login_image3 }}" onerror="this.onerror=null; this.src='{% static "images/hero_card_dining_full.jpg" %}';" />
             <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/60 to-surface-container-lowest/30 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/80 via-transparent to-transparent"></div>
           </div>
@@ -141,7 +106,7 @@
         <!-- Top Showcase Text Overlay -->
         <div class="relative z-10 p-5 sm:p-8 lg:p-10 flex flex-col gap-1.5">
           <div class="max-w-xl">
-            <h1 class="font-headline text-3xl sm:text-4xl lg:text-[44px] text-on-surface font-semibold tracking-tight drop-shadow-sm leading-tight">
+            <h1 class="text-3xl sm:text-4xl lg:text-[44px] text-on-surface font-semibold tracking-tight drop-shadow-sm leading-tight">
               {{ cms.login_hero_title|default:"Welcome Back" }}<br class="hidden sm:inline">
               <span class="italic text-primary-container text-[#ffdcc3]">{{ cms.login_hero_highlight|default:"Glory Furniture Hub" }}</span>
             </h1>
@@ -205,7 +170,7 @@
             <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#2E1B10] to-[#120B05] border border-[#ffb77d]/30 flex items-center justify-center shadow-lg mb-1.5">
               <span class="material-symbols-outlined text-[#ffb77d] text-[22px]">chair</span>
             </div>
-            <span class="font-headline text-lg sm:text-xl font-bold tracking-[0.10em] text-white uppercase leading-tight drop-shadow-sm text-center">
+            <span class="text-lg sm:text-xl font-bold tracking-[0.10em] text-white uppercase leading-tight drop-shadow-sm text-center">
               GLORY FURNITURE HUB
             </span>
             <span class="text-[8.5px] sm:text-[9.5px] tracking-[0.20em] font-bold text-[#ffb77d] uppercase mt-0.5 leading-tight">
@@ -218,7 +183,7 @@
             <span class="text-[10px] uppercase tracking-[0.2em] text-primary font-bold mb-0.5">
               {{ cms.login_card_subtitle|default:"CLIENT AUTHENTICATION" }}
             </span>
-            <h2 class="font-headline text-2xl sm:text-[28px] text-on-surface font-semibold tracking-tight">
+            <h2 class="text-2xl sm:text-[28px] text-on-surface font-semibold tracking-tight">
               {{ cms.login_card_title|default:"Welcome Back" }}
             </h2>
             <p class="text-[11px] text-on-surface-variant mt-1 max-w-xs leading-relaxed">

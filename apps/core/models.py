@@ -165,7 +165,7 @@ class PageCMSContent(models.Model):
     def welcome_image(self):
         if self.welcome_bg_image:
             return self.welcome_bg_image.url
-        if self.welcome_bg_image_url:
+        if self.welcome_bg_image_url and 'lh3.googleusercontent.com' not in self.welcome_bg_image_url:
             return self.welcome_bg_image_url
         return '/static/images/welcome_bg_stitch.jpg'
 
@@ -173,13 +173,41 @@ class PageCMSContent(models.Model):
     def login_image1(self):
         if self.login_slide1_image:
             return self.login_slide1_image.url
-        return self.login_slide1_image_url
+        if self.login_slide1_image_url and 'lh3.googleusercontent.com' not in self.login_slide1_image_url:
+            return self.login_slide1_image_url
+        return '/static/images/hero_card_living_clean.jpg'
+
+    @property
+    def login_image2(self):
+        if self.login_slide2_image_url and 'lh3.googleusercontent.com' not in self.login_slide2_image_url:
+            return self.login_slide2_image_url
+        return '/static/images/hero_card_bed_full.jpg'
+
+    @property
+    def login_image3(self):
+        if self.login_slide3_image_url and 'lh3.googleusercontent.com' not in self.login_slide3_image_url:
+            return self.login_slide3_image_url
+        return '/static/images/hero_card_dining_full.jpg'
 
     @property
     def register_image1(self):
         if self.register_slide1_image:
             return self.register_slide1_image.url
-        return self.register_slide1_image_url
+        if self.register_slide1_image_url and 'lh3.googleusercontent.com' not in self.register_slide1_image_url:
+            return self.register_slide1_image_url
+        return '/static/images/hero_card_bed_full.jpg'
+
+    @property
+    def register_image2(self):
+        if self.register_slide2_image_url and 'lh3.googleusercontent.com' not in self.register_slide2_image_url:
+            return self.register_slide2_image_url
+        return '/static/images/hero_card_dining_full.jpg'
+
+    @property
+    def register_image3(self):
+        if self.register_slide3_image_url and 'lh3.googleusercontent.com' not in self.register_slide3_image_url:
+            return self.register_slide3_image_url
+        return '/static/images/hero_card_living_clean.jpg'
 
 
 class HomeMediaCMS(models.Model):

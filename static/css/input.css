@@ -8,3 +8,33 @@
     padding: 0;
   }
 }
+
+@layer utilities {
+  .dark .bg-surface-container-lowest { background-color: #0e0e0e !important; }
+  .dark .bg-surface-container-low { background-color: #1c1b1b !important; }
+  .dark .bg-surface-container { background-color: #201f1f !important; }
+  .dark .bg-surface-container-high { background-color: #2a2a2a !important; }
+  .dark .bg-surface-container-highest { background-color: #353534 !important; }
+  .dark .text-on-surface { color: #e5e2e1 !important; }
+  .dark .text-on-surface-variant { color: #dbc2b0 !important; }
+  .dark .text-primary { color: #ffb77d !important; }
+  .dark .text-primary-container { color: #d97707 !important; }
+  .dark .text-secondary { color: #ffb68f !important; }
+  .dark .text-tertiary { color: #f5bc7e !important; }
+  .dark .bg-primary { background-color: #ffb77d !important; }
+  .dark .bg-primary-container { background-color: #d97707 !important; }
+  .dark .bg-secondary-container { background-color: #703b1b !important; }
+  .dark .text-on-primary { color: #4d2600 !important; }
+  .dark .text-on-primary-container { color: #432100 !important; }
+  .dark .border-surface-container { border-color: #201f1f !important; }
+  .dark .border-surface-container-highest { border-color: #353534 !important; }
+  .dark .border-outline-variant { border-color: #554336 !important; }
+  .dark .border-outline { border-color: #a38c7c !important; }
+  .dark .from-surface-container-lowest { --tw-gradient-from: #0e0e0e !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+  .dark .from-primary-container { --tw-gradient-from: #d97707 !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+  .dark .to-secondary-container { --tw-gradient-to: #703b1b !important; }
+  .dark .focus\:border-primary:focus { border-color: #ffb77d !important; }
+  .dark .hover\:bg-surface-container-highest:hover { background-color: #353534 !important; }
+  .dark .hover\:bg-surface-container-high:hover { background-color: #2a2a2a !important; }
+  .dark .hover\:bg-surface-container-lowest:hover { background-color: #0e0e0e !important; }
+}
