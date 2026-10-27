@@ -1,202 +1,52 @@
 {% extends 'admin_portal/admin_base.html' %}
 {% load static %}
 
-{% block title %}Editor: {{ page.title }} — Glory Studio Admin{% endblock %}
+{% block title %}Website Policies: {{ page.title }} — Glory Studio Admin{% endblock %}
 
 {% block content %}
-<!-- UNIFIED POLICY DOCUMENT EDITOR CONTAINER -->
-<div id="full-editor-root" class="space-y-4 -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 bg-[#F5F2ED] min-h-[calc(100vh-64px)] transition-all">
+<!-- UNIFIED WEBSITE POLICIES WORKSPACE (MATCHES USER IMAGE EXACTLY) -->
+<div class="space-y-6 -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] min-h-[calc(100vh-64px)] font-sans">
 
-  <!-- TOP STICKY CONTROLS & ACTION BAR (ALL OPTIONS ON TOP AS IN USER SKETCH) -->
-  <div class="sticky top-[64px] z-40 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/90 shadow-md p-3.5 sm:p-4 space-y-3 transition-all">
+  <!-- TOP HEADER BAR -->
+  <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-4 sm:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     
-    <!-- TOP ROW: Navigation, Title/URL & Primary Action Buttons -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      
-      <!-- Left: Back Navigation & Page Identity -->
-      <div class="flex items-center gap-3 min-w-0 flex-1">
-        <a href="{% url 'admin_footer_cms' %}" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors flex items-center gap-1.5 flex-shrink-0" title="Back to Footer Management">
-          <span>&larr;</span>
-          <span class="hidden sm:inline">Footer Policies</span>
-        </a>
-
-        <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
-
-        <!-- Inline Page Title Input & Live Status -->
-        <div class="flex items-center gap-2.5 min-w-0 flex-1">
-          <span class="text-2xl flex-shrink-0">{{ page.icon|default:"📄" }}</span>
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-2 flex-wrap">
-              <input 
-                type="text" 
-                form="editor-form"
-                name="title" 
-                id="page-title-input" 
-                value="{{ page.draft_title|default:page.title }}" 
-                class="bg-transparent border-b border-dashed border-gray-300 hover:border-[#5C3D2E] focus:border-[#5C3D2E] text-base sm:text-lg font-black text-gray-950 px-1 py-0.5 focus:outline-none transition-colors w-full max-w-sm truncate" 
-                placeholder="Page Title (e.g., Terms of Service)"
-                required 
-                oninput="markDirty()"
-                title="Click to edit page title"
-              >
-              
-              <!-- Live Status Badge -->
-              {% if page.status == 'published' and page.is_published %}
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span>Live</span>
-                </span>
-              {% elif page.status == 'draft' %}
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                  <span>Draft</span>
-                </span>
-              {% else %}
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200 flex-shrink-0">
-                  <span>Unpublished</span>
-                </span>
-              {% endif %}
-            </div>
-            
-            <span class="text-[11px] text-gray-500 block mt-0.5">
-              Live URL: <a href="/{{ page.slug }}/" target="_blank" class="font-mono text-[#5C3D2E] underline hover:text-black">/{{ page.slug }}/</a>
-            </span>
-          </div>
-        </div>
+    <!-- Left: Document Icon & Title -->
+    <div class="flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl border border-blue-200 bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 shadow-2xs">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
       </div>
-
-      <!-- Right: Action Buttons (Preview, Discard, Save Draft, Publish Live) -->
-      <div class="flex items-center gap-2 flex-wrap justify-end flex-shrink-0">
-        
-        <!-- Preview Button (Draft preview for admin) -->
-        <a href="/{{ page.slug }}/?preview=true" target="_blank" class="px-3 py-2 rounded-xl bg-white border border-gray-200 hover:border-gray-400 text-gray-700 hover:text-gray-950 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5" title="Preview current draft in a new tab">
-          <span>👁️</span>
-          <span>Preview</span>
-        </a>
-
-        <!-- Discard Unsaved Changes Button -->
-        <button type="button" onclick="confirmDiscard()" class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-rose-50 text-gray-600 hover:text-rose-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Revert unsaved edits back to live version">
-          <span>↩️</span>
-          <span class="hidden sm:inline">Discard</span>
-        </button>
-
-        <!-- Save Draft Button -->
-        <button type="button" onclick="submitEditorForm('save_draft')" class="px-3.5 sm:px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer" title="Save draft edits without publishing live">
-          <span>💾</span>
-          <span>Save Draft</span>
-        </button>
-
-        <!-- Publish Live Button -->
-        <button type="button" onclick="confirmPublish()" class="px-4 sm:px-5 py-2 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer" title="Publish changes live to website visitors">
-          <span>🚀</span>
-          <span>Publish Live</span>
-        </button>
-
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight leading-tight">Website Policies</h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Edit and manage your website policy pages</p>
       </div>
     </div>
 
-    <!-- FORMATTING TOOLBAR ROW (EDIT OPTIONS ON TOP AS IN USER SKETCH) -->
-    <div class="pt-2 border-t border-gray-100 flex flex-wrap items-center gap-1.5 text-xs select-none">
-      
-      <!-- Heading Format Buttons -->
-      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-        <button type="button" onclick="formatBlock('h2')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-900 font-black text-xs transition-colors border border-gray-200 bg-white" title="Insert/Convert to Major Heading (H2)">
-          H2
-        </button>
-        <button type="button" onclick="formatBlock('h3')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-900 font-bold text-xs transition-colors border border-gray-200 bg-white" title="Insert/Convert to Subheading (H3)">
-          H3
-        </button>
-        <button type="button" onclick="formatBlock('p')" class="px-2 py-1.5 rounded-lg hover:bg-gray-100 text-gray-700 font-medium text-xs transition-colors border border-gray-200 bg-white" title="Paragraph / Normal Text">
-          ¶ Text
-        </button>
-      </div>
+    <!-- Right: Back to Website & Save Changes Buttons -->
+    <div class="flex items-center gap-3 flex-wrap">
+      <a href="/{{ page.slug }}/" target="_blank" class="px-4 py-2 rounded-xl bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold flex items-center gap-2 shadow-2xs transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        <span>Back to Website</span>
+      </a>
 
-      <!-- Inline Text Styles: Bold, Italic, Underline, Strikethrough -->
-      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-        <button type="button" onclick="execCmd('bold')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 font-black flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Bold (Ctrl+B)">
-          B
-        </button>
-        <button type="button" onclick="execCmd('italic')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 italic font-serif flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Italic (Ctrl+I)">
-          I
-        </button>
-        <button type="button" onclick="execCmd('underline')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 underline flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Underline (Ctrl+U)">
-          U
-        </button>
-        <button type="button" onclick="execCmd('strikeThrough')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 line-through flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Strikethrough">
-          S
-        </button>
-      </div>
-
-      <!-- Lists & Quotes -->
-      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-        <button type="button" onclick="execCmd('insertUnorderedList')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center gap-1 transition-colors border border-gray-200 bg-white" title="Bullet List">
-          <span>• Bullet</span>
-        </button>
-        <button type="button" onclick="execCmd('insertOrderedList')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center gap-1 transition-colors border border-gray-200 bg-white" title="Numbered List">
-          <span>1. List</span>
-        </button>
-        <button type="button" onclick="insertQuote()" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center text-sm font-serif transition-colors border border-gray-200 bg-white" title="Blockquote">
-          ❝
-        </button>
-        <button type="button" onclick="execCmd('insertHorizontalRule')" class="px-2 py-1.5 rounded-lg hover:bg-gray-100 text-gray-800 transition-colors border border-gray-200 bg-white" title="Horizontal Divider Line">
-          ― Line
-        </button>
-      </div>
-
-      <!-- Alignment -->
-      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-        <button type="button" onclick="execCmd('justifyLeft')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Align Left">
-          ⯇
-        </button>
-        <button type="button" onclick="execCmd('justifyCenter')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Align Center">
-          ⯀
-        </button>
-        <button type="button" onclick="execCmd('justifyRight')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Align Right">
-          ⯈
-        </button>
-      </div>
-
-      <!-- Links & Formatting Cleanup -->
-      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-        <button type="button" onclick="insertHyperlink()" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-[#5C3D2E] font-bold flex items-center gap-1 transition-colors border border-gray-200 bg-white" title="Insert Hyperlink">
-          <span>🔗 Link</span>
-        </button>
-        <button type="button" onclick="execCmd('removeFormat')" class="px-2 py-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors border border-gray-200 bg-white" title="Clear Formatting">
-          <span>🧹 Clear</span>
-        </button>
-      </div>
-
-      <!-- History: Undo / Redo -->
-      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-        <button type="button" onclick="execCmd('undo')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Undo (Ctrl+Z)">
-          ↺
-        </button>
-        <button type="button" onclick="execCmd('redo')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Redo (Ctrl+Y)">
-          ↻
-        </button>
-      </div>
-
-      <!-- Right Side Utilities: Toggle HTML & Fullscreen -->
-      <div class="flex items-center gap-1.5 ml-auto">
-        <button type="button" id="toggle-source-btn" onclick="toggleSourceView()" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-[11px] font-bold flex items-center gap-1 transition-colors" title="Toggle Raw HTML Source View">
-          <span>&lt;/&gt; HTML</span>
-        </button>
-
-        <button type="button" id="fullscreen-btn" onclick="toggleFullscreen()" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Toggle Fullscreen Focus Mode">
-          <span id="fullscreen-icon">⛶</span>
-          <span class="hidden sm:inline" id="fullscreen-label">Fullscreen</span>
-        </button>
-      </div>
-
+      <button type="button" onclick="submitPolicyForm('publish')" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+        </svg>
+        <span>Save Changes</span>
+      </button>
     </div>
 
   </div>
 
   <!-- Messages Alert -->
   {% if messages %}
-  <div class="space-y-2 max-w-6xl mx-auto">
+  <div class="space-y-2">
     {% for message in messages %}
-    <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif message.tags == 'info' %}bg-blue-50 border border-blue-200 text-blue-800{% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %} rounded-2xl text-xs flex items-center justify-between shadow-2xs">
+    <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif message.tags == 'info' %}bg-blue-50 border border-blue-200 text-blue-800{% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %} rounded-xl text-xs flex items-center justify-between shadow-2xs">
       <div class="flex items-center gap-2">
         <span class="text-base">{% if message.tags == 'error' %}⚠️{% elif message.tags == 'info' %}ℹ️{% else %}✅{% endif %}</span>
         <span class="font-bold">{{ message }}</span>
@@ -207,548 +57,379 @@
   </div>
   {% endif %}
 
-  <!-- MAIN DOCUMENT FORM -->
-  <form id="editor-form" method="POST" action="" class="space-y-4 max-w-6xl mx-auto">
-    {% csrf_token %}
-    <input type="hidden" name="action" id="form-action" value="save_draft">
-    <input type="hidden" name="content" id="document-content-input" value="">
-    <input type="hidden" name="nav_label" value="{{ page.draft_nav_label|default:page.nav_label }}">
-    <input type="hidden" name="summary" value="{{ page.draft_summary|default:page.summary }}">
+  <!-- MAIN TWO-PANEL WORKSPACE (SIDEBAR + CONTENT/PREVIEW GRID) -->
+  <div class="flex flex-col lg:flex-row items-start gap-6">
 
-    <!-- ONE BIG CONTENT BOX AS SPECIFIED IN USER SKETCH -->
-    <div id="unified-editor-container" class="bg-white rounded-2xl border-2 border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all">
-      
-      <!-- INSIDE BOX HEADER BAR WITH DEDICATED '+' BUTTON FOR HEADINGS -->
-      <div class="bg-gray-50/90 border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 flex-wrap">
+    <!-- LEFT SIDEBAR: LIST OF POLICIES -->
+    <aside class="w-full lg:w-64 flex-shrink-0">
+      <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs p-3 space-y-1">
         
-        <!-- Left: Document Status & Info -->
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
-            <span>📝</span>
-            <span>Policy Document Canvas</span>
-          </span>
-          <span class="text-gray-300">|</span>
-          <span id="status-indicator" class="flex items-center gap-1.5 text-[11px] font-medium text-emerald-600">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Document ready</span>
-          </span>
+        {% for p in all_pages %}
+        <a 
+          href="{% url 'admin_footer_editor' slug=p.slug %}" 
+          class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs transition-all {% if p.slug == page.slug %}bg-blue-50 text-blue-600 font-semibold border border-blue-100 shadow-2xs{% else %}text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-medium{% endif %}"
+          title="{{ p.title }}"
+        >
+          <!-- Document Icon -->
+          <svg class="w-4 h-4 flex-shrink-0 {% if p.slug == page.slug %}text-blue-600{% else %}text-gray-400{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <span class="truncate">{{ p.title }}</span>
+        </a>
+        {% endfor %}
+
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN WORKSPACE: ACTIVE POLICY HEADER & 2-COLUMN SPLIT -->
+    <main class="flex-1 min-w-0 space-y-4 w-full">
+      
+      <!-- Current Policy Info Header -->
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-950 tracking-tight">{{ page.title }}</h2>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Last updated: {{ page.published_at|default:page.updated_at|date:"M d, Y, h:i A" }}
+          </p>
         </div>
 
-        <!-- Right: Inside '+' Button Specifically for Headings -->
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:flex items-center gap-2 text-[11px] text-gray-500 font-medium">
-            <span id="word-count-badge">0 words</span>
-            <span>&bull;</span>
-            <span id="char-count-badge">0 chars</span>
+        <div>
+          {% if page.is_published and page.status == 'published' %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+            <svg class="w-3.5 h-3.5 text-emerald-600 fill-current" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            <span>Published</span>
+          </span>
+          {% elif page.status == 'draft' %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>Draft Revisions</span>
+          </span>
+          {% else %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-200 shadow-2xs">
+            <span>Unpublished</span>
+          </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- EDIT & PREVIEW FORM -->
+      <form id="policy-form" method="POST" action="" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="action" id="form-action" value="publish">
+        <input type="hidden" name="content" id="document-content-input" value="">
+        <input type="hidden" name="title" value="{{ page.title }}">
+        <input type="hidden" name="nav_label" value="{{ page.nav_label|default:page.title }}">
+        <input type="hidden" name="summary" value="{{ page.summary }}">
+
+        <!-- 2-COLUMN SPLIT GRID (EDIT CONTENT vs PREVIEW) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          
+          <!-- LEFT BOX: EDIT CONTENT -->
+          <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden flex flex-col">
+            
+            <!-- Box Title Header -->
+            <div class="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
+              <h3 class="text-sm font-bold text-gray-900">Edit Content</h3>
+              <span id="char-word-indicator" class="text-[11px] text-gray-400 font-mono">0 words</span>
+            </div>
+
+            <!-- Toolbar Row -->
+            <div class="px-3.5 py-2 border-b border-gray-100 bg-gray-50/70 flex items-center gap-1 flex-wrap text-xs select-none">
+              
+              <!-- Bold -->
+              <button type="button" onclick="insertSyntax('**', '**', 'bold text')" class="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-800 font-black flex items-center justify-center transition-colors" title="Bold (**text**)">
+                B
+              </button>
+
+              <!-- Italic -->
+              <button type="button" onclick="insertSyntax('*', '*', 'italic text')" class="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-800 italic font-serif flex items-center justify-center transition-colors" title="Italic (*text*)">
+                I
+              </button>
+
+              <div class="h-4 w-px bg-gray-200 mx-0.5"></div>
+
+              <!-- H1 -->
+              <button type="button" onclick="insertHeadingPrefix('# ')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 font-black text-xs transition-colors" title="Heading 1 (# )">
+                H1
+              </button>
+
+              <!-- H2 -->
+              <button type="button" onclick="insertHeadingPrefix('## ')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-800 font-bold text-xs transition-colors" title="Heading 2 (## )">
+                H2
+              </button>
+
+              <!-- H3 -->
+              <button type="button" onclick="insertHeadingPrefix('### ')" class="px-2 py-1 rounded-lg hover:bg-gray-200 text-gray-700 font-medium text-xs transition-colors" title="Heading 3 (### )">
+                H3
+              </button>
+
+              <div class="h-4 w-px bg-gray-200 mx-0.5"></div>
+
+              <!-- Bullet List -->
+              <button type="button" onclick="insertHeadingPrefix('- ')" class="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center text-xs transition-colors" title="Bullet List (- )">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+
+              <!-- Numbered List -->
+              <button type="button" onclick="insertHeadingPrefix('1. ')" class="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center text-xs transition-colors" title="Numbered List (1. )">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 6h13M7 12h13M7 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
+                </svg>
+              </button>
+
+              <div class="h-4 w-px bg-gray-200 mx-0.5"></div>
+
+              <!-- Link -->
+              <button type="button" onclick="insertLinkSyntax()" class="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center transition-colors" title="Insert Link [Text](URL)">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                </svg>
+              </button>
+
+              <!-- Image -->
+              <button type="button" onclick="insertImageSyntax()" class="w-7 h-7 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center transition-colors" title="Insert Image ![Alt](URL)">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </button>
+
+            </div>
+
+            <!-- Content Editing Textarea (Monospace Markdown Canvas) -->
+            <div class="flex-1 p-0">
+              <textarea 
+                id="policy-editor-textarea" 
+                name="raw_markdown"
+                class="w-full h-[620px] p-5 font-mono text-xs sm:text-[13px] text-gray-800 bg-transparent leading-relaxed focus:outline-none resize-none border-none"
+                placeholder="# {{ page.title }}&#10;&#10;**Last Updated:** Oct 27, 2026&#10;&#10;## 1. Introduction&#10;Write policy content here..."
+                spellcheck="false"
+                oninput="handleEditorInput()"
+              >{{ active_editor_markdown }}</textarea>
+            </div>
+
           </div>
 
-          <!-- DEDICATED '+' BUTTON: ONLY FOR INSERTING / PASTING HEADINGS -->
-          <button 
-            type="button" 
-            onclick="openHeadingModal()" 
-            class="px-3.5 py-1.5 rounded-xl bg-[#5C3D2E] hover:bg-[#1E140F] text-white text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
-            title="Click to paste or insert a section heading"
-          >
-            <span class="text-base font-black leading-none">+</span>
-            <span>Add / Paste Heading</span>
-          </button>
+          <!-- RIGHT BOX: PREVIEW -->
+          <div class="bg-white rounded-2xl border border-gray-200/90 shadow-2xs overflow-hidden flex flex-col">
+            
+            <!-- Box Title Header -->
+            <div class="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
+              <h3 class="text-sm font-bold text-gray-900">Preview</h3>
+              <span class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Live Rendering</span>
+              </span>
+            </div>
+
+            <!-- Live Formatted Preview Container -->
+            <div 
+              id="policy-live-preview" 
+              class="flex-1 p-6 sm:p-8 h-[665px] overflow-y-auto preview-document leading-relaxed text-xs sm:text-sm text-gray-800 bg-white"
+            >
+              <!-- Populated dynamically via marked.js / parseMarkdown -->
+            </div>
+
+          </div>
+
         </div>
 
-      </div>
+      </form>
 
-      <!-- MAIN WRITING CANVAS: BIG BOX WHERE ADMIN PASTES ALL CONTENT -->
-      <div class="relative bg-white min-h-[620px] flex flex-col">
-        
-        <!-- WYSIWYG Visual Canvas (contenteditable) -->
-        <div 
-          id="visual-canvas" 
-          class="document-surface w-full p-6 sm:p-10 lg:p-12 min-h-[620px] max-h-[82vh] overflow-y-auto text-gray-900 leading-relaxed focus:outline-none"
-          contenteditable="true" 
-          spellcheck="true" 
-          oninput="handleCanvasInput()"
-          data-placeholder="Paste all policy content here... Click the '+ Add / Paste Heading' button inside to add or paste headings."
-        >
-          {{ active_editor_content|safe }}
-        </div>
-
-        <!-- Raw HTML Source Code Textarea (Toggled via </> HTML button) -->
-        <textarea 
-          id="source-code-textarea" 
-          class="hidden w-full p-6 sm:p-10 font-mono text-xs sm:text-sm bg-gray-900 text-emerald-400 min-h-[620px] max-h-[82vh] overflow-y-auto focus:outline-none resize-none leading-relaxed" 
-          spellcheck="false" 
-          oninput="handleSourceInput()"
-        ></textarea>
-
-      </div>
-
-      <!-- BOTTOM WORD COUNT & SHORTCUT HELPER -->
-      <div class="border-t border-gray-100 bg-gray-50/60 px-6 py-2.5 flex items-center justify-between text-[11px] text-gray-500 select-none">
-        <div class="flex items-center gap-2">
-          <span>💡 <strong>Quick Tip:</strong> You can paste your entire document at once. To insert headings for each section, click the <strong>+ Add / Paste Heading</strong> button above.</span>
-        </div>
-        <div class="hidden md:flex items-center gap-1.5 text-gray-400">
-          <span>Shortcut: Press</span>
-          <kbd class="px-1.5 py-0.5 bg-gray-200 rounded text-[10px] text-gray-700 font-mono">Ctrl + S</kbd>
-          <span>to save draft</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- BOTTOM ACTION ROW -->
-    <div class="py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="text-xs text-gray-500">
-        <span>Draft edits remain private until you click Publish Live. Output page renders as one seamless document without separate card divisions.</span>
-      </div>
-
-      <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-        <button type="button" onclick="submitEditorForm('save_draft')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
-          <span>💾</span>
-          <span>Save Draft Edits</span>
-        </button>
-        <button type="button" onclick="confirmPublish()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
-          <span>🚀</span>
-          <span>Publish Live to Website</span>
-        </button>
-      </div>
-    </div>
-
-  </form>
-
-</div>
-
-<!-- HEADING INSERTION / PASTE MODAL -->
-<div id="heading-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
-  <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-in fade-in zoom-in duration-150">
-    
-    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-      <div class="flex items-center gap-2">
-        <span class="w-7 h-7 rounded-lg bg-[#FAF5EE] text-[#5C3D2E] font-black flex items-center justify-center text-sm">H2</span>
-        <h3 class="text-sm font-black text-gray-950">Add / Paste Section Heading</h3>
-      </div>
-      <button type="button" onclick="closeHeadingModal()" class="w-7 h-7 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center font-bold">&times;</button>
-    </div>
-
-    <p class="text-xs text-gray-600 leading-relaxed">
-      Paste or type the heading for this section below. It will be inserted into the document at the cursor position as a primary heading:
-    </p>
-
-    <div class="space-y-1.5">
-      <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Heading Text</label>
-      <input 
-        type="text" 
-        id="heading-text-input" 
-        class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2.5 text-sm font-bold text-gray-950 focus:outline-none focus:border-[#5C3D2E]" 
-        placeholder="e.g., 1. Terms of Delivery &amp; Inspection"
-        onkeydown="if(event.key === 'Enter'){ event.preventDefault(); confirmInsertHeading(); }"
-      >
-    </div>
-
-    <div class="pt-2 flex items-center justify-end gap-2.5">
-      <button type="button" onclick="closeHeadingModal()" class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors">
-        Cancel
-      </button>
-      <button type="button" onclick="confirmInsertHeading()" class="px-5 py-2 rounded-xl bg-[#5C3D2E] hover:bg-[#1E140F] text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5">
-        <span>Insert Heading</span>
-        <span>&crarr;</span>
-      </button>
-    </div>
+    </main>
 
   </div>
+
 </div>
 
-<!-- HIDDEN DISCARD FORM -->
-<form id="discard-form" method="POST" action="" class="hidden">
-  {% csrf_token %}
-  <input type="hidden" name="action" value="discard">
-</form>
-
-<!-- STYLES FOR THE BIG CONTENT BOX -->
+<!-- MARKDOWN PREVIEW STYLING (MATCHES PREVIEW PANEL IN USER SCREENSHOT) -->
 <style>
-  /* Typography inside Visual Canvas */
-  .document-surface {
-    font-family: inherit;
-  }
-  .document-surface:empty:before {
-    content: attr(data-placeholder);
-    color: #9CA3AF;
-    font-style: italic;
-    pointer-events: none;
-    display: block;
-  }
-  .document-surface h2 {
-    font-size: 1.35rem;
+  .preview-document h1 {
+    font-size: 1.65rem;
     font-weight: 800;
     color: #111827;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 2px solid #FAF0E6;
-    letter-spacing: -0.015em;
-  }
-  .document-surface h2:first-child {
     margin-top: 0;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
   }
-  .document-surface h3 {
+  .preview-document h2 {
     font-size: 1.15rem;
     font-weight: 700;
-    color: #1F2937;
-    margin-top: 1.5rem;
+    color: #111827;
+    margin-top: 1.75rem;
     margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
   }
-  .document-surface p {
-    font-size: 0.95rem;
-    line-height: 1.85;
-    color: #374151;
-    margin-bottom: 1.1rem;
+  .preview-document h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-top: 1.25rem;
+    margin-bottom: 0.35rem;
   }
-  .document-surface ul {
-    list-style-type: disc;
-    margin-left: 1.75rem;
-    margin-bottom: 1.25rem;
-    color: #374151;
-  }
-  .document-surface ol {
-    list-style-type: decimal;
-    margin-left: 1.75rem;
-    margin-bottom: 1.25rem;
-    color: #374151;
-  }
-  .document-surface li {
-    margin-bottom: 0.45rem;
+  .preview-document p {
+    font-size: 0.875rem;
     line-height: 1.75;
+    color: #374151;
+    margin-bottom: 0.85rem;
   }
-  .document-surface blockquote {
-    border-left: 4px solid #8C4F20;
-    padding-left: 1rem;
-    margin: 1.25rem 0;
-    font-style: italic;
-    color: #4B5563;
-    background: #FAF6F0;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-radius: 0 0.5rem 0.5rem 0;
+  .preview-document ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: #374151;
   }
-  .document-surface hr {
+  .preview-document ol {
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: #374151;
+  }
+  .preview-document li {
+    margin-bottom: 0.35rem;
+    line-height: 1.65;
+  }
+  .preview-document hr {
     border: none;
-    border-top: 1px solid #E5E7EB;
-    margin: 2rem 0;
+    border-top: 1px solid #F3F4F6;
+    margin: 1.25rem 0;
   }
-  .document-surface a {
-    color: #8C4F20;
+  .preview-document a {
+    color: #2563EB;
     text-decoration: underline;
-    font-weight: 600;
+    font-weight: 500;
   }
-  .document-surface strong {
+  .preview-document strong {
     font-weight: 700;
     color: #111827;
-  }
-
-  /* Fullscreen Focus Mode */
-  .editor-fullscreen {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 99999 !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-    max-height: 100vh !important;
-  }
-  .editor-fullscreen #visual-canvas,
-  .editor-fullscreen #source-code-textarea {
-    max-height: calc(100vh - 110px) !important;
-    min-height: calc(100vh - 110px) !important;
   }
 </style>
 
-<!-- JAVASCRIPT CONTROLLER -->
+<!-- MARKED JS CDN FOR ROBUST MARKDOWN PARSING -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- JAVASCRIPT LOGIC -->
 <script>
-  let isDirty = false;
-  let isSourceMode = false;
-  let isFullscreen = false;
-  let savedRange = null;
-
-  const visualCanvas = document.getElementById('visual-canvas');
-  const sourceTextarea = document.getElementById('source-code-textarea');
+  const editorTextarea = document.getElementById('policy-editor-textarea');
+  const previewBox = document.getElementById('policy-live-preview');
   const contentInput = document.getElementById('document-content-input');
-  const statusIndicator = document.getElementById('status-indicator');
-  const wordCountBadge = document.getElementById('word-count-badge');
-  const charCountBadge = document.getElementById('char-count-badge');
-  const headingModal = document.getElementById('heading-modal');
-  const headingTextInput = document.getElementById('heading-text-input');
+  const countIndicator = document.getElementById('char-word-indicator');
+  let isDirty = false;
 
-  function markDirty() {
+  // Lightweight fallback markdown parser if marked is blocked or loading
+  function parseMarkdown(text) {
+    if (typeof marked !== 'undefined' && marked.parse) {
+      return marked.parse(text);
+    }
+    if (!text) return '';
+    let html = text
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\*(.*)\*/gim, '<em>$1</em>')
+      .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank">$1</a>')
+      .replace(/^\s*-\s+(.*$)/gim, '<li>$1</li>')
+      .replace(/^\s*\d+\.\s+(.*$)/gim, '<li>$1</li>')
+      .replace(/\n\n+/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+    return '<p>' + html + '</p>';
+  }
+
+  function updateLivePreview() {
+    const raw = editorTextarea.value;
+    const parsed = parseMarkdown(raw);
+    previewBox.innerHTML = parsed;
+
+    // Update word count
+    const words = raw.trim() ? raw.trim().split(/\s+/).length : 0;
+    if (countIndicator) {
+      countIndicator.textContent = `${words} words`;
+    }
+  }
+
+  function handleEditorInput() {
     isDirty = true;
-    if (statusIndicator) {
-      statusIndicator.innerHTML = `
-        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-        <span class="text-amber-700 font-bold">Unsaved draft edits</span>
-      `;
+    updateLivePreview();
+  }
+
+  // Toolbar Actions
+  function insertSyntax(before, after, defaultText) {
+    const start = editorTextarea.selectionStart;
+    const end = editorTextarea.selectionEnd;
+    const val = editorTextarea.value;
+    const selected = val.substring(start, end) || defaultText;
+    const replacement = before + selected + after;
+    editorTextarea.value = val.substring(0, start) + replacement + val.substring(end);
+    editorTextarea.focus();
+    editorTextarea.selectionStart = start + before.length;
+    editorTextarea.selectionEnd = start + before.length + selected.length;
+    handleEditorInput();
+  }
+
+  function insertHeadingPrefix(prefix) {
+    const start = editorTextarea.selectionStart;
+    const val = editorTextarea.value;
+    // Find beginning of current line
+    const lastNewline = val.lastIndexOf('\n', start - 1);
+    const lineStart = lastNewline === -1 ? 0 : lastNewline + 1;
+    editorTextarea.value = val.substring(0, lineStart) + prefix + val.substring(lineStart);
+    editorTextarea.focus();
+    editorTextarea.selectionStart = start + prefix.length;
+    editorTextarea.selectionEnd = start + prefix.length;
+    handleEditorInput();
+  }
+
+  function insertLinkSyntax() {
+    const url = prompt("Enter the destination URL:", "https://");
+    if (url) {
+      insertSyntax('[', `](${url})`, 'Link Text');
     }
   }
 
-  function markClean() {
-    isDirty = false;
-    if (statusIndicator) {
-      statusIndicator.innerHTML = `
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span class="text-emerald-600">All changes saved</span>
-      `;
+  function insertImageSyntax() {
+    const url = prompt("Enter image URL:", "https://");
+    if (url) {
+      insertSyntax('![', `](${url})`, 'Image description');
     }
   }
 
-  function updateCounts() {
-    const text = isSourceMode ? sourceTextarea.value : (visualCanvas.innerText || visualCanvas.textContent || "");
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-
-    if (wordCountBadge) wordCountBadge.textContent = `${words} words`;
-    if (charCountBadge) charCountBadge.textContent = `${chars} chars`;
-  }
-
-  function handleCanvasInput() {
-    markDirty();
-    updateCounts();
-  }
-
-  function handleSourceInput() {
-    markDirty();
-    updateCounts();
-  }
-
-  // Formatting commands
-  function execCmd(command, value = null) {
-    if (isSourceMode) return;
-    visualCanvas.focus();
-    document.execCommand(command, false, value);
-    markDirty();
-    updateCounts();
-  }
-
-  function formatBlock(tag) {
-    if (isSourceMode) return;
-    visualCanvas.focus();
-    document.execCommand('formatBlock', false, tag);
-    markDirty();
-    updateCounts();
-  }
-
-  function insertQuote() {
-    if (isSourceMode) return;
-    visualCanvas.focus();
-    document.execCommand('formatBlock', false, 'blockquote');
-    markDirty();
-    updateCounts();
-  }
-
-  function insertHyperlink() {
-    if (isSourceMode) return;
-    const url = prompt("Enter the destination URL (e.g. https://www.gloryfurniturehub.com/contact-us/):", "https://");
-    if (url && url.trim() !== "https://" && url.trim() !== "") {
-      execCmd('createLink', url.trim());
-    }
-  }
-
-  // HEADING MODAL & INSERTION (THE "+" BUTTON INSIDE THE BIG BOX)
-  function saveSelection() {
-    if (window.getSelection) {
-      const sel = window.getSelection();
-      if (sel.getRangeAt && sel.rangeCount) {
-        return sel.getRangeAt(0);
-      }
-    }
-    return null;
-  }
-
-  function restoreSelection(range) {
-    if (range && window.getSelection) {
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-  }
-
-  function openHeadingModal() {
-    if (isSourceMode) {
-      toggleSourceView();
-    }
-    savedRange = saveSelection();
-    headingModal.classList.remove('hidden');
-    headingTextInput.value = '';
-    setTimeout(() => {
-      headingTextInput.focus();
-    }, 50);
-  }
-
-  function closeHeadingModal() {
-    headingModal.classList.add('hidden');
-    if (savedRange) {
-      restoreSelection(savedRange);
-    }
-  }
-
-  function confirmInsertHeading() {
-    const headingText = headingTextInput.value.trim();
-    if (!headingText) {
-      alert("Please enter a heading text.");
-      headingTextInput.focus();
-      return;
-    }
-
-    headingModal.classList.add('hidden');
-    visualCanvas.focus();
-
-    if (savedRange) {
-      restoreSelection(savedRange);
-    }
-
-    // Insert clean H2 heading and a blank paragraph below it
-    const headingHtml = `<h2>${escapeHtml(headingText)}</h2><p><br></p>`;
-    document.execCommand('insertHTML', false, headingHtml);
-
-    markDirty();
-    updateCounts();
-  }
-
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  // SMART PASTE HANDLER: CLEAN UP NOISY EXTERNAL FORMATTING
-  visualCanvas.addEventListener('paste', function(e) {
-    // When text is pasted, ensure proper formatting without intrusive external fonts/backgrounds
-    setTimeout(function() {
-      // Strip any unwanted inline styles like mso- styles or fixed font-family
-      const elementsWithStyle = visualCanvas.querySelectorAll('[style]');
-      elementsWithStyle.forEach(function(el) {
-        el.removeAttribute('style');
-      });
-      markDirty();
-      updateCounts();
-    }, 10);
-  });
-
-  // Toggle between WYSIWYG Visual Mode and Raw HTML Mode
-  function toggleSourceView() {
-    const btn = document.getElementById('toggle-source-btn');
-    if (!isSourceMode) {
-      // Switch to Source Mode
-      sourceTextarea.value = visualCanvas.innerHTML.trim();
-      visualCanvas.classList.add('hidden');
-      sourceTextarea.classList.remove('hidden');
-      sourceTextarea.focus();
-      btn.classList.remove('bg-gray-100', 'text-gray-800');
-      btn.classList.add('bg-emerald-600', 'text-white');
-      btn.innerHTML = '<span>👁️ Visual</span>';
-      isSourceMode = true;
-    } else {
-      // Switch to Visual Mode
-      visualCanvas.innerHTML = sourceTextarea.value.trim();
-      sourceTextarea.classList.add('hidden');
-      visualCanvas.classList.remove('hidden');
-      visualCanvas.focus();
-      btn.classList.remove('bg-emerald-600', 'text-white');
-      btn.classList.add('bg-gray-100', 'text-gray-800');
-      btn.innerHTML = '<span>&lt;/&gt; HTML</span>';
-      isSourceMode = false;
-    }
-    updateCounts();
-  }
-
-  // Toggle Fullscreen Mode
-  function toggleFullscreen() {
-    const container = document.getElementById('unified-editor-container');
-    const label = document.getElementById('fullscreen-label');
-    const icon = document.getElementById('fullscreen-icon');
-
-    isFullscreen = !isFullscreen;
-    if (isFullscreen) {
-      container.classList.add('editor-fullscreen');
-      if (label) label.textContent = 'Exit';
-      if (icon) icon.textContent = '✕';
-    } else {
-      container.classList.remove('editor-fullscreen');
-      if (label) label.textContent = 'Fullscreen';
-      if (icon) icon.textContent = '⛶';
-    }
-  }
-
-  // Form Submission
-  function syncContent() {
-    if (isSourceMode) {
-      contentInput.value = sourceTextarea.value.trim();
-    } else {
-      contentInput.value = visualCanvas.innerHTML.trim();
-    }
-  }
-
-  function submitEditorForm(action) {
-    const titleInput = document.getElementById('page-title-input');
-    if (!titleInput.value.trim()) {
-      alert("Please enter a page title.");
-      titleInput.focus();
-      return;
-    }
-
-    syncContent();
+  // Save changes
+  function submitPolicyForm(action = 'publish') {
+    // Generate clean HTML from markdown for storage in database
+    const raw = editorTextarea.value.trim();
+    const htmlContent = parseMarkdown(raw);
+    contentInput.value = htmlContent;
     document.getElementById('form-action').value = action;
     isDirty = false;
-    document.getElementById('editor-form').submit();
+    document.getElementById('policy-form').submit();
   }
 
-  function confirmPublish() {
-    syncContent();
-    const confirmed = confirm(
-      "🚀 ARE YOU READY TO PUBLISH LIVE?\n\n" +
-      "This will immediately update the live public policy page on https://www.gloryfurniturehub.com/{{ page.slug }}/.\n\n" +
-      "Click OK to publish live."
-    );
-    if (confirmed) {
-      submitEditorForm('publish');
+  // Ctrl+S shortcut to save changes
+  window.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      submitPolicyForm('publish');
     }
-  }
+  });
 
-  function confirmDiscard() {
-    const confirmed = confirm(
-      "⚠️ DISCARD UNSAVED DRAFT EDITS?\n\n" +
-      "This will discard all unpublished edits in your draft and restore the page to its current published version.\n\n" +
-      "Click OK to discard."
-    );
-    if (confirmed) {
-      isDirty = false;
-      document.getElementById('discard-form').submit();
-    }
-  }
-
-  // Unsaved changes warning
+  // Warn on unsaved changes
   window.addEventListener('beforeunload', function(e) {
     if (isDirty) {
       e.preventDefault();
-      e.returnValue = 'You have unsaved changes in the editor. Are you sure you want to leave?';
+      e.returnValue = 'You have unsaved policy edits. Are you sure you want to leave?';
       return e.returnValue;
     }
   });
 
-  // Keyboard Shortcuts: Ctrl+S to save draft
-  window.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-      e.preventDefault();
-      submitEditorForm('save_draft');
-    }
-  });
-
-  // Initial setup
+  // Initial render
   document.addEventListener('DOMContentLoaded', function() {
-    updateCounts();
+    updateLivePreview();
   });
 </script>
 {% endblock %}

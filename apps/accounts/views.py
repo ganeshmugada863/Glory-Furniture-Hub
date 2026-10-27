@@ -2312,16 +2312,33 @@ def admin_media_cms_view(request):
     return render(request, 'admin_portal/admin_media_cms.html', context)
 
 
+def html_to_clean_markdown(text):
+    if not text:
+        return ""
+    import re
+    if not re.search(r"<[a-zA-Z][^>]*>", text):
+        return text.strip()
+    md = text
+    md = re.sub(r"<h1[^>]*>(.*?)</h1>", lambda m: "# " + m.group(1).strip() + "\n\n", md, flags=re.I|re.S)
+    md = re.sub(r"<h2[^>]*>(.*?)</h2>", lambda m: "## " + m.group(1).strip() + "\n\n", md, flags=re.I|re.S)
+    md = re.sub(r"<h3[^>]*>(.*?)</h3>", lambda m: "### " + m.group(1).strip() + "\n\n", md, flags=re.I|re.S)
+    md = re.sub(r"<(?:strong|b)[^>]*>(.*?)</(?:strong|b)>", lambda m: "**" + m.group(1).strip() + "**", md, flags=re.I|re.S)
+    md = re.sub(r"<(?:em|i)[^>]*>(.*?)</(?:em|i)>", lambda m: "*" + m.group(1).strip() + "*", md, flags=re.I|re.S)
+    md = re.sub(r"<li[^>]*>(.*?)</li>", lambda m: "- " + m.group(1).strip() + "\n", md, flags=re.I|re.S)
+    md = re.sub(r"</?(?:ul|ol)[^>]*>", "\n", md, flags=re.I)
+    md = re.sub(r"<p[^>]*>(.*?)</p>", lambda m: m.group(1).strip() + "\n\n", md, flags=re.I|re.S)
+    md = re.sub(r"<br\s*/?>", "\n", md, flags=re.I)
+    md = re.sub(r"<hr\s*/?>", "\n---\n\n", md, flags=re.I)
+    md = re.sub(r'<a[^>]+href=[\'"](.*?)[\'"][^>]*>(.*?)</a>', lambda m: "[" + m.group(2) + "](" + m.group(1) + ")", md, flags=re.I|re.S)
+    md = re.sub(r"<[^>]+>", "", md)
+    md = re.sub(r"\n{3,}", "\n\n", md)
+    return md.strip()
+
 def admin_footer_cms_view(request):
     """
     Footer Management Hub in Admin Sidebar:
-    Displays exactly the six core content & policy pages:
-    1. Contact Us (/contact-us)
-    2. Terms & Conditions (/terms-and-conditions)
-    3. Privacy Policy (/privacy-policy)
-    4. Refunds & Cancellations (/refunds-cancellations)
-    5. Shipping & Delivery Policy (/shipping-policy)
-    6. Payment & Installment Policy (/payment-installment-policy)
+    Displays the unified Website Policies workspace matching the user's design.
+    Redirects directly to the primary policy editor (Privacy Policy).
     """
     is_admin = request.session.get('glory_role') == 'admin' or (
         request.user.is_authenticated and (
@@ -2340,28 +2357,14 @@ def admin_footer_cms_view(request):
     except Exception:
         pass
 
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        if action == 'update_links':
-            pages = FooterPage.objects.all()
-            for page in pages:
-                prefix = f"page_{page.id}_"
-                if f"{prefix}nav_label" in request.POST:
-                    page.nav_label = request.POST.get(f"{prefix}nav_label", page.nav_label).strip() or page.title
-                if f"{prefix}footer_order" in request.POST:
-                    try:
-                        page.footer_order = int(request.POST.get(f"{prefix}footer_order", page.footer_order))
-                    except (ValueError, TypeError):
-                        pass
-                page.is_in_footer = (f"{prefix}is_in_footer" in request.POST)
-                page.save()
-            messages.success(request, "Global Footer links and ordering updated successfully!")
-            return redirect('admin_footer_cms')
+    target_page = FooterPage.objects.filter(slug='privacy-policy').first() or FooterPage.objects.first()
+    if target_page:
+        return redirect('admin_footer_editor', slug=target_page.slug)
 
     pages = list(FooterPage.objects.all().order_by('footer_order', 'id'))
 
     context = {
-        'page_title': 'Footer & Policy Content Management',
+        'page_title': 'Website Policies',
         'active_nav': 'footer_cms',
         'pages': pages,
     }
@@ -2476,11 +2479,16 @@ def admin_footer_editor_view(request, slug):
 
     active_editor_content = page.draft_content if (page.status == 'draft' and page.draft_content) else (page.content or page.draft_content)
 
+    all_pages = FooterPage.objects.all().order_by('footer_order', 'id')
+    active_editor_markdown = html_to_clean_markdown(active_editor_content)
+
     context = {
         'page': page,
+        'all_pages': all_pages,
         'active_editor_content': active_editor_content,
+        'active_editor_markdown': active_editor_markdown,
         'active_nav': 'footer_cms',
-        'page_title': f"Edit {page.title} — Full-Window Editor",
+        'page_title': f"Website Policies — {page.title}",
     }
     return render(request, 'admin_portal/admin_footer_editor.html', context)
 
