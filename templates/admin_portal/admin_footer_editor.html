@@ -4,82 +4,189 @@
 {% block title %}Editor: {{ page.title }} — Glory Studio Admin{% endblock %}
 
 {% block content %}
-<!-- FULL-WINDOW UNIFIED DOCUMENT EDITOR CONTAINER -->
-<div id="full-editor-root" class="space-y-6 -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 bg-[#F5F2ED] min-h-[calc(100vh-64px)] transition-all">
+<!-- UNIFIED POLICY DOCUMENT EDITOR CONTAINER -->
+<div id="full-editor-root" class="space-y-4 -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 bg-[#F5F2ED] min-h-[calc(100vh-64px)] transition-all">
 
-  <!-- TOP STICKY EDITOR HEADER BAR -->
-  <div class="sticky top-[64px] z-40 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/90 shadow-md p-4 sm:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all">
+  <!-- TOP STICKY CONTROLS & ACTION BAR (ALL OPTIONS ON TOP AS IN USER SKETCH) -->
+  <div class="sticky top-[64px] z-40 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/90 shadow-md p-3.5 sm:p-4 space-y-3 transition-all">
     
-    <!-- Left: Navigation & Page Identity -->
-    <div class="flex items-center gap-3.5 min-w-0">
-      <a href="{% url 'admin_footer_cms' %}" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors flex items-center gap-1.5 flex-shrink-0" title="Back to Footer Management">
-        <span>&larr;</span>
-        <span class="hidden sm:inline">Footer Management</span>
-      </a>
+    <!-- TOP ROW: Navigation, Title/URL & Primary Action Buttons -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      
+      <!-- Left: Back Navigation & Page Identity -->
+      <div class="flex items-center gap-3 min-w-0 flex-1">
+        <a href="{% url 'admin_footer_cms' %}" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors flex items-center gap-1.5 flex-shrink-0" title="Back to Footer Management">
+          <span>&larr;</span>
+          <span class="hidden sm:inline">Footer Policies</span>
+        </a>
 
-      <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
+        <div class="h-6 w-px bg-gray-200 hidden sm:block"></div>
 
-      <div class="flex items-center gap-2.5 min-w-0">
-        <span class="text-2xl flex-shrink-0">{{ page.icon|default:"📄" }}</span>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-base sm:text-lg font-black text-gray-950 truncate leading-tight">
-              {{ page.title }}
-            </h1>
+        <!-- Inline Page Title Input & Live Status -->
+        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+          <span class="text-2xl flex-shrink-0">{{ page.icon|default:"📄" }}</span>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <input 
+                type="text" 
+                form="editor-form"
+                name="title" 
+                id="page-title-input" 
+                value="{{ page.draft_title|default:page.title }}" 
+                class="bg-transparent border-b border-dashed border-gray-300 hover:border-[#5C3D2E] focus:border-[#5C3D2E] text-base sm:text-lg font-black text-gray-950 px-1 py-0.5 focus:outline-none transition-colors w-full max-w-sm truncate" 
+                placeholder="Page Title (e.g., Terms of Service)"
+                required 
+                oninput="markDirty()"
+                title="Click to edit page title"
+              >
+              
+              <!-- Live Status Badge -->
+              {% if page.status == 'published' and page.is_published %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Live</span>
+                </span>
+              {% elif page.status == 'draft' %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                  <span>Draft</span>
+                </span>
+              {% else %}
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200 flex-shrink-0">
+                  <span>Unpublished</span>
+                </span>
+              {% endif %}
+            </div>
             
-            <!-- Live Status Badge -->
-            {% if page.status == 'published' and page.is_published %}
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Published</span>
-              </span>
-            {% elif page.status == 'draft' %}
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                <span>Draft Edits</span>
-              </span>
-            {% else %}
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200">
-                <span>Unpublished</span>
-              </span>
-            {% endif %}
+            <span class="text-[11px] text-gray-500 block mt-0.5">
+              Live URL: <a href="/{{ page.slug }}/" target="_blank" class="font-mono text-[#5C3D2E] underline hover:text-black">/{{ page.slug }}/</a>
+            </span>
           </div>
-          <span class="text-[11px] text-gray-500 block mt-0.5">
-            URL: <a href="/{{ page.slug }}/" target="_blank" class="font-mono text-[#5C3D2E] underline hover:text-black">/{{ page.slug }}/</a>
-            {% if page.published_at %}
-            &bull; Live since {{ page.published_at|date:"d M Y, h:i A" }}
-            {% endif %}
-          </span>
         </div>
+      </div>
+
+      <!-- Right: Action Buttons (Preview, Discard, Save Draft, Publish Live) -->
+      <div class="flex items-center gap-2 flex-wrap justify-end flex-shrink-0">
+        
+        <!-- Preview Button (Draft preview for admin) -->
+        <a href="/{{ page.slug }}/?preview=true" target="_blank" class="px-3 py-2 rounded-xl bg-white border border-gray-200 hover:border-gray-400 text-gray-700 hover:text-gray-950 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5" title="Preview current draft in a new tab">
+          <span>👁️</span>
+          <span>Preview</span>
+        </a>
+
+        <!-- Discard Unsaved Changes Button -->
+        <button type="button" onclick="confirmDiscard()" class="px-3 py-2 rounded-xl bg-gray-100 hover:bg-rose-50 text-gray-600 hover:text-rose-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Revert unsaved edits back to live version">
+          <span>↩️</span>
+          <span class="hidden sm:inline">Discard</span>
+        </button>
+
+        <!-- Save Draft Button -->
+        <button type="button" onclick="submitEditorForm('save_draft')" class="px-3.5 sm:px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer" title="Save draft edits without publishing live">
+          <span>💾</span>
+          <span>Save Draft</span>
+        </button>
+
+        <!-- Publish Live Button -->
+        <button type="button" onclick="confirmPublish()" class="px-4 sm:px-5 py-2 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer" title="Publish changes live to website visitors">
+          <span>🚀</span>
+          <span>Publish Live</span>
+        </button>
+
       </div>
     </div>
 
-    <!-- Right: Action Buttons (Preview, Discard, Save Draft, Publish) -->
-    <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end flex-shrink-0">
+    <!-- FORMATTING TOOLBAR ROW (EDIT OPTIONS ON TOP AS IN USER SKETCH) -->
+    <div class="pt-2 border-t border-gray-100 flex flex-wrap items-center gap-1.5 text-xs select-none">
       
-      <!-- Preview Button (Draft preview for admin) -->
-      <a href="/{{ page.slug }}/?preview=true" target="_blank" class="px-3 sm:px-4 py-2 rounded-xl bg-white border border-gray-200 hover:border-gray-400 text-gray-700 hover:text-gray-950 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5">
-        <span>👁️</span>
-        <span>Preview</span>
-      </a>
+      <!-- Heading Format Buttons -->
+      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
+        <button type="button" onclick="formatBlock('h2')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-900 font-black text-xs transition-colors border border-gray-200 bg-white" title="Insert/Convert to Major Heading (H2)">
+          H2
+        </button>
+        <button type="button" onclick="formatBlock('h3')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-900 font-bold text-xs transition-colors border border-gray-200 bg-white" title="Insert/Convert to Subheading (H3)">
+          H3
+        </button>
+        <button type="button" onclick="formatBlock('p')" class="px-2 py-1.5 rounded-lg hover:bg-gray-100 text-gray-700 font-medium text-xs transition-colors border border-gray-200 bg-white" title="Paragraph / Normal Text">
+          ¶ Text
+        </button>
+      </div>
 
-      <!-- Discard Unsaved Changes Button -->
-      <button type="button" onclick="confirmDiscard()" class="px-3 sm:px-4 py-2 rounded-xl bg-gray-100 hover:bg-rose-50 text-gray-700 hover:text-rose-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
-        <span>↩️</span>
-        <span class="hidden sm:inline">Discard</span>
-      </button>
+      <!-- Inline Text Styles: Bold, Italic, Underline, Strikethrough -->
+      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
+        <button type="button" onclick="execCmd('bold')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 font-black flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Bold (Ctrl+B)">
+          B
+        </button>
+        <button type="button" onclick="execCmd('italic')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 italic font-serif flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Italic (Ctrl+I)">
+          I
+        </button>
+        <button type="button" onclick="execCmd('underline')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 underline flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Underline (Ctrl+U)">
+          U
+        </button>
+        <button type="button" onclick="execCmd('strikeThrough')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-900 line-through flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Strikethrough">
+          S
+        </button>
+      </div>
 
-      <!-- Save Draft Button -->
-      <button type="button" onclick="submitEditorForm('save_draft')" class="px-3.5 sm:px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
-        <span>💾</span>
-        <span>Save Draft</span>
-      </button>
+      <!-- Lists & Quotes -->
+      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
+        <button type="button" onclick="execCmd('insertUnorderedList')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center gap-1 transition-colors border border-gray-200 bg-white" title="Bullet List">
+          <span>• Bullet</span>
+        </button>
+        <button type="button" onclick="execCmd('insertOrderedList')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center gap-1 transition-colors border border-gray-200 bg-white" title="Numbered List">
+          <span>1. List</span>
+        </button>
+        <button type="button" onclick="insertQuote()" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center text-sm font-serif transition-colors border border-gray-200 bg-white" title="Blockquote">
+          ❝
+        </button>
+        <button type="button" onclick="execCmd('insertHorizontalRule')" class="px-2 py-1.5 rounded-lg hover:bg-gray-100 text-gray-800 transition-colors border border-gray-200 bg-white" title="Horizontal Divider Line">
+          ― Line
+        </button>
+      </div>
 
-      <!-- Publish Live Button -->
-      <button type="button" onclick="confirmPublish()" class="px-4 sm:px-5 py-2 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer">
-        <span>🚀</span>
-        <span>Publish Changes</span>
-      </button>
+      <!-- Alignment -->
+      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
+        <button type="button" onclick="execCmd('justifyLeft')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Align Left">
+          ⯇
+        </button>
+        <button type="button" onclick="execCmd('justifyCenter')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Align Center">
+          ⯀
+        </button>
+        <button type="button" onclick="execCmd('justifyRight')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-800 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Align Right">
+          ⯈
+        </button>
+      </div>
+
+      <!-- Links & Formatting Cleanup -->
+      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
+        <button type="button" onclick="insertHyperlink()" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-[#5C3D2E] font-bold flex items-center gap-1 transition-colors border border-gray-200 bg-white" title="Insert Hyperlink">
+          <span>🔗 Link</span>
+        </button>
+        <button type="button" onclick="execCmd('removeFormat')" class="px-2 py-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors border border-gray-200 bg-white" title="Clear Formatting">
+          <span>🧹 Clear</span>
+        </button>
+      </div>
+
+      <!-- History: Undo / Redo -->
+      <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
+        <button type="button" onclick="execCmd('undo')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Undo (Ctrl+Z)">
+          ↺
+        </button>
+        <button type="button" onclick="execCmd('redo')" class="w-8 h-8 rounded-lg hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors border border-gray-200 bg-white" title="Redo (Ctrl+Y)">
+          ↻
+        </button>
+      </div>
+
+      <!-- Right Side Utilities: Toggle HTML & Fullscreen -->
+      <div class="flex items-center gap-1.5 ml-auto">
+        <button type="button" id="toggle-source-btn" onclick="toggleSourceView()" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-[11px] font-bold flex items-center gap-1 transition-colors" title="Toggle Raw HTML Source View">
+          <span>&lt;/&gt; HTML</span>
+        </button>
+
+        <button type="button" id="fullscreen-btn" onclick="toggleFullscreen()" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Toggle Fullscreen Focus Mode">
+          <span id="fullscreen-icon">⛶</span>
+          <span class="hidden sm:inline" id="fullscreen-label">Fullscreen</span>
+        </button>
+      </div>
 
     </div>
 
@@ -87,9 +194,9 @@
 
   <!-- Messages Alert -->
   {% if messages %}
-  <div class="space-y-2 max-w-5xl mx-auto">
+  <div class="space-y-2 max-w-6xl mx-auto">
     {% for message in messages %}
-    <div class="p-4 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif message.tags == 'info' %}bg-blue-50 border border-blue-200 text-blue-800{% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %} rounded-2xl text-xs flex items-center justify-between shadow-2xs">
+    <div class="p-3.5 {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif message.tags == 'info' %}bg-blue-50 border border-blue-200 text-blue-800{% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %} rounded-2xl text-xs flex items-center justify-between shadow-2xs">
       <div class="flex items-center gap-2">
         <span class="text-base">{% if message.tags == 'error' %}⚠️{% elif message.tags == 'info' %}ℹ️{% else %}✅{% endif %}</span>
         <span class="font-bold">{{ message }}</span>
@@ -101,197 +208,107 @@
   {% endif %}
 
   <!-- MAIN DOCUMENT FORM -->
-  <form id="editor-form" method="POST" action="" class="space-y-6 max-w-5xl mx-auto">
+  <form id="editor-form" method="POST" action="" class="space-y-4 max-w-6xl mx-auto">
     {% csrf_token %}
     <input type="hidden" name="action" id="form-action" value="save_draft">
     <input type="hidden" name="content" id="document-content-input" value="">
+    <input type="hidden" name="nav_label" value="{{ page.draft_nav_label|default:page.nav_label }}">
+    <input type="hidden" name="summary" value="{{ page.draft_summary|default:page.summary }}">
 
-    <!-- DOCUMENT METADATA CARD -->
-    <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-        <h2 class="text-xs font-black uppercase tracking-wider text-[#5C3D2E]">Page Identity &amp; Metadata</h2>
-        <span class="text-[11px] text-gray-400">Settings and title for this page</span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Page Title -->
-        <div class="md:col-span-2 space-y-1">
-          <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Page Title (H1)</label>
-          <input type="text" name="title" id="page-title-input" value="{{ page.draft_title|default:page.title }}" class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2.5 text-sm font-bold text-gray-950 focus:outline-none focus:border-[#5C3D2E]" required oninput="markDirty()">
-        </div>
-
-        <!-- Footer Navigation Label -->
-        <div class="space-y-1">
-          <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Footer Nav Label</label>
-          <input type="text" name="nav_label" value="{{ page.draft_nav_label|default:page.nav_label }}" class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2.5 text-sm text-gray-950 focus:outline-none focus:border-[#5C3D2E]" oninput="markDirty()">
-        </div>
-      </div>
-
-      <!-- Introduction / Summary Text -->
-      <div class="space-y-1">
-        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Executive Overview / Introduction</label>
-        <textarea name="summary" rows="2" class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl p-3.5 text-xs text-gray-800 leading-relaxed focus:outline-none focus:border-[#5C3D2E]" placeholder="A concise introduction displayed prominently at the top of the policy page..." oninput="markDirty()">{{ page.draft_summary|default:page.summary }}</textarea>
-      </div>
-    </div>
-
-    <!-- FULL ONE UNIFIED DOCUMENT EDITOR -->
-    <div id="unified-editor-container" class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all">
+    <!-- ONE BIG CONTENT BOX AS SPECIFIED IN USER SKETCH -->
+    <div id="unified-editor-container" class="bg-white rounded-2xl border-2 border-gray-200 shadow-sm overflow-hidden flex flex-col transition-all">
       
-      <!-- EDITOR HEADER & FORMATTING TOOLBAR -->
-      <div class="border-b border-gray-200 bg-gray-50/90 backdrop-blur-sm p-2 sm:p-3 flex flex-wrap items-center gap-1.5 text-xs select-none sticky top-[138px] z-30">
+      <!-- INSIDE BOX HEADER BAR WITH DEDICATED '+' BUTTON FOR HEADINGS -->
+      <div class="bg-gray-50/90 border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 flex-wrap">
         
-        <!-- Heading Block Dropdown -->
-        <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-          <button type="button" onclick="formatBlock('h2')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-gray-800 font-black text-xs transition-colors" title="Major Heading (H2)">
-            H2
-          </button>
-          <button type="button" onclick="formatBlock('h3')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-gray-800 font-bold text-xs transition-colors" title="Subheading (H3)">
-            H3
-          </button>
-          <button type="button" onclick="formatBlock('p')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-gray-800 font-medium text-xs transition-colors" title="Paragraph Text">
-            ¶ Text
-          </button>
+        <!-- Left: Document Status & Info -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-black uppercase tracking-wider text-[#5C3D2E] flex items-center gap-1.5">
+            <span>📝</span>
+            <span>Policy Document Canvas</span>
+          </span>
+          <span class="text-gray-300">|</span>
+          <span id="status-indicator" class="flex items-center gap-1.5 text-[11px] font-medium text-emerald-600">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Document ready</span>
+          </span>
         </div>
 
-        <!-- Inline Formats: Bold, Italic, Underline, Strikethrough -->
-        <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-          <button type="button" onclick="execCmd('bold')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-900 font-black flex items-center justify-center transition-colors" title="Bold (Ctrl+B)">
-            B
-          </button>
-          <button type="button" onclick="execCmd('italic')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-900 italic font-serif flex items-center justify-center transition-colors" title="Italic (Ctrl+I)">
-            I
-          </button>
-          <button type="button" onclick="execCmd('underline')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-900 underline flex items-center justify-center transition-colors" title="Underline (Ctrl+U)">
-            U
-          </button>
-          <button type="button" onclick="execCmd('strikeThrough')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-900 line-through flex items-center justify-center transition-colors" title="Strikethrough">
-            S
-          </button>
-        </div>
+        <!-- Right: Inside '+' Button Specifically for Headings -->
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2 text-[11px] text-gray-500 font-medium">
+            <span id="word-count-badge">0 words</span>
+            <span>&bull;</span>
+            <span id="char-count-badge">0 chars</span>
+          </div>
 
-        <!-- Lists, Quotes & Dividers -->
-        <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-          <button type="button" onclick="execCmd('insertUnorderedList')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center gap-1 transition-colors" title="Bullet List">
-            <span>• Bullet</span>
-          </button>
-          <button type="button" onclick="execCmd('insertOrderedList')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center gap-1 transition-colors" title="Numbered List">
-            <span>1. List</span>
-          </button>
-          <button type="button" onclick="insertQuote()" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center text-sm font-serif transition-colors" title="Blockquote">
-            ❝
-          </button>
-          <button type="button" onclick="execCmd('insertHorizontalRule')" class="px-2 py-1.5 rounded-lg hover:bg-gray-200 text-gray-800 transition-colors" title="Horizontal Divider">
-            ― Line
-          </button>
-        </div>
-
-        <!-- Alignment -->
-        <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-          <button type="button" onclick="execCmd('justifyLeft')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center transition-colors" title="Align Left">
-            ⯇
-          </button>
-          <button type="button" onclick="execCmd('justifyCenter')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center transition-colors" title="Align Center">
-            ⯀
-          </button>
-          <button type="button" onclick="execCmd('justifyRight')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-800 flex items-center justify-center transition-colors" title="Align Right">
-            ⯈
-          </button>
-        </div>
-
-        <!-- Links & Formatting Cleanup -->
-        <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-          <button type="button" onclick="insertHyperlink()" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-[#5C3D2E] font-bold flex items-center gap-1 transition-colors" title="Insert Link">
-            <span>🔗 Link</span>
-          </button>
-          <button type="button" onclick="execCmd('removeFormat')" class="px-2.5 py-1.5 rounded-lg hover:bg-gray-200 text-gray-500 hover:text-gray-900 transition-colors" title="Clear Formatting">
-            <span>🧹 Clear</span>
-          </button>
-        </div>
-
-        <!-- History: Undo / Redo -->
-        <div class="flex items-center gap-1 pr-2 border-r border-gray-200">
-          <button type="button" onclick="execCmd('undo')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors" title="Undo (Ctrl+Z)">
-            ↺
-          </button>
-          <button type="button" onclick="execCmd('redo')" class="w-8 h-8 rounded-lg hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors" title="Redo (Ctrl+Y)">
-            ↻
-          </button>
-        </div>
-
-        <!-- Right: Source Code Toggle & Fullscreen Mode -->
-        <div class="flex items-center gap-1.5 ml-auto">
-          <!-- Toggle HTML Source Mode -->
-          <button type="button" id="toggle-source-btn" onclick="toggleSourceView()" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 font-mono text-[11px] font-bold flex items-center gap-1 transition-colors" title="Toggle Raw HTML Source Code">
-            <span>&lt;/&gt; HTML</span>
-          </button>
-
-          <!-- Toggle Fullscreen -->
-          <button type="button" id="fullscreen-btn" onclick="toggleFullscreen()" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Toggle Fullscreen Editor">
-            <span id="fullscreen-icon">⛶</span>
-            <span class="hidden sm:inline" id="fullscreen-label">Full Window</span>
+          <!-- DEDICATED '+' BUTTON: ONLY FOR INSERTING / PASTING HEADINGS -->
+          <button 
+            type="button" 
+            onclick="openHeadingModal()" 
+            class="px-3.5 py-1.5 rounded-xl bg-[#5C3D2E] hover:bg-[#1E140F] text-white text-xs font-bold shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer"
+            title="Click to paste or insert a section heading"
+          >
+            <span class="text-base font-black leading-none">+</span>
+            <span>Add / Paste Heading</span>
           </button>
         </div>
 
       </div>
 
-      <!-- MAIN WRITING CANVAS (ONE UNIFIED EDITOR) -->
-      <div class="relative bg-white min-h-[580px] flex flex-col">
+      <!-- MAIN WRITING CANVAS: BIG BOX WHERE ADMIN PASTES ALL CONTENT -->
+      <div class="relative bg-white min-h-[620px] flex flex-col">
         
-        <!-- WYSIWYG Visual Document Surface -->
+        <!-- WYSIWYG Visual Canvas (contenteditable) -->
         <div 
           id="visual-canvas" 
-          class="document-surface w-full p-6 sm:p-10 lg:p-12 min-h-[580px] max-h-[85vh] overflow-y-auto text-gray-900 leading-relaxed focus:outline-none"
+          class="document-surface w-full p-6 sm:p-10 lg:p-12 min-h-[620px] max-h-[82vh] overflow-y-auto text-gray-900 leading-relaxed focus:outline-none"
           contenteditable="true" 
           spellcheck="true" 
           oninput="handleCanvasInput()"
+          data-placeholder="Paste all policy content here... Click the '+ Add / Paste Heading' button inside to add or paste headings."
         >
           {{ active_editor_content|safe }}
         </div>
 
-        <!-- Raw HTML Source Code Textarea (Toggled via </> button) -->
+        <!-- Raw HTML Source Code Textarea (Toggled via </> HTML button) -->
         <textarea 
           id="source-code-textarea" 
-          class="hidden w-full p-6 sm:p-10 font-mono text-xs sm:text-sm text-gray-900 bg-gray-900 text-emerald-400 min-h-[580px] max-h-[85vh] overflow-y-auto focus:outline-none resize-none leading-relaxed" 
+          class="hidden w-full p-6 sm:p-10 font-mono text-xs sm:text-sm bg-gray-900 text-emerald-400 min-h-[620px] max-h-[82vh] overflow-y-auto focus:outline-none resize-none leading-relaxed" 
           spellcheck="false" 
           oninput="handleSourceInput()"
         ></textarea>
 
       </div>
 
-      <!-- EDITOR STATUS & WORD COUNT FOOTER BAR -->
-      <div class="border-t border-gray-100 bg-gray-50/70 px-6 py-2.5 flex items-center justify-between text-[11px] text-gray-500 select-none">
-        <div class="flex items-center gap-4">
-          <span id="status-indicator" class="flex items-center gap-1.5 font-medium text-emerald-600">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Document loaded &amp; ready</span>
-          </span>
-          <span class="hidden sm:inline text-gray-300">|</span>
-          <span class="hidden sm:inline text-gray-400">
-            Pro-Tip: Press <kbd class="px-1.5 py-0.5 bg-gray-200 rounded text-[10px] text-gray-700">Ctrl + S</kbd> to quick-save draft.
-          </span>
+      <!-- BOTTOM WORD COUNT & SHORTCUT HELPER -->
+      <div class="border-t border-gray-100 bg-gray-50/60 px-6 py-2.5 flex items-center justify-between text-[11px] text-gray-500 select-none">
+        <div class="flex items-center gap-2">
+          <span>💡 <strong>Quick Tip:</strong> You can paste your entire document at once. To insert headings for each section, click the <strong>+ Add / Paste Heading</strong> button above.</span>
         </div>
-
-        <div class="flex items-center gap-3 font-medium">
-          <span id="word-count-badge">0 words</span>
-          <span class="text-gray-300">&bull;</span>
-          <span id="char-count-badge">0 characters</span>
+        <div class="hidden md:flex items-center gap-1.5 text-gray-400">
+          <span>Shortcut: Press</span>
+          <kbd class="px-1.5 py-0.5 bg-gray-200 rounded text-[10px] text-gray-700 font-mono">Ctrl + S</kbd>
+          <span>to save draft</span>
         </div>
       </div>
 
     </div>
 
-    <!-- BOTTOM FLOATING ACTION BAR -->
-    <div class="pt-4 pb-12 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <!-- BOTTOM ACTION ROW -->
+    <div class="py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="text-xs text-gray-500">
-        <span>Draft updates stay completely private in the database. Public visitors see the live published version until you click Publish.</span>
+        <span>Draft edits remain private until you click Publish Live. Output page renders as one seamless document without separate card divisions.</span>
       </div>
 
       <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-        <button type="button" onclick="submitEditorForm('save_draft')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer">
-          💾 Save Draft Edits
+        <button type="button" onclick="submitEditorForm('save_draft')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
+          <span>💾</span>
+          <span>Save Draft Edits</span>
         </button>
-        <button type="button" onclick="confirmPublish()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer">
-          🚀 Publish Live to Website
+        <button type="button" onclick="confirmPublish()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#1E140F] hover:bg-[#5C3D2E] text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5">
+          <span>🚀</span>
+          <span>Publish Live to Website</span>
         </button>
       </div>
     </div>
@@ -300,17 +317,67 @@
 
 </div>
 
+<!-- HEADING INSERTION / PASTE MODAL -->
+<div id="heading-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-in fade-in zoom-in duration-150">
+    
+    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="w-7 h-7 rounded-lg bg-[#FAF5EE] text-[#5C3D2E] font-black flex items-center justify-center text-sm">H2</span>
+        <h3 class="text-sm font-black text-gray-950">Add / Paste Section Heading</h3>
+      </div>
+      <button type="button" onclick="closeHeadingModal()" class="w-7 h-7 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 flex items-center justify-center font-bold">&times;</button>
+    </div>
+
+    <p class="text-xs text-gray-600 leading-relaxed">
+      Paste or type the heading for this section below. It will be inserted into the document at the cursor position as a primary heading:
+    </p>
+
+    <div class="space-y-1.5">
+      <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Heading Text</label>
+      <input 
+        type="text" 
+        id="heading-text-input" 
+        class="w-full bg-[#FAF5EE] border border-[#E8DAC9] rounded-xl px-4 py-2.5 text-sm font-bold text-gray-950 focus:outline-none focus:border-[#5C3D2E]" 
+        placeholder="e.g., 1. Terms of Delivery &amp; Inspection"
+        onkeydown="if(event.key === 'Enter'){ event.preventDefault(); confirmInsertHeading(); }"
+      >
+    </div>
+
+    <div class="pt-2 flex items-center justify-end gap-2.5">
+      <button type="button" onclick="closeHeadingModal()" class="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-colors">
+        Cancel
+      </button>
+      <button type="button" onclick="confirmInsertHeading()" class="px-5 py-2 rounded-xl bg-[#5C3D2E] hover:bg-[#1E140F] text-white text-xs font-bold shadow-xs transition-all active:scale-95 flex items-center gap-1.5">
+        <span>Insert Heading</span>
+        <span>&crarr;</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <!-- HIDDEN DISCARD FORM -->
 <form id="discard-form" method="POST" action="" class="hidden">
   {% csrf_token %}
   <input type="hidden" name="action" value="discard">
 </form>
 
-<!-- DOCUMENT STYLES FOR THE ONE FULL EDITOR -->
+<!-- STYLES FOR THE BIG CONTENT BOX -->
 <style>
-  /* Typography inside the Document Surface */
+  /* Typography inside Visual Canvas */
+  .document-surface {
+    font-family: inherit;
+  }
+  .document-surface:empty:before {
+    content: attr(data-placeholder);
+    color: #9CA3AF;
+    font-style: italic;
+    pointer-events: none;
+    display: block;
+  }
   .document-surface h2 {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: #111827;
     margin-top: 2rem;
@@ -377,7 +444,7 @@
     color: #111827;
   }
 
-  /* Fullscreen Mode styling */
+  /* Fullscreen Focus Mode */
   .editor-fullscreen {
     position: fixed !important;
     top: 0 !important;
@@ -393,16 +460,17 @@
   }
   .editor-fullscreen #visual-canvas,
   .editor-fullscreen #source-code-textarea {
-    max-height: calc(100vh - 120px) !important;
-    min-height: calc(100vh - 120px) !important;
+    max-height: calc(100vh - 110px) !important;
+    min-height: calc(100vh - 110px) !important;
   }
 </style>
 
-<!-- JAVASCRIPT CONTROLLER FOR ONE FULL EDITOR -->
+<!-- JAVASCRIPT CONTROLLER -->
 <script>
   let isDirty = false;
   let isSourceMode = false;
   let isFullscreen = false;
+  let savedRange = null;
 
   const visualCanvas = document.getElementById('visual-canvas');
   const sourceTextarea = document.getElementById('source-code-textarea');
@@ -410,6 +478,8 @@
   const statusIndicator = document.getElementById('status-indicator');
   const wordCountBadge = document.getElementById('word-count-badge');
   const charCountBadge = document.getElementById('char-count-badge');
+  const headingModal = document.getElementById('heading-modal');
+  const headingTextInput = document.getElementById('heading-text-input');
 
   function markDirty() {
     isDirty = true;
@@ -437,7 +507,7 @@
     const chars = text.length;
 
     if (wordCountBadge) wordCountBadge.textContent = `${words} words`;
-    if (charCountBadge) charCountBadge.textContent = `${chars} characters`;
+    if (charCountBadge) charCountBadge.textContent = `${chars} chars`;
   }
 
   function handleCanvasInput() {
@@ -483,6 +553,90 @@
     }
   }
 
+  // HEADING MODAL & INSERTION (THE "+" BUTTON INSIDE THE BIG BOX)
+  function saveSelection() {
+    if (window.getSelection) {
+      const sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+        return sel.getRangeAt(0);
+      }
+    }
+    return null;
+  }
+
+  function restoreSelection(range) {
+    if (range && window.getSelection) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+
+  function openHeadingModal() {
+    if (isSourceMode) {
+      toggleSourceView();
+    }
+    savedRange = saveSelection();
+    headingModal.classList.remove('hidden');
+    headingTextInput.value = '';
+    setTimeout(() => {
+      headingTextInput.focus();
+    }, 50);
+  }
+
+  function closeHeadingModal() {
+    headingModal.classList.add('hidden');
+    if (savedRange) {
+      restoreSelection(savedRange);
+    }
+  }
+
+  function confirmInsertHeading() {
+    const headingText = headingTextInput.value.trim();
+    if (!headingText) {
+      alert("Please enter a heading text.");
+      headingTextInput.focus();
+      return;
+    }
+
+    headingModal.classList.add('hidden');
+    visualCanvas.focus();
+
+    if (savedRange) {
+      restoreSelection(savedRange);
+    }
+
+    // Insert clean H2 heading and a blank paragraph below it
+    const headingHtml = `<h2>${escapeHtml(headingText)}</h2><p><br></p>`;
+    document.execCommand('insertHTML', false, headingHtml);
+
+    markDirty();
+    updateCounts();
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // SMART PASTE HANDLER: CLEAN UP NOISY EXTERNAL FORMATTING
+  visualCanvas.addEventListener('paste', function(e) {
+    // When text is pasted, ensure proper formatting without intrusive external fonts/backgrounds
+    setTimeout(function() {
+      // Strip any unwanted inline styles like mso- styles or fixed font-family
+      const elementsWithStyle = visualCanvas.querySelectorAll('[style]');
+      elementsWithStyle.forEach(function(el) {
+        el.removeAttribute('style');
+      });
+      markDirty();
+      updateCounts();
+    }, 10);
+  });
+
   // Toggle between WYSIWYG Visual Mode and Raw HTML Mode
   function toggleSourceView() {
     const btn = document.getElementById('toggle-source-btn');
@@ -519,11 +673,11 @@
     isFullscreen = !isFullscreen;
     if (isFullscreen) {
       container.classList.add('editor-fullscreen');
-      if (label) label.textContent = 'Exit Fullscreen';
+      if (label) label.textContent = 'Exit';
       if (icon) icon.textContent = '✕';
     } else {
       container.classList.remove('editor-fullscreen');
-      if (label) label.textContent = 'Full Window';
+      if (label) label.textContent = 'Fullscreen';
       if (icon) icon.textContent = '⛶';
     }
   }
@@ -584,7 +738,7 @@
     }
   });
 
-  // Keyboard Shortcuts: Ctrl+S to save draft, Ctrl+B, etc.
+  // Keyboard Shortcuts: Ctrl+S to save draft
   window.addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
       e.preventDefault();
